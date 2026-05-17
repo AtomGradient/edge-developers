@@ -1,0 +1,179 @@
+/*
+ * AtomGradient Edge — Anthropic-inspired documentation theme.
+ * Clean, minimal, high readability.
+ */
+
+/* ── Light mode ── */
+:root {
+  --ifm-color-primary: #1a1a1a;
+  --ifm-color-primary-dark: #111111;
+  --ifm-color-primary-darker: #0a0a0a;
+  --ifm-color-primary-darkest: #000000;
+  --ifm-color-primary-light: #333333;
+  --ifm-color-primary-lighter: #444444;
+  --ifm-color-primary-lightest: #666666;
+
+  --ifm-background-color: #faf9f7;
+  --ifm-background-surface-color: #ffffff;
+  --ifm-navbar-background-color: rgba(250, 249, 247, 0.92);
+  --ifm-footer-background-color: #faf9f7;
+
+  --ifm-font-family-base: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
+  --ifm-font-family-monospace: 'SF Mono', 'Fira Code', 'Cascadia Code', 'JetBrains Mono', monospace;
+  --ifm-heading-font-family: var(--ifm-font-family-base);
+
+  --ifm-font-size-base: 16px;
+  --ifm-line-height-base: 1.75;
+  --ifm-heading-font-weight: 600;
+
+  --ifm-code-font-size: 90%;
+  --ifm-code-background: #f4f2ee;
+  --ifm-code-border-radius: 4px;
+  --ifm-code-padding-horizontal: 0.35em;
+  --ifm-code-padding-vertical: 0.15em;
+
+  --ifm-global-shadow-lw: 0 1px 3px rgba(0, 0, 0, 0.04);
+  --ifm-global-shadow-md: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --ifm-global-border-color: #e8e4de;
+
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.06);
+
+  --atomgradient-accent: #9b8b7a;
+  --atomgradient-muted: #6b6b6b;
+}
+
+/* ── Dark mode ── */
+[data-theme='dark'] {
+  --ifm-color-primary: #e8e4de;
+  --ifm-color-primary-dark: #d8d4ce;
+  --ifm-color-primary-darker: #c8c4be;
+  --ifm-color-primary-darkest: #a8a4a0;
+  --ifm-color-primary-light: #f0ece6;
+  --ifm-color-primary-lighter: #f4f2ee;
+  --ifm-color-primary-lightest: #faf9f7;
+
+  --ifm-background-color: #1a1a1a;
+  --ifm-background-surface-color: #222222;
+  --ifm-navbar-background-color: rgba(26, 26, 26, 0.92);
+  --ifm-footer-background-color: #1a1a1a;
+
+  --ifm-code-background: #2a2a2a;
+  --ifm-global-border-color: #333333;
+
+  --docusaurus-highlighted-code-line-bg: rgba(255, 255, 255, 0.08);
+
+  --atomgradient-accent: #b8a898;
+  --atomgradient-muted: #999999;
+}
+
+/* ── Typography ── */
+h1, h2, h3, h4, h5, h6 {
+  letter-spacing: -0.01em;
+}
+
+.markdown h1:first-child {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+/* ── Navbar ── */
+.navbar {
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--ifm-global-border-color);
+  box-shadow: none;
+}
+
+.navbar__title {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* ── Sidebar ── */
+.theme-doc-sidebar-container {
+  border-right: 1px solid var(--ifm-global-border-color) !important;
+}
+
+.menu__link {
+  font-size: 0.875rem;
+  font-weight: 400;
+}
+
+.menu__link--active:not(.menu__link--sublist) {
+  font-weight: 500;
+}
+
+/* ── Content ── */
+.theme-doc-markdown {
+  max-width: 720px;
+}
+
+article .markdown p {
+  color: var(--atomgradient-muted);
+}
+
+article .markdown p:first-of-type {
+  font-size: 1.125rem;
+  line-height: 1.8;
+}
+
+/* ── Code blocks ── */
+.prism-code {
+  font-size: 0.875rem !important;
+  line-height: 1.6 !important;
+  border: 1px solid var(--ifm-global-border-color);
+}
+
+/* ── Tables ── */
+table {
+  font-size: 0.9rem;
+}
+
+table th {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  color: var(--atomgradient-muted);
+}
+
+/* ── Admonitions / callouts ── */
+.alert {
+  border-radius: 8px;
+  border-left-width: 3px;
+}
+
+/* ── Preview badge ── */
+.badge--preview {
+  background-color: var(--atomgradient-accent);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 2px 8px;
+  border-radius: 999px;
+  vertical-align: middle;
+  margin-left: 8px;
+}
+
+/* ── Footer ── */
+.footer {
+  border-top: 1px solid var(--ifm-global-border-color);
+}
+
+.footer__title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--atomgradient-muted);
+}
+
+.footer__link-item {
+  font-size: 0.875rem;
+}
+
+/* ── TOC ── */
+.table-of-contents__link {
+  font-size: 0.8125rem;
+}

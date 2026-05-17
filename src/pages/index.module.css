@@ -1,0 +1,148 @@
+.heroBanner {
+  padding: 6rem 2rem 4rem;
+  text-align: center;
+  background: var(--ifm-background-color);
+}
+
+.heroTitle {
+  font-size: 3rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+.heroSubtitle {
+  font-size: 1.25rem;
+  color: var(--atomgradient-muted);
+  max-width: 560px;
+  margin: 0 auto 2rem;
+  line-height: 1.7;
+}
+
+.heroAccent {
+  color: var(--atomgradient-accent);
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.primaryButton {
+  background: var(--ifm-color-primary);
+  color: white !important;
+  padding: 0.75rem 2rem;
+  border-radius: 999px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  text-decoration: none !important;
+  transition: opacity 0.2s;
+}
+
+.primaryButton:hover {
+  opacity: 0.85;
+}
+
+.secondaryButton {
+  background: transparent;
+  color: var(--ifm-color-primary) !important;
+  padding: 0.75rem 2rem;
+  border-radius: 999px;
+  border: 1px solid var(--ifm-global-border-color);
+  font-weight: 500;
+  font-size: 0.9rem;
+  text-decoration: none !important;
+  transition: border-color 0.2s;
+}
+
+.secondaryButton:hover {
+  border-color: var(--ifm-color-primary);
+}
+
+.previewBadge {
+  display: inline-block;
+  background: var(--atomgradient-accent);
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 3px 10px;
+  border-radius: 999px;
+  margin-bottom: 1.5rem;
+}
+
+.productsSection {
+  padding: 4rem 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.productsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.productCard {
+  background: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-global-border-color);
+  border-radius: 12px;
+  padding: 2rem;
+  transition: border-color 0.2s;
+}
+
+.productCard:hover {
+  border-color: var(--atomgradient-accent);
+}
+
+.productName {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.productDescription {
+  font-size: 0.875rem;
+  color: var(--atomgradient-muted);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.productLink {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--ifm-color-primary);
+  text-decoration: none;
+}
+
+.codeSection {
+  padding: 3rem 2rem;
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.codeSectionLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--atomgradient-muted);
+  margin-bottom: 1.5rem;
+}
+
+@media screen and (max-width: 768px) {
+  .heroTitle {
+    font-size: 2rem;
+  }
+  .heroSubtitle {
+    font-size: 1rem;
+  }
+  .buttons {
+    flex-direction: column;
+  }
+}
