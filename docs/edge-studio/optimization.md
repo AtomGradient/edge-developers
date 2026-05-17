@@ -12,8 +12,8 @@ Model optimization reduces model size and improves runtime fit while monitoring 
 | Type | Description |
 | --- | --- |
 | Quantization | Reduces weight precision to lower disk and memory use. |
-| Vocabulary pruning | Removes unused tokens for supported workflows. |
-| Layer optimization | Produces a smaller deployment candidate when quality checks pass. |
+| Model-size optimization | Produces a smaller deployment candidate when quality checks pass. |
+| Deployment preparation | Packages the selected candidate for Edge Kit or Edge Scaffold. |
 
 ## Workflow
 
