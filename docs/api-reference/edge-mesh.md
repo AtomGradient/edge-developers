@@ -3,37 +3,104 @@ sidebar_position: 4
 title: EdgeMesh
 ---
 
-# EdgeMesh API Reference
+# EdgeMesh API reference
 
-{/* CODEX: Write API reference for EdgeMesh module.
+`EdgeMesh` provides local-network device discovery, topology, trust state, and routing helpers.
 
-  ## MeshEngine
-  - Central mesh coordinator
-  - Start/stop mesh participation
+## MeshEngine
 
-  ## MeshDiscovery
-  - Bonjour-based device discovery
-  - Delegate callbacks for device found/lost
+```swift
+@MainActor
+public final class MeshEngine: ObservableObject
+```
 
-  ## MeshRouter
-  - Route inference requests to devices
-  - Device selection
+Central mesh coordinator.
 
-  ## MeshNode
-  - Represents a device in the mesh
-  - Capabilities, status
+| Property or method | Description |
+| --- | --- |
+| `peers` | Discovered peers. |
+| `topology` | Current mesh topology. |
+| `isDiscovering` | Discovery state. |
+| `startDiscovery(as:)` | Starts local discovery. |
+| `stopDiscovery()` | Stops discovery. |
+| `connect(to:)` | Connects to a trusted peer. |
+| `setupSecurity(peerId:displayName:trustStoreURL:)` | Initializes local identity and trust storage. |
+| `installSecurity(identity:trustStore:)` | Injects prebuilt security state. |
+| `completePairing(with:localPeerId:localDisplayName:)` | Completes pairing from a pairing payload. |
+| `listTrustedPeers()` | Returns trusted peers. |
+| `revoke(peerId:)` | Revokes trust for a peer. |
+| `deletePeer(peerId:)` | Deletes a peer from trust storage and memory. |
+| `bestNode(for:strategy:)` | Selects a node from the current topology. |
+| `routingPlan(for:)` | Builds a routing plan. |
 
-  ## MeshTopology
-  - Current mesh state
-  - Connected devices summary
+## MeshNode
 
-  ## MeshSummary
-  - Mesh status summary
+```swift
+public struct MeshNode: Identifiable, Sendable, Hashable
+```
 
-  Format as Anthropic-style API reference.
-  
-  DO NOT expose:
-  - Transport protocol details
-  - Pairing internals
-  - Routing score algorithm
-*/}
+Represents a device in the mesh.
+
+| Property | Type |
+| --- | --- |
+| `id` | `String` |
+| `displayName` | `String` |
+| `capability` | `MeshNode.Capability` |
+| `deviceProfile` | `MeshNode.MeshDeviceSnapshot` |
+| `endpoint` | `MeshNode.Endpoint` |
+| `trustStatus` | `MeshNode.TrustStatus` |
+
+### Capability
+
+| Case | Description |
+| --- | --- |
+| `.inference` | Can run inference. |
+| `.data` | Data collection node. |
+| `.both` | Both inference and data roles. |
+
+## MeshTopology
+
+```swift
+public struct MeshTopology: Sendable
+```
+
+| API | Description |
+| --- | --- |
+| `tier0`, `tier1`, `tier2` | Nodes grouped by role. |
+| `allNodes` | All known nodes. |
+| `count` | Total node count. |
+| `addNode(_:)` | Adds or updates a node. |
+| `removeNode(id:)` | Removes a node. |
+| `findNode(id:)` | Finds a node by ID. |
+
+## MeshRouter
+
+```swift
+public struct MeshRouter: Sendable
+```
+
+| API | Description |
+| --- | --- |
+| `bestNode(for:in:strategy:)` | Selects a node for a model size. |
+| `routingPlan(for:in:)` | Returns a `RoutingPlan`. |
+
+### Strategy
+
+| Case | Description |
+| --- | --- |
+| `.bestFit` | Balanced default. |
+| `.leastLoaded` | Prefer available memory. |
+| `.fastest` | Prefer bandwidth. |
+
+## RoutingPlan
+
+```swift
+public struct RoutingPlan: Sendable
+```
+
+| Property | Type |
+| --- | --- |
+| `mode` | `RoutingPlan.Mode` |
+| `primaryNode` | `MeshNode?` |
+| `auxiliaryNodes` | `[MeshNode]` |
+| `estimatedLatencyMs` | `Double` |

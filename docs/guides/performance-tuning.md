@@ -5,22 +5,62 @@ title: Performance Tuning
 
 # Performance tuning
 
-{/* CODEX: Write performance tuning guide. Cover:
-  - Measuring performance: InferenceMetrics (TPS, TTFT, total tokens)
-  - Device thermal state affects performance (use cooling for benchmarks)
-  - Debug vs Release builds: 2-10x performance difference — always benchmark in Release
-  - Model size selection: larger model = better quality but slower
-  - Memory pressure: monitor with phys_footprint, not os_proc_available_memory()
-  - Multi-turn conversation: prompt cache speeds up subsequent turns
-  - Tips:
-    - Use quantized models (4-bit) for best speed/quality tradeoff
-    - Use bf16 models for training, quantized for inference
-    - Release builds only for performance measurement
-  
-  DO NOT expose:
-  - maxOps tuning
-  - syncEval strategy
-  - ANE scheduling parameters
-  - H2O window sizing
-  - Specific TPS numbers per device
-*/}
+Measure performance with the metrics Edge Kit records after generation.
+
+## Read inference metrics
+
+`LLMEngine` and `VLMEngine` expose `lastMetrics` after a generation completes.
+
+```swift
+for try await chunk in engine.generate(messages: [.user("Summarize this.")]) {
+    print(chunk.text, terminator: "")
+}
+
+if let metrics = engine.lastMetrics {
+    print("TTFT:", metrics.ttftMs)
+    print("Decode TPS:", metrics.decodeTPS)
+    print("Prompt tokens:", metrics.promptTokenCount)
+    print("Generated tokens:", metrics.generationTokenCount)
+    print("Memory delta:", metrics.memoryDeltaMB)
+}
+```
+
+## Benchmark in Release
+
+Debug builds can be much slower than Release builds. Always collect benchmark numbers from:
+
+- A Release configuration.
+- The real target device.
+- A cooled device with stable thermal state.
+- The same prompt and model across runs.
+
+## Choose the model size first
+
+Larger models can improve quality, but they also increase load time, memory pressure, and per-token cost.
+
+| Goal | Recommendation |
+| --- | --- |
+| Lowest latency | Start with a 0.8B or small 4-bit model. |
+| Balanced chat quality | Start with a 4B 4-bit model. |
+| Highest local quality | Use a larger model only on validated high-memory devices. |
+| Training or adapter work | Keep higher-precision source models on a Mac. |
+
+## Use prompt cache for conversations
+
+Multi-turn LLM and VLM conversations reuse conversation context automatically. Keep the same engine instance for one conversation, then clear the cache when the user starts a new one.
+
+```swift
+engine.clearPromptCache()
+```
+
+## Monitor process footprint
+
+Use process physical footprint when debugging memory pressure. Available-memory APIs can be misleading on iOS because system limits are lower than physical RAM.
+
+## Practical checklist
+
+- Use quantized models for interactive inference.
+- Prefer local model directories during development for repeatable tests.
+- Keep one active generation per engine instance.
+- Unload unused engines before switching model categories.
+- Re-run benchmarks after changing model size, build configuration, or target device.

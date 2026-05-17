@@ -3,24 +3,51 @@ sidebar_position: 1
 title: Overview
 ---
 
-# Edge Studio **Developer Preview**
+# Edge Studio
 
-{/* CODEX: Write overview for Edge Studio. Key points:
-  - Model optimization workbench — analyze, optimize, benchmark, export
-  - Web-based UI (Python backend + React frontend)
-  - Supports 117+ model architectures
-  - Optimization pipeline: analysis → pruning → quantization → benchmark → export
-  - Built-in benchmark at every step (disk size, RAM, tok/s, perplexity)
-  - Export to: Edge Kit model format, GGUF, CoreML
-  - One-click export to Edge Scaffold (generates complete iOS app)
-  - 210+ model catalog with device-specific recommendations
-  
-  Pipeline:
-    Load model → Analyze → Optimize → Benchmark → Export → Ship
-  
-  DO NOT expose:
-  - 7-step pruning algorithm details
-  - Neuron-level surgical pruning internals
-  - Proprietary optimization algorithms
-  - Backend API endpoints
-*/}
+Edge Studio is a model optimization workbench for preparing models for on-device deployment.
+
+:::info Developer Preview
+Edge Studio is in **Developer Preview**. Validate every exported model with Edge Kit on the target device before shipping.
+:::
+
+## What it does
+
+Edge Studio helps you:
+
+- Load and inspect model architecture.
+- Analyze size and device fit.
+- Apply model optimization.
+- Benchmark each candidate.
+- Export to Edge Kit, GGUF, CoreML, or Edge Scaffold.
+
+## Pipeline
+
+```text
+Load model -> Analyze -> Optimize -> Benchmark -> Export -> Ship
+```
+
+## Capabilities
+
+| Capability | Description |
+| --- | --- |
+| Architecture support | 117+ model architectures in the analyzer. |
+| Model catalog | 210+ model entries with device-oriented recommendations. |
+| Quality tracking | Benchmark and quality checks after optimization steps. |
+| Export | Edge Kit native bundles, GGUF, CoreML, and Edge Scaffold projects. |
+| App generation | Create a ready-to-build iOS project through Edge Scaffold. |
+
+## Typical workflow
+
+1. Select a source model.
+2. Choose the target device class.
+3. Run analysis.
+4. Apply optimization.
+5. Benchmark the optimized model.
+6. Export the model or a full Edge Scaffold app.
+
+## Next steps
+
+- [Model optimization](/docs/edge-studio/optimization)
+- [Export](/docs/edge-studio/export)
+- [Edge Scaffold overview](/docs/edge-scaffold/overview)

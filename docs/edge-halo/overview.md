@@ -3,32 +3,71 @@ sidebar_position: 1
 title: Overview
 ---
 
-# Edge Halo **Developer Preview**
+# Edge Halo
 
-{/* CODEX: Write overview for Edge Halo. Key points:
-  - Model self-evolution module — makes models grow with users
-  - V-shape architecture: edge-halo and edge-kit are siblings, both depend on edge-engine
-  - App is the composition point that wires inference + evolution
-  - Core capabilities:
-    1. User profiling — extract geometric representation of user preferences
-    2. Adapter lifecycle — version management, validation, A/B testing, rollback
-    3. Activation steering — real-time direction injection into inference
-    4. Evolution strategy — when to trigger retraining
-  - EdgeHalo actor: main entry point
-  - EvolutionState: idle → collecting → readyToTrain → training → validating → evolved
-  - Data never leaves device — training happens on user's Mac via Mesh
-  
-  Architecture diagram:
+Edge Halo is the Developer Preview module for model self-evolution.
+
+It provides profile extraction, adapter lifecycle management, and runtime steering. The app composes Edge Halo with Edge Kit: Edge Kit runs inference, and Edge Halo manages how the model adapts to the user.
+
+:::info Developer Preview
+Edge Halo is in **Developer Preview**. Keep profile data, adapters, and validation results on user-owned devices.
+:::
+
+## Architecture
+
+```text
         App
        /   \
-  edge-kit  edge-halo
+Edge Kit   Edge Halo
        \   /
-    edge-engine
+    Edge Engine
+```
 
-  DO NOT expose:
-  - RPP algorithm details (Residual PCA math)
-  - A/B matrix computation
-  - Gram-Schmidt orthogonalization steps
-  - Bootstrap stability algorithm
-  - Specific layer numbers or model internals
-*/}
+The app is the composition point. Edge Halo does not own the app UI or the inference engine. Instead, your app passes protocol implementations into `EdgeHalo`.
+
+## Capabilities
+
+| Capability | Description |
+| --- | --- |
+| User profiling | Extracts a local representation of user preferences from user data. |
+| Adapter lifecycle | Validates, applies, versions, and rolls back adapters. |
+| Activation steering | Adjusts model behavior during a session without retraining. |
+| Evolution state | Tracks collection, training, validation, and active adapter state. |
+
+## State machine
+
+```text
+idle -> collecting -> readyToTrain -> training -> validating -> evolved
+```
+
+## Initialize
+
+```swift
+import EdgeHalo
+
+let halo = EdgeHalo(
+    engine: engineSession,
+    generator: textGenerator,
+    dataStream: dataEvents
+)
+```
+
+`engineSession` conforms to `HaloEngineSession`. `textGenerator` conforms to `HaloTextGenerator`.
+
+## Read state
+
+```swift
+let state = await halo.evolutionState
+let profile = await halo.currentProfile
+let adapter = await halo.activeAdapter
+```
+
+## Privacy boundary
+
+Profiles and adapters are local artifacts. Training can run on the user's Mac and transfer the resulting adapter to the user's other devices through the private device mesh.
+
+## Guides
+
+- [User profiling](/docs/edge-halo/profiling)
+- [Adapter lifecycle](/docs/edge-halo/adapters)
+- [Activation steering](/docs/edge-halo/steering)

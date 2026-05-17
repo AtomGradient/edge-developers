@@ -6,63 +6,70 @@ title: Overview
 
 # AtomGradient Edge Platform
 
-Build AI-powered apps that run entirely on-device. No cloud. No latency. Complete privacy.
+AtomGradient Edge Platform is a set of Developer Preview tools for building on-device AI apps on Apple Silicon.
 
-The Edge platform is a suite of developer tools for deploying large language models on Apple Silicon — from optimization to inference to a published App Store app.
+The platform covers the full path from model preparation to a shippable iOS app:
+
+1. Optimize a model in Edge Studio.
+2. Run inference through Edge Kit.
+3. Add personalization with Edge Halo.
+4. Connect user-owned devices with Edge Mesh.
+5. Ship an app with Edge Scaffold.
 
 :::info Developer Preview
-All Edge products are currently in **Developer Preview**. APIs may change between releases.
+All Edge products are currently in **Developer Preview**. APIs, package names, and setup steps may change between releases.
 :::
 
-## The stack
+## Products
 
-| Layer | Product | What it does |
-|-------|---------|-------------|
-| **Core** | [Edge Engine](/docs/edge-engine/overview) | Native Metal inference runtime for Apple Silicon |
-| **SDK** | [Edge Kit](/docs/edge-kit/overview) | Swift SDK — LLM, VLM, ASR, TTS inference |
-| **Evolution** | [Edge Halo](/docs/edge-halo/overview) | Model self-evolution — models that grow with users |
-| **Networking** | [Edge Mesh](/docs/edge-mesh/overview) | Private device mesh — route inference across devices |
-| **Deployment** | [Edge Scaffold](/docs/edge-scaffold/overview) | iOS app template — optimized model to App Store |
-| **Tooling** | [Edge Studio](/docs/edge-studio/overview) | Model optimization workbench |
+| Product | Use it for |
+| --- | --- |
+| [Edge Engine](/docs/edge-engine/overview) | Native inference runtime for Apple Silicon. |
+| [Edge Kit](/docs/edge-kit/overview) | Swift SDK for LLM, VLM, speech-to-text, and text-to-speech inference. |
+| [Edge Halo](/docs/edge-halo/overview) | User profile extraction, adapter lifecycle, and runtime steering. |
+| [Edge Mesh](/docs/edge-mesh/overview) | Private local-network device discovery and routing. |
+| [Edge Scaffold](/docs/edge-scaffold/overview) | Ready-to-ship iOS app template for Edge Kit apps. |
+| [Edge Studio](/docs/edge-studio/overview) | Model analysis, optimization, benchmark, and export workbench. |
 
 ## Architecture
 
+```text
+App
+├─ Edge Kit        Inference SDK
+├─ Edge Halo       Personalization and adapter lifecycle
+├─ Edge Mesh       Private device mesh
+└─ Edge Engine     Native runtime foundation
+
+Edge Studio -> Edge Scaffold -> App Store
 ```
-Edge Studio (optimize) ─→ Edge Scaffold (deploy)
-                              │
-                          Edge Kit (SDK)
-                         ┌────┼────┐
-                    Edge Halo  │  Edge Mesh
-                         └────┼────┘
-                        Edge Engine (core)
-```
 
-## Product tiers
-
-Choose the combination that fits your use case:
-
-| Tier | Packages | For |
-|------|----------|-----|
-| **Inference** | Edge Engine + Edge Kit | Apps that need on-device LLM/VLM/ASR/TTS |
-| **Personalization** | + Edge Halo | Apps where the model adapts to each user |
-| **Multi-device** | + Edge Mesh | Apps that span a user's Apple device fleet |
-| **Full pipeline** | + Edge Studio + Edge Scaffold | End-to-end: optimize → build → ship |
-
-## Quick start
+## First inference
 
 ```swift
-import EdgeKit
+import EdgeInference
 
 let engine = LLMEngine()
-try await engine.load(from: "~/models/Qwen3.5-4B-4bit")
+let modelURL = URL(fileURLWithPath: "/path/to/model")
 
-for try await chunk in engine.generate(
-    messages: [.user("What is edge AI?")]
-) {
+try await engine.loadLocal(directory: modelURL)
+
+for try await chunk in engine.generate(messages: [.user("What is edge AI?")]) {
     print(chunk.text, terminator: "")
 }
 ```
 
-Five lines of Swift. On-device. Private. Fast.
+## Choose a path
 
-→ [Get started](/docs/getting-started)
+| Goal | Start here |
+| --- | --- |
+| Add local text generation to an app | [Edge Kit LLM](/docs/edge-kit/llm) |
+| Add image understanding | [Edge Kit VLM](/docs/edge-kit/vlm) |
+| Build a full iOS app from a model | [Edge Scaffold](/docs/edge-scaffold/overview) |
+| Optimize and export a model | [Edge Studio](/docs/edge-studio/overview) |
+| Add personalization | [Edge Halo](/docs/edge-halo/overview) |
+
+## Privacy model
+
+The default design is local-first. Model files, prompts, generated output, user profiles, and adapters stay on the user's devices unless your app explicitly moves them through user-owned infrastructure.
+
+Continue with [Getting Started](/docs/getting-started).

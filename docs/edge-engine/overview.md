@@ -3,20 +3,61 @@ sidebar_position: 1
 title: Overview
 ---
 
-# Edge Engine **Developer Preview**
+# Edge Engine
 
-{/* CODEX: Write overview for Edge Engine. Key points:
-  - Native Metal inference runtime purpose-built for Apple Silicon
-  - Foundation layer that Edge Kit builds upon
-  - Owns: Metal command scheduling, tensor/storage abstractions, model-family inference code
-  - Supports Qwen3.5/Qwen3.6, ASR, TTS model families
-  - NOT a general-purpose ML framework — focused on inference
-  - No dependency on upstream mlx-swift
+Edge Engine is the native inference runtime foundation for AtomGradient Edge products.
 
-  DO NOT expose:
-  - ANE scheduling algorithms
-  - Disaggregated inference architecture internals
-  - Metal kernel implementations
-  - Memory management strategies
-  - Any benchmark numbers comparing to competitors
-*/}
+:::info Developer Preview
+Edge Engine is in **Developer Preview**. Most app developers should use [Edge Kit](/docs/edge-kit/overview), which provides higher-level Swift APIs.
+:::
+
+## What it does
+
+Edge Engine provides the low-level runtime layer that Edge Kit builds on:
+
+| Area | Description |
+| --- | --- |
+| Runtime | Apple Silicon-focused inference execution. |
+| Tensor and storage abstractions | Model weight and tensor primitives used by higher-level engines. |
+| Model-family runtime code | Native support paths for supported text, vision, speech, and audio families. |
+| Package boundary | A focused runtime package, not a general-purpose ML framework. |
+
+## When to use Edge Engine directly
+
+Use Edge Engine directly if you are building:
+
+- A runtime integration layer.
+- A custom engine on top of AtomGradient model bundles.
+- Low-level validation or smoke tests for exported models.
+
+Use Edge Kit if you want:
+
+- `LLMEngine`, `VLMEngine`, `TTSEngine`, or speech APIs.
+- SwiftUI-friendly state.
+- Model download and cache helpers.
+- Edge Mesh or Edge Data integration.
+
+## Package
+
+```swift
+.package(url: "https://github.com/AtomGradient/edge-engine.git", from: "1.0.0")
+```
+
+Add the product:
+
+```swift
+.product(name: "EdgeEngine", package: "edge-engine")
+```
+
+## Version
+
+```swift
+import EdgeEngine
+
+print(EdgeEngine.version)
+```
+
+## Next steps
+
+- [Install Edge Engine](/docs/edge-engine/installation)
+- [Install Edge Kit](/docs/edge-kit/installation)
