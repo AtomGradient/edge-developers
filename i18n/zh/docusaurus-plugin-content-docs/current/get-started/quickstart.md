@@ -1,31 +1,31 @@
 ---
 sidebar_position: 1
-title: Quickstart
+title: 快速开始
 ---
 
-# Getting started
+# 开始使用
 
-Install Edge Kit, load a local model, and stream tokens from an on-device LLM.
+安装 Edge Kit，加载本地模型，并从端侧 LLM 流式输出 token。
 
-:::info Developer Preview
-Edge Kit is in **Developer Preview**. Pin the package version you test with and re-run device validation after each upgrade.
+:::info 开发者预览
+Edge Kit 目前处于**开发者预览**阶段。请固定你测试过的包版本，并在每次升级后重新进行真机验证。
 :::
 
-## Requirements
+## 要求
 
-| Requirement | Version |
+| 要求 | 版本 |
 | --- | --- |
-| iOS | 17.0 or later |
-| macOS | 14.0 or later |
-| Xcode | 15 or later |
-| Swift | 5.9 or later |
-| Hardware | Apple Silicon |
+| iOS | 17.0 或更高 |
+| macOS | 14.0 或更高 |
+| Xcode | 15 或更高 |
+| Swift | 5.9 或更高 |
+| 硬件 | Apple Silicon |
 
-For iOS apps that run larger models, enable the Increased Memory Limit entitlement in your app target.
+对于运行较大模型的 iOS 应用，请在 app target 中启用 Increased Memory Limit entitlement。
 
-## Install with Swift Package Manager
+## 使用 Swift Package Manager 安装
 
-Add Edge Kit to your package:
+将 Edge Kit 添加到你的 package：
 
 ```swift
 // Package.swift
@@ -34,7 +34,7 @@ dependencies: [
 ]
 ```
 
-Then add the product you need:
+然后添加你需要的 product：
 
 ```swift
 .target(
@@ -45,13 +45,13 @@ Then add the product you need:
 )
 ```
 
-Use `EdgeKit` if you want the umbrella product:
+如果需要 umbrella product，请使用 `EdgeKit`：
 
 ```swift
 .product(name: "EdgeKit", package: "edge-kit")
 ```
 
-## Run your first LLM
+## 运行你的第一个 LLM
 
 ```swift
 import EdgeInference
@@ -68,9 +68,9 @@ for try await chunk in engine.generate(
 }
 ```
 
-## Load from the model registry
+## 从模型注册表加载
 
-`ModelConfig` contains preview model entries for supported model families.
+`ModelConfig` 包含受支持模型家族的预览模型条目。
 
 ```swift
 import EdgeInference
@@ -86,9 +86,9 @@ try await engine.load(config: config) { progress in
 }
 ```
 
-## Run your first VLM
+## 运行你的第一个 VLM
 
-Use `VLMEngine` when the model accepts images and text.
+当模型接受图像和文本时，使用 `VLMEngine`。
 
 ```swift
 import EdgeInference
@@ -107,7 +107,7 @@ for try await chunk in engine.generate(
 }
 ```
 
-On iOS, prefer the `ciImages:` overload after loading an image into memory:
+在 iOS 上，将图像加载到内存后优先使用 `ciImages:` overload：
 
 ```swift
 for try await chunk in engine.generate(
@@ -118,12 +118,12 @@ for try await chunk in engine.generate(
 }
 ```
 
-## Next steps
+## 下一步
 
-| Task | Guide |
+| 任务 | 指南 |
 | --- | --- |
-| Text generation | [LLM guide](/docs/capabilities/text-generation) |
-| Vision-language inference | [VLM guide](/docs/capabilities/vision) |
-| Model cache and downloads | [Model management](/docs/guides/model-management) |
-| iOS memory guidance | [Memory management](/docs/guides/memory-management) |
-| Platform support | [Platform requirements](/docs/guides/platform-requirements) |
+| 文本生成 | [LLM 指南](/docs/capabilities/text-generation) |
+| 视觉语言推理 | [VLM 指南](/docs/capabilities/vision) |
+| 模型缓存与下载 | [模型管理](/docs/guides/model-management) |
+| iOS 内存指南 | [内存管理](/docs/guides/memory-management) |
+| 平台支持 | [平台要求](/docs/guides/platform-requirements) |

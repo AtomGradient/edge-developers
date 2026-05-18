@@ -2,9 +2,10 @@ import React from 'react';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
 import CodeBlock from '@theme/CodeBlock';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './index.module.css';
 
-const capabilities = [
+const enCapabilities = [
   {
     name: 'Text Generation',
     description: 'Stream text from an on-device LLM. Multi-turn conversation, LoRA adapters.',
@@ -37,6 +38,39 @@ const capabilities = [
   },
 ];
 
+const zhCapabilities = [
+  {
+    name: '文本生成',
+    description: '从端侧 LLM 流式生成文本。支持多轮对话和 LoRA 适配器。',
+    link: '/docs/capabilities/text-generation',
+  },
+  {
+    name: '视觉理解',
+    description: '使用视觉语言模型理解图像。照片输入，文本输出。',
+    link: '/docs/capabilities/vision',
+  },
+  {
+    name: '语音转文字',
+    description: '在设备上转写音频。支持文件输入或流式麦克风。',
+    link: '/docs/capabilities/speech-to-text',
+  },
+  {
+    name: '文字转语音',
+    description: '从文本生成语音音频。支持多说话人和流式输出。',
+    link: '/docs/capabilities/text-to-speech',
+  },
+  {
+    name: '模型进化',
+    description: '随用户成长的模型。画像分析、适配器和实时调控。',
+    link: '/docs/capabilities/model-evolution',
+  },
+  {
+    name: '设备网格',
+    description: '在用户的 Apple 设备之间路由推理。私有，仅本地。',
+    link: '/docs/capabilities/device-mesh',
+  },
+];
+
 const quickstartCode = `import EdgeKit
 
 let engine = LLMEngine()
@@ -49,25 +83,41 @@ for try await chunk in engine.generate(
 }`;
 
 export default function Home(): React.JSX.Element {
+  const {i18n} = useDocusaurusContext();
+  const isZh = i18n.currentLocale === 'zh';
+  const capabilities = isZh ? zhCapabilities : enCapabilities;
+
   return (
-    <Layout title="AtomGradient Edge" description="On-device AI for Apple Silicon">
+    <Layout
+      title="AtomGradient Edge"
+      description={isZh ? 'Apple Silicon 端侧 AI' : 'On-device AI for Apple Silicon'}
+    >
       {/* Hero */}
       <header className={styles.heroBanner}>
-        <div className={styles.previewBadge}>Developer Preview</div>
+        <div className={styles.previewBadge}>{isZh ? '开发者预览' : 'Developer Preview'}</div>
         <h1 className={styles.heroTitle}>
-          On-device AI for{' '}
-          <span className={styles.heroAccent}>Apple Silicon</span>
+          {isZh ? (
+            <>
+              <span className={styles.heroAccent}>Apple Silicon</span> 端侧 AI
+            </>
+          ) : (
+            <>
+              On-device AI for{' '}
+              <span className={styles.heroAccent}>Apple Silicon</span>
+            </>
+          )}
         </h1>
         <p className={styles.heroSubtitle}>
-          A complete platform for building AI-powered apps that run entirely
-          on-device. No cloud. No latency. Complete privacy.
+          {isZh
+            ? '完全在设备上运行的 AI 应用平台。无云端。无延迟。完全隐私。'
+            : 'A complete platform for building AI-powered apps that run entirely on-device. No cloud. No latency. Complete privacy.'}
         </p>
         <div className={styles.buttons}>
           <Link to="/docs/get-started/quickstart" className={styles.primaryButton}>
-            Get started
+            {isZh ? '快速开始' : 'Get started'}
           </Link>
           <Link to="/docs/" className={styles.secondaryButton}>
-            Documentation
+            {isZh ? '查看文档' : 'Documentation'}
           </Link>
         </div>
       </header>
@@ -88,7 +138,7 @@ export default function Home(): React.JSX.Element {
                   {product.description}
                 </div>
                 <span className={styles.productLink}>
-                  Learn more →
+                  {isZh ? '了解更多 →' : 'Learn more →'}
                 </span>
               </Link>
             ))}
@@ -97,8 +147,8 @@ export default function Home(): React.JSX.Element {
 
         {/* Quick Start */}
         <section className={styles.codeSection}>
-          <div className={styles.codeSectionLabel}>Quick Start</div>
-          <CodeBlock language="swift" title="5 lines — load a model, stream tokens">
+          <div className={styles.codeSectionLabel}>{isZh ? '快速开始' : 'Quick Start'}</div>
+          <CodeBlock language="swift" title={isZh ? '5 行代码：加载模型并流式输出 token' : '5 lines — load a model, stream tokens'}>
             {quickstartCode}
           </CodeBlock>
         </section>

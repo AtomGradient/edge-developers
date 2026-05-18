@@ -1,37 +1,37 @@
 ---
 sidebar_position: 1
-title: Overview
+title: 总览
 ---
 
 # Edge Scaffold
 
-Edge Scaffold is a ready-to-ship iOS app template for Edge Kit models.
+Edge Scaffold 是面向 Edge Kit 模型的可发布 iOS app 模板。
 
-:::info Developer Preview
-Edge Scaffold is in **Developer Preview**. Generated apps still require normal iOS signing, device testing, and App Store review.
+:::info 开发者预览
+Edge Scaffold 目前处于**开发者预览**阶段。生成的 app 仍然需要常规 iOS 签名、真机测试和 App Store 审核。
 :::
 
-## What it includes
+## 包含什么
 
-| Area | Included |
+| 区域 | 包含内容 |
 | --- | --- |
-| App shell | SwiftUI app structure and settings. |
-| Onboarding | Device checks and model setup flow. |
-| Chat UI | Streaming text interface. |
-| VLM UI | Photo picker path for vision-language models. |
-| TTS UI | Text input and audio playback path. |
-| Model loading | Cache, bundled model, On-Demand Resources, and Hugging Face paths. |
-| Inference | Powered by Edge Kit. |
+| App shell | SwiftUI app 结构和设置。 |
+| Onboarding | 设备检查和模型设置流程。 |
+| Chat UI | 流式文本界面。 |
+| VLM UI | 面向视觉语言模型的照片选择器路径。 |
+| TTS UI | 文本输入和音频播放路径。 |
+| 模型加载 | 缓存、内置模型、On-Demand Resources 和 Hugging Face 路径。 |
+| 推理 | 由 Edge Kit 提供支持。 |
 
-## Pipeline
+## 流程
 
 ```text
 Edge Studio optimize -> Edge Scaffold template + Edge Kit SDK -> App Store
 ```
 
-## Configuration
+## 配置
 
-One file controls the generated app:
+一个文件控制生成的 app：
 
 ```swift
 enum ScaffoldConfig {
@@ -44,16 +44,16 @@ enum ScaffoldConfig {
 }
 ```
 
-## Model categories
+## 模型类别
 
-| Category | App behavior |
+| 类别 | App 行为 |
 | --- | --- |
-| `.llm` | Text chat. |
-| `.vlm` | Text plus photo input. |
-| `.tts` | Text input and audio output. |
-| `.stt` | Audio input and transcription where enabled. |
+| `.llm` | 文本聊天。 |
+| `.vlm` | 文本加照片输入。 |
+| `.tts` | 文本输入和音频输出。 |
+| `.stt` | 启用时支持音频输入和转写。 |
 
-## Next steps
+## 下一步
 
-- [Configure Edge Scaffold](/docs/deployment/scaffold-configuration)
-- [Build and ship](/docs/deployment/building)
+- [配置 Edge Scaffold](/docs/deployment/scaffold-configuration)
+- [构建并发布](/docs/deployment/building)

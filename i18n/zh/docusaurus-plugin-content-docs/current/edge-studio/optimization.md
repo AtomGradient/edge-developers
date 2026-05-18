@@ -1,49 +1,49 @@
 ---
 sidebar_position: 2
-title: Model Optimization
+title: 模型优化
 ---
 
-# Model optimization
+# 模型优化
 
-Model optimization reduces model size and improves runtime fit while monitoring output quality.
+模型优化会减小模型尺寸并提升运行时适配，同时监控输出质量。
 
-## Optimization types
+## 优化类型
 
-| Type | Description |
+| 类型 | 描述 |
 | --- | --- |
-| Quantization | Reduces weight precision to lower disk and memory use. |
-| Model-size optimization | Produces a smaller deployment candidate when quality checks pass. |
-| Deployment preparation | Packages the selected candidate for Edge Kit or Edge Scaffold. |
+| 量化 | 降低权重精度，以减少磁盘和内存使用。 |
+| 模型尺寸优化 | 在质量检查通过时生成更小的部署候选。 |
+| 部署准备 | 将所选候选打包给 Edge Kit 或 Edge Scaffold 使用。 |
 
-## Workflow
+## 工作流
 
-1. Choose a model.
-2. Select a target device class.
-3. Run analysis.
-4. Apply one optimization at a time.
-5. Benchmark the candidate.
-6. Compare quality and resource use.
-7. Export only the candidate that passes your app's quality bar.
+1. 选择模型。
+2. 选择目标设备类别。
+3. 运行分析。
+4. 一次应用一个优化。
+5. 对候选做基准测试。
+6. 比较质量和资源使用。
+7. 只导出通过 app 质量门槛的候选。
 
-## Quality monitoring
+## 质量监控
 
-Use the built-in benchmark view to compare:
+使用内置 benchmark view 比较：
 
-| Metric | Why it matters |
+| 指标 | 重要原因 |
 | --- | --- |
-| Disk size | App download size and storage use. |
-| Memory | Device fit and stability. |
-| Tokens per second | Interactive responsiveness. |
-| Perplexity | Regression signal for text quality. |
+| 磁盘大小 | App 下载大小和存储使用。 |
+| 内存 | 设备适配和稳定性。 |
+| 每秒 token 数 | 交互响应速度。 |
+| Perplexity | 文本质量的回归信号。 |
 
-## Device-aware recommendations
+## 设备感知推荐
 
-Edge Studio can recommend a deployment target based on the selected device class. Treat recommendations as a starting point, then validate with Edge Kit on the actual device.
+Edge Studio 可以基于所选设备类别推荐部署目标。把推荐视为起点，然后用 Edge Kit 在真实设备上验证。
 
-## Best practices
+## 最佳实践
 
-- Optimize in small steps.
-- Benchmark after every step.
-- Keep the original model as the source of truth.
-- Use the same prompts when comparing candidates.
-- Export a new candidate only after benchmark results are acceptable.
+- 小步优化。
+- 每一步后做基准测试。
+- 将原始模型保留为事实来源。
+- 比较候选时使用相同 prompt。
+- 只有在 benchmark 结果可接受后才导出新候选。

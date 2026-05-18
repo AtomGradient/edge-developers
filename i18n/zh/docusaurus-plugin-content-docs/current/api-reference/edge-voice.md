@@ -3,9 +3,9 @@ sidebar_position: 3
 title: EdgeVoice
 ---
 
-# EdgeVoice API reference
+# EdgeVoice API 参考
 
-`EdgeVoice` contains audio recording and Whisper-based speech-to-text preview APIs.
+`EdgeVoice` 包含音频录制和基于 Whisper 的语音转文字预览 API。
 
 ## AudioRecorder
 
@@ -14,16 +14,16 @@ title: EdgeVoice
 public final class AudioRecorder: NSObject, ObservableObject
 ```
 
-Records microphone input to a local WAV file.
+将麦克风输入录制到本地 WAV 文件。
 
-| Property or method | Description |
+| 属性或方法 | 描述 |
 | --- | --- |
-| `isRecording` | Whether recording is active. |
-| `currentLevel` | Current input level. |
-| `startRecording()` | Starts recording and returns the output URL. |
-| `stopRecording()` | Stops recording and returns the final URL if available. |
+| `isRecording` | 当前是否正在录音。 |
+| `currentLevel` | 当前输入电平。 |
+| `startRecording()` | 开始录音并返回输出 URL。 |
+| `stopRecording()` | 停止录音，并在可用时返回最终 URL。 |
 
-Example:
+示例：
 
 ```swift
 let recorder = AudioRecorder()
@@ -38,16 +38,16 @@ let finalURL = recorder.stopRecording() ?? url
 public final class WhisperEngine: ObservableObject
 ```
 
-Speech-to-text engine for Whisper-family models.
+面向 Whisper 家族模型的语音转文字 engine。
 
-| Property or method | Description |
+| 属性或方法 | 描述 |
 | --- | --- |
-| `isLoaded` | Whether a model is loaded. |
-| `isTranscribing` | Whether transcription is active. |
-| `load(_:)` | Loads a model size. |
-| `transcribe(audioURL:language:)` | Transcribes an audio file. |
-| `startRealtime(language:)` | Starts realtime transcription stream. |
-| `unload()` | Releases the loaded model. |
+| `isLoaded` | 是否已加载模型。 |
+| `isTranscribing` | 是否正在转写。 |
+| `load(_:)` | 加载一个模型尺寸。 |
+| `transcribe(audioURL:language:)` | 转写音频文件。 |
+| `startRealtime(language:)` | 启动实时转写 stream。 |
+| `unload()` | 释放已加载模型。 |
 
 ## WhisperEngine.ModelSize
 
@@ -55,7 +55,7 @@ Speech-to-text engine for Whisper-family models.
 public enum ModelSize: String, CaseIterable, Sendable
 ```
 
-| Case | Filename |
+| Case | 文件名 |
 | --- | --- |
 | `.tiny` | `ggml-tiny.bin` |
 | `.base` | `ggml-base.bin` |
@@ -68,7 +68,7 @@ public enum ModelSize: String, CaseIterable, Sendable
 public struct TranscriptionResult: Sendable
 ```
 
-| Property | Type |
+| 属性 | 类型 |
 | --- | --- |
 | `text` | `String` |
 | `language` | `String` |

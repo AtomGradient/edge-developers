@@ -1,15 +1,15 @@
 ---
 sidebar_position: 3
-title: Speech to Text
+title: 语音转文字
 ---
 
-# Speech to text
+# 语音转文字
 
-Edge Kit exposes Developer Preview speech-to-text APIs for local transcription.
+Edge Kit 暴露了用于本地转写的开发者预览版语音转文字 API。
 
-Use `EdgeVoice` for microphone recording and Whisper-based transcription. Native ASR paths are also available through `STTEngine` in EdgeInference builds that include the speech runtime.
+使用 `EdgeVoice` 进行麦克风录音和基于 Whisper 的转写。在包含语音运行时的 EdgeInference 构建中，也可以通过 `STTEngine` 使用原生 ASR 路径。
 
-## Record audio
+## 录制音频
 
 ```swift
 import EdgeVoice
@@ -21,7 +21,7 @@ let recordingURL = try await recorder.startRecording()
 let finalURL = recorder.stopRecording() ?? recordingURL
 ```
 
-## Transcribe an audio file
+## 转写音频文件
 
 ```swift
 import EdgeVoice
@@ -37,9 +37,9 @@ let result = try await engine.transcribe(
 print(result.text)
 ```
 
-## Realtime transcription
+## 实时转写
 
-`startRealtime(language:)` returns an `AsyncStream<String>`.
+`startRealtime(language:)` 返回 `AsyncStream<String>`。
 
 ```swift
 for await partial in engine.startRealtime(language: "auto") {
@@ -47,18 +47,18 @@ for await partial in engine.startRealtime(language: "auto") {
 }
 ```
 
-## Whisper model sizes
+## Whisper 模型尺寸
 
-| Size | Filename |
+| 尺寸 | 文件名 |
 | --- | --- |
 | `.tiny` | `ggml-tiny.bin` |
 | `.base` | `ggml-base.bin` |
 | `.small` | `ggml-small.bin` |
 | `.medium` | `ggml-medium.bin` |
 
-## Native STT
+## 原生 STT
 
-When your build includes native STT support, use `STTEngine`:
+当你的构建包含原生 STT 支持时，使用 `STTEngine`：
 
 ```swift
 import EdgeInference
@@ -72,6 +72,6 @@ let result = try await engine.transcribe(audioURL: finalURL)
 print(result.text)
 ```
 
-## Supported audio
+## 支持的音频
 
-Use file URLs recorded by `AudioRecorder` or WAV/PCM data prepared by your app. Validate sample rate conversion on the devices you support.
+使用由 `AudioRecorder` 录制的文件 URL，或使用你的 app 准备好的 WAV/PCM 数据。请在你支持的设备上验证采样率转换。

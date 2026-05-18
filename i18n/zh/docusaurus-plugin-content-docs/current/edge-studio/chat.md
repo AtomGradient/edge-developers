@@ -1,59 +1,59 @@
 ---
 sidebar_position: 7
-title: Chat & Voice
+title: 聊天与语音
 ---
 
-# Chat and voice testing
+# 聊天和语音测试
 
-Chat and voice pages test a loaded model before export or app integration.
+Chat 和 voice 页面用于在导出或 app 集成前测试已加载模型。
 
 ## Chat
 
 Route: `/chat`
 
-Chat is the multi-modal test page for the currently loaded model.
+Chat 是当前已加载模型的多模态测试页面。
 
-Supported modes:
+支持模式：
 
-| Mode | Input | Output |
+| 模式 | 输入 | 输出 |
 | --- | --- | --- |
-| LLM | Text | Streaming text |
-| VLM | Image plus text | Streaming text |
-| STT | Audio | Transcript text |
-| TTS | Text | Generated audio |
+| LLM | 文本 | 流式文本 |
+| VLM | 图像加文本 | 流式文本 |
+| STT | 音频 | 转写文本 |
+| TTS | 文本 | 生成音频 |
 
-Key features:
+关键功能：
 
-- Streaming output for text models.
-- Multi-turn message history.
-- System prompt configuration.
-- Temperature and parameter controls.
-- Image picker for vision models.
-- Audio upload or recording for speech-to-text models.
-- Speaker selection or voice instruction when supported by the TTS model.
+- 文本模型的流式输出。
+- 多轮消息历史。
+- System prompt 配置。
+- Temperature 和参数控制。
+- 视觉模型的图像选择器。
+- 语音转文字模型的音频上传或录制。
+- TTS 模型支持时的说话人选择或 voice instruction。
 
-Use Chat immediately after loading or optimizing a model. It gives a quick qualitative check before running formal validation.
+在加载或优化模型后立即使用 Chat。它可以在正式验证前提供快速的定性检查。
 
 ## Duplex Chat
 
 Route: `/duplex`
 
-Duplex Chat is the expert-mode voice conversation page.
+Duplex Chat 是专家模式下的语音对话页面。
 
-Key features:
+关键功能：
 
-- Uses ASR, LLM, and TTS models together.
-- Supports spoken input and spoken output.
-- Provides model slots for the three required model categories.
-- Supports continuous conversation-style testing in builds where voice duplex is enabled.
+- 同时使用 ASR、LLM 和 TTS 模型。
+- 支持语音输入和语音输出。
+- 为三个必需模型类别提供模型槽位。
+- 在启用 voice duplex 的构建中支持连续对话式测试。
 
-Use Duplex Chat when your app needs a full voice interaction loop. Test it before exporting or integrating the same model set in an application.
+当 app 需要完整语音交互循环时使用 Duplex Chat。导出或在应用中集成同一组模型前先进行测试。
 
-## Testing checklist
+## 测试检查清单
 
-- Confirm the expected model category is loaded.
-- Start with a short prompt or short audio clip.
-- Check first response latency.
-- Check output quality and failure messages.
-- Run the same prompts after optimization and compare behavior.
-- For voice workflows, verify the selected ASR, LLM, and TTS models together.
+- 确认已加载预期模型类别。
+- 从短 prompt 或短音频片段开始。
+- 检查首次响应延迟。
+- 检查输出质量和失败消息。
+- 优化后运行相同 prompt 并比较行为。
+- 对于语音工作流，请一起验证所选 ASR、LLM 和 TTS 模型。

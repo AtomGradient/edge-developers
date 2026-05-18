@@ -1,13 +1,13 @@
 ---
 sidebar_position: 2
-title: Configuration
+title: 配置
 ---
 
-# Configuration
+# 配置
 
-`ScaffoldConfig.swift` is the main configuration file for an Edge Scaffold app.
+`ScaffoldConfig.swift` 是 Edge Scaffold app 的主配置文件。
 
-## Required settings
+## 必需设置
 
 ```swift
 import EdgeInference
@@ -25,40 +25,40 @@ enum ScaffoldConfig {
 }
 ```
 
-## Fields
+## 字段
 
-| Field | Description |
+| 字段 | 描述 |
 | --- | --- |
-| `appName` | Display name used by the app. |
-| `appDescription` | Short description used in onboarding and settings. |
-| `defaultSystemPrompt` | Initial system prompt for chat-style models. |
-| `modelCategory` | Selects the UI and engine path. |
-| `modelID` | Stable identifier for the selected model. |
-| `modelDisplayName` | Human-readable model name. |
-| `modelSizeGB` | Approximate model size for UI and device checks. |
-| `bundleModelName` | Bundle folder name when a model is included with the app. |
-| `defaultTTSSpeaker` | Optional default speaker for TTS apps. |
+| `appName` | app 使用的显示名称。 |
+| `appDescription` | onboarding 和设置中使用的简短描述。 |
+| `defaultSystemPrompt` | 聊天类模型的初始 system prompt。 |
+| `modelCategory` | 选择 UI 和 engine 路径。 |
+| `modelID` | 所选模型的稳定标识符。 |
+| `modelDisplayName` | 人类可读的模型名称。 |
+| `modelSizeGB` | 用于 UI 和设备检查的近似模型大小。 |
+| `bundleModelName` | 当模型包含在 app 中时的 bundle 文件夹名称。 |
+| `defaultTTSSpeaker` | TTS app 的可选默认说话人。 |
 
-## Model categories
+## 模型类别
 
-| Category | Input | Output |
+| 类别 | 输入 | 输出 |
 | --- | --- | --- |
-| `.llm` | Text | Text |
-| `.vlm` | Text and photo | Text |
-| `.tts` | Text | Audio |
-| `.stt` | Audio | Text |
+| `.llm` | 文本 | 文本 |
+| `.vlm` | 文本和照片 | 文本 |
+| `.tts` | 文本 | 音频 |
+| `.stt` | 音频 | 文本 |
 
-The app UI adapts to the selected category.
+app UI 会适配所选类别。
 
-## Project generation
+## 项目生成
 
-Edge Scaffold uses project generation so the exported app can be opened and built in Xcode. You normally do not need to edit generated project files by hand.
+Edge Scaffold 使用项目生成，使导出的 app 可以在 Xcode 中打开和构建。通常不需要手动编辑生成的项目文件。
 
-## Changing models
+## 更换模型
 
-When you switch models:
+当你切换模型时：
 
-1. Update `modelCategory` if the model type changes.
-2. Update the model name and size fields.
-3. Re-run the app on a real device.
-4. Verify first launch and generation.
+1. 如果模型类型变化，更新 `modelCategory`。
+2. 更新模型名称和大小字段。
+3. 在真实设备上重新运行 app。
+4. 验证首次启动和生成。

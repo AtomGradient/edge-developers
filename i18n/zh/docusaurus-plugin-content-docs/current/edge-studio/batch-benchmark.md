@@ -1,49 +1,49 @@
 ---
 sidebar_position: 9
-title: Batch & Benchmark
+title: 批处理与基准测试
 ---
 
-# Batch operations and benchmark
+# 批处理操作和基准测试
 
-Batch and benchmark tools run repeated work across one or more models.
+Batch 和 benchmark 工具会跨一个或多个模型重复运行工作。
 
 ## Benchmark Dashboard
 
 Route: `/benchmark-dashboard`
 
-Benchmark Dashboard runs benchmark jobs and compares results side by side.
+Benchmark Dashboard 运行 benchmark job，并并排比较结果。
 
-Key features:
+关键功能：
 
-- Adds one or more model directories to a benchmark queue.
-- Runs benchmark tasks across the selected models.
-- Shows side-by-side result cards.
-- Uses charts for visual comparison.
-- Exports results as CSV.
-- Tracks disk size, peak memory, tokens per second, time to first token, and perplexity.
+- 将一个或多个模型目录添加到 benchmark 队列。
+- 跨所选模型运行 benchmark 任务。
+- 显示并排结果卡片。
+- 使用图表进行可视化比较。
+- 将结果导出为 CSV。
+- 跟踪磁盘大小、峰值内存、每秒 token 数、首 token 时间和 perplexity。
 
-Use it when you need comparable measurements for several model candidates or export variants.
+当你需要为多个模型候选或导出变体获得可比较测量时使用它。
 
 ## Batch Operations
 
 Route: `/batch`
 
-Batch Operations queues optimization work for multiple models.
+Batch Operations 为多个模型排队优化工作。
 
-Key features:
+关键功能：
 
-- Adds multiple models to a queue.
-- Applies a selected optimization operation per model.
-- Tracks queue progress and per-model status.
-- Shows a results table after completion.
-- Estimates duration and summarizes failures for follow-up.
+- 将多个模型添加到队列。
+- 对每个模型应用所选优化操作。
+- 跟踪队列进度和单模型状态。
+- 完成后显示结果表。
+- 估算耗时并汇总失败项，便于后续处理。
 
-Use it when you need to process a model catalog or run the same workflow across several candidates.
+当你需要处理模型目录，或跨多个候选运行同一工作流时使用它。
 
-## Typical workflow
+## 典型工作流
 
-1. Load or add the models you want to process.
-2. Run Batch Operations to create candidates.
-3. Open Benchmark Dashboard.
-4. Benchmark the original and optimized candidates together.
-5. Export only candidates that pass your quality and device-fit checks.
+1. 加载或添加你想处理的模型。
+2. 运行 Batch Operations 创建候选。
+3. 打开 Benchmark Dashboard。
+4. 一起 benchmark 原始候选和优化候选。
+5. 只导出通过质量和设备适配检查的候选。

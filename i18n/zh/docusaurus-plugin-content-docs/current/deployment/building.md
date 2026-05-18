@@ -1,73 +1,73 @@
 ---
 sidebar_position: 3
-title: Building & Shipping
+title: 构建与发布
 ---
 
-# Building and shipping
+# 构建和发布
 
-Build an Edge Scaffold app like a normal iOS app: generate the Xcode project, configure signing, run on device, then archive.
+像构建普通 iOS app 一样构建 Edge Scaffold app：生成 Xcode 项目、配置签名、在设备上运行，然后 archive。
 
-## Prerequisites
+## 前置条件
 
-| Requirement | Notes |
+| 要求 | 说明 |
 | --- | --- |
-| Xcode 15 or later | Required for iOS 17 targets. |
-| XcodeGen | Used by the scaffold project. |
-| Apple Developer account | Required for device signing and App Store submission. |
-| Target device | Required for runtime validation. |
+| Xcode 15 或更高 | iOS 17 target 必需。 |
+| XcodeGen | scaffold 项目使用。 |
+| Apple Developer 账号 | 设备签名和 App Store 提交必需。 |
+| 目标设备 | 运行时验证必需。 |
 
-Install XcodeGen if needed:
+如有需要，安装 XcodeGen：
 
 ```bash
 brew install xcodegen
 ```
 
-## Build from an Edge Studio export
+## 从 Edge Studio 导出构建
 
-1. Export an Edge Scaffold project from Edge Studio.
-2. Open the exported folder.
-3. Generate the Xcode project if it is not already generated.
-4. Open the project in Xcode.
-5. Select a real device.
-6. Build and run.
+1. 从 Edge Studio 导出 Edge Scaffold 项目。
+2. 打开导出的文件夹。
+3. 如果尚未生成 Xcode 项目，则先生成。
+4. 在 Xcode 中打开项目。
+5. 选择真实设备。
+6. 构建并运行。
 
-## Manual build
+## 手动构建
 
 ```bash
 xcodegen generate
 xcodebuild -scheme EdgeScaffold -configuration Release build
 ```
 
-Use the generated scheme name if your app was renamed during export.
+如果你的 app 在导出时被重命名，请使用生成的 scheme 名称。
 
-## Signing
+## 签名
 
-In Xcode:
+在 Xcode 中：
 
-1. Select the app target.
-2. Set the bundle identifier.
-3. Choose your team.
-4. Enable required capabilities.
-5. Run on a real device.
+1. 选择 app target。
+2. 设置 bundle identifier。
+3. 选择你的 team。
+4. 启用所需 capabilities。
+5. 在真实设备上运行。
 
-For larger models, enable the Increased Memory Limit entitlement.
+对于较大的模型，请启用 Increased Memory Limit entitlement。
 
-## Model delivery
+## 模型交付
 
-Choose the model delivery path that fits your app:
+选择符合 app 的模型交付路径：
 
-| Path | Use it when |
+| 路径 | 适用场景 |
 | --- | --- |
-| Cache | The model is downloaded or copied during development. |
-| Bundle | The model is small enough to ship inside the app. |
-| On-Demand Resources | The model should be downloaded by iOS after install. |
-| Hugging Face | The app downloads a preview model at runtime. |
+| Cache | 开发期间下载或复制模型。 |
+| Bundle | 模型足够小，可以随 app 一起发布。 |
+| On-Demand Resources | 模型应在安装后由 iOS 下载。 |
+| Hugging Face | app 在运行时下载预览模型。 |
 
-## App Store checklist
+## App Store 检查清单
 
-- Release build runs on the minimum supported device.
-- First model load succeeds after a fresh install.
-- Offline behavior is clear to the user.
-- The app handles memory pressure and cancellation.
-- Privacy nutrition labels match your data flow.
-- Local network permission text is present if Edge Mesh is enabled.
+- Release build 能在最低支持设备上运行。
+- 全新安装后首次模型加载成功。
+- 离线行为对用户清晰。
+- app 能处理内存压力和取消。
+- 隐私营养标签与数据流一致。
+- 如果启用 Edge Mesh，则存在本地网络权限文案。

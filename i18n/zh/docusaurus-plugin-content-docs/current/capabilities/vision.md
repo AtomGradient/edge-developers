@@ -1,13 +1,13 @@
 ---
 sidebar_position: 2
-title: Vision
+title: 视觉理解
 ---
 
-# Vision-language inference with VLMEngine
+# 使用 VLMEngine 进行视觉语言推理
 
-`VLMEngine` streams text responses from models that accept images and text.
+`VLMEngine` 从接受图像和文本的模型流式返回文本响应。
 
-## Load a VLM
+## 加载 VLM
 
 ```swift
 import EdgeInference
@@ -18,7 +18,7 @@ let modelURL = URL(fileURLWithPath: "/path/to/vlm-model")
 try await engine.loadLocal(directory: modelURL)
 ```
 
-## Send an image URL
+## 发送图像 URL
 
 ```swift
 let imageURL = URL(fileURLWithPath: "/path/to/photo.jpg")
@@ -31,9 +31,9 @@ for try await chunk in engine.generate(
 }
 ```
 
-## Send in-memory images
+## 发送内存中的图像
 
-Use the `ciImages:` overload for iOS apps that already have image data in memory.
+对于已经在内存中持有图像数据的 iOS 应用，请使用 `ciImages:` overload。
 
 ```swift
 let ciImage = CIImage(image: uiImage)!
@@ -46,9 +46,9 @@ for try await chunk in engine.generate(
 }
 ```
 
-## Multi-turn with images
+## 带图像的多轮对话
 
-Include the full conversation history. Attach images to the user turn that introduces them.
+包含完整对话历史。把图像附加到首次引入图像的用户轮次。
 
 ```swift
 var messages: [ChatMessage] = [
@@ -67,7 +67,7 @@ for try await chunk in engine.generate(messages: messages) {
 }
 ```
 
-Example collector:
+示例 collector：
 
 ```swift
 func collect(_ stream: AsyncThrowingStream<GenerateChunk, Error>) async throws -> String {
@@ -79,9 +79,9 @@ func collect(_ stream: AsyncThrowingStream<GenerateChunk, Error>) async throws -
 }
 ```
 
-## Parameters
+## 参数
 
-`VLMEngine` uses the same `EdgeGenerateParameters` type as `LLMEngine`.
+`VLMEngine` 使用与 `LLMEngine` 相同的 `EdgeGenerateParameters` 类型。
 
 ```swift
 let parameters = EdgeGenerateParameters(maxTokens: 256)
@@ -95,6 +95,6 @@ for try await chunk in engine.generate(
 }
 ```
 
-## Memory notes
+## 内存说明
 
-Vision-language models have larger runtime requirements than text-only models because image processing and text generation run in the same session. Start with smaller image sizes and validate on the minimum device you support.
+视觉语言模型的运行时要求高于纯文本模型，因为图像处理和文本生成在同一会话中运行。请从较小图像尺寸开始，并在你支持的最低配置设备上验证。

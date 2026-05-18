@@ -1,52 +1,52 @@
 ---
 sidebar_position: 10
-title: Personal Training
+title: 个人训练
 ---
 
-# Personal training
+# 个人训练
 
-Personal Training creates personalized adapters from local user data.
+Personal Training 从本地用户数据创建个性化适配器。
 
 ## Route
 
 `/personal-training`
 
-## What it does
+## 它做什么
 
-The Personal Training page guides a local workflow from data preparation to adapter testing.
+Personal Training 页面引导一个从数据准备到适配器测试的本地工作流。
 
-Key features:
+关键功能：
 
-- Uploads or prepares user interaction data.
-- Selects a base model.
-- Starts a local training run.
-- Monitors training progress.
-- Tests the personalized result against the base model.
-- Exports an adapter for deployment with Edge Kit.
+- 上传或准备用户交互数据。
+- 选择基础模型。
+- 启动本地训练运行。
+- 监控训练进度。
+- 将个性化结果与基础模型进行测试。
+- 导出用于 Edge Kit 部署的适配器。
 
-## Workflow
+## 工作流
 
-1. Collect or upload local training data.
-2. Process the data into a training-ready form.
-3. Select the base model.
-4. Run training on the Mac.
-5. Validate the adapter.
-6. Compare the personalized response with the base model response.
-7. Export the adapter.
+1. 收集或上传本地训练数据。
+2. 将数据处理为训练就绪形式。
+3. 选择基础模型。
+4. 在 Mac 上运行训练。
+5. 验证适配器。
+6. 比较个性化响应和基础模型响应。
+7. 导出适配器。
 
-## Page sections
+## 页面区块
 
-| Section | Purpose |
+| 区块 | 目的 |
 | --- | --- |
-| Data | Select or prepare the local dataset. |
-| Train | Configure the model source and start the training run. |
-| Chat | Test the personalized model behavior. |
-| Workflow guide | Shows progress through data, train, and chat stages. |
+| Data | 选择或准备本地数据集。 |
+| Train | 配置模型来源并启动训练运行。 |
+| Chat | 测试个性化模型行为。 |
+| Workflow guide | 展示 data、train、chat 阶段的进度。 |
 
-## Deployment
+## 部署
 
-After export, the adapter can be loaded by Edge Kit in an app that supports LoRA adapters.
+导出后，支持 LoRA 适配器的 app 可以通过 Edge Kit 加载该适配器。
 
-## When to use it
+## 何时使用
 
-Use Personal Training when your app needs user-specific behavior and the personalization data should stay local. Validate the resulting adapter before distributing it to another device.
+当 app 需要用户特定行为，且个性化数据应留在本地时，使用 Personal Training。将结果适配器分发到另一台设备前，请先验证它。

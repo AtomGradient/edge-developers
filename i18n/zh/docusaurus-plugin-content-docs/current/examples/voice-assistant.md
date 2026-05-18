@@ -1,39 +1,35 @@
 ---
 sidebar_position: 3
-title: Voice Assistant
+title: 语音助手
 ---
 
-# Example: Voice assistant
+# 示例：语音助手
 
-This example builds a voice conversation app that records speech, transcribes
-it, sends the transcript to a local LLM, synthesizes the reply, and plays the
-audio.
+本示例构建一个语音对话 app：录制语音、转写语音、将转写文本发送给本地 LLM、合成回复并播放音频。
 
-## Architecture
+## 架构
 
 ```text
 Microphone -> WhisperEngine -> LLMEngine -> TTSEngine -> Speaker
 ```
 
-Use this shape when you want a private assistant that can run without sending
-voice or prompts to a server.
+当你需要一个无需将语音或 prompt 发送到服务器即可运行的私有助手时，可以使用这种形态。
 
-## Prerequisites
+## 前置条件
 
-- Edge Kit added with Swift Package Manager.
-- Edge Voice available in the same package setup.
-- Local model directories for the LLM and TTS model.
-- Microphone usage text in your app's `Info.plist`.
+- 已通过 Swift Package Manager 添加 Edge Kit。
+- 同一 package setup 中可用的 Edge Voice。
+- LLM 和 TTS 模型的本地模型目录。
+- app 的 `Info.plist` 中包含麦克风用途说明。
 
 ```xml
 <key>NSMicrophoneUsageDescription</key>
 <string>This app records your voice to run private on-device transcription.</string>
 ```
 
-## Complete code
+## 完整代码
 
-Create a new SwiftUI app target, add Edge Kit, and replace the app code with
-the following:
+创建新的 SwiftUI app target，添加 Edge Kit，并将 app 代码替换为以下内容：
 
 ```swift
 import AVFoundation
@@ -229,16 +225,15 @@ final class VoiceAssistantViewModel: ObservableObject {
 }
 ```
 
-## Key concepts
+## 关键概念
 
-- Run the three model calls sequentially: transcribe, generate, synthesize.
-- Keep replies short for voice so TTS starts and finishes quickly.
-- Reuse the same `LLMEngine` for the conversation history.
-- Test the full pipeline on the minimum device you plan to support.
-- Provide a visible recording state and clear microphone permission text.
+- 顺序运行三个模型调用：转写、生成、合成。
+- 为语音保持较短回复，让 TTS 可以快速开始并完成。
+- 对对话历史复用同一个 `LLMEngine`。
+- 在计划支持的最低配置设备上测试完整 pipeline。
+- 提供可见的录音状态和清晰的麦克风权限文案。
 
-## Next steps
+## 下一步
 
-- Add text and image context with [Vision chat](/docs/examples/vision-chat).
-- See the [speech-to-text](/docs/capabilities/speech-to-text) and
-  [text-to-speech](/docs/capabilities/text-to-speech) guides.
+- 通过 [视觉聊天](/docs/examples/vision-chat) 添加文本和图像上下文。
+- 查看 [语音转文字](/docs/capabilities/speech-to-text) 和 [文字转语音](/docs/capabilities/text-to-speech) 指南。

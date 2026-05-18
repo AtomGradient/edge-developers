@@ -1,13 +1,13 @@
 ---
 sidebar_position: 4
-title: Text to Speech
+title: 文字转语音
 ---
 
-# Text to speech with TTSEngine
+# 使用 TTSEngine 进行文字转语音
 
-`TTSEngine` loads a local TTS model and returns PCM audio samples.
+`TTSEngine` 加载本地 TTS 模型并返回 PCM 音频采样。
 
-## Load a TTS model
+## 加载 TTS 模型
 
 ```swift
 import EdgeInference
@@ -18,7 +18,7 @@ let modelURL = URL(fileURLWithPath: "/path/to/tts-model")
 try await engine.loadLocal(directory: modelURL)
 ```
 
-## Generate speech
+## 生成语音
 
 ```swift
 let audio = try await engine.speak(
@@ -30,9 +30,9 @@ print(audio.sampleRate)
 print(audio.duration)
 ```
 
-`AudioResult.samples` contains Float PCM samples in the `[-1.0, 1.0]` range.
+`AudioResult.samples` 包含 `[-1.0, 1.0]` 范围内的 Float PCM 采样。
 
-## Advanced generation
+## 高级生成
 
 ```swift
 let audio = try await engine.generate(
@@ -46,9 +46,9 @@ let audio = try await engine.generate(
 )
 ```
 
-## Streaming speech
+## 流式语音
 
-Use `speakStream` when you want progress and audio chunks.
+当你需要进度和音频分片时，使用 `speakStream`。
 
 ```swift
 for try await event in engine.speakStream(
@@ -66,7 +66,7 @@ for try await event in engine.speakStream(
 }
 ```
 
-## Model info
+## 模型信息
 
 ```swift
 print(engine.availableSpeakers)
@@ -74,6 +74,6 @@ print(engine.ttsModelType)
 print(engine.sampleRate)
 ```
 
-## Play audio
+## 播放音频
 
-Convert `AudioResult.samples` to an `AVAudioPCMBuffer` in your app audio layer. Keep playback code outside the engine so your app can choose `AVAudioEngine`, `AVAudioPlayerNode`, or a custom audio pipeline.
+在你的 app 音频层中将 `AudioResult.samples` 转换为 `AVAudioPCMBuffer`。把播放代码放在 engine 之外，这样你的 app 可以自行选择 `AVAudioEngine`、`AVAudioPlayerNode` 或自定义音频管线。

@@ -3,9 +3,9 @@ sidebar_position: 1
 title: EdgeInference
 ---
 
-# EdgeInference API reference
+# EdgeInference API 参考
 
-`EdgeInference` contains the primary model engines and shared inference types.
+`EdgeInference` 包含主要模型 engine 和共享推理类型。
 
 ## LLMEngine
 
@@ -14,34 +14,34 @@ title: EdgeInference
 public final class LLMEngine: ObservableObject
 ```
 
-`LLMEngine` loads text-generation models and streams generated text.
+`LLMEngine` 加载文本生成模型并流式生成文本。
 
-### Properties
+### 属性
 
-| Property | Type | Description |
+| 属性 | 类型 | 描述 |
 | --- | --- | --- |
-| `state` | `EngineState` | Current engine state. |
-| `loadedConfig` | `ModelConfig?` | Registered model config when loaded through `load(config:)`. |
-| `downloadProgress` | `Double` | Download or load progress from `0` to `1`. |
-| `lastPolicy` | `InferencePolicy.Resolved?` | Last high-level policy summary. |
-| `lastMetrics` | `InferenceMetrics?` | Metrics from the last completed generation. |
-| `memoryPolicy` | `KVCacheMemoryPolicy?` | Automatic KV cache management policy. |
-| `promptCache` | `PromptCacheManager` | Conversation cache manager. |
+| `state` | `EngineState` | 当前 engine 状态。 |
+| `loadedConfig` | `ModelConfig?` | 通过 `load(config:)` 加载时使用的已注册模型配置。 |
+| `downloadProgress` | `Double` | 从 `0` 到 `1` 的下载或加载进度。 |
+| `lastPolicy` | `InferencePolicy.Resolved?` | 上一次高层策略摘要。 |
+| `lastMetrics` | `InferenceMetrics?` | 上一次完成生成的指标。 |
+| `memoryPolicy` | `KVCacheMemoryPolicy?` | 自动 KV cache 管理策略。 |
+| `promptCache` | `PromptCacheManager` | 对话缓存管理器。 |
 
-### Methods
+### 方法
 
-| Method | Description |
+| 方法 | 描述 |
 | --- | --- |
-| `init()` | Creates an engine. |
-| `load(config:onProgress:)` | Loads a registered Hugging Face model config. |
-| `loadLocal(directory:onProgress:)` | Loads a local model directory. |
-| `generate(messages:tools:onToolCall:parameters:bypassPolicy:)` | Streams `GenerateChunk` values. |
-| `generateStream(prompt:maxTokens:temperature:topP:)` | Convenience text prompt stream. |
-| `generateOnce(messages:parameters:)` | Returns a single accumulated string. |
-| `clearPromptCache()` | Clears conversation cache. |
-| `unload()` | Releases the loaded model. |
-| `loadLoRA(adapterPath:)` | Loads an adapter. |
-| `unloadLoRA()` | Removes the active adapter. |
+| `init()` | 创建 engine。 |
+| `load(config:onProgress:)` | 加载已注册的 Hugging Face 模型配置。 |
+| `loadLocal(directory:onProgress:)` | 加载本地模型目录。 |
+| `generate(messages:tools:onToolCall:parameters:bypassPolicy:)` | 流式返回 `GenerateChunk` 值。 |
+| `generateStream(prompt:maxTokens:temperature:topP:)` | 便捷文本 prompt stream。 |
+| `generateOnce(messages:parameters:)` | 返回累积后的单个字符串。 |
+| `clearPromptCache()` | 清理对话缓存。 |
+| `unload()` | 释放已加载模型。 |
+| `loadLoRA(adapterPath:)` | 加载适配器。 |
+| `unloadLoRA()` | 移除活跃适配器。 |
 
 ## VLMEngine
 
@@ -50,33 +50,33 @@ public final class LLMEngine: ObservableObject
 public final class VLMEngine: ObservableObject
 ```
 
-`VLMEngine` loads vision-language models and streams generated text from image plus text input.
+`VLMEngine` 加载视觉语言模型，并从图像加文本输入流式生成文本。
 
-### Properties
+### 属性
 
-| Property | Type | Description |
+| 属性 | 类型 | 描述 |
 | --- | --- | --- |
-| `state` | `EngineState` | Current engine state. |
-| `downloadProgress` | `Double` | Download or load progress. |
-| `lastPolicy` | `InferencePolicy.Resolved?` | Last high-level policy summary. |
-| `lastMetrics` | `InferenceMetrics?` | Metrics from the last completed generation. |
-| `memoryPolicy` | `KVCacheMemoryPolicy?` | Automatic KV cache management policy. |
-| `promptCache` | `PromptCacheManager` | Conversation cache manager. |
-| `visionOffloaded` | `Bool` | Whether the preview runtime is using a memory-saving vision path. |
+| `state` | `EngineState` | 当前 engine 状态。 |
+| `downloadProgress` | `Double` | 下载或加载进度。 |
+| `lastPolicy` | `InferencePolicy.Resolved?` | 上一次高层策略摘要。 |
+| `lastMetrics` | `InferenceMetrics?` | 上一次完成生成的指标。 |
+| `memoryPolicy` | `KVCacheMemoryPolicy?` | 自动 KV cache 管理策略。 |
+| `promptCache` | `PromptCacheManager` | 对话缓存管理器。 |
+| `visionOffloaded` | `Bool` | 预览运行时是否正在使用节省内存的视觉路径。 |
 
-### Methods
+### 方法
 
-| Method | Description |
+| 方法 | 描述 |
 | --- | --- |
-| `init()` | Creates an engine. |
-| `loadLocal(directory:onProgress:)` | Loads a local VLM directory. |
-| `load(config:onProgress:)` | Loads a registered VLM config. |
-| `generate(messages:images:tools:onToolCall:parameters:)` | Streams text from URL images. |
-| `generate(messages:ciImages:tools:onToolCall:parameters:)` | Streams text from in-memory `CIImage` values. |
-| `generateStream(prompt:imageURL:maxTokens:temperature:topP:)` | Convenience stream API. |
-| `unload()` | Releases the loaded model. |
-| `loadLoRA(adapterPath:)` | Loads an adapter for the language branch. |
-| `unloadLoRA()` | Removes the active adapter. |
+| `init()` | 创建 engine。 |
+| `loadLocal(directory:onProgress:)` | 加载本地 VLM 目录。 |
+| `load(config:onProgress:)` | 加载已注册的 VLM 配置。 |
+| `generate(messages:images:tools:onToolCall:parameters:)` | 从 URL 图像流式生成文本。 |
+| `generate(messages:ciImages:tools:onToolCall:parameters:)` | 从内存中的 `CIImage` 值流式生成文本。 |
+| `generateStream(prompt:imageURL:maxTokens:temperature:topP:)` | 便捷 stream API。 |
+| `unload()` | 释放已加载模型。 |
+| `loadLoRA(adapterPath:)` | 为语言分支加载适配器。 |
+| `unloadLoRA()` | 移除活跃适配器。 |
 
 ## TTSEngine
 
@@ -85,29 +85,29 @@ public final class VLMEngine: ObservableObject
 public final class TTSEngine: ObservableObject
 ```
 
-`TTSEngine` loads a text-to-speech model and returns PCM audio.
+`TTSEngine` 加载文字转语音模型并返回 PCM 音频。
 
-### Properties
+### 属性
 
-| Property | Type | Description |
+| 属性 | 类型 | 描述 |
 | --- | --- | --- |
-| `state` | `EngineState` | Current engine state. |
-| `downloadProgress` | `Double` | Load progress. |
-| `availableSpeakers` | `[String]` | Speakers exposed by the loaded model. |
-| `ttsModelType` | `String` | Model type string. |
-| `sampleRate` | `Int` | Output sample rate. |
+| `state` | `EngineState` | 当前 engine 状态。 |
+| `downloadProgress` | `Double` | 加载进度。 |
+| `availableSpeakers` | `[String]` | 已加载模型暴露的说话人。 |
+| `ttsModelType` | `String` | 模型类型字符串。 |
+| `sampleRate` | `Int` | 输出采样率。 |
 
-### Methods
+### 方法
 
-| Method | Description |
+| 方法 | 描述 |
 | --- | --- |
-| `init()` | Creates an engine. |
-| `loadLocal(directory:onProgress:)` | Loads a local TTS model. |
-| `speak(_:voice:)` | Generates a single `AudioResult`. |
-| `generate(text:speaker:instruct:language:temperature:topK:maxTokens:)` | Generates with explicit parameters. |
-| `speakStream(_:voice:instruct:streamingInterval:)` | Streams `TTSEvent` values. |
-| `unload()` | Cancels active streaming and releases the model. |
-| `unloadAsync()` | Waits for active streaming cleanup before releasing the model. |
+| `init()` | 创建 engine。 |
+| `loadLocal(directory:onProgress:)` | 加载本地 TTS 模型。 |
+| `speak(_:voice:)` | 生成单个 `AudioResult`。 |
+| `generate(text:speaker:instruct:language:temperature:topK:maxTokens:)` | 使用显式参数生成。 |
+| `speakStream(_:voice:instruct:streamingInterval:)` | 流式返回 `TTSEvent` 值。 |
+| `unload()` | 取消活跃流并释放模型。 |
+| `unloadAsync()` | 等待活跃流清理完成后释放模型。 |
 
 ## STTEngine
 
@@ -116,14 +116,14 @@ public final class TTSEngine: ObservableObject
 public final class STTEngine
 ```
 
-`STTEngine` is the native speech-to-text preview engine when the speech runtime is enabled.
+当启用语音运行时时，`STTEngine` 是原生语音转文字预览 engine。
 
-| Method | Description |
+| 方法 | 描述 |
 | --- | --- |
-| `loadLocal(directory:)` | Loads a local ASR model. |
-| `transcribe(audioURL:language:maxTokens:temperature:)` | Transcribes an audio file. |
-| `transcribe(samples:sampleRate:language:)` | Transcribes PCM samples. |
-| `transcribeStream(audioURL:language:)` | Streams `STTStreamEvent` values. |
+| `loadLocal(directory:)` | 加载本地 ASR 模型。 |
+| `transcribe(audioURL:language:maxTokens:temperature:)` | 转写音频文件。 |
+| `transcribe(samples:sampleRate:language:)` | 转写 PCM 采样。 |
+| `transcribeStream(audioURL:language:)` | 流式返回 `STTStreamEvent` 值。 |
 
 ## EdgeRuntime
 
@@ -132,13 +132,13 @@ public final class STTEngine
 public final class EdgeRuntime
 ```
 
-`EdgeRuntime` detects a local model category and returns an `AnyEngine` wrapper.
+`EdgeRuntime` 检测本地模型类别，并返回 `AnyEngine` wrapper。
 
-| Method | Description |
+| 方法 | 描述 |
 | --- | --- |
-| `loadLocal(directory:)` | Detects model type and loads the matching engine. |
-| `loadRecommendedModel()` | Loads a recommended LLM for the current device. |
-| `load(_:)` | Loads a registered LLM by model ID. |
+| `loadLocal(directory:)` | 检测模型类型并加载匹配的 engine。 |
+| `loadRecommendedModel()` | 为当前设备加载推荐 LLM。 |
+| `load(_:)` | 按 model ID 加载已注册 LLM。 |
 
 ## AnyEngine
 
@@ -146,27 +146,27 @@ public final class EdgeRuntime
 public struct AnyEngine
 ```
 
-| Property | Type | Description |
+| 属性 | 类型 | 描述 |
 | --- | --- | --- |
-| `category` | `ModelCategory` | Detected model category. |
-| `llm` | `LLMEngine?` | LLM engine when `category == .llm`. |
-| `vlm` | `VLMEngine?` | VLM engine when `category == .vlm`. |
-| `tts` | `TTSEngine?` | TTS engine when `category == .tts`. |
-| `stt` | `STTEngine?` | STT engine when `category == .stt`. |
+| `category` | `ModelCategory` | 检测到的模型类别。 |
+| `llm` | `LLMEngine?` | 当 `category == .llm` 时的 LLM engine。 |
+| `vlm` | `VLMEngine?` | 当 `category == .vlm` 时的 VLM engine。 |
+| `tts` | `TTSEngine?` | 当 `category == .tts` 时的 TTS engine。 |
+| `stt` | `STTEngine?` | 当 `category == .stt` 时的 STT engine。 |
 
-## Supporting types
+## 支持类型
 
-| Type | Description |
+| 类型 | 描述 |
 | --- | --- |
-| `EngineState` | `.idle`, `.loading`, `.ready`, `.generating`. |
-| `GenerateChunk` | Streaming text chunk with `text`. |
-| `ChatMessage` | Role and content pair with `.system`, `.user`, `.assistant`, and `.tool` helpers. |
-| `EdgeGenerateParameters` | Generation parameters such as temperature, top-p, and max tokens. |
-| `ModelConfig` | Registered model metadata and lookup helpers. |
-| `ModelCategory` | `.llm`, `.vlm`, `.tts`, `.stt`. |
-| `InferenceMetrics` | TTFT, decode TPS, token counts, memory delta, and cache summary. |
-| `LoRAAdapter` | Adapter inspection and metadata helper. |
-| `AudioResult` | PCM samples and sample rate. |
-| `AudioChunkResult` | Streaming audio chunk. |
-| `TTSEvent` | `.progress`, `.audioChunk`, `.audio`. |
-| `TranscriptionResult` | Speech-to-text output and metrics. |
+| `EngineState` | `.idle`、`.loading`、`.ready`、`.generating`。 |
+| `GenerateChunk` | 带 `text` 的流式文本分片。 |
+| `ChatMessage` | 角色和内容对，带 `.system`、`.user`、`.assistant` 和 `.tool` helper。 |
+| `EdgeGenerateParameters` | 生成参数，例如 temperature、top-p 和 max tokens。 |
+| `ModelConfig` | 已注册模型元数据和查找 helper。 |
+| `ModelCategory` | `.llm`、`.vlm`、`.tts`、`.stt`。 |
+| `InferenceMetrics` | TTFT、decode TPS、token 数、内存变化和缓存摘要。 |
+| `LoRAAdapter` | 适配器检查和元数据 helper。 |
+| `AudioResult` | PCM 采样和采样率。 |
+| `AudioChunkResult` | 流式音频分片。 |
+| `TTSEvent` | `.progress`、`.audioChunk`、`.audio`。 |
+| `TranscriptionResult` | 语音转文字输出和指标。 |

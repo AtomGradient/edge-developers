@@ -1,53 +1,53 @@
 ---
 sidebar_position: 1
-title: Overview
+title: 总览
 ---
 
 # Edge Studio
 
-Edge Studio is a model optimization workbench for preparing models for on-device deployment.
+Edge Studio 是用于准备端侧部署模型的模型优化工作台。
 
-:::info Developer Preview
-Edge Studio is in **Developer Preview**. Validate every exported model with Edge Kit on the target device before shipping.
+:::info 开发者预览
+Edge Studio 目前处于**开发者预览**阶段。发布前请用 Edge Kit 在目标设备上验证每个导出的模型。
 :::
 
-## What it does
+## 它做什么
 
-Edge Studio helps you:
+Edge Studio 帮助你：
 
-- Load and inspect model architecture.
-- Analyze size and device fit.
-- Apply model optimization.
-- Benchmark each candidate.
-- Export to Edge Kit, GGUF, CoreML, or Edge Scaffold.
+- 加载并检查模型架构。
+- 分析大小和设备适配。
+- 应用模型优化。
+- 对每个候选进行基准测试。
+- 导出到 Edge Kit、GGUF、CoreML 或 Edge Scaffold。
 
-## Pipeline
+## 流程
 
 ```text
 Load model -> Analyze -> Optimize -> Benchmark -> Export -> Ship
 ```
 
-## Capabilities
+## 能力
 
-| Capability | Description |
+| 能力 | 描述 |
 | --- | --- |
-| Architecture support | 117+ model architectures in the analyzer. |
-| Model catalog | 210+ model entries with device-oriented recommendations. |
-| Quality tracking | Benchmark and quality checks after optimization steps. |
-| Export | Edge Kit native bundles, GGUF, CoreML, and Edge Scaffold projects. |
-| App generation | Create a ready-to-build iOS project through Edge Scaffold. |
+| 架构支持 | analyzer 支持 117+ 种模型架构。 |
+| 模型目录 | 210+ 个模型条目，带面向设备的推荐。 |
+| 质量跟踪 | 在优化步骤后进行基准测试和质量检查。 |
+| 导出 | Edge Kit native bundle、GGUF、CoreML 和 Edge Scaffold 项目。 |
+| App 生成 | 通过 Edge Scaffold 创建可构建的 iOS 项目。 |
 
-## Typical workflow
+## 典型工作流
 
-1. Select a source model.
-2. Choose the target device class.
-3. Run analysis.
-4. Apply optimization.
-5. Benchmark the optimized model.
-6. Export the model or a full Edge Scaffold app.
+1. 选择源模型。
+2. 选择目标设备类别。
+3. 运行分析。
+4. 应用优化。
+5. 对优化后的模型做基准测试。
+6. 导出模型或完整 Edge Scaffold app。
 
-## Next steps
+## 下一步
 
-- [Model optimization](/docs/edge-studio/optimization)
-- [Export](/docs/edge-studio/export)
-- [Edge Scaffold overview](/docs/deployment/app-scaffold)
+- [模型优化](/docs/edge-studio/optimization)
+- [导出](/docs/edge-studio/export)
+- [Edge Scaffold 总览](/docs/deployment/app-scaffold)

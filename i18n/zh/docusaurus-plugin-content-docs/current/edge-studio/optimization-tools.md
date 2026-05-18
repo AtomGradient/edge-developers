@@ -1,167 +1,167 @@
 ---
 sidebar_position: 6
-title: Optimization Tools
+title: 优化工具
 ---
 
-# Optimization tools
+# 优化工具
 
-Optimization tools help you create smaller or better-fitting model candidates while tracking quality.
+优化工具帮助你创建更小或更适合设备的模型候选，同时跟踪质量。
 
 :::caution
-Treat optimization output as a candidate, not a final artifact. Run validation and test on the target device before shipping.
+将优化输出视为候选，而不是最终 artifact。发布前请在目标设备上运行验证和测试。
 :::
 
-## Tool summary
+## 工具摘要
 
-| Tool | Route | Best for |
+| 工具 | Route | 最适合 |
 | --- | --- | --- |
-| Optimization Advisor | `/optimization` | Choosing a starting plan for the loaded model. |
-| Auto Optimizer | `/auto-optimizer` | Searching for a candidate with minimal manual setup. |
-| Optimization Pipeline | `/pipeline` | Running a controlled multi-step optimization workflow. |
-| Pruning Simulator | `/pruning` | Previewing size-reduction impact before applying changes. |
-| Mixed Precision Panel | `/mixed-precision` | Assigning precision settings by layer group. |
-| Quality Validator | `/quality` | Checking quality after optimization. |
-| Knowledge Distillation | `/distill` | Creating a smaller student model from a teacher model. |
-| Model Merge | `/merge` | Combining model or adapter sources into a new candidate. |
-| Auto Tune | `/auto-tune` | Finding inference parameters for a model and device. |
+| Optimization Advisor | `/optimization` | 为已加载模型选择起始方案。 |
+| Auto Optimizer | `/auto-optimizer` | 以最少手动设置搜索候选。 |
+| Optimization Pipeline | `/pipeline` | 运行受控的多步骤优化工作流。 |
+| Pruning Simulator | `/pruning` | 在应用变更前预览尺寸缩减影响。 |
+| Mixed Precision Panel | `/mixed-precision` | 按层组分配精度设置。 |
+| Quality Validator | `/quality` | 优化后检查质量。 |
+| Knowledge Distillation | `/distill` | 从 teacher model 创建更小的 student model。 |
+| Model Merge | `/merge` | 将模型或适配器来源合并为新候选。 |
+| Auto Tune | `/auto-tune` | 为模型和设备寻找推理参数。 |
 
 ## Optimization Advisor
 
 Route: `/optimization`
 
-Optimization Advisor recommends a starting plan for the current model and target device.
+Optimization Advisor 为当前模型和目标设备推荐起始方案。
 
-Key features:
+关键功能：
 
-- Shows model identity and readiness cards.
-- Summarizes recommended optimization direction.
-- Provides execution status when an optimization task is running.
-- Links naturally into the pipeline, validation, and export flow.
+- 显示模型身份和就绪卡片。
+- 汇总推荐优化方向。
+- 在优化任务运行时提供执行状态。
+- 自然连接到 pipeline、validation 和 export 流程。
 
-Use it when you want a suggested path before manually configuring optimization steps.
+当你想在手动配置优化步骤前获得建议路径时使用它。
 
 ## Auto Optimizer
 
 Route: `/auto-optimizer`
 
-Auto Optimizer searches candidate settings and presents a quality and size comparison.
+Auto Optimizer 搜索候选设置，并展示质量和尺寸对比。
 
-Key features:
+关键功能：
 
-- Requires a loaded model and profile data.
-- Shows candidate count and frontier summary.
-- Tracks search progress.
-- Presents before/after comparison metrics.
-- Highlights candidates that fit the selected device class.
+- 需要已加载模型和 profile 数据。
+- 显示候选数量和 frontier 摘要。
+- 跟踪搜索进度。
+- 展示前后对比指标。
+- 突出显示适配所选设备类别的候选。
 
-Use it for common optimization scenarios where you want Edge Studio to explore candidates for you.
+在常见优化场景中，如果希望 Edge Studio 代你探索候选，请使用它。
 
 ## Optimization Pipeline
 
 Route: `/pipeline`
 
-Optimization Pipeline is the manual, step-by-step optimization workflow.
+Optimization Pipeline 是手动、逐步的优化工作流。
 
-Key features:
+关键功能：
 
-- Lets you build an ordered list of optimization stages.
-- Shows risk and order warnings before running.
-- Displays per-step results.
-- Includes validation options and benchmark follow-up.
-- Provides next-step links to chat testing and export.
+- 让你构建有序优化阶段列表。
+- 运行前显示风险和顺序警告。
+- 显示每一步结果。
+- 包含验证选项和 benchmark 后续入口。
+- 提供前往聊天测试和导出的下一步链接。
 
-Use it when you need explicit control over which stages run and in what order.
+当你需要明确控制运行哪些阶段以及顺序时使用它。
 
 ## Pruning Simulator
 
 Route: `/pruning`
 
-Pruning Simulator previews the effect of model-size reduction before committing to an optimization run.
+Pruning Simulator 在提交优化运行前预览模型尺寸缩减效果。
 
-Key features:
+关键功能：
 
-- Requires profile data.
-- Shows projected retained size and saved size.
-- Provides adjustable simulation controls.
-- Lets you protect selected layers from removal.
-- Presents summary cards before applying changes elsewhere.
+- 需要 profile 数据。
+- 显示预计保留大小和节省大小。
+- 提供可调整的模拟控制。
+- 允许保护所选层不被移除。
+- 在其他地方应用变更前展示摘要卡片。
 
-Use it to estimate whether a size-reduction target is realistic for the model and target device.
+用它估算某个尺寸缩减目标对模型和目标设备是否现实。
 
 ## Mixed Precision Panel
 
 Route: `/mixed-precision`
 
-Mixed Precision Panel lets you assign precision settings across layers.
+Mixed Precision Panel 允许你跨层分配精度设置。
 
-Key features:
+关键功能：
 
-- Shows a table of layer configurations.
-- Supports bulk precision updates.
-- Supports per-layer overrides.
-- Estimates output size from selected settings.
-- Displays result status after a run.
+- 显示层配置表。
+- 支持批量精度更新。
+- 支持逐层 override。
+- 根据所选设置估算输出大小。
+- 运行后显示结果状态。
 
-Use it when a single global precision setting is too coarse for the quality and size tradeoff you need.
+当单一全局精度设置对所需质量和尺寸取舍过于粗糙时使用它。
 
 ## Quality Validator
 
 Route: `/quality`
 
-Quality Validator checks whether a model candidate still meets your quality bar.
+Quality Validator 检查模型候选是否仍满足你的质量门槛。
 
-Key features:
+关键功能：
 
-- Quick perplexity mode.
-- Full report mode.
-- Custom prompt mode.
-- Generation benchmark summaries.
-- Comparison cards for results and timing.
+- 快速 perplexity 模式。
+- 完整报告模式。
+- 自定义 prompt 模式。
+- 生成 benchmark 摘要。
+- 结果和耗时对比卡片。
 
-Use it after every optimization pass. Do not export a candidate until validation is acceptable for your application.
+每次优化 pass 后都使用它。验证结果对你的应用可接受前，不要导出候选。
 
 ## Knowledge Distillation
 
 Route: `/distill`
 
-Knowledge Distillation creates a compact student model using a larger teacher model.
+Knowledge Distillation 使用更大的 teacher model 创建紧凑的 student model。
 
-Key features:
+关键功能：
 
-- Selects teacher and student sources.
-- Selects training data.
-- Shows training progress.
-- Reports final candidate metrics.
-- Provides export-ready output when the run succeeds.
+- 选择 teacher 和 student 来源。
+- 选择训练数据。
+- 显示训练进度。
+- 报告最终候选指标。
+- 运行成功时提供 export-ready 输出。
 
-Use it when you need a smaller model but want to preserve behavior from a larger source model.
+当你需要更小模型但希望保留较大源模型行为时使用它。
 
 ## Model Merge
 
 Route: `/merge`
 
-Model Merge combines model or adapter sources into a new candidate.
+Model Merge 将模型或适配器来源组合成新候选。
 
-Key features:
+关键功能：
 
-- Adds multiple source models or adapters.
-- Configures merge inputs and output location.
-- Shows task progress.
-- Presents the resulting candidate after completion.
+- 添加多个源模型或适配器。
+- 配置 merge 输入和输出位置。
+- 显示任务进度。
+- 完成后展示结果候选。
 
-Use it when you want to combine compatible sources into one deployment candidate.
+当你希望把兼容来源组合为一个部署候选时使用它。
 
 ## Auto Tune
 
 Route: `/auto-tune`
 
-Auto Tune searches inference parameters for the loaded model on the current device.
+Auto Tune 为当前设备上的已加载模型搜索推理参数。
 
-Key features:
+关键功能：
 
-- Runs an automated benchmark for parameter choices.
-- Shows the best configuration found.
-- Caches results for later recall.
-- Reports throughput and quality-oriented summary metrics.
+- 针对参数选择运行自动 benchmark。
+- 显示找到的最佳配置。
+- 缓存结果以便后续读取。
+- 报告吞吐和质量导向摘要指标。
 
-Use it after the model candidate is selected, before final benchmark and export validation.
+在模型候选已选定后、最终 benchmark 和导出验证前使用它。

@@ -1,13 +1,13 @@
 ---
 sidebar_position: 7
-title: Model Management
+title: 模型管理
 ---
 
-# Model management
+# 模型管理
 
-`EdgeModelKit` provides model download, cache, and device-tier helpers.
+`EdgeModelKit` 提供模型下载、缓存和设备层级 helper。
 
-## Download a registered model
+## 下载已注册模型
 
 ```swift
 import EdgeInference
@@ -22,7 +22,7 @@ try await HFDownloader.shared.download(config: config) { progress in
 }
 ```
 
-## Load from cache
+## 从缓存加载
 
 ```swift
 let cachedURL = ModelCache.shared.cachedURL(for: config)
@@ -31,7 +31,7 @@ let engine = LLMEngine()
 try await engine.loadLocal(directory: cachedURL)
 ```
 
-## Check cache state
+## 检查缓存状态
 
 ```swift
 if ModelCache.shared.isCached(config) {
@@ -42,16 +42,16 @@ print("Model cache bytes:", ModelCache.shared.cacheSize(for: config))
 print("Total cache bytes:", ModelCache.shared.totalCacheSize())
 ```
 
-## Evict models
+## 驱逐模型
 
 ```swift
 try ModelCache.shared.evict(config)
 try ModelCache.shared.evictAll()
 ```
 
-## Device tiers
+## 设备层级
 
-`ModelTierManager` recommends a tier based on the current device.
+`ModelTierManager` 会基于当前设备推荐层级。
 
 ```swift
 import EdgeModelKit
@@ -64,9 +64,9 @@ print(manager.availableTiers)
 print(manager.currentConfig)
 ```
 
-## Model categories
+## 模型类别
 
-`ModelCategory.detect(from:)` reads `config.json` and selects an engine category.
+`ModelCategory.detect(from:)` 读取 `config.json` 并选择 engine 类别。
 
 ```swift
 let category = ModelCategory.detect(from: cachedURL)
@@ -83,11 +83,11 @@ case .stt:
 }
 ```
 
-## Loading strategy
+## 加载策略
 
-| Source | Use it when |
+| 来源 | 适用场景 |
 | --- | --- |
-| Local path | You already have a model bundle on disk. |
-| Model cache | The app downloaded a registered model. |
-| Edge Studio export | You optimized or prepared the model in Edge Studio. |
-| App bundle or ODR | The app ships or downloads the model through iOS distribution. |
+| 本地路径 | 你已经在磁盘上有模型 bundle。 |
+| 模型缓存 | app 下载了已注册模型。 |
+| Edge Studio 导出 | 你在 Edge Studio 中优化或准备了模型。 |
+| App bundle 或 ODR | app 通过 iOS 分发来携带或下载模型。 |

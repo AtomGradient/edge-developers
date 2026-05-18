@@ -1,50 +1,50 @@
 ---
 sidebar_position: 11
-title: Devices
+title: 设备
 ---
 
-# Devices
+# 设备
 
-Devices is the EdgeMesh device-management page for trusted local devices.
+Devices 是面向可信本地设备的 EdgeMesh 设备管理页面。
 
 ## Route
 
 `/devices`
 
-## What it does
+## 它做什么
 
-The Devices page shows the local Mac, paired devices, pairing requests, and device readiness for EdgeMesh workflows.
+Devices 页面显示本地 Mac、已配对设备、配对请求，以及 EdgeMesh 工作流中的设备就绪状态。
 
-Key features:
+关键功能：
 
-- Shows local host identity and mesh status.
-- Lists trusted iPhones, iPads, and Macs.
-- Shows device capability summaries such as chip, memory, and GPU information when available.
-- Shows device status such as available, busy, or offline.
-- Starts pairing for a new device.
-- Revokes or deletes trusted devices.
-- Shows event summary cards for recent mesh activity.
-- Helps assess whether a device can run a selected model or receive a personalized adapter.
+- 显示本地主机身份和 mesh 状态。
+- 列出可信 iPhone、iPad 和 Mac。
+- 在可用时显示设备能力摘要，例如芯片、内存和 GPU 信息。
+- 显示可用、忙碌或离线等设备状态。
+- 为新设备启动配对。
+- 撤销或删除可信设备。
+- 显示近期 mesh 活动的事件摘要卡片。
+- 帮助评估设备是否可以运行所选模型或接收个性化适配器。
 
-## Page sections
+## 页面区块
 
-| Section | Purpose |
+| 区块 | 目的 |
 | --- | --- |
-| Local identity | Confirms the current Mac and local mesh service status. |
-| Trusted devices | Lists paired devices and their availability. |
-| Pairing | Starts a new device pairing flow. |
-| Pending requests | Shows devices waiting for approval. |
-| Activity summary | Summarizes recent local mesh events. |
-| Training distribution | Shows when a personalized adapter can be sent to a trusted device. |
+| Local identity | 确认当前 Mac 和本地 mesh service 状态。 |
+| Trusted devices | 列出已配对设备及其可用性。 |
+| Pairing | 启动新的设备配对流程。 |
+| Pending requests | 显示等待批准的设备。 |
+| Activity summary | 汇总近期本地 mesh 事件。 |
+| Training distribution | 显示何时可以将个性化适配器发送到可信设备。 |
 
-## When to use it
+## 何时使用
 
-Use Devices when you need to connect an iPhone, iPad, or another Mac to the local Edge Studio host. It is also the place to revoke access when a device should no longer participate.
+当你需要将 iPhone、iPad 或另一台 Mac 连接到本地 Edge Studio host 时，使用 Devices。当某台设备不应再参与时，也在这里撤销访问。
 
-## Validation checklist
+## 验证检查清单
 
-- Confirm the local Mac shows as available.
-- Pair the target device and verify it appears in the trusted list.
-- Check the device status before starting a long-running workflow.
-- Remove devices that are no longer trusted.
-- Re-check compatibility after switching model candidates.
+- 确认本地 Mac 显示为可用。
+- 配对目标设备并确认它出现在可信列表中。
+- 开始长时间工作流前检查设备状态。
+- 移除不再可信的设备。
+- 切换模型候选后重新检查兼容性。
