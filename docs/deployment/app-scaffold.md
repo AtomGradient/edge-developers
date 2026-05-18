@@ -5,7 +5,7 @@ title: Overview
 
 # Edge Scaffold
 
-Edge Scaffold is a ready-to-ship iOS app template for Edge Kit models.
+Edge Scaffold is a ready-to-ship app template for Edge Kit models. Currently generates iOS apps, with support for additional platforms planned.
 
 :::info Developer Preview
 Edge Scaffold is in **Developer Preview**. Generated apps still require normal iOS signing, device testing, and App Store review.

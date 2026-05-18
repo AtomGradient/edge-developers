@@ -13,13 +13,14 @@ Edge Kit is in **Developer Preview**. Pin the package version you test with and 
 
 ## Requirements
 
+Edge Kit currently ships on Apple platforms. Support for Android, Linux, HarmonyOS, and Windows is planned.
+
 | Requirement | Version |
 | --- | --- |
 | iOS | 17.0 or later |
 | macOS | 14.0 or later |
 | Xcode | 15 or later |
 | Swift | 5.9 or later |
-| Hardware | Apple Silicon |
 
 For iOS apps that run larger models, enable the Increased Memory Limit entitlement in your app target.
 

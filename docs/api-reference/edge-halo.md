@@ -5,7 +5,7 @@ title: EdgeHalo
 
 # EdgeHalo API reference
 
-`EdgeHalo` manages user profiles, adapters, and session steering.
+`EdgeHalo` manages user profiles, adapters, and session steering. Built on the patented **HALO** algorithm system for on-device continuous learning.
 
 :::info Developer Preview
 Some profile-analysis APIs are intentionally low-level in the current preview and may change.

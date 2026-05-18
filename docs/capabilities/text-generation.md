@@ -5,7 +5,7 @@ title: Text Generation
 
 # Text generation with LLMEngine
 
-`LLMEngine` loads a local or registered text model and streams generated text.
+`LLMEngine` loads a local or registered text model and streams generated text. Under the hood, Edge Kit uses **DSR (Dynamic Sparse Retention)** attention to keep multi-turn conversations fast even on memory-constrained devices — a 9B model holds 12.6 TPS at turn 1 and 10.8 TPS at turn 20 on iPhone 17.
 
 ## Create and load
 

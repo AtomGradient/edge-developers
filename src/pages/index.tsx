@@ -90,7 +90,7 @@ export default function Home(): React.JSX.Element {
   return (
     <Layout
       title="AtomGradient Edge"
-      description={isZh ? 'Apple Silicon 端侧 AI' : 'On-device AI for Apple Silicon'}
+      description={isZh ? '让 AI 在每台设备上生长' : 'Make AI grow on every device'}
     >
       {/* Hero */}
       <header className={styles.heroBanner}>
@@ -98,19 +98,18 @@ export default function Home(): React.JSX.Element {
         <h1 className={styles.heroTitle}>
           {isZh ? (
             <>
-              <span className={styles.heroAccent}>Apple Silicon</span> 端侧 AI
+              让 AI 在<span className={styles.heroAccent}>每台设备</span>上生长
             </>
           ) : (
             <>
-              On-device AI for{' '}
-              <span className={styles.heroAccent}>Apple Silicon</span>
+              Make AI <span className={styles.heroAccent}>grow</span> on every device
             </>
           )}
         </h1>
         <p className={styles.heroSubtitle}>
           {isZh
-            ? '完全在设备上运行的 AI 应用平台。无云端。无延迟。完全隐私。'
-            : 'A complete platform for building AI-powered apps that run entirely on-device. No cloud. No latency. Complete privacy.'}
+            ? '端侧推理、个性化、跨设备协同 — 全链路自有代码，零云依赖。当前支持 Apple 平台，更多平台即将到来。'
+            : 'On-device inference, personalization, cross-device mesh — full-stack, zero cloud dependency. Shipping on Apple first. More platforms coming.'}
         </p>
         <div className={styles.buttons}>
           <Link to="/docs/get-started/quickstart" className={styles.primaryButton}>

@@ -1,38 +1,43 @@
 ---
 sidebar_position: 5
-title: 模型进化
+title: Model Evolution
 ---
 
-# 模型进化
+# Model evolution
 
-Edge Halo 让本地模型适应用户偏好，而无需把私有交互数据发送到服务器。
+Edge Halo lets a local model adapt to a user's preferences without sending
+private interaction data to a server. It is built on the **patented HALO algorithm system** — AtomGradient's solution for on-device continuous learning, a problem that the entire industry (Google, OpenAI, Anthropic) is actively exploring in the cloud.
 
-当你的 app 需要以下能力时，可以使用它：
+Use it when your app needs:
 
-- 随时间总结用户偏好的本地画像。
-- 从用户自有数据训练的轻量适配器。
-- 无需重新训练即可进行小幅行为调整的运行时调控。
+- A local profile that summarizes user preferences over time.
+- Lightweight adapters trained from user-owned data.
+- Runtime steering for small behavior adjustments without retraining.
+- All of the above without any data leaving the device.
 
-Edge Halo 是开发者预览包。app 仍然是组合点：它连接 Edge Kit 推理、Edge Halo 进化、本地存储，以及可选的 Edge Mesh 传输。
+Edge Halo is a developer-preview package. The app remains the composition
+point: it connects Edge Kit inference, Edge Halo evolution, local storage, and
+optional Edge Mesh transfer.
 
-## 模型进化做什么
+## What model evolution does
 
-模型进化围绕基础模型添加一个私有生命周期：
+Model evolution adds a private lifecycle around a base model:
 
-1. 收集 app 允许的交互事件。
-2. 在设备上构建用户画像。
-3. 在用户自有 Mac 上训练或接收一个小型适配器。
-4. 验证、应用或回滚该适配器。
-5. 为临时偏好变更应用会话级调控。
+1. Collect app-approved interaction events.
+2. Build a user profile on the device.
+3. Train or receive a small adapter on a user-owned Mac.
+4. Validate, apply, or roll back that adapter.
+5. Apply session-level steering for temporary preference changes.
 
-基础模型保持通用。画像、适配器和调控状态是让体验变得个性化的部分。
+The base model stays general. The profile, adapter, and steering state are the
+parts that make the experience personal.
 
-## 设置 Edge Halo
+## Set up Edge Halo
 
-Edge Halo 不拥有你的推理运行时。你的 app 需要提供两个桥接：
+Edge Halo does not own your inference runtime. Your app provides two bridges:
 
-- `HaloTextGenerator`：用于画像任务中的短文本本地生成。
-- `HaloEngineSession`：用于适配器和调控操作。
+- `HaloTextGenerator` for short local generations used by profile jobs.
+- `HaloEngineSession` for adapter and steering operations.
 
 ```swift
 import EdgeHalo
@@ -79,23 +84,30 @@ let halo = EdgeHalo(
 )
 ```
 
-在生产 app 中，桥接方法应调用服务用户请求的同一个已加载模型会话。这样可以让推理和进化与用户实际使用的模型保持一致。
+In a production app, the bridge methods should call the same loaded model
+session that serves user requests. This keeps inference and evolution aligned
+with the model the user is actually using.
 
-## 用户画像分析
+## User profiling
 
-画像是对用户偏好行为相对默认模型行为差异的紧凑表示。它包含机器可读的方向和人类可读的标签，可用于设置、调试工具或验证 UI。
+A profile is a compact representation of how the user's preferred behavior
+differs from the default model behavior. It includes machine-readable
+directions and human-readable labels that your app can show in settings,
+debugging tools, or validation UI.
 
-`UserProfile` 暴露：
+`UserProfile` exposes:
 
-| 属性 | 用途 |
+| Property | Use |
 | --- | --- |
-| `directions` | 调控使用的数值画像方向。 |
-| `directionNames` | 画像维度的短标签。 |
-| `narrative` | 简短的自然语言摘要。 |
-| `sampleCount` | 当前画像使用的示例数量。 |
-| `stabilityScore` | 表示画像一致性的 `0` 到 `1` 分数。 |
+| `directions` | Numeric profile directions used by steering. |
+| `directionNames` | Short labels for the profile dimensions. |
+| `narrative` | A short natural-language summary. |
+| `sampleCount` | Number of examples used for the current profile. |
+| `stabilityScore` | A score from `0` to `1` for profile consistency. |
 
-从 app 自有的本地数据任务运行画像分析。将原始用户内容保存在 app 存储中，只传入预览 API 所需的已准备本地输入，并从 `currentProfile` 读取结果画像。
+Run profile analysis from an app-owned local data job. Keep raw user content in
+your app's storage, pass only the prepared local inputs required by the preview
+API, and read the resulting profile from `currentProfile`.
 
 ```swift
 struct ProfileResources {
@@ -123,7 +135,8 @@ func refreshProfile(
 }
 ```
 
-任务完成后，将画像用于产品 UI 和运行时调控。
+After the job finishes, use the profile for product UI and for runtime
+steering.
 
 ```swift
 if let profile = await halo.currentProfile {
@@ -133,16 +146,18 @@ if let profile = await halo.currentProfile {
 }
 ```
 
-## 适配器生命周期
+## Adapter lifecycle
 
-适配器是从本地用户数据训练得到的小型模型定制。常见流程是：
+Adapters are small model customizations trained from local user data. A common
+flow is:
 
-1. iPhone 或 iPad 收集已批准的交互事件。
-2. 用户自有 Mac 从这些事件训练适配器。
-3. 适配器通过本地网格传回。
-4. app 在应用前验证适配器 offer。
+1. The iPhone or iPad collects approved interaction events.
+2. A user-owned Mac trains an adapter from those events.
+3. The adapter is transferred back over the local mesh.
+4. The app validates the adapter offer before applying it.
 
-使用 `AdapterVersion` 描述适配器，并使用 `AdapterDecision` 决定如何处理。
+Use `AdapterVersion` to describe an adapter and `AdapterDecision` to decide
+what to do with it.
 
 ```swift
 let offer = AdapterVersion(
@@ -177,15 +192,18 @@ case .rejectOutdated:
 }
 ```
 
-如果质量下降，或用户禁用个性化，请回滚到基础模型：
+If quality drops or the user disables personalization, roll back to the base
+model:
 
 ```swift
 try await halo.rollback()
 ```
 
-## 激活调控
+## Activation steering
 
-调控可以在不生成新适配器的情况下调整当前会话中的模型行为。它适合用于语气、正式程度、领域焦点，或“在这次对话中更轻柔地遵循我的画像”等控制。
+Steering adjusts model behavior for the current session without producing a new
+adapter. Use it for controls such as tone, formality, domain focus, or "follow
+my profile more gently in this conversation."
 
 ```swift
 // Uses the current profile, if one is available.
@@ -198,20 +216,21 @@ let answer = try await generateAssistantReply()
 try engineSession.removeSteering()
 ```
 
-保持调控保守，并让用户可见。它们应该像会话偏好，而不是永久模型变更。
+Keep steering controls conservative and visible to the user. They should feel
+like session preferences, not permanent model changes.
 
-## 进化状态机
+## Evolution state machine
 
-使用 `evolutionState` 驱动 UI 和后台工作。
+Use `evolutionState` to drive UI and background work.
 
-| 状态 | app 应做什么 |
+| State | What the app should do |
 | --- | --- |
-| `.idle` | 正常使用。如果用户已选择加入，可以收集数据。 |
-| `.collecting(progress:)` | 展示距离下一次本地训练机会的进度。 |
-| `.readyToTrain` | 提供在用户自有 Mac 上训练的入口。 |
-| `.training` | 显示训练状态，并保持基础模型可用。 |
-| `.validating` | 在应用前评估传入的适配器。 |
-| `.evolved(version:)` | 显示当前活跃适配器版本和回滚控件。 |
+| `.idle` | Normal use. Data may be collected if the user opted in. |
+| `.collecting(progress:)` | Show progress toward the next local training opportunity. |
+| `.readyToTrain` | Offer to train on a user-owned Mac. |
+| `.training` | Show training status and keep the base model active. |
+| `.validating` | Evaluate the incoming adapter before applying it. |
+| `.evolved(version:)` | Show the active adapter version and rollback control. |
 
 ```swift
 switch await halo.evolutionState {
@@ -230,9 +249,9 @@ case .evolved(let version):
 }
 ```
 
-## 架构
+## Architecture
 
-Edge Halo 遵循 V 形组合模型：
+Edge Halo follows a V-shaped composition model:
 
 ```text
 App
@@ -241,15 +260,19 @@ App
       \- shared engine runtime
 ```
 
-app 拥有策略决策：哪些数据符合条件、何时训练、是否应用适配器、何时回滚，以及如何向用户解释个性化。
+The app owns policy decisions: what data is eligible, when to train, whether to
+apply an adapter, when to roll back, and how to explain personalization to the
+user.
 
-## 隐私
+## Privacy
 
-模型进化面向用户自有设备设计：
+Model evolution is designed for user-owned devices:
 
-- 交互数据留在设备上。
-- 训练在用户的 Mac 上运行。
-- 启用时，适配器传输通过用户的本地网格完成。
-- 用户可以禁用个性化并回滚到基础模型。
+- Interaction data stays on device.
+- Training runs on the user's Mac.
+- Adapter transfer uses the user's local mesh when enabled.
+- The user can disable personalization and roll back to the base model.
 
-不要把原始 correction、转写内容或私有 prompt 复制到日志、分析、崩溃报告或支持包中。将本地画像 artifact 作为用户数据存储，并让用户能从 app 设置中移除它们。
+Do not copy raw corrections, transcripts, or private prompts into logs,
+analytics, crash reports, or support bundles. Store local profile artifacts as
+user data and make them removable from app settings.

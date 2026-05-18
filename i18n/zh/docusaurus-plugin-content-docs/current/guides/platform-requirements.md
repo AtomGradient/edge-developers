@@ -1,55 +1,55 @@
 ---
 sidebar_position: 3
-title: 平台要求
+title: Platform Requirements
 ---
 
-# 平台要求
+# Platform requirements
 
-Edge 产品面向 Apple Silicon 设备。
+Edge products currently ship on Apple platforms. Android, Linux, HarmonyOS, and Windows support is on the roadmap — the cross-platform architecture is ready, and Apple is the first target.
 
-## 最低版本
+## Minimum versions
 
-| 组件 | 要求 |
+| Component | Requirement |
 | --- | --- |
-| iOS | 17.0 或更高 |
-| macOS | 14.0 或更高 |
-| Xcode | Edge Kit 和 Edge Scaffold 需要 15 或更高 |
-| Swift | Edge Kit 需要 5.9 或更高 |
-| 硬件 | Apple Silicon |
+| iOS | 17.0 or later |
+| macOS | 14.0 or later |
+| Xcode | 15 or later for Edge Kit and Edge Scaffold |
+| Swift | 5.9 or later for Edge Kit |
+| Hardware | Apple Silicon |
 
-Edge Engine 和 Edge Halo 预览包在某些构建中使用更新的 Swift toolchain。在固定 release 前，请检查每个包的 `Package.swift`。
+Edge Engine and Edge Halo preview packages use newer Swift toolchains in some builds. Check each package's `Package.swift` before pinning a release.
 
-## 推荐硬件
+## Recommended hardware
 
-| 工作负载 | 推荐设备 |
+| Workload | Recommended device |
 | --- | --- |
-| 0.8B 文本模型 | 任意 Apple Silicon 设备 |
-| 4B 文本或 VLM 模型 | 8 GB 或更多统一内存 |
-| 9B 模型 | 16 GB 或更多统一内存，或已验证的高内存 iOS 设备 |
-| 优化和导出 | 有足够磁盘空间存放源模型和导出模型的 Mac |
-| 适配器训练 | 用户自有 Mac |
+| 0.8B text models | Any Apple Silicon device |
+| 4B text or VLM models | 8 GB or more unified memory |
+| 9B models | 16 GB or more unified memory, or a validated high-memory iOS device |
+| Optimization and export | Mac with sufficient disk space for source and exported models |
+| Adapter training | User-owned Mac |
 
 ## iOS entitlements
 
-对于较大模型，请在 iOS target 中启用 Increased Memory Limit entitlement。
+For larger models, enable the Increased Memory Limit entitlement in the iOS target.
 
-如果 app 使用 Edge Mesh，也请添加本地网络权限：
+Also add Local Network permissions if your app uses Edge Mesh:
 
 ```xml
 <key>NSLocalNetworkUsageDescription</key>
 <string>This app discovers your nearby devices for private on-device AI.</string>
 ```
 
-## Build 设置
+## Build settings
 
-使用 Release build 进行性能验证。Debug build 适合开发，但不能代表吞吐或延迟。
+Use Release builds for performance validation. Debug builds are useful for development, but they are not representative for throughput or latency.
 
-## 验证矩阵
+## Validation matrix
 
-发布前测试：
+Before shipping, test:
 
-- 冷加载和卸载。
-- 首 token 延迟。
-- 长对话内存行为。
-- iOS 上的后台/前台切换。
-- 如果启用 Edge Mesh，测试本地网络发现。
+- Cold load and unload.
+- First-token latency.
+- Long conversation memory behavior.
+- Background/foreground transitions on iOS.
+- Local network discovery if Edge Mesh is enabled.

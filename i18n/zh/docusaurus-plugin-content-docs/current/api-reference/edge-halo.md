@@ -3,12 +3,12 @@ sidebar_position: 5
 title: EdgeHalo
 ---
 
-# EdgeHalo API 参考
+# EdgeHalo API reference
 
-`EdgeHalo` 管理用户画像、适配器和会话调控。
+`EdgeHalo` manages user profiles, adapters, and session steering. Built on the patented **HALO** algorithm system for on-device continuous learning.
 
-:::info 开发者预览
-当前预览版中的部分画像分析 API 有意保持较低层级，后续可能变化。
+:::info Developer Preview
+Some profile-analysis APIs are intentionally low-level in the current preview and may change.
 :::
 
 ## EdgeHalo
@@ -17,19 +17,19 @@ title: EdgeHalo
 public actor EdgeHalo
 ```
 
-主入口点。
+Main entry point.
 
-| 属性或方法 | 描述 |
+| Property or method | Description |
 | --- | --- |
-| `init(engine:generator:dataStream:)` | 使用注入的 engine 和 generator provider 创建 `EdgeHalo` actor。 |
-| `evolutionState` | 当前 `EvolutionState`。 |
-| `currentProfile` | 最近的 `UserProfile`，如果可用。 |
-| `activeAdapter` | 当前活跃的 `AdapterVersion`，如果有。 |
-| `runProfileAnalysis(...)` | 运行本地画像分析并更新 `currentProfile`。 |
-| `validateAdapter(_:)` | 为传入适配器返回 `AdapterDecision`。 |
-| `applyAdapter(path:version:scale:)` | 通过 engine session 应用适配器。 |
-| `rollback()` | 移除活跃适配器。 |
-| `updateSteering(scales:)` | 从当前画像应用调控。 |
+| `init(engine:generator:dataStream:)` | Creates an `EdgeHalo` actor with injected engine and generator providers. |
+| `evolutionState` | Current `EvolutionState`. |
+| `currentProfile` | Most recent `UserProfile`, if available. |
+| `activeAdapter` | Active `AdapterVersion`, if any. |
+| `runProfileAnalysis(...)` | Runs local profile analysis and updates `currentProfile`. |
+| `validateAdapter(_:)` | Returns an `AdapterDecision` for an incoming adapter. |
+| `applyAdapter(path:version:scale:)` | Applies an adapter through the engine session. |
+| `rollback()` | Removes the active adapter. |
+| `updateSteering(scales:)` | Applies steering from the current profile. |
 
 ## HaloTextGenerator
 
@@ -37,12 +37,12 @@ public actor EdgeHalo
 public protocol HaloTextGenerator: Sendable
 ```
 
-由 app 实现的文本生成 provider。
+Text-generation provider implemented by the app.
 
-| 方法 | 描述 |
+| Method | Description |
 | --- | --- |
-| `tokenize(_:)` | 将文本转换为 token ID。 |
-| `generate(prompt:maxTokens:)` | 为标签和画像摘要生成文本。 |
+| `tokenize(_:)` | Converts text into token IDs. |
+| `generate(prompt:maxTokens:)` | Generates text for labels and profile summaries. |
 
 ## HaloEngineSession
 
@@ -50,15 +50,15 @@ public protocol HaloTextGenerator: Sendable
 public protocol HaloEngineSession: Sendable
 ```
 
-Edge Halo 所需的 engine-session 操作。
+Engine-session operations needed by Edge Halo.
 
-| 方法 | 描述 |
+| Method | Description |
 | --- | --- |
-| `injectLoRA(adapterPath:scale:)` | 将适配器加载到 engine session。 |
-| `removeLoRA()` | 移除活跃适配器。 |
-| `captureHiddenState(tokens:layer:)` | 捕获画像分析向量。 |
-| `injectSteering(vectors:layers:scales:)` | 应用调控向量。 |
-| `removeSteering()` | 移除调控向量。 |
+| `injectLoRA(adapterPath:scale:)` | Loads an adapter into the engine session. |
+| `removeLoRA()` | Removes the active adapter. |
+| `captureHiddenState(tokens:layer:)` | Captures a profile-analysis vector. |
+| `injectSteering(vectors:layers:scales:)` | Applies steering vectors. |
+| `removeSteering()` | Removes steering vectors. |
 
 ## EvolutionState
 
@@ -66,14 +66,14 @@ Edge Halo 所需的 engine-session 操作。
 public enum EvolutionState: Sendable, Equatable
 ```
 
-| Case | 描述 |
+| Case | Description |
 | --- | --- |
-| `.idle` | 没有活跃的进化任务。 |
-| `.collecting(progress:)` | 正在收集数据，朝下一次训练触发推进。 |
-| `.readyToTrain` | 已有足够数据可以请求训练。 |
-| `.training` | 正在用户的 Mac 上训练。 |
-| `.validating` | 正在验证新适配器。 |
-| `.evolved(version:)` | 适配器处于活跃状态。 |
+| `.idle` | No active evolution task. |
+| `.collecting(progress:)` | Collecting data toward the next training trigger. |
+| `.readyToTrain` | Enough data is available to request training. |
+| `.training` | Training is running on the user's Mac. |
+| `.validating` | A new adapter is being validated. |
+| `.evolved(version:)` | An adapter is active. |
 
 ## AdapterVersion
 
@@ -81,7 +81,7 @@ public enum EvolutionState: Sendable, Equatable
 public struct AdapterVersion: Sendable, Equatable, Codable
 ```
 
-| 属性 | 类型 |
+| Property | Type |
 | --- | --- |
 | `version` | `Int` |
 | `hash` | `String` |
@@ -95,12 +95,12 @@ public struct AdapterVersion: Sendable, Equatable, Codable
 public enum AdapterDecision: Sendable, Equatable
 ```
 
-| Case | 描述 |
+| Case | Description |
 | --- | --- |
-| `.apply` | 立即应用。 |
-| `.validateFirst(rounds:)` | 应用前先运行本地验证。 |
-| `.rejectIncompatible(reason:)` | 因基础模型不匹配而拒绝。 |
-| `.rejectOutdated` | 因当前活跃适配器更新而拒绝。 |
+| `.apply` | Apply immediately. |
+| `.validateFirst(rounds:)` | Run local validation before applying. |
+| `.rejectIncompatible(reason:)` | Reject due to base-model mismatch. |
+| `.rejectOutdated` | Reject because the active adapter is newer. |
 
 ## UserProfile
 
@@ -108,7 +108,7 @@ public enum AdapterDecision: Sendable, Equatable
 public struct UserProfile: Sendable
 ```
 
-| 属性 | 类型 |
+| Property | Type |
 | --- | --- |
 | `directions` | `[[Float]]` |
 | `directionNames` | `[String]` |
@@ -123,8 +123,8 @@ public struct UserProfile: Sendable
 public enum HaloDataEvent: Sendable
 ```
 
-| Case | 描述 |
+| Case | Description |
 | --- | --- |
-| `.feedback(accepted:conversationID:)` | 用户对响应的反馈。 |
-| `.correction(original:corrected:conversationID:)` | 用户对响应的 correction。 |
-| `.sessionCompleted(turnCount:conversationID:)` | 已完成的对话会话。 |
+| `.feedback(accepted:conversationID:)` | User feedback for a response. |
+| `.correction(original:corrected:conversationID:)` | User correction for a response. |
+| `.sessionCompleted(turnCount:conversationID:)` | Completed conversation session. |

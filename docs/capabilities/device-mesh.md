@@ -5,8 +5,8 @@ title: Device Mesh
 
 # Device mesh
 
-Edge Mesh lets an app discover and use nearby user-owned Apple devices on the
-local network.
+Edge Mesh lets an app discover and use nearby user-owned devices on the
+local network. Currently supports Apple platforms, with cross-platform support planned.
 
 Use it when one device is best at sensing, another is best for daily
 interaction, and a larger Mac is best for heavier local work. The user should

@@ -5,7 +5,7 @@ title: Performance Tuning
 
 # Performance tuning
 
-Measure performance with the metrics Edge Kit records after generation.
+Measure performance with the metrics Edge Kit records after generation. Edge Kit's inference path uses **DSR Attention** to keep throughput stable across long multi-turn conversations.
 
 ## Read inference metrics
 
@@ -56,6 +56,27 @@ engine.clearPromptCache()
 ## Monitor process footprint
 
 Use process physical footprint when debugging memory pressure. Available-memory APIs can be misleading on iOS because system limits are lower than physical RAM.
+
+## Reference benchmarks
+
+Real-device measurements with Qwen3.5 models, 20-turn conversation stress tests:
+
+| Device | Model | First turn | Median | T20 | TTFT |
+|--------|-------|-----------|--------|-----|------|
+| iPhone 17 (A19, 11GB) | 9B-4bit | 12.6 TPS | 11.6 TPS | 10.8 TPS | 566ms |
+| iPhone Air (A19, 11GB) | 9B-4bit | 9.5 TPS | 7.8 TPS | 7.5 TPS | 918ms |
+| iPhone 17 (A19, 11GB) | 4B-4bit | 21.8 TPS | 19.6 TPS | 17.3 TPS | 420ms |
+
+Custom engine prefill vs generic framework (M2 Ultra 192GB):
+
+| Workload | Edge Engine | Generic | Speedup |
+|----------|-----------|---------|---------|
+| Text prefill (4B) | 1,305 TPS | 187 TPS | 7× |
+| Text prefill (9B) | 843 TPS | 122 TPS | 6.9× |
+| VLM image prefill (4B) | 1,803 TPS | 851 TPS | 2.1× |
+| VLM image prefill (9B) | 1,234 TPS | 511 TPS | 2.4× |
+
+Use these numbers as orientation. Your results will vary based on model, device thermal state, and conversation length.
 
 ## Practical checklist
 

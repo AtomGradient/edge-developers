@@ -5,7 +5,7 @@ title: Platform Requirements
 
 # Platform requirements
 
-Edge products target Apple Silicon devices.
+Edge products currently ship on Apple platforms. Android, Linux, HarmonyOS, and Windows support is on the roadmap — the cross-platform architecture is ready, and Apple is the first target.
 
 ## Minimum versions
 

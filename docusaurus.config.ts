@@ -4,7 +4,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
   title: 'AtomGradient Edge',
-  tagline: 'On-device AI for Apple Silicon',
+  tagline: 'Make AI grow on every device',
   favicon: 'img/favicon.ico',
 
   future: {

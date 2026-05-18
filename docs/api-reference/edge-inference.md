@@ -5,7 +5,7 @@ title: EdgeInference
 
 # EdgeInference API reference
 
-`EdgeInference` contains the primary model engines and shared inference types.
+`EdgeInference` contains the primary model engines and shared inference types. Inference is powered by Edge Engine with **DSR Attention** for efficient long-context multi-turn sessions.
 
 ## LLMEngine
 

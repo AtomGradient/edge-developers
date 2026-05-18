@@ -1,36 +1,40 @@
 ---
 sidebar_position: 6
-title: 设备网格
+title: Device Mesh
 ---
 
-# 设备网格
+# Device mesh
 
-Edge Mesh 让 app 可以在本地网络上发现并使用附近的用户自有 Apple 设备。
+Edge Mesh lets an app discover and use nearby user-owned devices on the
+local network. Currently supports Apple platforms, with cross-platform support planned.
 
-当一个设备最适合感知，另一个设备最适合日常交互，而更大的 Mac 最适合较重的本地工作时，可以使用它。用户应该体验到一个私有系统，而不是一组需要手动管理的设备。
+Use it when one device is best at sensing, another is best for daily
+interaction, and a larger Mac is best for heavier local work. The user should
+experience one private system, not a set of manually managed devices.
 
-## 设备网格做什么
+## What device mesh does
 
-Edge Mesh 提供：
+Edge Mesh provides:
 
-- 本地设备发现。
-- 带能力和健康信息的类型化设备模型。
-- 帮助选择模型规模任务应在哪台设备上运行的 helper。
-- 面向用户自有 peer 的信任管理。
+- Local device discovery.
+- A typed device model with capability and health information.
+- Helpers for choosing where a model-sized task should run.
+- Trust management for user-owned peers.
 
-典型设置：
+A typical setup:
 
-| 设备 | 角色 |
+| Device | Role |
 | --- | --- |
-| iPhone | 传感和采集设备。 |
-| MacBook | 日常交互设备。 |
-| Mac Studio | 高容量本地计算设备。 |
+| iPhone | Sensor and capture device. |
+| MacBook | Daily interaction device. |
+| Mac Studio | High-capacity local compute device. |
 
-app 决定如何使用选中的设备。Edge Mesh 提供本地设备图和选择 helper。
+The app decides what to do with the selected device. Edge Mesh provides the
+local device graph and selection helpers.
 
-## 设备发现
+## Device discovery
 
-创建 `MeshEngine`，广播本地设备，并观察 `peers`。
+Create a `MeshEngine`, advertise the local device, and observe `peers`.
 
 ```swift
 import EdgeMesh
@@ -79,7 +83,7 @@ final class MeshViewModel: ObservableObject {
 }
 ```
 
-在 SwiftUI 中显示发现到的 peer：
+Show discovered peers in SwiftUI:
 
 ```swift
 struct MeshView: View {
@@ -109,11 +113,13 @@ struct MeshView: View {
 }
 ```
 
-生产 app 需要添加本地网络用途说明，并在与目标设备相同的 Wi-Fi 网络上测试发现。
+For production apps, add a local-network usage string and test discovery on the
+same Wi-Fi network as the target devices.
 
-## 任务路由
+## Task routing
 
-当 app 知道大致模型大小，并希望为任务找到合理 peer 时，使用 `bestNode(for:)`。
+Use `bestNode(for:)` when your app knows the approximate model size and wants a
+reasonable peer for the task.
 
 ```swift
 @MainActor
@@ -128,15 +134,15 @@ if let node = selectDevice(forModelSize: 7.0, mesh: mesh) {
 }
 ```
 
-选择符合产品场景的策略：
+Choose the strategy that matches the product moment:
 
-| 策略 | 适用场景 |
+| Strategy | Use when |
 | --- | --- |
-| `.bestFit` | 需要均衡默认选择。 |
-| `.leastLoaded` | 更偏好当前可用内存更多的 peer。 |
-| `.fastest` | 更偏好测得吞吐更高的 peer。 |
+| `.bestFit` | You want the balanced default. |
+| `.leastLoaded` | You prefer the peer with more currently available memory. |
+| `.fastest` | You prefer the peer with higher measured throughput. |
 
-如果需要更多 UI 细节，请请求 routing plan：
+If you need more UI detail, ask for a routing plan:
 
 ```swift
 let plan = mesh.routingPlan(for: 7.0)
@@ -144,17 +150,18 @@ print(plan.mode)
 print(plan.primaryNode?.displayName ?? "local")
 ```
 
-将路由输出视为建议。你的 app 仍然应处理 fallback、取消和用户选择。
+Treat routing output as a recommendation. Your app should still handle
+fallback, cancellation, and user choice.
 
-## 设备层级
+## Device tiers
 
-`MeshTopology` 将设备分组到不同层级，让产品 UI 保持简单：
+`MeshTopology` groups devices into tiers so product UI can stay simple:
 
-| 层级 | 示例角色 | 典型设备 |
+| Tier | Example role | Typical device |
 | --- | --- | --- |
-| `tier0` | 采集和感知 | iPhone、iPad |
-| `tier1` | 日常交互 | MacBook、iPad Pro |
-| `tier2` | 高容量本地工作 | Mac Studio、Mac mini |
+| `tier0` | Capture and sensing | iPhone, iPad |
+| `tier1` | Daily interaction | MacBook, iPad Pro |
+| `tier2` | High-capacity local work | Mac Studio, Mac mini |
 
 ```swift
 let topology = mesh.topology
@@ -164,11 +171,13 @@ print("Daily devices:", topology.tier1.count)
 print("High-capacity devices:", topology.tier2.count)
 ```
 
-将层级用于标签和默认选择。除非用户明确需要控制，否则避免把低层设备选择细节暴露为产品设置。
+Use tiers for labels and defaults. Avoid exposing low-level device selection
+details as product settings unless your users explicitly need that control.
 
-## 信任
+## Trust
 
-发现告诉你附近有什么设备。信任告诉你 app 被允许使用什么设备。
+Discovery tells you what is nearby. Trust tells you what your app is allowed to
+use.
 
 ```swift
 try mesh.setupSecurity(
@@ -181,20 +190,22 @@ let trustedPeers = try mesh.listTrustedPeers()
 print(trustedPeers.map(\.displayName))
 ```
 
-当用户从设置中移除设备时，撤销信任并从本地状态中删除：
+When a user removes a device from settings, revoke it and remove it from local
+state:
 
 ```swift
 try mesh.revoke(peerId: "mac-studio")
 try mesh.deletePeer(peerId: "mac-studio")
 ```
 
-## 隐私
+## Privacy
 
-Edge Mesh 面向私有本地网络设计：
+Edge Mesh is designed for private local networks:
 
-- 网格发现或本地任务交接不需要云端 relay。
-- 设备应由用户拥有并被显式信任。
-- 当工作离开当前设备时，app 应显示哪台设备处于活跃状态。
-- 本地网络权限文案应解释用户可见的收益。
+- No cloud relay is required for mesh discovery or local task handoff.
+- Devices should be user-owned and explicitly trusted.
+- Apps should show which device is active when work leaves the current device.
+- Local-network permission text should explain the user-visible benefit.
 
-除非用户已启用该工作流且 peer 可信，否则不要向 peer 发送原始 prompt、私有训练示例或用户 correction。
+Do not send raw prompts, private training examples, or user corrections to a
+peer unless the user has enabled that workflow and the peer is trusted.

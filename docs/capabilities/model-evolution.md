@@ -6,13 +6,14 @@ title: Model Evolution
 # Model evolution
 
 Edge Halo lets a local model adapt to a user's preferences without sending
-private interaction data to a server.
+private interaction data to a server. It is built on the **patented HALO algorithm system** — AtomGradient's solution for on-device continuous learning, a problem that the entire industry (Google, OpenAI, Anthropic) is actively exploring in the cloud.
 
 Use it when your app needs:
 
 - A local profile that summarizes user preferences over time.
 - Lightweight adapters trained from user-owned data.
 - Runtime steering for small behavior adjustments without retraining.
+- All of the above without any data leaving the device.
 
 Edge Halo is a developer-preview package. The app remains the composition
 point: it connects Edge Kit inference, Edge Halo evolution, local storage, and
