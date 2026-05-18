@@ -3,11 +3,11 @@ sidebar_position: 6
 title: EdgeData
 ---
 
-# EdgeData API 参考
+# EdgeData API reference
 
-`EdgeData` 为 Edge app 提供本地数据收集和分类 primitive。
+`EdgeData` provides local data collection and classification primitives for Edge apps.
 
-它是支撑基础设施。app-specific 业务规则应留在 app 内。
+It is supporting infrastructure. Keep app-specific business rules in the app.
 
 ## Edge
 
@@ -15,39 +15,39 @@ title: EdgeData
 public enum Edge
 ```
 
-本地数据操作的静态 API。
+Static API for local data operations.
 
-| 方法 | 描述 |
+| Method | Description |
 | --- | --- |
-| `bootstrap(dbQueue:trainingDataSink:)` | 使用本地 GRDB queue 和可选训练 sink 初始化 EdgeData。 |
-| `registerSchema(_:)` | 在启动时注册 app 数据形状。 |
-| `schema(_:)` | 查找已注册的数据形状。 |
-| `registeredSchemaNames()` | 列出已注册名称。 |
-| `recordRaw(fact:customFactId:)` | 记录未分类的本地数据。 |
-| `record(fact:)` | 记录已经分类的本地数据。 |
-| `recordEvent(...)` | 记录 AI 交互事件。 |
-| `countFeedbackEvents(namespace:)` | 统计带 feedback 的事件。 |
-| `queryFacts(namespace:schema:status:limit:)` | 查询本地 fact。 |
-| `countFacts(namespace:schema:status:)` | 统计本地 fact。 |
-| `correctClassification(...)` | 将用户 correction 应用到分类结果。 |
-| `onClassified(_:)` | 注册分类成功回调。 |
-| `onClassificationFailed(_:)` | 注册分类失败回调。 |
-| `fetchFact(id:)` | 按 ID 获取单个 fact。 |
-| `reclassifyAsync(...)` | 请求重新分类。 |
+| `bootstrap(dbQueue:trainingDataSink:)` | Initializes EdgeData with a local GRDB queue and optional training sink. |
+| `registerSchema(_:)` | Registers an app data shape at launch. |
+| `schema(_:)` | Looks up a registered data shape. |
+| `registeredSchemaNames()` | Lists registered names. |
+| `recordRaw(fact:customFactId:)` | Records unclassified local data. |
+| `record(fact:)` | Records already-classified local data. |
+| `recordEvent(...)` | Records an AI interaction event. |
+| `countFeedbackEvents(namespace:)` | Counts events with feedback. |
+| `queryFacts(namespace:schema:status:limit:)` | Queries local facts. |
+| `countFacts(namespace:schema:status:)` | Counts local facts. |
+| `correctClassification(...)` | Applies a user correction to a classification. |
+| `onClassified(_:)` | Registers a callback for successful classification. |
+| `onClassificationFailed(_:)` | Registers a callback for failed classification. |
+| `fetchFact(id:)` | Fetches one fact by ID. |
+| `reclassifyAsync(...)` | Requests reclassification. |
 
-## 核心类型
+## Core types
 
-| 类型 | 描述 |
+| Type | Description |
 | --- | --- |
-| `Sensitivity` | `.localOnly`、`.meshOk`、`.trainingOk`。 |
-| `FactStatus` | 本地分类生命周期状态。 |
-| `FieldType` | app 数据形状支持的字段种类。 |
-| `FieldDef` | 字段声明。 |
-| `SemanticLabels` | 主时间戳、值和实体字段的标签。 |
-| `SchemaDef` | app 数据形状声明。 |
-| `RawFact` | 等待分类的原始本地 payload。 |
-| `Fact` | 已分类的本地 payload。 |
-| `QueryStatus` | 针对已分类、待处理、失败或全部 fact 的查询过滤器。 |
+| `Sensitivity` | `.localOnly`, `.meshOk`, `.trainingOk`. |
+| `FactStatus` | Local classification lifecycle state. |
+| `FieldType` | Supported field kinds for app data shapes. |
+| `FieldDef` | Field declaration. |
+| `SemanticLabels` | Labels for primary timestamp, value, and entity fields. |
+| `SchemaDef` | App data shape declaration. |
+| `RawFact` | Raw local payload waiting for classification. |
+| `Fact` | Classified local payload. |
+| `QueryStatus` | Query filter for classified, pending, failed, or all facts. |
 
 ## ClassificationDaemon
 
@@ -55,14 +55,14 @@ public enum Edge
 public actor ClassificationDaemon
 ```
 
-原始本地数据的后台分类器。
+Background classifier for raw local data.
 
-| API | 描述 |
+| API | Description |
 | --- | --- |
-| `ClassificationDaemon.shared` | 共享 daemon。 |
-| `start(namespace:candidateSchemas:llmClient:toolNames:promptBuilder:)` | 为某个 namespace 启动分类。 |
-| `stop()` | 停止 daemon。 |
-| `wake()` | 从 idle sleep 中唤醒 daemon。 |
+| `ClassificationDaemon.shared` | Shared daemon. |
+| `start(namespace:candidateSchemas:llmClient:toolNames:promptBuilder:)` | Starts classification for a namespace. |
+| `stop()` | Stops the daemon. |
+| `wake()` | Wakes the daemon from idle sleep. |
 
 ## EdgeClassificationLLMClient
 
@@ -70,13 +70,13 @@ public actor ClassificationDaemon
 public protocol EdgeClassificationLLMClient: Sendable
 ```
 
-app 实现此协议，以提供本地 LLM 分类。
+The app implements this protocol to provide local LLM classification.
 
-| 要求 | 描述 |
+| Requirement | Description |
 | --- | --- |
-| `isBusy` | 本地 LLM 是否正忙于面向用户的工作。 |
-| `generate(messages:)` | 生成分类响应。 |
-| `generate(messages:toolNames:)` | 可选的 tool-aware 生成路径。 |
+| `isBusy` | Whether the local LLM is busy with user-facing work. |
+| `generate(messages:)` | Generates a classification response. |
+| `generate(messages:toolNames:)` | Optional tool-aware generation path. |
 
 ## ClassificationParser
 
@@ -84,14 +84,14 @@ app 实现此协议，以提供本地 LLM 分类。
 public enum ClassificationParser
 ```
 
-解析本地 LLM 分类输出。
+Parses local LLM classification output.
 
-| 方法 | 描述 |
+| Method | Description |
 | --- | --- |
-| `parse(llmOutput:candidateSchemas:)` | 解析并验证分类响应。 |
-| `stripMarkdownCodeFence(_:)` | 移除 Markdown code fence wrapper。 |
-| `extractJSONObject(_:)` | 从文本中提取第一个 JSON object。 |
+| `parse(llmOutput:candidateSchemas:)` | Parses and validates a classification response. |
+| `stripMarkdownCodeFence(_:)` | Removes a Markdown code fence wrapper. |
+| `extractJSONObject(_:)` | Extracts the first JSON object from text. |
 
-## 隐私指南
+## Privacy guidance
 
-使用 `Sensitivity` 将 local-only 数据留在本地。不要在日志、分析或协作消息中包含原始用户 correction 文本。
+Use `Sensitivity` to keep local-only data local. Do not include raw user correction text in logs, analytics, or collaboration messages.

@@ -1,51 +1,51 @@
 ---
 sidebar_position: 1
-title: 支持的模型
+title: Supported Models
 ---
 
-# 支持的模型
+# Supported models
 
-Edge Kit 支持符合各 engine 预期模型家族布局的本地模型目录。
+Edge Kit supports local model directories that follow the expected model family layout for each engine.
 
-:::info 开发者预览
-在开发者预览期间，模型支持范围正在扩展。发布前请在目标设备类别上验证每个模型。
+:::info Developer Preview
+Model support is expanding during Developer Preview. Validate each model on the target device class before shipping.
 :::
 
-## 类别
+## Categories
 
-| 类别 | Engine | 输入 | 输出 |
+| Category | Engine | Input | Output |
 | --- | --- | --- | --- |
-| LLM | `LLMEngine` | 文本消息 | 流式文本 |
-| VLM | `VLMEngine` | 文本消息和图像 | 流式文本 |
-| STT | `WhisperEngine` 或 `STTEngine` | 音频 | 文本 |
-| TTS | `TTSEngine` | 文本 | PCM 音频 |
+| LLM | `LLMEngine` | Text messages | Streaming text |
+| VLM | `VLMEngine` | Text messages and images | Streaming text |
+| STT | `WhisperEngine` or `STTEngine` | Audio | Text |
+| TTS | `TTSEngine` | Text | PCM audio |
 
-## 推荐预览模型
+## Recommended preview models
 
-| 类别 | 推荐起点 |
+| Category | Recommended starting point |
 | --- | --- |
-| LLM | Qwen3-4B-4bit、Qwen3.5-0.8B、Qwen3.5-4B-4bit、Qwen3.5-9B-4bit |
+| LLM | Qwen3-4B-4bit, Qwen3.5-0.8B, Qwen3.5-4B-4bit, Qwen3.5-9B-4bit |
 | VLM | Qwen3.5-4B-4bit VLM variant |
-| STT | Qwen3-ASR-0.6B-8bit 或 Whisper-family models，取决于 engine |
+| STT | Qwen3-ASR-0.6B-8bit or Whisper-family models, depending on the engine |
 | TTS | Qwen3-TTS-12Hz-0.6B-CustomVoice-bf16 |
 
-## 设备适配
+## Device fit
 
-| 模型大小 | 推荐设备类别 |
+| Model size | Recommended device class |
 | --- | --- |
-| 0.8B | 任意 Apple Silicon 设备 |
-| 4B | 建议 8 GB 或更多统一内存 |
-| 9B | 建议 16 GB 或更多统一内存，或已验证的高内存 iOS 设备 |
+| 0.8B | Any Apple Silicon device |
+| 4B | 8 GB or more unified memory recommended |
+| 9B | 16 GB or more unified memory recommended, or a validated high-memory iOS device |
 
-iOS 内存限制低于物理 RAM。请在你计划支持的确切设备类别上测试。
+iOS memory limits are lower than physical RAM. Test on the exact device class you plan to support.
 
-## 模型来源
+## Model source
 
-预览模型通过 Hugging Face 分发。Edge Kit 可以从以下来源加载：
+Preview models are distributed through Hugging Face. Edge Kit can load from:
 
-- 已包含模型文件的本地目录。
-- 指向 Hugging Face repository 的 `ModelConfig` 条目。
-- 从 Edge Studio 导出的模型。
+- A local directory that already contains the model files.
+- A `ModelConfig` entry that points to a Hugging Face repository.
+- A model exported from Edge Studio.
 
 ```swift
 import EdgeInference
@@ -56,10 +56,10 @@ let modelURL = URL(fileURLWithPath: "/path/to/model")
 try await engine.loadLocal(directory: modelURL)
 ```
 
-## 自定义模型
+## Custom models
 
-使用与受支持模型家族兼容的 safetensors-format 模型。为了获得最佳结果：
+Use safetensors-format models compatible with the supported model families. For best results:
 
-- 将 tokenizer 文件放在 `config.json` 旁边。
-- 测试生成、内存使用和卸载/重新加载行为。
-- 当你需要 Edge Kit-ready bundle 时，通过 Edge Studio 导出。
+- Keep tokenizer files next to `config.json`.
+- Test generation, memory use, and unload/reload behavior.
+- Export through Edge Studio when you need an Edge Kit-ready bundle.

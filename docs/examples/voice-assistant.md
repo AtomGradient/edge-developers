@@ -240,5 +240,5 @@ final class VoiceAssistantViewModel: ObservableObject {
 ## Next steps
 
 - Add text and image context with [Vision chat](/docs/examples/vision-chat).
-- See the [speech-to-text](/docs/capabilities/speech-to-text) and
-  [text-to-speech](/docs/capabilities/text-to-speech) guides.
+- See the [speech-to-text](/docs/build/speech-to-text) and
+  [text-to-speech](/docs/build/text-to-speech) guides.

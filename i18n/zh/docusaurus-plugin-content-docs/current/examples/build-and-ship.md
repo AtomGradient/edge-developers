@@ -1,65 +1,69 @@
 ---
 sidebar_position: 5
-title: 构建并发布 iOS App
+title: Build & Ship iOS App
 ---
 
-# 示例：构建并发布 iOS app
+# Example: Build and ship an iOS app
 
-本 walkthrough 将一个模型从 Edge Studio 带到由 Edge Scaffold 生成并签名的 iOS app。
+This walkthrough takes a model from Edge Studio to a signed iOS app generated
+with Edge Scaffold.
 
-## 本示例构建什么
+## What this example builds
 
-你将创建一个私有端侧聊天 app，包含：
+You will create a private on-device chat app with:
 
-- 在 Edge Studio 中优化的模型。
-- 由 Edge Scaffold 生成的 SwiftUI app。
-- 一个用于 app 名称、模型类别和 prompt 的配置文件。
-- 在真实 iPhone 或 iPad 上测试过的 Release build。
+- A model optimized in Edge Studio.
+- A generated SwiftUI app from Edge Scaffold.
+- One configuration file for the app name, model category, and prompt.
+- A release build tested on a real iPhone or iPad.
 
-## 1. 优化模型
+## 1. Optimize the model
 
-打开 Edge Studio 并加载源模型。
+Open Edge Studio and load the source model.
 
-对于第一个 app，请使用简单模式：
+For a first app, use Simple mode:
 
-1. 选择目标设备类别。
-2. 选择模型类别。
-3. 运行推荐优化。
-4. 在目标设备画像上验证短 prompt。
+1. Choose the target device class.
+2. Select the model category.
+3. Run the recommended optimization.
+4. Validate a short prompt on the target device profile.
 
-当你需要自定义 benchmark matrix、多个导出目标，或手动比较模型变体时，使用 Pro pipeline。
+Use the Pro pipeline when you need a custom benchmark matrix, multiple export
+targets, or manual comparison across model variants.
 
-## 2. 导出 Edge Scaffold app
+## 2. Export an Edge Scaffold app
 
-在 Edge Studio 中选择 **Export**，然后选择 **Edge Scaffold app**。
+In Edge Studio, choose **Export** and select **Edge Scaffold app**.
 
-需要检查的导出设置：
+Export settings to check:
 
-| 设置 | 建议 |
+| Setting | Recommendation |
 | --- | --- |
-| App name | 使用你希望在 Xcode 中看到的产品名称。 |
-| Model category | 与导出的模型匹配：LLM、VLM、TTS 或 STT。 |
-| Model delivery | 小模型使用 bundle；较大模型使用 remote 或 on-demand delivery。 |
-| Minimum OS | 与你验证过的设备匹配。 |
+| App name | Use the product name you want to see in Xcode. |
+| Model category | Match the exported model: LLM, VLM, TTS, or STT. |
+| Model delivery | Bundle for small models; remote or on-demand delivery for larger ones. |
+| Minimum OS | Match the devices you validated. |
 
-Edge Studio 会写入一个 ZIP，其中包含 Edge Kit 所需的 app 模板、配置和模型 metadata。
+Edge Studio writes a ZIP containing the app template, configuration, and model
+metadata needed by Edge Kit.
 
-## 3. 在 Xcode 中打开
+## 3. Open in Xcode
 
-解压导出文件，并在 Xcode 中打开生成的项目。
+Unzip the export and open the generated project in Xcode.
 
-运行前：
+Before running:
 
-1. 选择你的 development team。
-2. 设置唯一 bundle identifier。
-3. 选择真实设备作为 run destination。
-4. 确认 deployment target 是 iOS 17 或更高。
+1. Select your development team.
+2. Set a unique bundle identifier.
+3. Choose a real device as the run destination.
+4. Confirm the deployment target is iOS 17 or later.
 
-使用 Release build 进行性能验证。Debug build 适合编辑 UI，但不代表最终加载时间或吞吐。
+Use a Release build for performance validation. Debug builds are useful while
+editing UI, but they do not represent final load time or throughput.
 
-## 4. 配置 ScaffoldConfig.swift
+## 4. Configure ScaffoldConfig.swift
 
-`ScaffoldConfig.swift` 控制生成 app 的行为。
+`ScaffoldConfig.swift` controls the generated app behavior.
 
 ```swift
 import EdgeInference
@@ -84,25 +88,26 @@ enum ScaffoldConfig {
 }
 ```
 
-### ScaffoldConfig 参考
+### ScaffoldConfig reference
 
-| 字段 | 控制内容 |
+| Field | Controls |
 | --- | --- |
-| `appName` | app UI 中使用的显示名称。 |
-| `appDescription` | 简短 onboarding 和设置描述。 |
-| `defaultSystemPrompt` | 聊天类 app 的初始 system instruction。 |
-| `modelCategory` | app 使用哪条 UI 和 engine 路径。 |
-| `modelID` | 用于日志、缓存 key 和设置的稳定标识符。 |
-| `modelDisplayName` | 人类可读的模型名称。 |
-| `modelSizeGB` | 设备检查中显示的近似大小。 |
-| `bundleModelName` | 将模型随 app 发布时的 bundle 文件夹名称。 |
-| `defaultTTSSpeaker` | TTS 模型的可选默认说话人。 |
+| `appName` | Display name used in the app UI. |
+| `appDescription` | Short onboarding and settings description. |
+| `defaultSystemPrompt` | Initial system instruction for chat-style apps. |
+| `modelCategory` | Which UI and engine path the app uses. |
+| `modelID` | Stable identifier for logs, cache keys, and settings. |
+| `modelDisplayName` | Human-readable model name. |
+| `modelSizeGB` | Approximate size shown in device checks. |
+| `bundleModelName` | Bundle folder name when shipping the model inside the app. |
+| `defaultTTSSpeaker` | Optional default speaker for TTS models. |
 
-## 5. 配置权限和 entitlements
+## 5. Configure permissions and entitlements
 
-对于较大模型，请在 iOS target 上启用 Increased Memory Limit entitlement。
+For larger models, enable the Increased Memory Limit entitlement on the iOS
+target.
 
-为 app 暴露的能力添加 usage string：
+Add usage strings for the capabilities your app exposes:
 
 ```xml
 <key>NSMicrophoneUsageDescription</key>
@@ -115,47 +120,50 @@ enum ScaffoldConfig {
 <string>This app discovers your nearby devices for private on-device AI.</string>
 ```
 
-只包含已发布 app 实际使用的权限。
+Only include permissions that the shipped app actually uses.
 
-## 6. 在设备上测试
+## 6. Test on device
 
-Archive 前运行此检查清单：
+Run this checklist before archiving:
 
-| 区域 | 验证内容 |
+| Area | What to verify |
 | --- | --- |
-| First launch | app 打开，模型设置出现，没有缺失文件。 |
-| Model load | 在最低支持设备上冷加载成功。 |
-| Generation | 第一条回复流式输出并完成。 |
-| Long session | 多轮使用保持响应。 |
-| Backgrounding | app 处理后台和前台切换。 |
-| Storage | 模型缓存和用户数据可以清理。 |
-| Permissions | 只出现必需的权限提示。 |
+| First launch | App opens, model setup appears, no missing files. |
+| Model load | Cold load succeeds on the minimum supported device. |
+| Generation | First reply streams and completes. |
+| Long session | Multi-turn use stays responsive. |
+| Backgrounding | App handles background and foreground transitions. |
+| Storage | Model cache and user data can be cleared. |
+| Permissions | Only required prompts appear. |
 
-对于 VLM、TTS、STT 或 mesh app，在提交前请在设备上端到端运行对应功能路径。
+For VLM, TTS, STT, or mesh apps, run the feature-specific path end to end on
+device before submission.
 
-## 7. Archive 并提交
+## 7. Archive and submit
 
-在 Xcode 中：
+In Xcode:
 
-1. 选择 **Any iOS Device** 或你的 distribution destination。
-2. 选择 **Product > Archive**。
-3. 打开 Organizer。
-4. 验证 archive。
-5. 上传到 App Store Connect。
+1. Select **Any iOS Device** or your distribution destination.
+2. Choose **Product > Archive**.
+3. Open Organizer.
+4. Validate the archive.
+5. Upload to App Store Connect.
 
-在 App Store Connect 中，确保 privacy nutrition labels 与 app 实际行为一致。如果 app 将所有 prompt、音频、图像和模型数据都留在设备上，请在 review notes 和用户可见文案中明确说明。
+In App Store Connect, make sure the privacy nutrition labels match the app's
+actual behavior. If the app keeps all prompts, audio, images, and model data on
+device, say that clearly in the review notes and in user-facing copy.
 
-## 部署检查清单
+## Deployment checklist
 
-- App name、icon、bundle ID 和 signing team 已最终确定。
-- 需要时已启用 Increased Memory Limit entitlement。
-- 模型交付策略已测试：bundled、on-demand 或 remote download。
-- 首次启动不依赖 developer-only 路径。
-- 已使用 Release build 在最低支持设备上测试。
-- 设置中包含清理本地模型和个性化数据的方法。
-- App Store 隐私回答与已发布 app 行为一致。
+- App name, icon, bundle ID, and signing team are final.
+- Increased Memory Limit entitlement is enabled when needed.
+- Model delivery strategy is tested: bundled, on-demand, or remote download.
+- First launch works without developer-only paths.
+- Minimum supported device has been tested with a Release build.
+- Settings include a way to clear local model and personalization data.
+- App Store privacy answers match the shipped app behavior.
 
-## 下一步
+## Next steps
 
-- 查看 [Edge Scaffold 配置](/docs/deployment/scaffold-configuration)。
-- 查看 [平台要求](/docs/guides/platform-requirements)。
+- See [Edge Scaffold configuration](/docs/optimize-and-ship/scaffold).
+- Review [Platform requirements](/docs/guides/platform-requirements).

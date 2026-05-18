@@ -123,8 +123,8 @@ for try await chunk in engine.generate(
 
 | Task | Guide |
 | --- | --- |
-| Text generation | [LLM guide](/docs/capabilities/text-generation) |
-| Vision-language inference | [VLM guide](/docs/capabilities/vision) |
+| Text generation | [LLM guide](/docs/build/text-generation) |
+| Vision-language inference | [VLM guide](/docs/build/vision) |
 | Model cache and downloads | [Model management](/docs/guides/model-management) |
 | iOS memory guidance | [Memory management](/docs/guides/memory-management) |
 | Platform support | [Platform requirements](/docs/guides/platform-requirements) |

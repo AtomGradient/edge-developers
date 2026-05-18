@@ -165,5 +165,5 @@ device, say that clearly in the review notes and in user-facing copy.
 
 ## Next steps
 
-- See [Edge Scaffold configuration](/docs/deployment/scaffold-configuration).
+- See [Edge Scaffold configuration](/docs/optimize-and-ship/scaffold).
 - Review [Platform requirements](/docs/guides/platform-requirements).

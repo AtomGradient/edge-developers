@@ -92,14 +92,13 @@ const config: Config = {
       style: 'light',
       links: [
         {
-          title: 'Capabilities',
+          title: 'Build',
           items: [
-            { label: 'Text Generation', to: '/docs/capabilities/text-generation' },
-            { label: 'Vision', to: '/docs/capabilities/vision' },
-            { label: 'Speech to Text', to: '/docs/capabilities/speech-to-text' },
-            { label: 'Text to Speech', to: '/docs/capabilities/text-to-speech' },
-            { label: 'Model Evolution', to: '/docs/capabilities/model-evolution' },
-            { label: 'Device Mesh', to: '/docs/capabilities/device-mesh' },
+            { label: 'Text Generation', to: '/docs/build/text-generation' },
+            { label: 'Vision', to: '/docs/build/vision' },
+            { label: 'Speech & Voice', to: '/docs/build/speech-to-text' },
+            { label: 'Model Evolution', to: '/docs/build/model-evolution' },
+            { label: 'Device Mesh', to: '/docs/build/device-mesh' },
           ],
         },
         {

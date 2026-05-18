@@ -1,23 +1,26 @@
 ---
 sidebar_position: 2
-title: 视觉聊天
+title: Vision Chat
 ---
 
-# 示例：视觉聊天
+# Example: Vision chat
 
-本示例构建一个 iOS app，让用户选择照片并围绕照片追问。
+This example builds an iOS app that lets the user pick a photo and ask
+follow-up questions about it.
 
-## 前置条件
+## Prerequisites
 
-- 已通过 Swift Package Manager 添加 Edge Kit。
-- 本地视觉语言模型目录。
-- iOS 17 或更高。
+- Edge Kit added with Swift Package Manager.
+- A local vision-language model directory.
+- iOS 17 or later.
 
-如果产品需要更广泛的照片访问，请为 app 添加照片图库访问说明。`PhotosPicker` 也可以在有限选择器流程中运行。
+Add photo-library access text to your app if your product needs broader photo
+access. `PhotosPicker` can also run with the limited picker flow.
 
-## 完整代码
+## Complete code
 
-创建新的 iOS SwiftUI app target，添加 Edge Kit，并将 app 代码替换为以下内容：
+Create a new iOS SwiftUI app target, add Edge Kit, and replace the app code
+with the following:
 
 ```swift
 import CoreImage
@@ -234,15 +237,16 @@ final class VisionChatViewModel: ObservableObject {
 }
 ```
 
-## 关键概念
+## Key concepts
 
-- 对接受文本和图像的模型使用 `VLMEngine`。
-- 当图像已经在内存中时，使用 `ciImages:` overload。
-- 像文本聊天一样保留对话历史。
-- 追问时附加当前图像，让模型可以把每个回答建立在所选照片上。
-- 从小图像开始，并在你支持的最低配置设备上验证。
+- Use `VLMEngine` for models that accept text and images.
+- Use the `ciImages:` overload when the image is already in memory.
+- Keep the conversation history just like text chat.
+- Attach the current image when asking follow-up questions so the model can
+  ground each answer in the selected photo.
+- Start with small images and validate on the minimum device you support.
 
-## 下一步
+## Next steps
 
-- 通过 [语音助手](/docs/examples/voice-assistant) 添加语音输入。
-- 查看 [视觉能力指南](/docs/capabilities/vision)。
+- Add speech input with [Voice assistant](/docs/examples/voice-assistant).
+- See the [Vision capability guide](/docs/build/vision).

@@ -298,6 +298,6 @@ corrections into logs or analytics.
 
 ## Next steps
 
-- See the [Model evolution capability guide](/docs/capabilities/model-evolution).
-- Use [Device mesh](/docs/capabilities/device-mesh) when training or adapter
+- See the [Model evolution capability guide](/docs/build/model-evolution).
+- Use [Device mesh](/docs/build/device-mesh) when training or adapter
   transfer should happen on another user-owned device.

@@ -249,4 +249,4 @@ final class VisionChatViewModel: ObservableObject {
 ## Next steps
 
 - Add speech input with [Voice assistant](/docs/examples/voice-assistant).
-- See the [Vision capability guide](/docs/capabilities/vision).
+- See the [Vision capability guide](/docs/build/vision).

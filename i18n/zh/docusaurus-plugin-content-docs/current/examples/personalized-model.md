@@ -1,17 +1,22 @@
 ---
 sidebar_position: 4
-title: 个性化模型
+title: Personalized Model
 ---
 
-# 示例：个性化模型
+# Example: Personalized model
 
-本示例构建使用 Edge Halo 进行模型进化的 app 侧控制界面。它收集本地事件、检查进化状态、验证适配器、应用适配器、更新调控并执行回滚。
+This example builds the app-side control surface for model evolution with
+Edge Halo. It collects local events, checks evolution state, validates an
+adapter, applies it, updates steering, and rolls back.
 
-画像分析任务本身应位于你的私有本地数据层之后。该任务准备 app 批准的示例，运行预览分析 API，然后将 `currentProfile` 暴露给这里展示的 UI。
+The profile-analysis job itself should live behind your private local data
+layer. That job prepares app-approved examples, runs the preview analysis API,
+and then exposes `currentProfile` to the UI shown here.
 
-## 完整代码
+## Complete code
 
-创建依赖 Edge Halo 的 SwiftUI app target，并将 app 代码替换为以下内容：
+Create a SwiftUI app target that depends on Edge Halo and replace the app code
+with the following:
 
 ```swift
 import EdgeHalo
@@ -269,27 +274,30 @@ final class DemoEngineSession: HaloEngineSession, @unchecked Sendable {
 }
 ```
 
-## 添加画像分析
+## Add profile analysis
 
-面向 app 的模式是：
+The app-facing pattern is:
 
-1. 只收集用户批准的事件。
-2. 为画像任务准备本地示例。
-3. 从你的本地数据层运行预览分析 API。
-4. 读取 `await halo.currentProfile`。
-5. 调用 `updateSteering(scales:)`，或在设置中显示画像。
+1. Collect only user-approved events.
+2. Prepare local examples for the profile job.
+3. Run the preview analysis API from your local data layer.
+4. Read `await halo.currentProfile`.
+5. Call `updateSteering(scales:)` or show the profile in settings.
 
-将数据准备代码保留在 app 私有范围内。它不应将原始 correction 复制到日志或分析中。
+Keep the data-preparation code private to your app. It should not copy raw
+corrections into logs or analytics.
 
-## 关键概念
+## Key concepts
 
-- app 组合 Edge Kit 和 Edge Halo。Edge Halo 不拥有你的 UI 或产品策略。
-- `HaloDataEvent` 记录 app 允许的信号。
-- `EvolutionState` 驱动训练、验证和回滚 UI。
-- `AdapterVersion` 和 `AdapterDecision` 保护适配器生命周期。
-- `UserProfile` 是本地用户数据，应能从设置中移除。
+- The app composes Edge Kit and Edge Halo. Edge Halo does not own your UI or
+  product policy.
+- `HaloDataEvent` records the signals your app allows.
+- `EvolutionState` drives training, validation, and rollback UI.
+- `AdapterVersion` and `AdapterDecision` protect the adapter lifecycle.
+- `UserProfile` is local user data and should be removable from settings.
 
-## 下一步
+## Next steps
 
-- 查看 [模型进化能力指南](/docs/capabilities/model-evolution)。
-- 当训练或适配器传输应发生在另一台用户自有设备上时，使用 [设备网格](/docs/capabilities/device-mesh)。
+- See the [Model evolution capability guide](/docs/build/model-evolution).
+- Use [Device mesh](/docs/build/device-mesh) when training or adapter
+  transfer should happen on another user-owned device.

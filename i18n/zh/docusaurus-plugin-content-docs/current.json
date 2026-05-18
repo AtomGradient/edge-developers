@@ -7,17 +7,13 @@
     "message": "快速开始",
     "description": "The label for category 'Get Started' in sidebar 'docsSidebar'"
   },
-  "sidebar.docsSidebar.category.Capabilities": {
-    "message": "能力",
-    "description": "The label for category 'Capabilities' in sidebar 'docsSidebar'"
+  "sidebar.docsSidebar.category.Build with Edge Kit": {
+    "message": "使用 Edge Kit 构建",
+    "description": "The label for category 'Build with Edge Kit' in sidebar 'docsSidebar'"
   },
-  "sidebar.docsSidebar.category.Edge Studio": {
-    "message": "Edge Studio",
-    "description": "The label for category 'Edge Studio' in sidebar 'docsSidebar'"
-  },
-  "sidebar.docsSidebar.category.Deployment": {
-    "message": "部署",
-    "description": "The label for category 'Deployment' in sidebar 'docsSidebar'"
+  "sidebar.docsSidebar.category.Optimize & Ship": {
+    "message": "优化与发布",
+    "description": "The label for category 'Optimize & Ship' in sidebar 'docsSidebar'"
   },
   "sidebar.docsSidebar.category.Guides": {
     "message": "指南",
