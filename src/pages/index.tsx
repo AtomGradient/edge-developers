@@ -1,7 +1,6 @@
 import React from 'react';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
-import CodeBlock from '@theme/CodeBlock';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './index.module.css';
 
@@ -71,19 +70,7 @@ const zhCapabilities = [
   },
 ];
 
-// Template literal at column 0 to avoid unwanted leading whitespace
-const quickstartCode = [
-  'import EdgeKit',
-  '',
-  'let engine = LLMEngine()',
-  'try await engine.load(from: "~/models/Qwen3.5-4B-4bit")',
-  '',
-  'for try await chunk in engine.generate(',
-  '    messages: [.user("What is edge AI?")]',
-  ') {',
-  '    print(chunk.text, terminator: "")',
-  '}',
-].join('\n');
+/* Code block rendered manually for full styling control */
 
 export default function Home(): React.JSX.Element {
   const {i18n} = useDocusaurusContext();
@@ -147,12 +134,31 @@ export default function Home(): React.JSX.Element {
           </div>
         </section>
 
-        {/* Quick Start */}
+        {/* Quick Start — hand-coded syntax highlighting for full control */}
         <section className={styles.codeSection}>
           <div className={styles.codeSectionLabel}>{isZh ? '快速开始' : 'Quick Start'}</div>
-          <CodeBlock language="swift" title={isZh ? '5 行代码：加载模型并流式输出 token' : '5 lines — load a model, stream tokens'}>
-            {quickstartCode}
-          </CodeBlock>
+          <div style={{background: '#1a1a1a', borderRadius: '16px', padding: '24px', overflowX: 'auto'}}>
+            <div style={{display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px'}}>
+              <div style={{width: 12, height: 12, borderRadius: '50%', background: '#ff5f57'}} />
+              <div style={{width: 12, height: 12, borderRadius: '50%', background: '#febc2e'}} />
+              <div style={{width: 12, height: 12, borderRadius: '50%', background: '#28c840'}} />
+              <span style={{marginLeft: 12, fontSize: '12px', fontFamily: 'monospace', color: '#5a5a5a'}}>
+                {isZh ? '5 行代码 — 加载模型，流式推理' : '5 lines — load a model, stream tokens'}
+              </span>
+            </div>
+            <pre style={{margin: 0, fontSize: '13px', fontFamily: "'SF Mono','Fira Code','Cascadia Code',monospace", lineHeight: 1.75, whiteSpace: 'pre', color: '#e8e4de'}}>
+<span style={{color: '#c678dd'}}>import</span>{' EdgeInference\n'}
+{'\n'}
+<span style={{color: '#c678dd'}}>let</span>{' engine = '}<span style={{color: '#e5c07b'}}>LLMEngine</span>{'()\n'}
+<span style={{color: '#c678dd'}}>try</span>{' '}<span style={{color: '#c678dd'}}>await</span>{' engine.'}<span style={{color: '#61afef'}}>loadLocal</span>{'(directory: modelURL)\n'}
+{'\n'}
+<span style={{color: '#c678dd'}}>for</span>{' '}<span style={{color: '#c678dd'}}>try</span>{' '}<span style={{color: '#c678dd'}}>await</span>{' chunk '}<span style={{color: '#c678dd'}}>in</span>{' engine.'}<span style={{color: '#61afef'}}>generate</span>{'(\n'}
+{'    messages: [.'}<span style={{color: '#61afef'}}>user</span>{'('}<span style={{color: '#98c379'}}>"What is edge AI?"</span>{')] \n'}
+{') {\n'}
+{'    '}<span style={{color: '#61afef'}}>print</span>{'(chunk.text, terminator: '}<span style={{color: '#98c379'}}>""</span>{')\n'}
+{'}'}
+            </pre>
+          </div>
         </section>
       </main>
     </Layout>
