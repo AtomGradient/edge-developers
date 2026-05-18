@@ -1,100 +1,100 @@
 ---
 sidebar_position: 7
-title: Troubleshooting
+title: 故障排查
 ---
 
-# Troubleshooting
+# 故障排查
 
-Common issues and how to fix them.
+常见问题及修复方式。
 
-## Model loading
+## 模型加载
 
-### "Model not found" or empty directory
+### “Model not found” 或空目录
 
-The model path must point to a directory containing `config.json` and weight files (`.safetensors`). Check:
+模型路径必须指向包含 `config.json` 和权重文件（`.safetensors`）的目录。请检查：
 
-- The path exists and is readable.
-- The directory contains `config.json`, not a nested subdirectory.
-- On iOS, use a path relative to the app's container — absolute paths change between installs.
+- 路径存在且可读。
+- 目录里直接包含 `config.json`，而不是嵌套子目录。
+- 在 iOS 上，使用相对于 app container 的路径，绝对路径会在安装之间变化。
 
-### Model loads but generation produces garbage
+### 模型能加载但生成内容异常
 
-Use an instruction-tuned model (names containing `-it-` or `-instruct`). Base models without instruction tuning generate incoherent text.
+使用 instruction-tuned 模型（名称包含 `-it-` 或 `-instruct`）。未经指令微调的 base model 会生成不连贯文本。
 
-### Model loads slowly on first launch
+### 首次启动加载模型很慢
 
-First load includes weight deserialization. Subsequent launches use cached data and are faster. Measure cold-load time from a Release build on the actual target device.
+首次加载包含权重反序列化。后续启动会使用缓存数据，速度更快。请在真实目标设备的 Release build 中测量冷启动加载时间。
 
-## Memory and crashes
+## 内存和崩溃
 
-### App terminated on iOS (Jetsam)
+### iOS 上 app 被终止（Jetsam）
 
-iOS terminates apps that exceed memory limits. These limits are well below physical RAM.
+iOS 会终止超过内存限制的 app。这些限制远低于物理 RAM。
 
-Fixes:
-- Enable the **Increased Memory Limit** entitlement in your Xcode target.
-- Use a smaller model (4B-4bit instead of 9B-4bit) on devices with limited memory.
-- Monitor with `phys_footprint` — do not trust `os_proc_available_memory()`, which can overestimate by 2–3 GB.
-- Let Edge Kit manage KV cache policy automatically. Do not override `memoryPolicy` unless you have measured the effect.
+修复方式：
+- 在 Xcode target 中启用 **Increased Memory Limit** entitlement。
+- 在内存有限的设备上使用更小模型（例如 4B-4bit，而不是 9B-4bit）。
+- 用 `phys_footprint` 监控，不要依赖 `os_proc_available_memory()`，它可能高估 2–3 GB。
+- 让 Edge Kit 自动管理 KV cache 策略。除非已经实测效果，否则不要覆盖 `memoryPolicy`。
 
-### Memory grows across turns
+### 内存随轮次增长
 
-Edge Kit's DSR Attention keeps memory bounded. If you see unbounded growth, check:
-- You are not accumulating references to old generation results.
-- For single-shot tasks (transcription, speech synthesis), the engine releases cache automatically.
-- Call `engine.unload()` when switching models.
+Edge Kit 的 DSR Attention 会让内存保持有界。如果看到无界增长，请检查：
+- 你没有持续持有旧生成结果的引用。
+- 对一次性任务（转写、语音合成），engine 会自动释放缓存。
+- 切换模型时调用 `engine.unload()`。
 
-## Build errors
+## 构建错误
 
-### SPM "missing module" or "cannot find type"
+### SPM “missing module” 或 “cannot find type”
 
-- Clean DerivedData: `rm -rf ~/Library/Developer/Xcode/DerivedData`
-- Ensure your `Package.swift` pins a specific version: `.package(url: "...", from: "1.0.0")`
-- Verify Xcode version is 15 or later.
+- 清理 DerivedData：`rm -rf ~/Library/Developer/Xcode/DerivedData`
+- 确保 `Package.swift` 固定了具体版本：`.package(url: "...", from: "1.0.0")`
+- 确认 Xcode 版本为 15 或更高。
 
-### "Metal library not found" or kernel crash
+### “Metal library not found” 或 kernel crash
 
-Edge Kit requires Metal GPU access. Simulators do not support Metal inference — always build for a real device or use the `generic/platform=iOS` destination for compile checks.
+Edge Kit 需要 Metal GPU 访问。模拟器不支持 Metal 推理。请始终构建到真实设备，或用 `generic/platform=iOS` destination 做编译检查。
 
-## Performance
+## 性能
 
-### TPS much lower than expected
+### TPS 明显低于预期
 
-- Confirm you are running a **Release** build. Debug builds are 2–10× slower.
-- Check thermal state — a hot device throttles significantly. Cool the device and retest.
-- Verify the model quantization level. A 4-bit model is faster than 8-bit or bf16.
+- 确认运行的是 **Release** build。Debug build 会慢 2–10 倍。
+- 检查热状态，过热设备会明显降频。冷却设备后重新测试。
+- 确认模型量化等级。4-bit 模型通常比 8-bit 或 bf16 更快。
 
-### TTFT increases across turns
+### TTFT 随轮次增长
 
-Expected: TTFT grows with context length. For a 9B model on iPhone, median TTFT stays under 1 second for typical conversations. If TTFT spikes:
-- Check conversation length. Very long contexts (>8K tokens) increase prefill time.
-- Clear prompt cache to start a fresh conversation: `engine.clearPromptCache()`
+这是预期行为：TTFT 会随上下文长度增长。对 iPhone 上的 9B 模型，典型对话的 TTFT 中位数保持在 1 秒以内。如果 TTFT 突增：
+- 检查对话长度。很长的上下文（>8K tokens）会增加 prefill 时间。
+- 清空提示缓存以开始新对话：`engine.clearPromptCache()`
 
-## Export and deployment
+## 导出和部署
 
-### Exported bundle does not load in Edge Kit
+### 导出的 bundle 无法在 Edge Kit 中加载
 
-- Verify the export directory contains `config.json` and all weight shards.
-- Ensure the Edge Kit version matches the export version. Pin both.
+- 确认导出目录包含 `config.json` 和所有权重 shard。
+- 确保 Edge Kit 版本与导出版本匹配。两者都要固定版本。
 
-### Edge Scaffold app shows blank screen
+### Edge Scaffold app 显示空白页
 
-- Check that the model path in `ScaffoldConfig.swift` is correct.
-- Run on a real device, not simulator.
-- Check Xcode console for error messages on launch.
+- 检查 `ScaffoldConfig.swift` 中的模型路径是否正确。
+- 在真实设备上运行，而不是模拟器。
+- 查看 Xcode console 中的启动错误。
 
-### Entitlements reset after xcodegen
+### xcodegen 后 entitlements 被重置
 
-`xcodegen` can clear entitlements. After regenerating the project, verify that Increased Memory Limit and any network entitlements are still present.
+`xcodegen` 可能清空 entitlements。重新生成项目后，确认 Increased Memory Limit 和任何网络相关 entitlements 仍然存在。
 
 ## Edge Mesh
 
-### Devices not discovering each other
+### 设备之间无法发现
 
-- Both devices must be on the same local network.
-- Verify `NSLocalNetworkUsageDescription` is set in Info.plist.
-- Check that the Bonjour service is not blocked by network configuration.
+- 两台设备必须在同一本地网络。
+- 确认 Info.plist 设置了 `NSLocalNetworkUsageDescription`。
+- 检查 Bonjour service 没有被网络配置阻断。
 
-## Still stuck?
+## 仍然卡住？
 
-File an issue at [github.com/AtomGradient](https://github.com/AtomGradient) or email [alex@atomgradient.com](mailto:alex@atomgradient.com).
+在 [github.com/AtomGradient](https://github.com/AtomGradient) 提交 issue，或发送邮件到 [alex@atomgradient.com](mailto:alex@atomgradient.com)。

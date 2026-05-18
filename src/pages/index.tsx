@@ -70,7 +70,18 @@ const zhCapabilities = [
   },
 ];
 
-/* Code block rendered manually for full styling control */
+const codeHtml = [
+  '<span style="color:#c678dd">import</span> EdgeInference',
+  '',
+  '<span style="color:#c678dd">let</span> engine = <span style="color:#e5c07b">LLMEngine</span>()',
+  '<span style="color:#c678dd">try</span> <span style="color:#c678dd">await</span> engine.<span style="color:#61afef">loadLocal</span>(directory: modelURL)',
+  '',
+  '<span style="color:#c678dd">for</span> <span style="color:#c678dd">try</span> <span style="color:#c678dd">await</span> chunk <span style="color:#c678dd">in</span> engine.<span style="color:#61afef">generate</span>(',
+  '    messages: [.<span style="color:#61afef">user</span>(<span style="color:#98c379">&quot;What is edge AI?&quot;</span>)]',
+  ') {',
+  '    <span style="color:#61afef">print</span>(chunk.text, terminator: <span style="color:#98c379">&quot;&quot;</span>)',
+  '}',
+].join('\n');
 
 export default function Home(): React.JSX.Element {
   const {i18n} = useDocusaurusContext();
@@ -144,20 +155,7 @@ export default function Home(): React.JSX.Element {
               <div className={styles.codeDotGreen} />
               <span className={styles.codeWindowTitle}>main.swift</span>
             </div>
-            <pre className={styles.codeBlock}>
-              <code>
-                <span style={{color: '#c678dd'}}>import</span> EdgeInference{'\n'}
-{'\n'}
-                <span style={{color: '#c678dd'}}>let</span> engine = <span style={{color: '#e5c07b'}}>LLMEngine</span>(){'\n'}
-                <span style={{color: '#c678dd'}}>try</span> <span style={{color: '#c678dd'}}>await</span> engine.<span style={{color: '#61afef'}}>loadLocal</span>(directory: modelURL){'\n'}
-{'\n'}
-                <span style={{color: '#c678dd'}}>for</span> <span style={{color: '#c678dd'}}>try</span> <span style={{color: '#c678dd'}}>await</span> chunk <span style={{color: '#c678dd'}}>in</span> engine.<span style={{color: '#61afef'}}>generate</span>({'\n'}
-                {'    '}messages: [.<span style={{color: '#61afef'}}>user</span>(<span style={{color: '#98c379'}}>&quot;What is edge AI?&quot;</span>)]{'\n'}
-                ) {'{'}{'\n'}
-                {'    '}<span style={{color: '#61afef'}}>print</span>(chunk.text, terminator: <span style={{color: '#98c379'}}>&quot;&quot;</span>){'\n'}
-                {'}'}
-              </code>
-            </pre>
+            <pre className={styles.codeBlock} dangerouslySetInnerHTML={{__html: codeHtml}} />
           </div>
           <p className={styles.codeCaption}>
             {isZh ? '5 行代码 — 加载模型，流式推理' : '5 lines — load a model, stream tokens'}

@@ -5,23 +5,23 @@ title: Edge Scaffold
 
 # Edge Scaffold
 
-Edge Scaffold generates a ready-to-build app project from an optimized model. One configuration file, automatic device detection, four-tier model delivery. Currently generates iOS apps, with additional platforms planned.
+Edge Scaffold 会从优化后的模型生成可直接构建的 app 项目。一个配置文件、自动设备检测、四层模型分发。当前生成 iOS app，更多平台在规划中。
 
 :::info Developer Preview
-Generated apps require signing, device testing, and store review before release.
+生成的 app 在发布前仍需要签名、真机测试和商店审核。
 :::
 
-## How it works
+## 工作方式
 
 ```text
 Edge Studio (export) → Edge Scaffold (template + config) → Xcode project → App
 ```
 
-Edge Studio writes a ZIP containing the app template, model metadata, and configuration. You unzip, configure, build, and ship.
+Edge Studio 会写出一个 ZIP，其中包含 app 模板、模型 metadata 和配置。你解压、配置、构建，然后发布。
 
 ## ScaffoldConfig.swift
 
-All app behavior is controlled by one file:
+所有 app 行为都由一个文件控制：
 
 ```swift
 enum ScaffoldConfig {
@@ -34,41 +34,41 @@ enum ScaffoldConfig {
 }
 ```
 
-| Field | Controls |
+| 字段 | 控制内容 |
 |-------|---------|
-| `appName` | Display name in app UI |
-| `modelCategory` | Which engine and UI path the app uses |
-| `bundleModelName` | Bundle folder name when shipping model inside the app |
-| `defaultSystemPrompt` | Initial system instruction for chat |
+| `appName` | app UI 中显示的名称 |
+| `modelCategory` | app 使用的 engine 和 UI 路径 |
+| `bundleModelName` | 模型随 app 内置时的 bundle 文件夹名 |
+| `defaultSystemPrompt` | 聊天初始 system instruction |
 
-The app UI automatically adapts based on `modelCategory`:
+App UI 会根据 `modelCategory` 自动适配：
 
-| Category | Input | Output |
+| 类别 | 输入 | 输出 |
 |----------|-------|--------|
-| LLM | Text | Streaming text |
-| VLM | Text + photo | Streaming text |
-| TTS | Text | Audio |
+| LLM | 文本 | 流式文本 |
+| VLM | 文本 + 照片 | 流式文本 |
+| TTS | 文本 | 音频 |
 
-## Build and test
+## 构建和测试
 
-1. Unzip the export. Open in Xcode.
-2. Select your development team and a unique bundle identifier.
-3. Set a **real device** as run destination — not simulator.
-4. Build as **Release** for performance validation.
-5. Test: first launch, model load, first response, multi-turn, backgrounding.
+1. 解压导出结果，在 Xcode 中打开。
+2. 选择开发团队和唯一 bundle identifier。
+3. 将运行 destination 设置为**真实设备**，不要用模拟器。
+4. 用 **Release** 构建做性能验证。
+5. 测试：首次启动、模型加载、首次响应、多轮对话、后台切换。
 
-For models larger than ~2B parameters, enable the **Increased Memory Limit** entitlement.
+对大于约 2B 参数的模型，启用 **Increased Memory Limit** entitlement。
 
-## Model delivery
+## 模型分发
 
-| Tier | When to use |
+| 层级 | 使用时机 |
 |------|-------------|
-| **Bundle** | Small models (< 2GB). Ships inside the app binary. |
-| **On-Demand Resources** | Medium models. Downloaded after install, managed by the OS. |
-| **HuggingFace** | Large models. Downloaded on first launch from HuggingFace. |
-| **Cache** | Previously downloaded models. Fastest path on subsequent launches. |
+| **Bundle** | 小模型（< 2GB）。随 app binary 一起发布。 |
+| **On-Demand Resources** | 中等模型。安装后下载，由 OS 管理。 |
+| **HuggingFace** | 大模型。首次启动时从 HuggingFace 下载。 |
+| **Cache** | 之前已下载的模型。后续启动最快路径。 |
 
-## Next steps
+## 下一步
 
-- [Build and ship example](/docs/examples/build-and-ship) — End-to-end walkthrough from optimize to App Store.
-- [Platform requirements](/docs/guides/platform-requirements) — Device and OS constraints.
+- [构建并发布示例](/docs/examples/build-and-ship) — 从优化到 App Store 的端到端 walkthrough。
+- [平台要求](/docs/guides/platform-requirements) — 设备和 OS 约束。

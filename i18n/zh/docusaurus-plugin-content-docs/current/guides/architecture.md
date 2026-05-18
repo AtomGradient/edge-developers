@@ -1,13 +1,13 @@
 ---
 sidebar_position: 6
-title: Architecture
+title: 架构
 ---
 
-# Architecture and technology concepts
+# 架构与技术概念
 
-How the Edge platform layers connect, and what the core technologies mean for your app.
+Edge 平台各层如何连接，以及核心技术对你的 app 意味着什么。
 
-## Layer map
+## 分层图
 
 ```text
 ┌─────────────────────────────────────────────┐
@@ -21,64 +21,64 @@ How the Edge platform layers connect, and what the core technologies mean for yo
 │          (DSR Attention)                     │
 └─────────────────────────────────────────────┘
 
-Tooling (development-time, not shipped in your app):
+工具链（开发时使用，不随 app 一起发布）：
   Edge Studio  →  Edge Scaffold  →  App project
 ```
 
-**Edge Engine** is the inference runtime. It owns Metal command scheduling, tensor storage, and model-family execution. Your app never imports it directly — Edge Kit wraps it.
+**Edge Engine** 是推理运行时。它负责 Metal command 调度、tensor 存储和模型家族执行。你的 app 不会直接 import 它，Edge Kit 会封装这层。
 
-**Edge Kit** is the developer surface. It provides `LLMEngine`, `VLMEngine`, `TTSEngine`, `WhisperEngine`, model download, memory management, and mesh networking. This is what you `import` in your app.
+**Edge Kit** 是开发者接口层。它提供 `LLMEngine`、`VLMEngine`、`TTSEngine`、`WhisperEngine`、模型下载、内存管理和 mesh 网络。这是你在 app 中 `import` 的部分。
 
-**Edge Halo** is the evolution layer. Built on the patented **HALO** algorithm system, it handles user profiling, adapter lifecycle, and activation steering. It sits beside Edge Kit — your app composes both.
+**Edge Halo** 是进化层。它基于专利 **HALO** 算法系统，处理用户画像分析、适配器生命周期和 activation steering。它位于 Edge Kit 旁边，由你的 app 组合两者。
 
-**Edge Mesh** is the networking layer. Local-network device discovery, capability-aware routing, adapter transfer between devices. No cloud relay.
+**Edge Mesh** 是网络层。它负责本地网络设备发现、能力感知路由，以及设备之间的适配器传输。不需要云端中继。
 
-**Edge Studio** and **Edge Scaffold** are development-time tools. Studio optimizes models. Scaffold generates app projects. Neither ships in your final binary.
+**Edge Studio** 和 **Edge Scaffold** 是开发时工具。Studio 优化模型，Scaffold 生成 app 项目。两者都不会进入最终二进制。
 
 ## DSR Attention
 
-DSR (Dynamic Sparse Retention) is how Edge Kit keeps multi-turn conversations fast on memory-constrained devices.
+DSR (Dynamic Sparse Retention) 是 Edge Kit 在内存受限设备上保持多轮对话速度的方式。
 
-What it means for you:
+对你的意义：
 
-- A 9B model holds stable throughput across 20 conversation turns on iPhone.
-- You do not configure DSR. Edge Kit applies it automatically based on the model and device.
-- Memory policy is computed at model load time. You can read it via `engine.memoryPolicy` but you should not need to override it.
-- If you clear the conversation with `clearPromptCache()`, the cache resets and the next turn starts fresh.
+- 9B 模型可以在 iPhone 上跨 20 轮对话保持稳定吞吐量。
+- 你不需要配置 DSR。Edge Kit 会根据模型和设备自动应用。
+- 内存策略在模型加载时计算。你可以通过 `engine.memoryPolicy` 读取，但通常不需要覆盖。
+- 如果用 `clearPromptCache()` 清空对话，缓存会重置，下一轮从干净状态开始。
 
-What you observe in metrics:
+你会在指标中看到：
 
-| Metric | Healthy pattern |
+| 指标 | 健康模式 |
 |--------|----------------|
-| TPS across turns | Stable or gradual decline, not cliff. |
-| TTFT | Grows with context length, stays under 1s for typical conversations. |
-| Memory footprint | Bounded, not linear growth per turn. |
+| 跨轮 TPS | 稳定或缓慢下降，而不是断崖式下跌。 |
+| TTFT | 随上下文长度增长；典型对话保持在 1 秒以内。 |
+| 内存占用 | 有边界，而不是每轮线性增长。 |
 
-## HALO (patented)
+## HALO（专利）
 
-HALO is the algorithm system behind Edge Halo's on-device continuous learning.
+HALO 是 Edge Halo 端侧持续学习背后的算法系统。
 
-What it means for you:
+对你的意义：
 
-- Your app collects interaction events (feedback, corrections, session completions).
-- HALO extracts a local user profile — a geometric representation of preferences, not keywords.
-- Adapters are trained on the user's Mac and transferred via mesh. No data leaves the user's devices.
-- Activation steering lets you adjust model behavior for a session without retraining.
-- The user can roll back to the base model at any time.
+- 你的 app 收集交互事件（反馈、修正、会话完成）。
+- HALO 提取本地用户画像，这是一种偏好的几何表示，而不是关键词。
+- 适配器在用户的 Mac 上训练，并通过 mesh 传输。数据不会离开用户自己的设备。
+- Activation steering 让你无需重新训练即可调整一次会话中的模型行为。
+- 用户可以随时回滚到基础模型。
 
-The industry context: Google, OpenAI, and Anthropic are exploring continuous learning in the cloud. HALO solves it on-device — privacy by architecture, not policy.
+行业背景：Google、OpenAI 和 Anthropic 都在探索云端持续学习。HALO 在端侧解决这个问题，隐私来自架构，而不是政策。
 
-## Data boundaries
+## 数据边界
 
-| Data | Where it lives | Leaves device? |
+| 数据 | 存放位置 | 是否离开设备？ |
 |------|----------------|---------------|
-| Model weights | App bundle or local download | No |
-| KV cache | GPU memory | No |
-| Conversation history | App-managed local storage | No |
-| User profile (HALO) | App-managed local storage | No |
-| Trained adapter | User's Mac → mesh → device | Only within user's own devices |
-| Optimization artifacts | Edge Studio export | Developer's machine only |
+| 模型权重 | App bundle 或本地下载 | 否 |
+| KV cache | GPU 内存 | 否 |
+| 对话历史 | App 管理的本地存储 | 否 |
+| 用户画像 (HALO) | App 管理的本地存储 | 否 |
+| 训练后的适配器 | 用户的 Mac → mesh → 设备 | 仅在用户自己的设备内 |
+| 优化产物 | Edge Studio 导出 | 仅在开发者机器上 |
 
-## Platform architecture
+## 平台架构
 
-Edge is designed as a cross-platform system. The current release targets Apple (iOS 17+, macOS 14+). The runtime abstraction layer supports additional backends — Android, Linux, HarmonyOS, and Windows are on the roadmap.
+Edge 被设计为跨平台系统。当前版本面向 Apple（iOS 17+、macOS 14+）。运行时抽象层支持更多 backend，Android、Linux、HarmonyOS 和 Windows 在路线图中。
