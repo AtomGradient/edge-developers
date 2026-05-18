@@ -22,7 +22,11 @@ const config: Config = {
 
   i18n: {
     defaultLocale: 'en',
-    locales: ['en'],
+    locales: ['en', 'zh'],
+    localeConfigs: {
+      en: { label: 'English', htmlLang: 'en-US' },
+      zh: { label: '中文', htmlLang: 'zh-Hans' },
+    },
   },
 
   presets: [
@@ -67,6 +71,10 @@ const config: Config = {
           to: '/docs/examples/basic-chat',
           position: 'left',
           label: 'Examples',
+        },
+        {
+          type: 'localeDropdown',
+          position: 'right',
         },
         {
           href: 'https://atomgradient.com/developers',

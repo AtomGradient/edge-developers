@@ -1,0 +1,26 @@
+{
+  "title": {
+    "message": "AtomGradient Edge",
+    "description": "The title in the navbar"
+  },
+  "item.label.Documentation": {
+    "message": "文档",
+    "description": "Navbar item with label Documentation"
+  },
+  "item.label.API Reference": {
+    "message": "API 参考",
+    "description": "Navbar item with label API Reference"
+  },
+  "item.label.Examples": {
+    "message": "示例",
+    "description": "Navbar item with label Examples"
+  },
+  "item.label.atomgradient.com": {
+    "message": "atomgradient.com",
+    "description": "Navbar item with label atomgradient.com"
+  },
+  "item.label.GitHub": {
+    "message": "GitHub",
+    "description": "Navbar item with label GitHub"
+  }
+}
