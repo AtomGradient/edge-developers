@@ -123,7 +123,10 @@
   padding: 3rem 2rem;
   max-width: 720px;
   margin: 0 auto;
-  text-align: center;
+}
+
+.codeSection > div:first-of-type {
+  text-align: left;
 }
 
 .codeSectionLabel {
@@ -133,6 +136,7 @@
   letter-spacing: 0.1em;
   color: var(--atomgradient-muted);
   margin-bottom: 1.5rem;
+  text-align: center;
 }
 
 .codeWindow {
