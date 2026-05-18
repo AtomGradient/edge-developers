@@ -1,25 +1,25 @@
 ---
 sidebar_position: 2
-title: Installation
+title: 安装
 ---
 
-# Install Edge Kit
+# 安装 Edge Kit
 
-Install Edge Kit with Swift Package Manager.
+使用 Swift Package Manager 安装 Edge Kit。
 
-## Requirements
+## 要求
 
-| Requirement | Version |
+| 要求 | 版本 |
 | --- | --- |
-| iOS | 17.0 or later |
-| macOS | 14.0 or later |
-| Xcode | 15 or later |
-| Swift | 5.9 or later |
-| Hardware | Apple Silicon |
+| iOS | 17.0 或更高 |
+| macOS | 14.0 或更高 |
+| Xcode | 15 或更高 |
+| Swift | 5.9 或更高 |
+| 硬件 | Apple Silicon |
 
-For iOS apps that run larger models, enable the Increased Memory Limit entitlement.
+对于运行较大模型的 iOS 应用，请启用 Increased Memory Limit entitlement。
 
-## Package
+## 包
 
 ```swift
 // Package.swift
@@ -28,7 +28,7 @@ dependencies: [
 ]
 ```
 
-## Add the umbrella product
+## 添加 umbrella product
 
 ```swift
 .target(
@@ -39,15 +39,15 @@ dependencies: [
 )
 ```
 
-Then import the umbrella module:
+然后导入 umbrella 模块：
 
 ```swift
 import EdgeKit
 ```
 
-## Add individual modules
+## 添加单独模块
 
-Use individual products when you want a narrower dependency surface.
+当你希望依赖面更窄时，可以使用单独的 product。
 
 ```swift
 .target(
@@ -59,7 +59,7 @@ Use individual products when you want a narrower dependency surface.
 )
 ```
 
-Common imports:
+常见导入：
 
 ```swift
 import EdgeInference
@@ -69,7 +69,7 @@ import EdgeMesh
 import EdgeData
 ```
 
-## Verify installation
+## 验证安装
 
 ```swift
 import EdgeInference
@@ -80,4 +80,4 @@ print(engine.state)
 
 ## iOS entitlement
 
-For models larger than small preview models, add the Increased Memory Limit entitlement in the app target. Without it, iOS may terminate the process before physical memory is exhausted.
+对于大于小型预览模型的模型，请在 app target 中添加 Increased Memory Limit entitlement。否则，即使物理内存尚未耗尽，iOS 也可能提前终止进程。

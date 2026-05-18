@@ -135,6 +135,49 @@
   margin-bottom: 1.5rem;
 }
 
+.codeWindow {
+  background: #1a1a1a;
+  border-radius: 16px;
+  padding: 24px;
+  overflow-x: auto;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+}
+
+.codeWindowDots {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.codeDotRed { width: 12px; height: 12px; border-radius: 50%; background: #ff5f57; }
+.codeDotYellow { width: 12px; height: 12px; border-radius: 50%; background: #febc2e; }
+.codeDotGreen { width: 12px; height: 12px; border-radius: 50%; background: #28c840; }
+
+.codeWindowTitle {
+  margin-left: 12px;
+  font-size: 12px;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  color: #5a5a5a;
+}
+
+.codeBlock {
+  margin: 0;
+  font-size: 13px;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', 'JetBrains Mono', monospace;
+  line-height: 1.75;
+  white-space: pre;
+  color: #e8e4de;
+}
+
+.codeCaption {
+  font-size: 12px;
+  color: var(--atomgradient-muted);
+  margin-top: 12px;
+  text-align: center;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+}
+
 @media screen and (max-width: 768px) {
   .heroTitle {
     font-size: 2rem;

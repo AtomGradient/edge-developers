@@ -1,44 +1,44 @@
 ---
 sidebar_position: 3
-title: Export
+title: 导出
 ---
 
-# Export
+# 导出
 
-Edge Studio exports optimized models and app projects for downstream use.
+Edge Studio 导出优化后的模型和 app 项目，供下游使用。
 
-## Export formats
+## 导出格式
 
-| Format | Use it for |
+| 格式 | 用途 |
 | --- | --- |
-| Edge Kit native | Running the model with Edge Kit engines. |
-| Edge Scaffold | Generating a complete iOS app project. |
-| GGUF | Using the model with compatible inference engines. |
-| CoreML | Integrating with Core ML workflows where supported. |
+| Edge Kit native | 使用 Edge Kit engine 运行模型。 |
+| Edge Scaffold | 生成完整 iOS app 项目。 |
+| GGUF | 在兼容推理 engine 中使用模型。 |
+| CoreML | 在支持的 Core ML 工作流中集成。 |
 
-## Export workflow
+## 导出工作流
 
-1. Select the optimized candidate.
-2. Choose an export format.
-3. Configure model name, category, and target app settings.
-4. Export.
-5. Validate the output in the target runtime.
+1. 选择优化后的候选。
+2. 选择导出格式。
+3. 配置模型名称、类别和目标 app 设置。
+4. 导出。
+5. 在目标运行时中验证输出。
 
-## Edge Scaffold export
+## Edge Scaffold 导出
 
-Edge Scaffold export creates an iOS project with:
+Edge Scaffold 导出会创建一个 iOS 项目，其中包含：
 
-- App metadata.
-- Model references.
-- A generated configuration file.
-- Edge Kit integration.
-- UI paths for the selected model category.
+- App metadata。
+- 模型引用。
+- 生成的配置文件。
+- Edge Kit 集成。
+- 所选模型类别的 UI 路径。
 
-After export, open the generated project, run the app on a real device, and verify first launch, model loading, and generation.
+导出后，打开生成的项目，在真实设备上运行 app，并验证首次启动、模型加载和生成。
 
-## Edge Kit native export
+## Edge Kit native 导出
 
-Use this when you already have an app and only need the model bundle.
+当你已经有 app，只需要模型 bundle 时使用此格式。
 
 ```swift
 import EdgeInference
@@ -49,10 +49,10 @@ let modelURL = URL(fileURLWithPath: "/path/to/exported-model")
 try await engine.loadLocal(directory: modelURL)
 ```
 
-## Validation checklist
+## 验证检查清单
 
-- The exported directory contains `config.json`.
-- Tokenizer files are present for text models.
-- The selected engine can load the model.
-- First inference completes on the target device.
-- The app can unload or switch models without restarting.
+- 导出的目录包含 `config.json`。
+- 文本模型包含 tokenizer 文件。
+- 所选 engine 可以加载模型。
+- 首次推理在目标设备上完成。
+- app 可以在不重启的情况下卸载或切换模型。

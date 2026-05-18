@@ -1,15 +1,15 @@
 ---
 sidebar_position: 2
-title: Performance Tuning
+title: 性能调优
 ---
 
-# Performance tuning
+# 性能调优
 
-Measure performance with the metrics Edge Kit records after generation. Edge Kit's inference path uses **DSR Attention** to keep throughput stable across long multi-turn conversations.
+使用 Edge Kit 在生成后记录的指标来衡量性能。
 
-## Read inference metrics
+## 读取推理指标
 
-`LLMEngine` and `VLMEngine` expose `lastMetrics` after a generation completes.
+`LLMEngine` 和 `VLMEngine` 会在一次生成完成后暴露 `lastMetrics`。
 
 ```swift
 for try await chunk in engine.generate(messages: [.user("Summarize this.")]) {
@@ -25,63 +25,42 @@ if let metrics = engine.lastMetrics {
 }
 ```
 
-## Benchmark in Release
+## 在 Release 中做基准测试
 
-Debug builds can be much slower than Release builds. Always collect benchmark numbers from:
+Debug build 可能比 Release build 慢得多。始终从以下环境采集基准数字：
 
-- A Release configuration.
-- The real target device.
-- A cooled device with stable thermal state.
-- The same prompt and model across runs.
+- Release configuration。
+- 真实目标设备。
+- 温度稳定的冷却设备。
+- 跨运行保持相同 prompt 和模型。
 
-## Choose the model size first
+## 先选择模型大小
 
-Larger models can improve quality, but they also increase load time, memory pressure, and per-token cost.
+更大的模型可能提升质量，但也会增加加载时间、内存压力和每 token 成本。
 
-| Goal | Recommendation |
+| 目标 | 建议 |
 | --- | --- |
-| Lowest latency | Start with a 0.8B or small 4-bit model. |
-| Balanced chat quality | Start with a 4B 4-bit model. |
-| Highest local quality | Use a larger model only on validated high-memory devices. |
-| Training or adapter work | Keep higher-precision source models on a Mac. |
+| 最低延迟 | 从 0.8B 或小型 4-bit 模型开始。 |
+| 均衡聊天质量 | 从 4B 4-bit 模型开始。 |
+| 最高本地质量 | 只在已验证的高内存设备上使用更大模型。 |
+| 训练或适配器工作 | 将更高精度源模型保存在 Mac 上。 |
 
-## Use prompt cache for conversations
+## 为对话使用提示缓存
 
-Multi-turn LLM and VLM conversations reuse conversation context automatically. Keep the same engine instance for one conversation, then clear the cache when the user starts a new one.
+多轮 LLM 和 VLM 对话会自动复用对话上下文。一次对话保持同一个 engine 实例，然后在用户开始新对话时清理缓存。
 
 ```swift
 engine.clearPromptCache()
 ```
 
-## Monitor process footprint
+## 监控进程 footprint
 
-Use process physical footprint when debugging memory pressure. Available-memory APIs can be misleading on iOS because system limits are lower than physical RAM.
+调试内存压力时使用进程物理 footprint。iOS 上可用内存 API 可能具有误导性，因为系统限制低于物理 RAM。
 
-## Reference benchmarks
+## 实用检查清单
 
-Real-device measurements with Qwen3.5 models, 20-turn conversation stress tests:
-
-| Device | Model | First turn | Median | T20 | TTFT |
-|--------|-------|-----------|--------|-----|------|
-| iPhone 17 (A19, 11GB) | 9B-4bit | 12.6 TPS | 11.6 TPS | 10.8 TPS | 566ms |
-| iPhone Air (A19, 11GB) | 9B-4bit | 9.5 TPS | 7.8 TPS | 7.5 TPS | 918ms |
-| iPhone 17 (A19, 11GB) | 4B-4bit | 21.8 TPS | 19.6 TPS | 17.3 TPS | 420ms |
-
-Custom engine prefill vs generic framework (M2 Ultra 192GB):
-
-| Workload | Edge Engine | Generic | Speedup |
-|----------|-----------|---------|---------|
-| Text prefill (4B) | 1,305 TPS | 187 TPS | 7× |
-| Text prefill (9B) | 843 TPS | 122 TPS | 6.9× |
-| VLM image prefill (4B) | 1,803 TPS | 851 TPS | 2.1× |
-| VLM image prefill (9B) | 1,234 TPS | 511 TPS | 2.4× |
-
-Use these numbers as orientation. Your results will vary based on model, device thermal state, and conversation length.
-
-## Practical checklist
-
-- Use quantized models for interactive inference.
-- Prefer local model directories during development for repeatable tests.
-- Keep one active generation per engine instance.
-- Unload unused engines before switching model categories.
-- Re-run benchmarks after changing model size, build configuration, or target device.
+- 为交互式推理使用量化模型。
+- 开发期间优先使用本地模型目录，以获得可重复测试。
+- 每个 engine 实例保持一个活跃生成。
+- 切换模型类别前卸载未使用 engine。
+- 更改模型大小、build configuration 或目标设备后重新运行基准测试。

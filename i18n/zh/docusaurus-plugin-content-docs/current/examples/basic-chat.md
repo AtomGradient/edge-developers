@@ -1,25 +1,23 @@
 ---
 sidebar_position: 1
-title: Basic Chat App
+title: 基础聊天应用
 ---
 
-# Example: Basic chat app
+# 示例：基础聊天应用
 
-This example builds a minimal iOS or macOS chat app that loads a local text
-model and streams multi-turn replies.
+本示例构建一个最小 iOS 或 macOS 聊天应用：加载本地文本模型，并流式生成多轮回复。
 
-## Prerequisites
+## 前置条件
 
-- Edge Kit added to your Xcode project with Swift Package Manager.
-- A local text model directory on the device or simulator.
-- iOS 17 or macOS 14 or later.
+- 已通过 Swift Package Manager 将 Edge Kit 添加到 Xcode 项目。
+- 设备或模拟器上有本地文本模型目录。
+- iOS 17 或 macOS 14 或更高。
 
-For development, start with a small text model such as Qwen3.5 0.8B.
+开发时，请从 Qwen3.5 0.8B 这样的小型文本模型开始。
 
-## Complete code
+## 完整代码
 
-Create a new SwiftUI app target, add Edge Kit, and replace the app code with
-the following:
+创建新的 SwiftUI app target，添加 Edge Kit，并将 app 代码替换为以下内容：
 
 ```swift
 import EdgeInference
@@ -218,20 +216,18 @@ final class ChatViewModel: ObservableObject {
 ```
 
 :::note
-If your model lives inside the app bundle, replace the editable `modelPath`
-with `Bundle.main.url(forResource:withExtension:)`.
+如果模型位于 app bundle 中，请将可编辑的 `modelPath` 替换为 `Bundle.main.url(forResource:withExtension:)`。
 :::
 
-## Key concepts
+## 关键概念
 
-- `LLMEngine` is `@MainActor`; keep UI state and engine calls on the main actor.
-- `generate(messages:)` returns an async sequence of `GenerateChunk` values.
-- Keep a separate `[ChatMessage]` history for the model and a UI-specific
-  `ChatTurn` array for rendering.
-- Reuse one engine for a conversation so prompt cache reuse can work.
-- Call `clearPromptCache()` when the user starts a new conversation.
+- `LLMEngine` 是 `@MainActor`；请将 UI 状态和 engine 调用保持在 main actor 上。
+- `generate(messages:)` 返回由 `GenerateChunk` 值组成的 async sequence。
+- 为模型保留独立的 `[ChatMessage]` history，并为渲染保留 UI-specific `ChatTurn` 数组。
+- 一次对话复用一个 engine，以便提示缓存可以复用。
+- 当用户开始新对话时调用 `clearPromptCache()`。
 
-## Next steps
+## 下一步
 
-- Add image input with [Vision chat](/docs/examples/vision-chat).
-- See the [EdgeInference API reference](/docs/api-reference/edge-inference).
+- 通过 [视觉聊天](/docs/examples/vision-chat) 添加图像输入。
+- 查看 [EdgeInference API 参考](/docs/api-reference/edge-inference)。

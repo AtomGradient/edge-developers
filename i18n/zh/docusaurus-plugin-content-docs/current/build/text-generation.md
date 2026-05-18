@@ -1,13 +1,13 @@
 ---
 sidebar_position: 1
-title: Text Generation
+title: 文本生成
 ---
 
-# Text generation with LLMEngine
+# 使用 LLMEngine 进行文本生成
 
-`LLMEngine` loads a local or registered text model and streams generated text. Under the hood, Edge Kit uses **DSR (Dynamic Sparse Retention)** attention to keep multi-turn conversations fast even on memory-constrained devices — a 9B model holds 12.6 TPS at turn 1 and 10.8 TPS at turn 20 on iPhone 17.
+`LLMEngine` 加载本地或已注册的文本模型，并流式生成文本。
 
-## Create and load
+## 创建并加载
 
 ```swift
 import EdgeInference
@@ -18,7 +18,7 @@ let modelURL = URL(fileURLWithPath: "/path/to/model")
 try await engine.loadLocal(directory: modelURL)
 ```
 
-Load from a registered `ModelConfig`:
+从已注册的 `ModelConfig` 加载：
 
 ```swift
 guard let config = ModelConfig.find(modelID: "qwen3.5-0.8b") else {
@@ -28,7 +28,7 @@ guard let config = ModelConfig.find(modelID: "qwen3.5-0.8b") else {
 try await engine.load(config: config)
 ```
 
-## Generate streaming text
+## 生成流式文本
 
 ```swift
 let messages: [ChatMessage] = [
@@ -41,16 +41,16 @@ for try await chunk in engine.generate(messages: messages) {
 }
 ```
 
-## Messages
+## 消息
 
-| Helper | Role |
+| Helper | 角色 |
 | --- | --- |
-| `.system("...")` | System instruction |
-| `.user("...")` | User message |
-| `.assistant("...")` | Previous assistant output |
-| `.tool("...")` | Tool result for a follow-up turn |
+| `.system("...")` | 系统指令 |
+| `.user("...")` | 用户消息 |
+| `.assistant("...")` | 之前的助手输出 |
+| `.tool("...")` | 后续轮次使用的工具结果 |
 
-## Parameters
+## 参数
 
 ```swift
 let parameters = EdgeGenerateParameters(
@@ -67,11 +67,11 @@ for try await chunk in engine.generate(
 }
 ```
 
-Edge Kit applies automatic memory management on top of the parameters unless you explicitly use low-level overrides for testing.
+除非你为了测试显式使用低层 override，Edge Kit 会在这些参数之上应用自动内存管理。
 
-## Multi-turn conversations
+## 多轮对话
 
-Keep one engine instance for a conversation. Edge Kit manages prompt cache reuse automatically.
+一次对话保留一个 engine 实例。Edge Kit 会自动管理提示缓存复用。
 
 ```swift
 var history: [ChatMessage] = [
@@ -87,13 +87,13 @@ for try await chunk in engine.generate(messages: history) {
 }
 ```
 
-Clear conversation state when starting over:
+开始新对话时清理对话状态：
 
 ```swift
 engine.clearPromptCache()
 ```
 
-## LoRA adapters
+## LoRA 适配器
 
 ```swift
 let adapterURL = URL(fileURLWithPath: "/path/to/adapter")
@@ -104,9 +104,9 @@ print(engine.hasLoRAAdapter)
 engine.unloadLoRA()
 ```
 
-## Metrics
+## 指标
 
-After generation completes, read `lastMetrics`.
+生成完成后读取 `lastMetrics`。
 
 ```swift
 if let metrics = engine.lastMetrics {
@@ -116,7 +116,7 @@ if let metrics = engine.lastMetrics {
 }
 ```
 
-## SwiftUI example
+## SwiftUI 示例
 
 ```swift
 import EdgeInference
@@ -172,27 +172,3 @@ struct ChatView: View {
     }
 }
 ```
-
-## API surface
-
-The methods you will use most often:
-
-| Method | What it does |
-|--------|-------------|
-| `LLMEngine()` | Create an engine instance. `@MainActor`. |
-| `loadLocal(directory:)` | Load a model from a local path. |
-| `load(config:)` | Load a registered model by config. |
-| `generate(messages:parameters:)` | Stream `GenerateChunk` values. Async sequence. |
-| `generateOnce(messages:)` | Return one accumulated string. |
-| `clearPromptCache()` | Reset conversation state. |
-| `loadLoRA(adapterPath:)` | Load a personalized adapter. |
-| `unloadLoRA()` | Remove the active adapter. |
-| `lastMetrics` | TTFT, TPS, token counts after generation. |
-
-Full signatures and types → [EdgeInference API Reference](/docs/api-reference/edge-inference)
-
-## Try it next
-
-- [Basic chat app](/docs/examples/basic-chat) — Complete SwiftUI app you can paste and run.
-- [Vision](/docs/build/vision) — Add image understanding.
-- [Model evolution](/docs/build/model-evolution) — Make the model adapt to the user.
