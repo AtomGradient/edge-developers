@@ -65,8 +65,17 @@ const sidebars: SidebarsConfig = {
       collapsed: true,
       items: [
         'edge-studio/overview',
+        'edge-studio/web-ui',
+        'edge-studio/simple-mode',
+        'edge-studio/pro-dashboard',
+        'edge-studio/analysis-tools',
+        'edge-studio/optimization-tools',
         'edge-studio/optimization',
+        'edge-studio/chat',
         'edge-studio/export',
+        'edge-studio/batch-benchmark',
+        'edge-studio/personal-training',
+        'edge-studio/devices',
       ],
     },
     {
