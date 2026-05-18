@@ -64,6 +64,11 @@ const config: Config = {
           label: 'API Reference',
         },
         {
+          to: '/docs/examples/basic-chat',
+          position: 'left',
+          label: 'Examples',
+        },
+        {
           href: 'https://atomgradient.com/developers',
           label: 'atomgradient.com',
           position: 'right',
@@ -79,19 +84,21 @@ const config: Config = {
       style: 'light',
       links: [
         {
-          title: 'Products',
+          title: 'Capabilities',
           items: [
-            { label: 'Edge Engine', to: '/docs/edge-engine/overview' },
-            { label: 'Edge Kit', to: '/docs/edge-kit/overview' },
-            { label: 'Edge Halo', to: '/docs/edge-halo/overview' },
-            { label: 'Edge Scaffold', to: '/docs/edge-scaffold/overview' },
-            { label: 'Edge Studio', to: '/docs/edge-studio/overview' },
+            { label: 'Text Generation', to: '/docs/capabilities/text-generation' },
+            { label: 'Vision', to: '/docs/capabilities/vision' },
+            { label: 'Speech to Text', to: '/docs/capabilities/speech-to-text' },
+            { label: 'Text to Speech', to: '/docs/capabilities/text-to-speech' },
+            { label: 'Model Evolution', to: '/docs/capabilities/model-evolution' },
+            { label: 'Device Mesh', to: '/docs/capabilities/device-mesh' },
           ],
         },
         {
           title: 'Resources',
           items: [
-            { label: 'Getting Started', to: '/docs/getting-started' },
+            { label: 'Quickstart', to: '/docs/get-started/quickstart' },
+            { label: 'Examples', to: '/docs/examples/basic-chat' },
             { label: 'API Reference', to: '/docs/api-reference/edge-inference' },
             { label: 'GitHub', href: 'https://github.com/AtomGradient' },
           ],

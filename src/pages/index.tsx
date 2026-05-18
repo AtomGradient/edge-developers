@@ -4,36 +4,36 @@ import Link from '@docusaurus/Link';
 import CodeBlock from '@theme/CodeBlock';
 import styles from './index.module.css';
 
-const products = [
+const capabilities = [
   {
-    name: 'Edge Engine',
-    description: 'Native Metal inference runtime for Apple Silicon. The foundation layer.',
-    link: '/docs/edge-engine/overview',
+    name: 'Text Generation',
+    description: 'Stream text from an on-device LLM. Multi-turn conversation, LoRA adapters.',
+    link: '/docs/capabilities/text-generation',
   },
   {
-    name: 'Edge Kit',
-    description: 'Swift SDK for LLM, VLM, ASR, and TTS inference. The developer surface.',
-    link: '/docs/edge-kit/overview',
+    name: 'Vision',
+    description: 'Image understanding with vision-language models. Photo input, text output.',
+    link: '/docs/capabilities/vision',
   },
   {
-    name: 'Edge Halo',
-    description: 'Model self-evolution. User profiling, adapter lifecycle, activation steering.',
-    link: '/docs/edge-halo/overview',
+    name: 'Speech to Text',
+    description: 'Transcribe audio on-device. File input or streaming microphone.',
+    link: '/docs/capabilities/speech-to-text',
   },
   {
-    name: 'Edge Mesh',
-    description: 'Private device mesh. Route inference across a user\'s Apple devices.',
-    link: '/docs/edge-mesh/overview',
+    name: 'Text to Speech',
+    description: 'Generate spoken audio from text. Multiple speakers, streaming output.',
+    link: '/docs/capabilities/text-to-speech',
   },
   {
-    name: 'Edge Scaffold',
-    description: 'iOS app template. From optimized model to App Store in minutes.',
-    link: '/docs/edge-scaffold/overview',
+    name: 'Model Evolution',
+    description: 'Models that grow with users. Profiling, adapters, real-time steering.',
+    link: '/docs/capabilities/model-evolution',
   },
   {
-    name: 'Edge Studio',
-    description: 'Model optimization workbench. Analyze, optimize, benchmark, export.',
-    link: '/docs/edge-studio/overview',
+    name: 'Device Mesh',
+    description: 'Route inference across a user\'s Apple devices. Private, local-only.',
+    link: '/docs/capabilities/device-mesh',
   },
 ];
 
@@ -63,7 +63,7 @@ export default function Home(): React.JSX.Element {
           on-device. No cloud. No latency. Complete privacy.
         </p>
         <div className={styles.buttons}>
-          <Link to="/docs/getting-started" className={styles.primaryButton}>
+          <Link to="/docs/get-started/quickstart" className={styles.primaryButton}>
             Get started
           </Link>
           <Link to="/docs/" className={styles.secondaryButton}>
@@ -74,9 +74,9 @@ export default function Home(): React.JSX.Element {
 
       <main>
         {/* Products */}
-        <section className={styles.productsSection}>
-          <div className={styles.productsGrid}>
-            {products.map((product) => (
+        <section className={styles.capabilitiesSection}>
+          <div className={styles.capabilitiesGrid}>
+            {capabilities.map((product) => (
               <Link
                 key={product.name}
                 to={product.link}

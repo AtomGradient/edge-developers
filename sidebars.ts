@@ -3,60 +3,26 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
 const sidebars: SidebarsConfig = {
   docsSidebar: [
     'overview',
-    'getting-started',
     {
       type: 'category',
-      label: 'Edge Engine',
+      label: 'Get Started',
       collapsed: false,
       items: [
-        'edge-engine/overview',
-        'edge-engine/installation',
+        'get-started/quickstart',
+        'get-started/installation',
       ],
     },
     {
       type: 'category',
-      label: 'Edge Kit',
+      label: 'Capabilities',
       collapsed: false,
       items: [
-        'edge-kit/overview',
-        'edge-kit/installation',
-        'edge-kit/llm',
-        'edge-kit/vlm',
-        'edge-kit/speech-to-text',
-        'edge-kit/text-to-speech',
-        'edge-kit/model-management',
-        'edge-kit/memory-management',
-      ],
-    },
-    {
-      type: 'category',
-      label: 'Edge Halo',
-      collapsed: false,
-      items: [
-        'edge-halo/overview',
-        'edge-halo/profiling',
-        'edge-halo/adapters',
-        'edge-halo/steering',
-      ],
-    },
-    {
-      type: 'category',
-      label: 'Edge Mesh',
-      collapsed: true,
-      items: [
-        'edge-mesh/overview',
-        'edge-mesh/discovery',
-        'edge-mesh/routing',
-      ],
-    },
-    {
-      type: 'category',
-      label: 'Edge Scaffold',
-      collapsed: true,
-      items: [
-        'edge-scaffold/overview',
-        'edge-scaffold/configuration',
-        'edge-scaffold/building',
+        'capabilities/text-generation',
+        'capabilities/vision',
+        'capabilities/speech-to-text',
+        'capabilities/text-to-speech',
+        'capabilities/model-evolution',
+        'capabilities/device-mesh',
       ],
     },
     {
@@ -80,12 +46,36 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
+      label: 'Deployment',
+      collapsed: true,
+      items: [
+        'deployment/app-scaffold',
+        'deployment/scaffold-configuration',
+        'deployment/building',
+      ],
+    },
+    {
+      type: 'category',
       label: 'Guides',
       collapsed: true,
       items: [
         'guides/supported-models',
         'guides/performance-tuning',
+        'guides/memory-management',
+        'guides/model-management',
         'guides/platform-requirements',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Examples',
+      collapsed: false,
+      items: [
+        'examples/basic-chat',
+        'examples/vision-chat',
+        'examples/voice-assistant',
+        'examples/personalized-model',
+        'examples/build-and-ship',
       ],
     },
   ],

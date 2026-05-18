@@ -4,72 +4,74 @@ slug: /
 title: Overview
 ---
 
-# AtomGradient Edge Platform
+# AtomGradient Edge
 
-AtomGradient Edge Platform is a set of Developer Preview tools for building on-device AI apps on Apple Silicon.
-
-The platform covers the full path from model preparation to a shippable iOS app:
-
-1. Optimize a model in Edge Studio.
-2. Run inference through Edge Kit.
-3. Add personalization with Edge Halo.
-4. Connect user-owned devices with Edge Mesh.
-5. Ship an app with Edge Scaffold.
+On-device AI for Apple Silicon. No cloud. No latency. Complete privacy.
 
 :::info Developer Preview
-All Edge products are currently in **Developer Preview**. APIs, package names, and setup steps may change between releases.
+All Edge products are in **Developer Preview**. APIs, package names, and setup steps may change between releases.
 :::
 
-## Products
+## What you can build
 
-| Product | Use it for |
-| --- | --- |
-| [Edge Engine](/docs/edge-engine/overview) | Native inference runtime for Apple Silicon. |
-| [Edge Kit](/docs/edge-kit/overview) | Swift SDK for LLM, VLM, speech-to-text, and text-to-speech inference. |
-| [Edge Halo](/docs/edge-halo/overview) | User profile extraction, adapter lifecycle, and runtime steering. |
-| [Edge Mesh](/docs/edge-mesh/overview) | Private local-network device discovery and routing. |
-| [Edge Scaffold](/docs/edge-scaffold/overview) | Ready-to-ship iOS app template for Edge Kit apps. |
-| [Edge Studio](/docs/edge-studio/overview) | Model analysis, optimization, benchmark, and export workbench. |
+| Capability | Description | Get started |
+|------------|-------------|-------------|
+| **Text generation** | Stream text from an on-device LLM. Multi-turn, LoRA adapters, automatic memory management. | [Guide](/docs/capabilities/text-generation) |
+| **Vision** | Send images and text to a vision-language model. Photo understanding, multi-turn follow-up. | [Guide](/docs/capabilities/vision) |
+| **Speech to text** | Transcribe audio on-device. File or streaming microphone input. | [Guide](/docs/capabilities/speech-to-text) |
+| **Text to speech** | Generate spoken audio from text. Multiple speakers, streaming output. | [Guide](/docs/capabilities/text-to-speech) |
+| **Model evolution** | Models that grow with users. Profile extraction, adapter lifecycle, real-time steering. | [Guide](/docs/capabilities/model-evolution) |
+| **Device mesh** | Route inference across a user's Apple devices. Private local network, zero configuration. | [Guide](/docs/capabilities/device-mesh) |
 
-## Architecture
-
-```text
-App
-├─ Edge Kit        Inference SDK
-├─ Edge Halo       Personalization and adapter lifecycle
-├─ Edge Mesh       Private device mesh
-└─ Edge Engine     Native runtime foundation
-
-Edge Studio -> Edge Scaffold -> App Store
-```
-
-## First inference
+## Quick start
 
 ```swift
-import EdgeInference
+import EdgeKit
 
 let engine = LLMEngine()
-let modelURL = URL(fileURLWithPath: "/path/to/model")
-
 try await engine.loadLocal(directory: modelURL)
 
-for try await chunk in engine.generate(messages: [.user("What is edge AI?")]) {
+for try await chunk in engine.generate(
+    messages: [.user("What is edge AI?")]
+) {
     print(chunk.text, terminator: "")
 }
 ```
 
-## Choose a path
+Five lines of Swift. On-device. Private. Fast.
 
-| Goal | Start here |
-| --- | --- |
-| Add local text generation to an app | [Edge Kit LLM](/docs/edge-kit/llm) |
-| Add image understanding | [Edge Kit VLM](/docs/edge-kit/vlm) |
-| Build a full iOS app from a model | [Edge Scaffold](/docs/edge-scaffold/overview) |
-| Optimize and export a model | [Edge Studio](/docs/edge-studio/overview) |
-| Add personalization | [Edge Halo](/docs/edge-halo/overview) |
+[Install and run your first model](/docs/get-started/quickstart)
 
-## Privacy model
+## How it fits together
 
-The default design is local-first. Model files, prompts, generated output, user profiles, and adapters stay on the user's devices unless your app explicitly moves them through user-owned infrastructure.
+```text
++-------------------------------------------------+
+|                  Your App                        |
++----------------+---------------+-----------------+
+|  Edge Kit      |  Edge Halo    |  Edge Mesh      |
+|  (inference)   |  (evolution)  |  (multi-device) |
++----------------+---------------+-----------------+
+|              Edge Engine (runtime)               |
++-------------------------------------------------+
 
-Continue with [Getting Started](/docs/getting-started).
+Edge Studio (optimize models) --> Edge Scaffold (ship apps)
+```
+
+## Tooling
+
+| Tool | What it does | Learn more |
+|------|-------------|------------|
+| **Edge Studio** | Optimize, benchmark, and export models. Web UI with 20+ analysis and optimization tools. | [Overview](/docs/edge-studio/overview) |
+| **Edge Scaffold** | Generate a publishable iOS app from an optimized model. One config file. | [Overview](/docs/deployment/app-scaffold) |
+
+## Examples
+
+Complete, runnable code for common use cases:
+
+| Example | What it shows |
+|---------|--------------|
+| [Basic chat app](/docs/examples/basic-chat) | Load a model, stream a conversation in SwiftUI. |
+| [Vision chat](/docs/examples/vision-chat) | Image understanding with photo picker. |
+| [Voice assistant](/docs/examples/voice-assistant) | Full duplex: speak, transcribe, think, speak. |
+| [Personalized model](/docs/examples/personalized-model) | Train an adapter, apply it, roll back. |
+| [Build and ship](/docs/examples/build-and-ship) | From optimized model to App Store submission. |

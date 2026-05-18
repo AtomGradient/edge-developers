@@ -1,6 +1,6 @@
 ---
-sidebar_position: 4
-title: Vision Language (VLM)
+sidebar_position: 2
+title: Vision
 ---
 
 # Vision-language inference with VLMEngine

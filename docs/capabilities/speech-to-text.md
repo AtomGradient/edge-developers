@@ -1,6 +1,6 @@
 ---
-sidebar_position: 5
-title: Speech to Text (ASR)
+sidebar_position: 3
+title: Speech to Text
 ---
 
 # Speech to text

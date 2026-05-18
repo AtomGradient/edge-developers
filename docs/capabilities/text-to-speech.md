@@ -1,6 +1,6 @@
 ---
-sidebar_position: 6
-title: Text to Speech (TTS)
+sidebar_position: 4
+title: Text to Speech
 ---
 
 # Text to speech with TTSEngine

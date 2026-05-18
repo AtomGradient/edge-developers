@@ -1,6 +1,6 @@
 ---
-sidebar_position: 2
-title: Getting Started
+sidebar_position: 1
+title: Quickstart
 ---
 
 # Getting started
@@ -122,8 +122,8 @@ for try await chunk in engine.generate(
 
 | Task | Guide |
 | --- | --- |
-| Text generation | [LLM guide](/docs/edge-kit/llm) |
-| Vision-language inference | [VLM guide](/docs/edge-kit/vlm) |
-| Model cache and downloads | [Model management](/docs/edge-kit/model-management) |
-| iOS memory guidance | [Memory management](/docs/edge-kit/memory-management) |
+| Text generation | [LLM guide](/docs/capabilities/text-generation) |
+| Vision-language inference | [VLM guide](/docs/capabilities/vision) |
+| Model cache and downloads | [Model management](/docs/guides/model-management) |
+| iOS memory guidance | [Memory management](/docs/guides/memory-management) |
 | Platform support | [Platform requirements](/docs/guides/platform-requirements) |

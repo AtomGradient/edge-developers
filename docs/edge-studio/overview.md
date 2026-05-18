@@ -50,4 +50,4 @@ Load model -> Analyze -> Optimize -> Benchmark -> Export -> Ship
 
 - [Model optimization](/docs/edge-studio/optimization)
 - [Export](/docs/edge-studio/export)
-- [Edge Scaffold overview](/docs/edge-scaffold/overview)
+- [Edge Scaffold overview](/docs/deployment/app-scaffold)

@@ -55,5 +55,5 @@ enum ScaffoldConfig {
 
 ## Next steps
 
-- [Configure Edge Scaffold](/docs/edge-scaffold/configuration)
-- [Build and ship](/docs/edge-scaffold/building)
+- [Configure Edge Scaffold](/docs/deployment/scaffold-configuration)
+- [Build and ship](/docs/deployment/building)

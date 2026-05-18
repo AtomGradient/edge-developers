@@ -1,6 +1,6 @@
 ---
-sidebar_position: 3
-title: Text Generation (LLM)
+sidebar_position: 1
+title: Text Generation
 ---
 
 # Text generation with LLMEngine
