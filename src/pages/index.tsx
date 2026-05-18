@@ -71,16 +71,19 @@ const zhCapabilities = [
   },
 ];
 
-const quickstartCode = `import EdgeKit
-
-let engine = LLMEngine()
-try await engine.load(from: "~/models/Qwen3.5-4B-4bit")
-
-for try await chunk in engine.generate(
-    messages: [.user("What is edge AI?")]
-) {
-    print(chunk.text, terminator: "")
-}`;
+// Template literal at column 0 to avoid unwanted leading whitespace
+const quickstartCode = [
+  'import EdgeKit',
+  '',
+  'let engine = LLMEngine()',
+  'try await engine.load(from: "~/models/Qwen3.5-4B-4bit")',
+  '',
+  'for try await chunk in engine.generate(',
+  '    messages: [.user("What is edge AI?")]',
+  ') {',
+  '    print(chunk.text, terminator: "")',
+  '}',
+].join('\n');
 
 export default function Home(): React.JSX.Element {
   const {i18n} = useDocusaurusContext();
