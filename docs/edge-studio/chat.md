@@ -5,30 +5,55 @@ title: Chat & Voice
 
 # Chat and voice testing
 
-{/* CODEX: Write guide for chat/voice pages:
+Chat and voice pages test a loaded model before export or app integration.
 
-  ## Chat (/chat)
-  Chat.tsx — Multi-modal chat with the loaded model.
-  Supports 4 modes based on model category:
-  - **LLM mode**: Text-in, text-out streaming chat
-  - **VLM mode**: Image + text input, text output (photo picker for images)
-  - **STT mode**: Audio input, text output (speech transcription)
-  - **TTS mode**: Text input, audio output (speech synthesis with speaker selection)
+## Chat
 
-  Features:
-  - Streaming token output
-  - Multi-turn conversation
-  - System prompt configuration
-  - Temperature and parameter controls
-  - Message history
+Route: `/chat`
 
-  ## Duplex Chat (/duplex)
-  DuplexChat.tsx — Expert-mode voice duplex.
-  Full voice conversation loop: speak → ASR → LLM → TTS → listen.
-  Requires ASR + LLM + TTS models loaded.
-  Features: push-to-talk or voice activity detection, continuous conversation.
+Chat is the multi-modal test page for the currently loaded model.
 
-  Use case: Test the complete voice interaction pipeline before deploying to an app.
+Supported modes:
 
-  DO NOT expose: WebSocket protocol details, internal message format, inference pipeline implementation.
-*/}
+| Mode | Input | Output |
+| --- | --- | --- |
+| LLM | Text | Streaming text |
+| VLM | Image plus text | Streaming text |
+| STT | Audio | Transcript text |
+| TTS | Text | Generated audio |
+
+Key features:
+
+- Streaming output for text models.
+- Multi-turn message history.
+- System prompt configuration.
+- Temperature and parameter controls.
+- Image picker for vision models.
+- Audio upload or recording for speech-to-text models.
+- Speaker selection or voice instruction when supported by the TTS model.
+
+Use Chat immediately after loading or optimizing a model. It gives a quick qualitative check before running formal validation.
+
+## Duplex Chat
+
+Route: `/duplex`
+
+Duplex Chat is the expert-mode voice conversation page.
+
+Key features:
+
+- Uses ASR, LLM, and TTS models together.
+- Supports spoken input and spoken output.
+- Provides model slots for the three required model categories.
+- Supports continuous conversation-style testing in builds where voice duplex is enabled.
+
+Use Duplex Chat when your app needs a full voice interaction loop. Test it before exporting or integrating the same model set in an application.
+
+## Testing checklist
+
+- Confirm the expected model category is loaded.
+- Start with a short prompt or short audio clip.
+- Check first response latency.
+- Check output quality and failure messages.
+- Run the same prompts after optimization and compare behavior.
+- For voice workflows, verify the selected ASR, LLM, and TTS models together.

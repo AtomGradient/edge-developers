@@ -5,25 +5,48 @@ title: Personal Training
 
 # Personal training
 
-{/* CODEX: Write guide for Personal Training page (/personal-training):
+Personal Training creates personalized adapters from local user data.
 
-  PersonalTrainingPage.tsx — Train personalized model adapters.
+## Route
 
-  Features:
-  - Upload or create training data from user interactions
-  - Configure training parameters
-  - Monitor training progress
-  - Preview trained adapter quality
-  - Export adapter for use with Edge Kit
+`/personal-training`
 
-  Workflow:
-  1. Collect or upload training data
-  2. Configure training (base model, parameters)
-  3. Run training on Mac (requires Apple Silicon)
-  4. Validate adapter quality
-  5. Export adapter for deployment
+## What it does
 
-  The trained adapter can be loaded by Edge Kit's LLMEngine.loadLoRA() on iOS devices.
+The Personal Training page guides a local workflow from data preparation to adapter testing.
 
-  DO NOT expose: training algorithm details (LoRA rank, DPO specifics), data format internals, loss function details.
-*/}
+Key features:
+
+- Uploads or prepares user interaction data.
+- Selects a base model.
+- Starts a local training run.
+- Monitors training progress.
+- Tests the personalized result against the base model.
+- Exports an adapter for deployment with Edge Kit.
+
+## Workflow
+
+1. Collect or upload local training data.
+2. Process the data into a training-ready form.
+3. Select the base model.
+4. Run training on the Mac.
+5. Validate the adapter.
+6. Compare the personalized response with the base model response.
+7. Export the adapter.
+
+## Page sections
+
+| Section | Purpose |
+| --- | --- |
+| Data | Select or prepare the local dataset. |
+| Train | Configure the model source and start the training run. |
+| Chat | Test the personalized model behavior. |
+| Workflow guide | Shows progress through data, train, and chat stages. |
+
+## Deployment
+
+After export, the adapter can be loaded by Edge Kit in an app that supports LoRA adapters.
+
+## When to use it
+
+Use Personal Training when your app needs user-specific behavior and the personalization data should stay local. Validate the resulting adapter before distributing it to another device.

@@ -5,27 +5,45 @@ title: Batch & Benchmark
 
 # Batch operations and benchmark
 
-{/* CODEX: Write guide for batch and benchmark tools:
+Batch and benchmark tools run repeated work across one or more models.
 
-  ## Benchmark Dashboard (/benchmark-dashboard)
-  BenchmarkDashboard.tsx — Batch benchmark with side-by-side comparison.
-  Features:
-  - Run benchmarks across multiple models
-  - Compare results side-by-side
-  - Plotly charts for visual comparison
-  - CSV export of results
-  - Metrics: tokens/sec, time-to-first-token, memory usage, disk size
+## Benchmark Dashboard
 
-  ## Batch Operations (/batch)
-  BatchOperations.tsx — Multi-model batch optimization with results table.
-  Features:
-  - Queue multiple models for optimization
-  - Variable-N queue (process models in parallel or sequence)
-  - Results table with per-model outcomes
-  - Duration prediction
-  - Failure post-mortem
+Route: `/benchmark-dashboard`
 
-  Use case: Optimize or benchmark an entire model catalog in one session.
+Benchmark Dashboard runs benchmark jobs and compares results side by side.
 
-  DO NOT expose: queue implementation, scheduling algorithm, narration system details.
-*/}
+Key features:
+
+- Adds one or more model directories to a benchmark queue.
+- Runs benchmark tasks across the selected models.
+- Shows side-by-side result cards.
+- Uses charts for visual comparison.
+- Exports results as CSV.
+- Tracks disk size, peak memory, tokens per second, time to first token, and perplexity.
+
+Use it when you need comparable measurements for several model candidates or export variants.
+
+## Batch Operations
+
+Route: `/batch`
+
+Batch Operations queues optimization work for multiple models.
+
+Key features:
+
+- Adds multiple models to a queue.
+- Applies a selected optimization operation per model.
+- Tracks queue progress and per-model status.
+- Shows a results table after completion.
+- Estimates duration and summarizes failures for follow-up.
+
+Use it when you need to process a model catalog or run the same workflow across several candidates.
+
+## Typical workflow
+
+1. Load or add the models you want to process.
+2. Run Batch Operations to create candidates.
+3. Open Benchmark Dashboard.
+4. Benchmark the original and optimized candidates together.
+5. Export only candidates that pass your quality and device-fit checks.
