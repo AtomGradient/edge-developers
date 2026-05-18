@@ -10,7 +10,7 @@ title: 概览
 
 当前已支持 Apple 平台。Android、Linux、HarmonyOS 和 Windows 在路线图中。
 
-:::info Developer Preview
+:::info 开发者预览
 所有 Edge 产品都处于**开发者预览**阶段。API 可能在版本之间变化。请固定 package 版本，并在每次升级后用真实设备验证。
 :::
 

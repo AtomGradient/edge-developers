@@ -253,3 +253,23 @@ app 拥有策略决策：哪些数据符合条件、何时训练、是否应用�
 - 用户可以禁用个性化并回滚到基础模型。
 
 不要把原始 correction、转写内容或私有 prompt 复制到日志、分析、崩溃报告或支持包中。将本地画像 artifact 作为用户数据存储，并让用户能从 app 设置中移除它们。
+
+## API 概览
+
+| Method | 作用 |
+|--------|-------------|
+| `EdgeHalo(engine:generator:)` | 创建进化 actor。 |
+| `runProfileAnalysis(...)` | 提取本地用户画像。 |
+| `validateAdapter(_:)` | 检查传入的适配器 offer。 |
+| `applyAdapter(path:version:)` | 将适配器应用到推理。 |
+| `rollback()` | 回滚到基础模型。 |
+| `updateSteering(scales:)` | 调整会话级行为。 |
+| `evolutionState` | 当前生命周期状态。 |
+| `currentProfile` | 最近的 `UserProfile`。 |
+
+完整签名 → [EdgeHalo API Reference](/docs/api-reference/edge-halo)
+
+## 下一步
+
+- [个性化模型示例](/docs/examples/personalized-model) — 完整生命周期代码。
+- [文本生成](/docs/build/text-generation) — 个性化之前的基础推理。

@@ -7,7 +7,7 @@ title: Edge Studio 概览
 
 Edge Studio 是用于模型优化的本地 Web 工作台。它接收源模型，并产出可部署产物：Edge Kit bundle、GGUF 文件，或完整 app 项目。
 
-:::info Developer Preview
+:::info 开发者预览
 发布前请在目标设备上验证每个导出的模型。仅构建成功还不够。
 :::
 

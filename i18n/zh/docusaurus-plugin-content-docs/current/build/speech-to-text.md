@@ -75,3 +75,21 @@ print(result.text)
 ## 支持的音频
 
 使用由 `AudioRecorder` 录制的文件 URL，或使用你的 app 准备好的 WAV/PCM 数据。请在你支持的设备上验证采样率转换。
+
+## API 概览
+
+| Method | 作用 |
+|--------|-------------|
+| `WhisperEngine()` | 创建语音转文字 engine。 |
+| `load(_:)` | 加载 Whisper 模型变体。 |
+| `transcribe(audioURL:)` | 转写音频文件。 |
+| `transcribe(samples:sampleRate:)` | 转写 PCM 采样。 |
+| `transcribeStream(audioURL:)` | 流式返回转写事件。 |
+| `AudioRecorder()` | 从麦克风录音。 |
+
+完整签名 → [EdgeVoice API Reference](/docs/api-reference/edge-voice)
+
+## 下一步
+
+- [语音助手示例](/docs/examples/voice-assistant) — ASR → LLM → TTS 管线。
+- [文字转语音](/docs/build/text-to-speech) — 补全语音闭环。

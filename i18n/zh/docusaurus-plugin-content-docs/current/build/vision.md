@@ -98,3 +98,22 @@ for try await chunk in engine.generate(
 ## 内存说明
 
 视觉语言模型的运行时要求高于纯文本模型，因为图像处理和文本生成在同一会话中运行。请从较小图像尺寸开始，并在你支持的最低配置设备上验证。
+
+## API 概览
+
+| Method | 作用 |
+|--------|-------------|
+| `VLMEngine()` | 创建视觉语言 engine。`@MainActor`。 |
+| `loadLocal(directory:)` | 加载本地 VLM 模型。 |
+| `generate(messages:images:)` | 从 URL 图像流式生成文本。 |
+| `generate(messages:ciImages:)` | 从内存中的 `CIImage` 值流式生成文本。 |
+| `loadLoRA(adapterPath:)` | 为语言分支加载适配器。 |
+| `lastMetrics` | TTFT、TPS、token 数。 |
+
+完整签名 → [EdgeInference API Reference](/docs/api-reference/edge-inference)
+
+## 下一步
+
+- [视觉聊天示例](/docs/examples/vision-chat) — 使用 PhotosPicker 的完整 SwiftUI app。
+- [文本生成](/docs/build/text-generation) — 纯文本聊天。
+- [模型进化](/docs/build/model-evolution) — 个性化视觉模型。

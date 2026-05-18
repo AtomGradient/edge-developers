@@ -7,7 +7,7 @@ title: Edge Scaffold
 
 Edge Scaffold 会从优化后的模型生成可直接构建的 app 项目。一个配置文件、自动设备检测、四层模型分发。当前生成 iOS app，更多平台在规划中。
 
-:::info Developer Preview
+:::info 开发者预览
 生成的 app 在发布前仍需要签名、真机测试和商店审核。
 :::
 

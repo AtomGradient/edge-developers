@@ -172,3 +172,27 @@ struct ChatView: View {
     }
 }
 ```
+
+## API 概览
+
+你最常用的方法：
+
+| Method | 作用 |
+|--------|-------------|
+| `LLMEngine()` | 创建 engine 实例。`@MainActor`。 |
+| `loadLocal(directory:)` | 从本地路径加载模型。 |
+| `load(config:)` | 按 config 加载已注册模型。 |
+| `generate(messages:parameters:)` | 流式返回 `GenerateChunk` 值。Async sequence。 |
+| `generateOnce(messages:)` | 返回一次性累积字符串。 |
+| `clearPromptCache()` | 重置对话状态。 |
+| `loadLoRA(adapterPath:)` | 加载个性化适配器。 |
+| `unloadLoRA()` | 移除当前激活的适配器。 |
+| `lastMetrics` | 生成后的 TTFT、TPS、token 数。 |
+
+完整签名和类型 → [EdgeInference API Reference](/docs/api-reference/edge-inference)
+
+## 下一步
+
+- [基础聊天 app](/docs/examples/basic-chat) — 可直接粘贴运行的完整 SwiftUI app。
+- [视觉理解](/docs/build/vision) — 加入图像理解。
+- [模型进化](/docs/build/model-evolution) — 让模型适应用户。

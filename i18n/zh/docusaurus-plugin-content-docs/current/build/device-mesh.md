@@ -198,3 +198,20 @@ Edge Mesh 面向私有本地网络设计：
 - 本地网络权限文案应解释用户可见的收益。
 
 除非用户已启用该工作流且 peer 可信，否则不要向 peer 发送原始 prompt、私有训练示例或用户 correction。
+
+## API 概览
+
+| Method | 作用 |
+|--------|-------------|
+| `MeshEngine()` | 创建 mesh coordinator。 |
+| `startDiscovery()` | 开始本地网络发现。 |
+| `peers` | 当前可见设备。 |
+| `bestNode(for:)` | 为指定模型大小寻找最佳设备。 |
+| `topology` | 按设备层级组织的当前 mesh 状态。 |
+
+完整签名 → [EdgeMesh API Reference](/docs/api-reference/edge-mesh)
+
+## 下一步
+
+- [模型进化](/docs/build/model-evolution) — 跨设备传输适配器。
+- [架构](/docs/guides/architecture) — 了解所有层如何连接。

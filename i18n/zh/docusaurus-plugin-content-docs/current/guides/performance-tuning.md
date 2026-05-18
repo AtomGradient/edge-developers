@@ -5,7 +5,7 @@ title: 性能调优
 
 # 性能调优
 
-使用 Edge Kit 在生成后记录的指标来衡量性能。
+使用 Edge Kit 在生成后记录的指标来衡量性能。Edge Kit 的推理路径使用 **DSR Attention**，让长多轮对话保持稳定吞吐量。
 
 ## 读取推理指标
 
@@ -56,6 +56,27 @@ engine.clearPromptCache()
 ## 监控进程 footprint
 
 调试内存压力时使用进程物理 footprint。iOS 上可用内存 API 可能具有误导性，因为系统限制低于物理 RAM。
+
+## 参考基准
+
+使用 Qwen3.5 模型在真实设备上测量，20 轮对话压力测试：
+
+| 设备 | 模型 | 首轮 | 中位数 | T20 | TTFT |
+|--------|-------|-----------|--------|-----|------|
+| iPhone 17 (A19, 11GB) | 9B-4bit | 12.6 TPS | 11.6 TPS | 10.8 TPS | 566ms |
+| iPhone Air (A19, 11GB) | 9B-4bit | 9.5 TPS | 7.8 TPS | 7.5 TPS | 918ms |
+| iPhone 17 (A19, 11GB) | 4B-4bit | 21.8 TPS | 19.6 TPS | 17.3 TPS | 420ms |
+
+自研 engine prefill 与通用框架对比（M2 Ultra 192GB）：
+
+| 工作负载 | Edge Engine | 通用框架 | 加速 |
+|----------|-----------|---------|---------|
+| Text prefill (4B) | 1,305 TPS | 187 TPS | 7× |
+| Text prefill (9B) | 843 TPS | 122 TPS | 6.9× |
+| VLM image prefill (4B) | 1,803 TPS | 851 TPS | 2.1× |
+| VLM image prefill (9B) | 1,234 TPS | 511 TPS | 2.4× |
+
+把这些数字作为参考。你的结果会受模型、设备热状态和对话长度影响。
 
 ## 实用检查清单
 

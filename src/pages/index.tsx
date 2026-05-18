@@ -1,6 +1,7 @@
 import React from 'react';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
+import CodeBlock from '@theme/CodeBlock';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './index.module.css';
 
@@ -70,18 +71,17 @@ const zhCapabilities = [
   },
 ];
 
-const codeHtml = [
-  '<span style="color:#c678dd">import</span> EdgeInference',
-  '',
-  '<span style="color:#c678dd">let</span> engine = <span style="color:#e5c07b">LLMEngine</span>()',
-  '<span style="color:#c678dd">try</span> <span style="color:#c678dd">await</span> engine.<span style="color:#61afef">loadLocal</span>(directory: modelURL)',
-  '',
-  '<span style="color:#c678dd">for</span> <span style="color:#c678dd">try</span> <span style="color:#c678dd">await</span> chunk <span style="color:#c678dd">in</span> engine.<span style="color:#61afef">generate</span>(',
-  '    messages: [.<span style="color:#61afef">user</span>(<span style="color:#98c379">&quot;What is edge AI?&quot;</span>)]',
-  ') {',
-  '    <span style="color:#61afef">print</span>(chunk.text, terminator: <span style="color:#98c379">&quot;&quot;</span>)',
-  '}',
-].join('\n');
+// eslint-disable-next-line
+const CODE = `import EdgeKit
+
+let engine = LLMEngine()
+try await engine.loadLocal(directory: modelURL)
+
+for try await chunk in engine.generate(
+    messages: [.user("What is edge AI?")]
+) {
+    print(chunk.text, terminator: "")
+}`;
 
 export default function Home(): React.JSX.Element {
   const {i18n} = useDocusaurusContext();
@@ -145,21 +145,12 @@ export default function Home(): React.JSX.Element {
           </div>
         </section>
 
-        {/* Quick Start — same pattern as atomgradient.com/developers */}
+        {/* Quick Start */}
         <section className={styles.codeSection}>
           <div className={styles.codeSectionLabel}>{isZh ? '快速开始' : 'Quick Start'}</div>
-          <div className={styles.codeWindow}>
-            <div className={styles.codeWindowDots}>
-              <div className={styles.codeDotRed} />
-              <div className={styles.codeDotYellow} />
-              <div className={styles.codeDotGreen} />
-              <span className={styles.codeWindowTitle}>main.swift</span>
-            </div>
-            <pre className={styles.codeBlock} dangerouslySetInnerHTML={{__html: codeHtml}} />
-          </div>
-          <p className={styles.codeCaption}>
-            {isZh ? '5 行代码 — 加载模型，流式推理' : '5 lines — load a model, stream tokens'}
-          </p>
+          <CodeBlock language="swift" title={isZh ? '5 行 Swift — 加载模型，流式推理' : '5 lines of Swift — load a model, stream tokens'}>
+{CODE}
+          </CodeBlock>
         </section>
       </main>
     </Layout>
