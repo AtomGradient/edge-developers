@@ -14,7 +14,7 @@ Validate every exported model on the target device before shipping. Build succes
 ## Where it fits
 
 ```text
-Source model → Edge Studio → Optimized bundle → Edge Kit (inference) → Your app
+Source model → Edge Studio → Optimized bundle → Edge Kit (inference) → Your agent
                                              → Edge Scaffold (app project)
 ```
 

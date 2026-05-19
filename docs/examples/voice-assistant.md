@@ -23,7 +23,7 @@ voice or prompts to a server.
 - Edge Kit added with Swift Package Manager.
 - Edge Voice available in the same package setup.
 - Local model directories for the LLM and TTS model.
-- Microphone usage text in your app's `Info.plist`.
+- Microphone usage text in your agent's `Info.plist`.
 
 ```xml
 <key>NSMicrophoneUsageDescription</key>

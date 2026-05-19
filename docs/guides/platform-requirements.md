@@ -33,7 +33,7 @@ Edge Engine and Edge Halo preview packages use newer Swift toolchains in some bu
 
 For larger models, enable the Increased Memory Limit entitlement in the iOS target.
 
-Also add Local Network permissions if your app uses Edge Mesh:
+Also add Local Network permissions if your agent uses Edge Mesh:
 
 ```xml
 <key>NSLocalNetworkUsageDescription</key>

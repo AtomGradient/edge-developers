@@ -43,7 +43,7 @@ All Edge products are in **Developer Preview**. APIs may change between releases
 | Technology | What it means for you |
 |------------|----------------------|
 | **DSR Attention** | Dynamic sparse retention. Your 9B model runs 20-turn conversations on iPhones without speed degradation. You don't configure it — Edge Kit applies it automatically. |
-| **HALO** (patented) | On-device model evolution. Your app's model learns from user behavior without uploading data. Profile extraction, adapter training, real-time steering — all local. |
+| **HALO** (patented) | On-device model evolution. Your agent's model learns from user behavior without uploading data. Profile extraction, adapter training, real-time steering — all local. |
 
 ## Quick start
 

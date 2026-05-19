@@ -118,7 +118,7 @@ same Wi-Fi network as the target devices.
 
 ## Task routing
 
-Use `bestNode(for:)` when your app knows the approximate model size and wants a
+Use `bestNode(for:)` when your agent knows the approximate model size and wants a
 reasonable peer for the task.
 
 ```swift
@@ -150,7 +150,7 @@ print(plan.mode)
 print(plan.primaryNode?.displayName ?? "local")
 ```
 
-Treat routing output as a recommendation. Your app should still handle
+Treat routing output as a recommendation. Your agent should still handle
 fallback, cancellation, and user choice.
 
 ## Device tiers
@@ -176,7 +176,7 @@ details as product settings unless your users explicitly need that control.
 
 ## Trust
 
-Discovery tells you what is nearby. Trust tells you what your app is allowed to
+Discovery tells you what is nearby. Trust tells you what your agent is allowed to
 use.
 
 ```swift

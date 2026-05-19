@@ -5,13 +5,13 @@ title: Architecture
 
 # Architecture and technology concepts
 
-How the Edge platform layers connect, and what the core technologies mean for your app.
+How the Edge platform layers connect, and what the core technologies mean for your agent.
 
 ## Layer map
 
 ```text
 ┌─────────────────────────────────────────────┐
-│                Your App                      │
+│                Your Agent                      │
 ├──────────────┬──────────────┬───────────────┤
 │  Edge Kit    │  Edge Halo   │  Edge Mesh    │
 │  Inference   │  Evolution   │  Multi-device │
@@ -21,15 +21,15 @@ How the Edge platform layers connect, and what the core technologies mean for yo
 │          (DSR Attention)                     │
 └─────────────────────────────────────────────┘
 
-Tooling (development-time, not shipped in your app):
+Tooling (development-time, not shipped in your agent):
   Edge Studio  →  Edge Scaffold  →  App project
 ```
 
-**Edge Engine** is the inference runtime. It owns Metal command scheduling, tensor storage, and model-family execution. Your app never imports it directly — Edge Kit wraps it.
+**Edge Engine** is the inference runtime. It owns Metal command scheduling, tensor storage, and model-family execution. Your agent never imports it directly — Edge Kit wraps it.
 
-**Edge Kit** is the developer surface. It provides `LLMEngine`, `VLMEngine`, `TTSEngine`, `WhisperEngine`, model download, memory management, and mesh networking. This is what you `import` in your app.
+**Edge Kit** is the developer surface. It provides `LLMEngine`, `VLMEngine`, `TTSEngine`, `WhisperEngine`, model download, memory management, and mesh networking. This is what you `import` in your agent.
 
-**Edge Halo** is the evolution layer. Built on the patented **HALO** algorithm system, it handles user profiling, adapter lifecycle, and activation steering. It sits beside Edge Kit — your app composes both.
+**Edge Halo** is the evolution layer. Built on the patented **HALO** algorithm system, it handles user profiling, adapter lifecycle, and activation steering. It sits beside Edge Kit — your agent composes both.
 
 **Edge Mesh** is the networking layer. Local-network device discovery, capability-aware routing, adapter transfer between devices. No cloud relay.
 
@@ -60,7 +60,7 @@ HALO is the algorithm system behind Edge Halo's on-device continuous learning.
 
 What it means for you:
 
-- Your app collects interaction events (feedback, corrections, session completions).
+- Your agent collects interaction events (feedback, corrections, session completions).
 - HALO extracts a local user profile — a geometric representation of preferences, not keywords.
 - Adapters are trained on the user's Mac and transferred via mesh. No data leaves the user's devices.
 - Activation steering lets you adjust model behavior for a session without retraining.

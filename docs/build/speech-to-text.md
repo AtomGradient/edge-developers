@@ -74,7 +74,7 @@ print(result.text)
 
 ## Supported audio
 
-Use file URLs recorded by `AudioRecorder` or WAV/PCM data prepared by your app. Validate sample rate conversion on the devices you support.
+Use file URLs recorded by `AudioRecorder` or WAV/PCM data prepared by your agent. Validate sample rate conversion on the devices you support.
 
 ## API surface
 

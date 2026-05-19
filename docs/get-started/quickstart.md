@@ -22,7 +22,7 @@ Edge Kit currently ships on Apple platforms. Support for Android, Linux, Harmony
 | Xcode | 15 or later |
 | Swift | 5.9 or later |
 
-For iOS apps that run larger models, enable the Increased Memory Limit entitlement in your app target.
+For iOS apps that run larger models, enable the Increased Memory Limit entitlement in your agent target.
 
 ## Install with Swift Package Manager
 

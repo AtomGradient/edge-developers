@@ -76,7 +76,7 @@ print(engine.sampleRate)
 
 ## Play audio
 
-Convert `AudioResult.samples` to an `AVAudioPCMBuffer` in your app audio layer. Keep playback code outside the engine so your app can choose `AVAudioEngine`, `AVAudioPlayerNode`, or a custom audio pipeline.
+Convert `AudioResult.samples` to an `AVAudioPCMBuffer` in your agent audio layer. Keep playback code outside the engine so your agent can choose `AVAudioEngine`, `AVAudioPlayerNode`, or a custom audio pipeline.
 
 ## API surface
 

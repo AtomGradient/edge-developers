@@ -191,7 +191,7 @@ try await halo.rollback()
 // Uses the current profile, if one is available.
 try await halo.updateSteering(scales: [0.08, 0.04, 0.02])
 
-// Generate with the same model session your app already uses.
+// Generate with the same model session your agent already uses.
 let answer = try await generateAssistantReply()
 
 // Clear steering when leaving the session or changing mode.

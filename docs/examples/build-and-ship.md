@@ -107,7 +107,7 @@ enum ScaffoldConfig {
 For larger models, enable the Increased Memory Limit entitlement on the iOS
 target.
 
-Add usage strings for the capabilities your app exposes:
+Add usage strings for the capabilities your agent exposes:
 
 ```xml
 <key>NSMicrophoneUsageDescription</key>

@@ -14,7 +14,7 @@ Edge Studio 是用于模型优化的本地 Web 工作台。它接收源模型，
 ## 它的位置
 
 ```text
-Source model → Edge Studio → Optimized bundle → Edge Kit (inference) → Your app
+Source model → Edge Studio → Optimized bundle → Edge Kit (inference) → Your agent
                                              → Edge Scaffold (app project)
 ```
 

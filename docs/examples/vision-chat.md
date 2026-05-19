@@ -14,7 +14,7 @@ follow-up questions about it.
 - A local vision-language model directory.
 - iOS 17 or later.
 
-Add photo-library access text to your app if your product needs broader photo
+Add photo-library access text to your agent if your product needs broader photo
 access. `PhotosPicker` can also run with the limited picker flow.
 
 ## Complete code

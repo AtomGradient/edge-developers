@@ -284,14 +284,14 @@ The app-facing pattern is:
 4. Read `await halo.currentProfile`.
 5. Call `updateSteering(scales:)` or show the profile in settings.
 
-Keep the data-preparation code private to your app. It should not copy raw
+Keep the data-preparation code private to your agent. It should not copy raw
 corrections into logs or analytics.
 
 ## Key concepts
 
 - The app composes Edge Kit and Edge Halo. Edge Halo does not own your UI or
   product policy.
-- `HaloDataEvent` records the signals your app allows.
+- `HaloDataEvent` records the signals your agent allows.
 - `EvolutionState` drives training, validation, and rollback UI.
 - `AdapterVersion` and `AdapterDecision` protect the adapter lifecycle.
 - `UserProfile` is local user data and should be removable from settings.

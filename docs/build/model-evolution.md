@@ -8,7 +8,7 @@ title: Model Evolution
 Edge Halo lets a local model adapt to a user's preferences without sending
 private interaction data to a server. It is built on the **patented HALO algorithm system** — AtomGradient's solution for on-device continuous learning, a problem that the entire industry (Google, OpenAI, Anthropic) is actively exploring in the cloud.
 
-Use it when your app needs:
+Use it when your agent needs:
 
 - A local profile that summarizes user preferences over time.
 - Lightweight adapters trained from user-owned data.
@@ -34,7 +34,7 @@ parts that make the experience personal.
 
 ## Set up Edge Halo
 
-Edge Halo does not own your inference runtime. Your app provides two bridges:
+Edge Halo does not own your inference runtime. Your agent provides two bridges:
 
 - `HaloTextGenerator` for short local generations used by profile jobs.
 - `HaloEngineSession` for adapter and steering operations.
@@ -92,7 +92,7 @@ with the model the user is actually using.
 
 A profile is a compact representation of how the user's preferred behavior
 differs from the default model behavior. It includes machine-readable
-directions and human-readable labels that your app can show in settings,
+directions and human-readable labels that your agent can show in settings,
 debugging tools, or validation UI.
 
 `UserProfile` exposes:
@@ -106,7 +106,7 @@ debugging tools, or validation UI.
 | `stabilityScore` | A score from `0` to `1` for profile consistency. |
 
 Run profile analysis from an app-owned local data job. Keep raw user content in
-your app's storage, pass only the prepared local inputs required by the preview
+your agent's storage, pass only the prepared local inputs required by the preview
 API, and read the resulting profile from `currentProfile`.
 
 ```swift
@@ -209,7 +209,7 @@ my profile more gently in this conversation."
 // Uses the current profile, if one is available.
 try await halo.updateSteering(scales: [0.08, 0.04, 0.02])
 
-// Generate with the same model session your app already uses.
+// Generate with the same model session your agent already uses.
 let answer = try await generateAssistantReply()
 
 // Clear steering when leaving the session or changing mode.

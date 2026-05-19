@@ -11,7 +11,7 @@ Edge 平台各层如何连接，以及核心技术对你的 app 意味着什么�
 
 ```text
 ┌─────────────────────────────────────────────┐
-│                Your App                      │
+│                Your Agent                      │
 ├──────────────┬──────────────┬───────────────┤
 │  Edge Kit    │  Edge Halo   │  Edge Mesh    │
 │  Inference   │  Evolution   │  Multi-device │
