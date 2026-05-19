@@ -16,11 +16,11 @@ All Edge products are in **Developer Preview**. APIs may change between releases
 
 ## Choose your path
 
-### I want to build an on-device chat app
+### I want to build an on-device chat agent
 
 1. [Install Edge Kit](/docs/get-started/quickstart) — SPM, 5 minutes
 2. [Text generation](/docs/build/text-generation) — Load a model, stream tokens
-3. [Basic chat example](/docs/examples/basic-chat) — Complete SwiftUI app
+3. [Basic chat example](/docs/examples/basic-chat) — Complete SwiftUI agent
 4. [Memory management](/docs/guides/memory-management) — Ship without crashing
 
 ### I want to add vision, voice, or personalization
@@ -30,12 +30,12 @@ All Edge products are in **Developer Preview**. APIs may change between releases
 - [Model evolution](/docs/build/model-evolution) — HALO-powered on-device continuous learning
 - [Voice assistant example](/docs/examples/voice-assistant) — ASR → LLM → TTS end-to-end
 
-### I want to optimize a model and ship an app
+### I want to optimize a model and ship an agent
 
 1. [Edge Studio overview](/docs/optimize-and-ship/studio-overview) — Web UI workbench
 2. [Optimize and benchmark](/docs/optimize-and-ship/optimize-and-benchmark) — Analyze, compress, validate
 3. [Export](/docs/optimize-and-ship/export) — Edge Kit / GGUF / CoreML formats
-4. [Edge Scaffold](/docs/optimize-and-ship/scaffold) — Generate a publishable app
+4. [Edge Scaffold](/docs/optimize-and-ship/scaffold) — Generate a publishable agent
 5. [Build and ship example](/docs/examples/build-and-ship) — End-to-end walkthrough
 
 ## Core technology
