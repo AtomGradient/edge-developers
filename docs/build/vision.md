@@ -107,7 +107,6 @@ Vision-language models have larger runtime requirements than text-only models be
 | `loadLocal(directory:)` | Load a local VLM model. |
 | `generate(messages:images:)` | Stream text from URL images. |
 | `generate(messages:ciImages:)` | Stream text from in-memory `CIImage` values. |
-| `loadLoRA(adapterPath:)` | Load an adapter for the language branch. |
 | `lastMetrics` | TTFT, TPS, token counts. |
 
 Full signatures → [EdgeInference API Reference](/docs/api-reference/edge-inference)

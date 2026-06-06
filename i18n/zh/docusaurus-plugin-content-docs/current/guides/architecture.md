@@ -3,82 +3,93 @@ sidebar_position: 6
 title: 架构
 ---
 
-# 架构与技术概念
+# 架构与产品边界
 
-Edge 平台各层如何连接，以及核心技术对你的 app 意味着什么。
+本页说明 Edge 开发者产品如何连接，以及你的 agent 应该集成在哪一层。
 
-## 分层图
+## 层级图
 
 ```text
 ┌─────────────────────────────────────────────┐
-│                Your Agent                      │
-├──────────────┬──────────────┬───────────────┤
-│  Edge Kit    │  Edge Halo   │  Edge Mesh    │
-│  Inference   │  Evolution   │  Multi-device │
-│  SDK         │  (HALO)      │               │
-├──────────────┴──────────────┴───────────────┤
-│          Edge Engine — Native Runtime        │
-│          (DSR Attention)                     │
+│                 Your Agent                  │
+│  UI · app policy · local user data · tools  │
+├─────────────────────────────────────────────┤
+│ Edge Kit        Edge Halo        Edge Mesh  │
+│ inference SDK   personalization  local mesh │
+├─────────────────────────────────────────────┤
+│              Edge Engine runtime            │
 └─────────────────────────────────────────────┘
 
-工具链（开发时使用，不随 app 一起发布）：
-  Edge Studio  →  Edge Scaffold  →  App project
+开发期工具：
+  Edge Studio  →  Edge Scaffold  →  Xcode project
 ```
 
-**Edge Engine** 是推理运行时。它负责 Metal command 调度、tensor 存储和模型家族执行。你的 app 不会直接 import 它，Edge Kit 会封装这层。
+## 产品职责
 
-**Edge Kit** 是开发者接口层。它提供 `LLMEngine`、`VLMEngine`、`TTSEngine`、`WhisperEngine`、模型下载、内存管理和 mesh 网络。这是你在 app 中 `import` 的部分。
+| 产品 | 职责 | 不负责 |
+| --- | --- | --- |
+| **Edge Engine** | 原生模型执行、运行时调度和底层 cache primitives。 | App UI、tool policy、用户数据或 app 存储。 |
+| **Edge Kit** | 公开 Swift SDK：推理、模型管理、EdgeData、EdgeMesh、EdgeSession、EdgeUI 和语音。 | 产品业务逻辑或私有用户数据策略。 |
+| **Edge Halo** | 个性化生命周期：画像任务、Neural Imprint capsule 校验、恢复编排和 fail-closed 兼容性检查。 | 模型 forward、mesh 传输或 app-specific 数据导入。 |
+| **Edge Studio** | 本地工作台：优化、benchmark、导出、artifact 生成和设备协调。 | 已发布 agent 内的 runtime 行为。 |
+| **Edge Scaffold** | 参考 iOS agent 模板，展示推荐集成方式。 | 生产 app 的共享 runtime 依赖。请 fork/export 后由你的 app 自己拥有。 |
 
-**Edge Halo** 是进化层。它基于专利 **HALO** 算法系统，处理用户画像分析、适配器生命周期和 activation steering。它位于 Edge Kit 旁边，由你的 app 组合两者。
+你的 agent 是组合点。它决定哪些用户数据可以进入个性化、哪些工具可用、何时运行个性化，以及用户如何查看或关闭它。
 
-**Edge Mesh** 是网络层。它负责本地网络设备发现、能力感知路由，以及设备之间的适配器传输。不需要云端中继。
+## Runtime 流程
 
-**Edge Studio** 和 **Edge Scaffold** 是开发时工具。Studio 优化模型，Scaffold 生成 app 项目。两者都不会进入最终二进制。
+```text
+1. 用 Edge Kit 加载 base model。
+2. 在 agent 中注册工具和本地数据 surface。
+3. 可选：用本地 app-approved 输入运行 Edge Halo profile job。
+4. 生成或接收 Neural Imprint artifact。
+5. 恢复前做兼容性校验。
+6. 用已恢复状态运行 chat，不在请求时重复拼接 profile text。
+```
 
-## DSR Attention
+关键边界：Neural Imprint 是本地 artifact 和 restore 流程。它不是请求时 prompt stuffing，也不是远程 profile 服务。
 
-DSR (Dynamic Sparse Retention) 是 Edge Kit 在内存受限设备上保持多轮对话速度的方式。
+## 开发流程
 
-对你的意义：
+```text
+Source model
+  → Edge Studio analysis / optimization / benchmark
+  → export model + runtime config
+  → Edge Scaffold reference project
+  → your agent integrates Edge Kit + Edge Halo
+  → real-device validation
+```
 
-- 9B 模型可以在 iPhone 上跨 20 轮对话保持稳定吞吐量。
-- 你不需要配置 DSR。Edge Kit 会根据模型和设备自动应用。
-- 内存策略在模型加载时计算。你可以通过 `engine.memoryPolicy` 读取，但通常不需要覆盖。
-- 如果用 `clearPromptCache()` 清空对话，缓存会重置，下一轮从干净状态开始。
-
-你会在指标中看到：
-
-| 指标 | 健康模式 |
-|--------|----------------|
-| 跨轮 TPS | 稳定或缓慢下降，而不是断崖式下跌。 |
-| TTFT | 随上下文长度增长；典型对话保持在 1 秒以内。 |
-| 内存占用 | 有边界，而不是每轮线性增长。 |
-
-## HALO（专利）
-
-HALO 是 Edge Halo 端侧持续学习背后的算法系统。
-
-对你的意义：
-
-- 你的 app 收集交互事件（反馈、修正、会话完成）。
-- HALO 提取本地用户画像，这是一种偏好的几何表示，而不是关键词。
-- 适配器在用户的 Mac 上训练，并通过 mesh 传输。数据不会离开用户自己的设备。
-- Activation steering 让你无需重新训练即可调整一次会话中的模型行为。
-- 用户可以随时回滚到基础模型。
-
-行业背景：Google、OpenAI 和 Anthropic 都在探索云端持续学习。HALO 在端侧解决这个问题，隐私来自架构，而不是政策。
+开发期使用 Edge Studio。发布 app 中使用 Edge Kit 和 Edge Halo。Edge Scaffold 是参考实现，不是隐藏依赖。
 
 ## 数据边界
 
-| 数据 | 存放位置 | 是否离开设备？ |
-|------|----------------|---------------|
-| 模型权重 | App bundle 或本地下载 | 否 |
-| KV cache | GPU 内存 | 否 |
-| 对话历史 | App 管理的本地存储 | 否 |
-| 用户画像 (HALO) | App 管理的本地存储 | 否 |
-| 训练后的适配器 | 用户的 Mac → mesh → 设备 | 仅在用户自己的设备内 |
-| 优化产物 | Edge Studio 导出 | 仅在开发者机器上 |
+| 数据 | Owner | 是否离开当前设备 |
+| --- | --- | --- |
+| Model weights | App bundle、本地 cache 或用户下载 | 默认不离开 |
+| Prompt 与对话历史 | 你的 agent | 默认不离开 |
+| Tool results 与 app facts | 你的 agent / EdgeData | 默认不离开 |
+| Profile inputs | 你的 agent | 默认不离开 |
+| Neural Imprint artifact | 你的 agent / Edge Halo 生命周期 | 仅在用户启用后传给受信任的自有设备 |
+| 设备状态与 receipts | EdgeMesh / Edge Studio pairing | 仅本地 mesh |
 
-## 平台架构
+不要把原始 transcript、correction 或私有 facts 放进远程日志。如果支持流程需要诊断信息，导出 hash、schema version、status receipt 和本地文件名，而不是用户内容。
 
-Edge 被设计为跨平台系统。当前版本面向 Apple（iOS 17+、macOS 14+）。运行时抽象层支持更多 backend，Android、Linux、HarmonyOS 和 Windows 在路线图中。
+## 兼容性闸门
+
+个性化 artifact 在 runtime identity 变化时必须 fail closed。至少校验：
+
+- Base model identity 和 family。
+- Model shape 和 layer count。
+- Tokenizer 与 chat template identity。
+- Runtime version。
+- Tool schema hash。
+- Neural Imprint artifact hash 与 prefix metadata。
+
+如果闸门失败，保持 base model active，并展示清晰恢复路径：重新生成、重新导出或加载匹配模型。
+
+## 公开抽象层级
+
+开发者文档只描述概念、API 和工作流。不会描述私有个性化算法、内部训练目标、kernel 实现细节或内存预算实现细节。
+
+使用这些文档集成产品；使用 Edge Scaffold 和 API reference 查具体代码路径。

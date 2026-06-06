@@ -23,6 +23,24 @@ iOS 可能在物理 RAM 耗尽前终止 app。请把进程 footprint 和真实�
 | 内存压力 | 响应系统内存警告。 |
 | 单次任务 | 在 STT 和 TTS 类工作负载后释放临时 buffer。 |
 
+## 选择 memory intent
+
+对话型 agent 应声明产品级 intent，并让 Edge Kit 规划底层 cache policy：
+
+| Intent | 使用场景 |
+| --- | --- |
+| `.balanced` | 大多数聊天会话的默认选择。 |
+| `.longSession` | 希望在设备预算允许时保留更多 resident context。 |
+| `.exactRecall` | 会话经常涉及金额、日期、计数或可审计事实。精确数据仍应配合 app-owned tool 或 fact-store recall。 |
+| `.batteryFriendly` | 面向热状态或电量敏感流程，降低 resident-state 压力。 |
+
+```swift
+let options = NativeRuntimeLoadOptions(memoryIntent: .longSession)
+try await engine.loadLocal(directory: modelURL, options: options)
+```
+
+不要把 DSR window 或 memory env 当作产品 API 调参。它们只适合诊断和实验。对精确事实，应让 tool 或 fact store 作为事实来源，而不是只依赖对话记忆。
+
 ## 对话缓存
 
 为一次对话保留提示缓存：

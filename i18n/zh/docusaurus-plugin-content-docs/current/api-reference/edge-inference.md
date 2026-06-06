@@ -35,13 +35,12 @@ public final class LLMEngine: ObservableObject
 | `init()` | 创建 engine。 |
 | `load(config:onProgress:)` | 加载已注册的 Hugging Face 模型配置。 |
 | `loadLocal(directory:onProgress:)` | 加载本地模型目录。 |
+| `loadLocal(directory:options:onProgress:)` | 使用 runtime options 加载本地模型目录，例如 `memoryIntent`。 |
 | `generate(messages:tools:onToolCall:parameters:bypassPolicy:)` | 流式返回 `GenerateChunk` 值。 |
 | `generateStream(prompt:maxTokens:temperature:topP:)` | 便捷文本 prompt stream。 |
 | `generateOnce(messages:parameters:)` | 返回累积后的单个字符串。 |
 | `clearPromptCache()` | 清理对话缓存。 |
 | `unload()` | 释放已加载模型。 |
-| `loadLoRA(adapterPath:)` | 加载适配器。 |
-| `unloadLoRA()` | 移除活跃适配器。 |
 
 ## VLMEngine
 
@@ -75,8 +74,6 @@ public final class VLMEngine: ObservableObject
 | `generate(messages:ciImages:tools:onToolCall:parameters:)` | 从内存中的 `CIImage` 值流式生成文本。 |
 | `generateStream(prompt:imageURL:maxTokens:temperature:topP:)` | 便捷 stream API。 |
 | `unload()` | 释放已加载模型。 |
-| `loadLoRA(adapterPath:)` | 为语言分支加载适配器。 |
-| `unloadLoRA()` | 移除活跃适配器。 |
 
 ## TTSEngine
 
@@ -164,8 +161,9 @@ public struct AnyEngine
 | `EdgeGenerateParameters` | 生成参数，例如 temperature、top-p 和 max tokens。 |
 | `ModelConfig` | 已注册模型元数据和查找 helper。 |
 | `ModelCategory` | `.llm`、`.vlm`、`.tts`、`.stt`。 |
+| `EdgeMemoryIntent` | 产品级 memory intent：`.balanced`、`.longSession`、`.exactRecall`、`.batteryFriendly`。 |
+| `NativeRuntimeLoadOptions` | 原生 runtime 低层 options。除非在做实测实验，通常只设置 `memoryIntent`。 |
 | `InferenceMetrics` | TTFT、decode TPS、token 数、内存变化和缓存摘要。 |
-| `LoRAAdapter` | 适配器检查和元数据 helper。 |
 | `AudioResult` | PCM 采样和采样率。 |
 | `AudioChunkResult` | 流式音频分片。 |
 | `TTSEvent` | `.progress`、`.audioChunk`、`.audio`。 |

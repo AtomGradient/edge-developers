@@ -5,7 +5,7 @@ title: Edge Studio Overview
 
 # Edge Studio
 
-Edge Studio is a local web workbench for model optimization. It takes a source model and produces a deployment-ready artifact — an Edge Kit bundle, a GGUF file, or a complete app project.
+Edge Studio is a local web workbench for model optimization, validation, export, and device coordination. It takes a source model and produces deployment-ready artifacts: Edge Kit bundles, GGUF/CoreML exports, Neural Imprint artifacts, or a complete Edge Scaffold project.
 
 :::info Developer Preview
 Validate every exported model on the target device before shipping. Build success alone is not sufficient.
@@ -15,10 +15,11 @@ Validate every exported model on the target device before shipping. Build succes
 
 ```text
 Source model → Edge Studio → Optimized bundle → Edge Kit (inference) → Your agent
-                                             → Edge Scaffold (app project)
+                             Neural Imprint artifact → Edge Halo restore flow
+                             Edge Scaffold project → Xcode → Your agent
 ```
 
-Edge Studio is the offline optimization tool. Edge Kit is the runtime. They are separate — your shipping app does not depend on Edge Studio.
+Edge Studio is the local workbench. Edge Kit and Edge Halo are the runtime packages. They are separate — your shipping agent does not depend on Edge Studio.
 
 ## How to launch
 
@@ -43,8 +44,20 @@ Opens at `http://localhost:5173`. Backend on port `18842`.
 | Optimization | Advisor, auto optimizer, pipeline, pruning simulator, mixed precision, quality validator, distillation, merge, auto tune |
 | Testing | Multi-modal chat (LLM/VLM/STT/TTS), voice duplex |
 | Batch | Multi-model benchmark dashboard, batch operations |
-| Training | Personal adapter training from local data |
-| Devices | EdgeMesh device management and pairing |
+| Personalization | Neural Imprint generation, profile artifact inspection, model-matched profile resources, device backflow |
+| Devices | EdgeMesh pairing, trusted peer state, capsule push/receive, apply-status receipts |
+
+## Developer workflow
+
+1. Load or select a source model.
+2. Inspect model architecture and device fit.
+3. Optimize and benchmark with the target device in mind.
+4. Export an Edge Kit bundle or Edge Scaffold project.
+5. Pair a test device with EdgeMesh when personalization or device receipts are needed.
+6. Generate or inspect Neural Imprint artifacts locally.
+7. Validate on a real device before shipping.
+
+Edge Studio prepares and audits artifacts. Your shipping agent consumes those artifacts through Edge Kit and Edge Halo.
 
 ## Requirements
 

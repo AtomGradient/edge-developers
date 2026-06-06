@@ -5,7 +5,7 @@ title: 文本生成
 
 # 使用 LLMEngine 进行文本生成
 
-`LLMEngine` 加载本地或已注册的文本模型，并流式生成文本。
+`LLMEngine` 加载本地或已注册的文本模型，并流式生成文本。Edge Kit 会自动应用 runtime memory policy，让多轮对话在设备上保持有界。
 
 ## 创建并加载
 
@@ -17,6 +17,17 @@ let modelURL = URL(fileURLWithPath: "/path/to/model")
 
 try await engine.loadLocal(directory: modelURL)
 ```
+
+如果某类会话需要不同内存取向，可以在加载时传入高层 intent：
+
+```swift
+try await engine.loadLocal(
+    directory: modelURL,
+    options: NativeRuntimeLoadOptions(memoryIntent: .exactRecall)
+)
+```
+
+对金额、日期、计数等可审计事实，`.exactRecall` 应和 app-owned tools 或 fact storage 配合使用。
 
 从已注册的 `ModelConfig` 加载：
 
@@ -91,17 +102,6 @@ for try await chunk in engine.generate(messages: history) {
 
 ```swift
 engine.clearPromptCache()
-```
-
-## LoRA 适配器
-
-```swift
-let adapterURL = URL(fileURLWithPath: "/path/to/adapter")
-
-try await engine.loadLoRA(adapterPath: adapterURL)
-print(engine.hasLoRAAdapter)
-
-engine.unloadLoRA()
 ```
 
 ## 指标
@@ -185,8 +185,6 @@ struct ChatView: View {
 | `generate(messages:parameters:)` | 流式返回 `GenerateChunk` 值。Async sequence。 |
 | `generateOnce(messages:)` | 返回一次性累积字符串。 |
 | `clearPromptCache()` | 重置对话状态。 |
-| `loadLoRA(adapterPath:)` | 加载个性化适配器。 |
-| `unloadLoRA()` | 移除当前激活的适配器。 |
 | `lastMetrics` | 生成后的 TTFT、TPS、token 数。 |
 
 完整签名和类型 → [EdgeInference API Reference](/docs/api-reference/edge-inference)

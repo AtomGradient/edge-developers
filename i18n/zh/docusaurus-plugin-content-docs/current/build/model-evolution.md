@@ -3,36 +3,38 @@ sidebar_position: 5
 title: 模型进化
 ---
 
-# 模型进化
+# 使用 Edge Halo 做模型进化
 
-Edge Halo 让本地模型适应用户偏好，而无需把私有交互数据发送到服务器。
+Edge Halo 帮助你的 agent 构建并恢复本地个性化状态，而不把私有用户数据发送到服务器。
 
-当你的 app 需要以下能力时，可以使用它：
+当你的 agent 需要以下能力时，可以使用它：
 
-- 随时间总结用户偏好的本地画像。
-- 从用户自有数据训练的轻量适配器。
-- 无需重新训练即可进行小幅行为调整的运行时调控。
+- 从 app-approved 数据得到本地用户画像。
+- 生成可由兼容 base model 恢复的 Neural Imprint artifact。
+- 在模型、tokenizer、runtime 或 tool schema identity 变化时 fail closed。
+- 提供清晰的用户可见生命周期：base model、learning、artifact ready、restored、incompatible 或 needs regeneration。
 
-Edge Halo 是开发者预览包。app 仍然是组合点：它连接 Edge Kit 推理、Edge Halo 进化、本地存储，以及可选的 Edge Mesh 传输。
+Edge Halo 是开发者预览包。agent 仍然是组合点：它连接 Edge Kit 推理、Edge Halo 生命周期 API、本地存储、EdgeData、可选 EdgeMesh 传输和产品策略。
 
 ## 模型进化做什么
 
-模型进化围绕基础模型添加一个私有生命周期：
+从开发者 API 角度，模型进化是在 base model 周围加一个私有生命周期：
 
-1. 收集 app 允许的交互事件。
-2. 在设备上构建用户画像。
-3. 在用户自有 Mac 上训练或接收一个小型适配器。
-4. 验证、应用或回滚该适配器。
-5. 为临时偏好变更应用会话级调控。
+1. 你的 agent 收集符合条件的本地事件和事实。
+2. 你的 agent 从本地数据准备 profile inputs。
+3. Edge Halo 使用 Edge Studio 导出或 Edge Scaffold 打包的资源运行 profile job。
+4. Edge Studio 或你的本地 runtime 生成 Neural Imprint artifact。
+5. Edge Halo 根据当前模型与 runtime 校验 artifact。
+6. Runtime 恢复 artifact；如果不兼容则 fail closed，保持 base model active。
 
-基础模型保持通用。画像、适配器和调控状态是让体验变得个性化的部分。
+Base model 保持不变。个性化状态是本地、可审计、可删除的用户数据。
 
 ## 设置 Edge Halo
 
-Edge Halo 不拥有你的推理运行时。你的 app 需要提供两个桥接：
+Edge Halo 不拥有你的推理 runtime。你的 agent 需要提供两个 bridge：
 
-- `HaloTextGenerator`：用于画像任务中的短文本本地生成。
-- `HaloEngineSession`：用于适配器和调控操作。
+- `HaloTextGenerator`：profile workflow 需要的短文本本地生成。
+- `HaloEngineSession`：模型会话操作，例如 profile capture 和 Neural Imprint restore。
 
 ```swift
 import EdgeHalo
@@ -45,32 +47,28 @@ struct AppTextGenerator: HaloTextGenerator {
     }
 
     func generate(prompt: String, maxTokens: Int) async throws -> String {
-        // In production, call your Edge Kit LLMEngine here.
-        "Local summary for: \(prompt.prefix(80))"
+        // In production, call the same Edge Kit model session used by chat.
+        "Local profile summary"
     }
 }
 
 final class AppEngineSession: HaloEngineSession, @unchecked Sendable {
-    func injectLoRA(adapterPath: String, scale: Float) throws {
-        // Bridge to the loaded model session.
-    }
-
-    func removeLoRA() throws {
-        // Remove the active adapter from the loaded model session.
-    }
-
     func captureHiddenState(tokens: [Int], layer: Int) async throws -> [Float] {
-        // Bridge to your model session's profile-capture path.
+        // Bridge to the loaded model session's profile-capture path.
         Array(repeating: 0, count: 4096)
     }
 
-    func injectSteering(vectors: [[Float]], layers: [Int], scales: [Float]) throws {
-        // Apply the current profile to the loaded model session.
+    func captureFullCache(tokenIds: [Int]) async throws -> HaloCacheSnapshot {
+        // Capture a local Neural Imprint prefix artifact.
+        throw HaloCapsuleError.fullCacheCaptureUnsupported
     }
 
-    func removeSteering() throws {
-        // Clear session-level steering.
+    func restoreFullCache(_ snapshot: HaloCacheSnapshot, artifactURL: URL) async throws {
+        // Restore a compatible Neural Imprint artifact into the loaded session.
     }
+
+    // 这是最小 bridge sketch。完整 preview protocol conformance 请以你固定版本的
+    // Edge Scaffold reference bridge 为准。
 }
 
 let halo = EdgeHalo(
@@ -79,197 +77,112 @@ let halo = EdgeHalo(
 )
 ```
 
-在生产 app 中，桥接方法应调用服务用户请求的同一个已加载模型会话。这样可以让推理和进化与用户实际使用的模型保持一致。
+生产 agent 中，bridge 方法应调用同一个服务用户请求的已加载模型会话。这样推理、profile job 和 restore 行为都与用户实际使用的模型保持一致。
 
-## 用户画像分析
+## 准备 profile inputs
 
-画像是对用户偏好行为相对默认模型行为差异的紧凑表示。它包含机器可读的方向和人类可读的标签，可用于设置、调试工具或验证 UI。
+你的 agent 拥有数据策略。Edge Halo 应只接收你的 agent 明确允许用于个性化的本地输入。
 
-`UserProfile` 暴露：
+常见输入：
 
-| 属性 | 用途 |
-| --- | --- |
-| `directions` | 调控使用的数值画像方向。 |
-| `directionNames` | 画像维度的短标签。 |
-| `narrative` | 简短的自然语言摘要。 |
-| `sampleCount` | 当前画像使用的示例数量。 |
-| `stabilityScore` | 表示画像一致性的 `0` 到 `1` 分数。 |
+- 来自 `EdgeData` 的已分类本地 facts。
+- 显式用户反馈。
+- 用户 corrections。
+- App-owned records 转换成你的集成所使用的 profile input shape。
 
-从 app 自有的本地数据任务运行画像分析。将原始用户内容保存在 app 存储中，只传入预览 API 所需的已准备本地输入，并从 `currentProfile` 读取结果画像。
+原始用户文本应留在 app 存储中。不要把 transcript 或 correction 复制到 analytics、日志、crash report 或 support bundle。
 
-```swift
-struct ProfileResources {
-    let examples: [String]
-    let preparedInputs: [PreparedProfileInput]
-    let profileDirectionsURL: URL
-    let modelID: String
-}
+## 运行 profile job
 
-func refreshProfile(
-    halo: EdgeHalo,
-    resources: ProfileResources
-) async throws -> UserProfile? {
-    try await halo.runProfileAnalysis(
-        sentences: resources.examples,
-        rawTransactions: resources.preparedInputs,
-        directionsAURL: resources.profileDirectionsURL,
-        modelID: resources.modelID,
-        progress: { progress in
-            print("Profile progress:", progress)
-        }
-    )
+Preview profile API 接收 prepared examples，以及由 Edge Studio 导出或 Edge Scaffold 打包的 model-matched profile resources。
 
-    return await halo.currentProfile
-}
-```
+生产 agent 中：
 
-任务完成后，将画像用于产品 UI 和运行时调控。
+1. 从 app storage 或 EdgeData 查询本地 facts。
+2. 转换成你的集成使用的 profile input shape。
+3. 加载为 exact base model 导出的 profile resources。
+4. 运行 Edge Halo profile job。
+5. 读取 `await halo.currentProfile`。
+
+当前低层参数请参考 Edge Scaffold 的具体实现。Profile result 属于本地用户数据：只在产品合适的层级展示，并提供 reset 路径。
+
+## 恢复 Neural Imprint capsule
+
+恢复 artifact 前，先根据已加载 runtime 做兼容性校验。如果任意 requirement 不匹配，保持 base model active。
 
 ```swift
-if let profile = await halo.currentProfile {
-    print(profile.narrative)
-    print(profile.directionNames)
-    print(profile.stabilityScore)
-}
-```
-
-## 适配器生命周期
-
-适配器是从本地用户数据训练得到的小型模型定制。常见流程是：
-
-1. iPhone 或 iPad 收集已批准的交互事件。
-2. 用户自有 Mac 从这些事件训练适配器。
-3. 适配器通过本地网格传回。
-4. app 在应用前验证适配器 offer。
-
-使用 `AdapterVersion` 描述适配器，并使用 `AdapterDecision` 决定如何处理。
-
-```swift
-let offer = AdapterVersion(
-    version: 3,
-    hash: "sha256-adapter-file",
-    baseModelID: "qwen3.5-0.8b",
-    trainingDataHash: "sha256-training-data",
-    trainedAt: Date()
+let result = await halo.validateCapsule(
+    capsule.manifest,
+    currentRequirements: currentRequirements
 )
 
-switch await halo.validateAdapter(offer) {
-case .apply:
-    try await halo.applyAdapter(
-        path: "/path/to/adapter",
-        version: offer
-    )
-
-case .validateFirst(let rounds):
-    let passed = try await runLocalValidation(rounds: rounds)
-    if passed {
-        try await halo.applyAdapter(
-            path: "/path/to/adapter",
-            version: offer
-        )
-    }
-
-case .rejectIncompatible(let reason):
-    print("Adapter rejected:", reason)
-
-case .rejectOutdated:
-    print("A newer adapter is already active.")
+guard result.isCompatible else {
+    // Show a recovery action: regenerate, re-export, or load the matching model.
+    return
 }
+
+try await halo.activateCapsule(
+    capsule,
+    currentRequirements: currentRequirements
+)
 ```
 
-如果质量下降，或用户禁用个性化，请回滚到基础模型：
+恢复后，chat 仍然走同一条 Edge Kit generation path。不要在请求时把 profile text 重新拼进 system prompt。
 
-```swift
-try await halo.rollback()
-```
+## 生命周期状态
 
-## 激活调控
+使用 `evolutionState` 和 `haloState` 驱动设置页 UI 和恢复动作。
 
-调控可以在不生成新适配器的情况下调整当前会话中的模型行为。它适合用于语气、正式程度、领域焦点，或“在这次对话中更轻柔地遵循我的画像”等控制。
-
-```swift
-// Uses the current profile, if one is available.
-try await halo.updateSteering(scales: [0.08, 0.04, 0.02])
-
-// Generate with the same model session your agent already uses.
-let answer = try await generateAssistantReply()
-
-// Clear steering when leaving the session or changing mode.
-try engineSession.removeSteering()
-```
-
-保持调控保守，并让用户可见。它们应该像会话偏好，而不是永久模型变更。
-
-## 进化状态机
-
-使用 `evolutionState` 驱动 UI 和后台工作。
-
-| 状态 | app 应做什么 |
+| 状态 | agent 应做什么 |
 | --- | --- |
-| `.idle` | 正常使用。如果用户已选择加入，可以收集数据。 |
-| `.collecting(progress:)` | 展示距离下一次本地训练机会的进度。 |
-| `.readyToTrain` | 提供在用户自有 Mac 上训练的入口。 |
-| `.training` | 显示训练状态，并保持基础模型可用。 |
-| `.validating` | 在应用前评估传入的适配器。 |
-| `.evolved(version:)` | 显示当前活跃适配器版本和回滚控件。 |
+| `.idle` | Base model active。用户允许时可收集本地数据。 |
+| `.collecting(progress:)` | 展示距离 profile refresh 或 artifact regeneration 的进度。 |
+| `.readyToBuildCapsule` | 提供用户可见的 build/receive artifact 动作。 |
+| `.buildingCapsule` | 本地 artifact 准备中，展示进度。 |
+| `.validating(capsuleID:)` | 正在运行兼容性闸门。 |
+| `.evolved(capsuleID:)` | 显示 active personalized state，并提供 reset 控件。 |
 
-```swift
-switch await halo.evolutionState {
-case .idle:
-    print("Base model active")
-case .collecting(let progress):
-    print("\(progress.collected) of \(progress.threshold) examples")
-case .readyToTrain:
-    print("Ready to train on this user's Mac")
-case .training:
-    print("Training in progress")
-case .validating:
-    print("Validating adapter")
-case .evolved(let version):
-    print("Adapter version \(version.version) active")
-}
-```
+`haloState` 还提供 capsule 级恢复状态，例如 `.active(capsuleID:)`、
+`.incompatible(capsuleID:reason:)` 和 `.failed(reason:)`。只要校验失败，就保持
+base model active。
 
-## 架构
+## 推荐 agent 流程
 
-Edge Halo 遵循 V 形组合模型：
+1. 用 Edge Kit 加载 base model。
+2. 注册 app tools 和本地数据 surface。
+3. 收集符合条件的本地 facts 与 corrections。
+4. 从 Settings 或用户允许的后台流程运行 profile learning。
+5. 生成或接收 Neural Imprint artifact。
+6. 校验并恢复 artifact。
+7. 提供 base-vs-personalized smoke test 和 reset 按钮。
 
-```text
-App
-  |- Edge Kit for inference
-  |- Edge Halo for evolution lifecycle
-      \- shared engine runtime
-```
+参考实现见 [Edge Scaffold](/docs/optimize-and-ship/scaffold)。
 
-app 拥有策略决策：哪些数据符合条件、何时训练、是否应用适配器、何时回滚，以及如何向用户解释个性化。
+## 隐私 checklist
 
-## 隐私
-
-模型进化面向用户自有设备设计：
-
-- 交互数据留在设备上。
-- 训练在用户的 Mac 上运行。
-- 启用时，适配器传输通过用户的本地网格完成。
-- 用户可以禁用个性化并回滚到基础模型。
-
-不要把原始 correction、转写内容或私有 prompt 复制到日志、分析、崩溃报告或支持包中。将本地画像 artifact 作为用户数据存储，并让用户能从 app 设置中移除它们。
+- Profile inputs 留在本地。
+- Neural Imprint artifacts 作为可删除用户数据存储。
+- EdgeMesh 只用于受信任的用户自有设备。
+- 诊断日志记录 hash、schema version 和 status receipt，不记录原始用户内容。
+- 兼容性不匹配时 fail closed。
 
 ## API 概览
 
-| Method | 作用 |
-|--------|-------------|
-| `EdgeHalo(engine:generator:)` | 创建进化 actor。 |
-| `runProfileAnalysis(...)` | 提取本地用户画像。 |
-| `validateAdapter(_:)` | 检查传入的适配器 offer。 |
-| `applyAdapter(path:version:)` | 将适配器应用到推理。 |
-| `rollback()` | 回滚到基础模型。 |
-| `updateSteering(scales:)` | 调整会话级行为。 |
-| `evolutionState` | 当前生命周期状态。 |
-| `currentProfile` | 最近的 `UserProfile`。 |
+| 方法或类型 | 作用 |
+| --- | --- |
+| `EdgeHalo(engine:generator:dataStream:)` | 使用 app-provided bridges 创建 lifecycle actor。 |
+| `runProfileAnalysis(...)` | 从 prepared inputs 和导出资源运行本地 profile job。 |
+| `currentProfile` | 最近一次本地 profile result。 |
+| `validateCapsule(_:currentRequirements:)` | 检查 Neural Imprint capsule 是否匹配已加载 runtime。 |
+| `activateCapsule(_:currentRequirements:)` | 将兼容 capsule 恢复进当前模型会话。 |
+| `evolutionState` | 面向 UI 的高层生命周期状态。 |
+| `haloState` | Capsule validation 和 restore 状态。 |
+| `HaloCapsuleRequirements` | 用于 fail-closed compatibility 的 runtime identity。 |
 
-完整签名 → [EdgeHalo API Reference](/docs/api-reference/edge-halo)
+完整签名见 [EdgeHalo API Reference](/docs/api-reference/edge-halo)。
 
 ## 下一步
 
-- [个性化模型示例](/docs/examples/personalized-model) — 完整生命周期代码。
-- [文本生成](/docs/build/text-generation) — 个性化之前的基础推理。
+- [个性化模型示例](/docs/examples/personalized-model) — 最小设置页流程。
+- [设备 Mesh](/docs/build/device-mesh) — 在受信任的用户自有设备之间传输 artifacts。
+- [架构](/docs/guides/architecture) — 产品边界与数据归属。

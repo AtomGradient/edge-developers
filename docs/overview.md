@@ -6,13 +6,35 @@ title: Overview
 
 # AtomGradient Edge
 
-Make AI grow on every device. No cloud. No latency. Complete privacy.
+Build private AI agents that run on the user's own devices.
 
 Currently shipping on Apple platforms. Android, Linux, HarmonyOS, and Windows are on the roadmap.
 
 :::info Developer Preview
 All Edge products are in **Developer Preview**. APIs may change between releases. Pin your package versions and validate on real devices after each upgrade.
 :::
+
+## The product stack
+
+| Product | What developers use it for |
+| --- | --- |
+| **Edge Studio** | Local workbench for model analysis, optimization, benchmark, Neural Imprint generation, device management, and export. |
+| **Edge Engine** | Native on-device inference runtime. It is packaged under Edge Kit; most apps do not import it directly. |
+| **Edge Kit** | Swift SDK for LLM, VLM, speech, model management, EdgeData, EdgeMesh, EdgeSession, and EdgeUI. |
+| **Edge Halo** | Personalization lifecycle layer: profile jobs, Neural Imprint capsule validation, restore orchestration, and compatibility gates. |
+| **Edge Scaffold** | Reference app and export template that shows the recommended iOS integration pattern. |
+
+The short version:
+
+```text
+Edge Studio prepares artifacts
+        ↓
+Edge Scaffold shows the reference app structure
+        ↓
+Your agent imports Edge Kit + Edge Halo
+        ↓
+Edge Engine runs the model locally
+```
 
 ## Choose your path
 
@@ -27,28 +49,31 @@ All Edge products are in **Developer Preview**. APIs may change between releases
 
 - [Vision](/docs/build/vision) — Image understanding with VLM
 - [Speech to text](/docs/build/speech-to-text) + [Text to speech](/docs/build/text-to-speech) — Voice pipeline
-- [Model evolution](/docs/build/model-evolution) — HALO-powered on-device continuous learning
-- [Voice assistant example](/docs/examples/voice-assistant) — ASR → LLM → TTS end-to-end
+- [Model evolution](/docs/build/model-evolution) — Neural Imprint and Edge Halo lifecycle
+- [Personalized model example](/docs/examples/personalized-model) — Profile, capsule, and restore workflow
 
 ### I want to optimize a model and ship an agent
 
-1. [Edge Studio overview](/docs/optimize-and-ship/studio-overview) — Web UI workbench
+1. [Edge Studio overview](/docs/optimize-and-ship/studio-overview) — Local workbench
 2. [Optimize and benchmark](/docs/optimize-and-ship/optimize-and-benchmark) — Analyze, compress, validate
-3. [Export](/docs/optimize-and-ship/export) — Edge Kit / GGUF / CoreML formats
-4. [Edge Scaffold](/docs/optimize-and-ship/scaffold) — Generate a publishable agent
+3. [Export](/docs/optimize-and-ship/export) — Edge Kit bundle, scaffold project, GGUF, or CoreML
+4. [Edge Scaffold](/docs/optimize-and-ship/scaffold) — Generate a publishable reference app
 5. [Build and ship example](/docs/examples/build-and-ship) — End-to-end walkthrough
 
-## Core technology
+## Core concepts
 
-| Technology | What it means for you |
-|------------|----------------------|
-| **DSR Attention** | Dynamic sparse retention. Your 9B model runs 20-turn conversations on iPhones without speed degradation. You don't configure it — Edge Kit applies it automatically. |
-| **HALO** (patented) | On-device model evolution. Your agent's model learns from user behavior without uploading data. Profile extraction, adapter training, real-time steering — all local. |
+| Concept | Developer-facing meaning |
+| --- | --- |
+| **Local-first inference** | Models, prompts, user data, and personalization artifacts stay on user-owned devices unless the user explicitly enables local mesh transfer. |
+| **Neural Imprint** | A local personalization artifact that lets a compatible base model restore a user-specific state without changing model weights. |
+| **EdgeMesh** | Local-network trust, discovery, and device-to-device transfer for user-owned devices. |
+| **Memory intent** | A high-level policy hint such as `balanced`, `longSession`, `exactRecall`, or `batteryFriendly`; Edge Kit resolves the runtime memory details. |
+| **Fail-closed compatibility** | Personalization and model artifacts must match model identity, tokenizer/template identity, runtime version, and tool schema before restore. |
 
 ## Quick start
 
 ```swift
-import EdgeKit
+import EdgeInference
 
 let engine = LLMEngine()
 try await engine.loadLocal(directory: modelURL)
@@ -60,18 +85,13 @@ for try await chunk in engine.generate(
 }
 ```
 
-## Performance
+## Privacy model
 
-Real-device measurements. Qwen3.5-9B-4bit, 20-turn conversation:
+Edge is designed around user-owned compute:
 
-| Device | First turn | Median | Turn 20 | TTFT |
-|--------|-----------|--------|---------|------|
-| iPhone 17 (11GB) | 12.6 TPS | 11.6 TPS | 10.8 TPS | 566ms |
-| iPhone Air (11GB) | 9.5 TPS | 7.8 TPS | 7.5 TPS | 918ms |
+- Inference runs locally.
+- Training inputs, corrections, and conversation history remain app-managed local data.
+- EdgeMesh transfer is local-network and trust-gated.
+- Neural Imprint artifacts are compatibility-checked before restore and can be removed by the app.
 
-Custom engine prefill (M2 Ultra):
-
-| Workload | Edge Engine | Generic | Speedup |
-|----------|-----------|---------|---------|
-| Text (4B) | 1,305 TPS | 187 TPS | **7×** |
-| VLM image (4B) | 1,803 TPS | 851 TPS | **2.1×** |
+Do not upload user transcripts, corrections, or profile artifacts to analytics, crash logs, or remote support systems.

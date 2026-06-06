@@ -35,13 +35,12 @@ public final class LLMEngine: ObservableObject
 | `init()` | Creates an engine. |
 | `load(config:onProgress:)` | Loads a registered Hugging Face model config. |
 | `loadLocal(directory:onProgress:)` | Loads a local model directory. |
+| `loadLocal(directory:options:onProgress:)` | Loads a local model directory with runtime options such as `memoryIntent`. |
 | `generate(messages:tools:onToolCall:parameters:bypassPolicy:)` | Streams `GenerateChunk` values. |
 | `generateStream(prompt:maxTokens:temperature:topP:)` | Convenience text prompt stream. |
 | `generateOnce(messages:parameters:)` | Returns a single accumulated string. |
 | `clearPromptCache()` | Clears conversation cache. |
 | `unload()` | Releases the loaded model. |
-| `loadLoRA(adapterPath:)` | Loads an adapter. |
-| `unloadLoRA()` | Removes the active adapter. |
 
 ## VLMEngine
 
@@ -75,8 +74,6 @@ public final class VLMEngine: ObservableObject
 | `generate(messages:ciImages:tools:onToolCall:parameters:)` | Streams text from in-memory `CIImage` values. |
 | `generateStream(prompt:imageURL:maxTokens:temperature:topP:)` | Convenience stream API. |
 | `unload()` | Releases the loaded model. |
-| `loadLoRA(adapterPath:)` | Loads an adapter for the language branch. |
-| `unloadLoRA()` | Removes the active adapter. |
 
 ## TTSEngine
 
@@ -164,8 +161,9 @@ public struct AnyEngine
 | `EdgeGenerateParameters` | Generation parameters such as temperature, top-p, and max tokens. |
 | `ModelConfig` | Registered model metadata and lookup helpers. |
 | `ModelCategory` | `.llm`, `.vlm`, `.tts`, `.stt`. |
+| `EdgeMemoryIntent` | Product-level memory intent: `.balanced`, `.longSession`, `.exactRecall`, `.batteryFriendly`. |
+| `NativeRuntimeLoadOptions` | Low-level native runtime options. Prefer setting only `memoryIntent` unless you are running a measured experiment. |
 | `InferenceMetrics` | TTFT, decode TPS, token counts, memory delta, and cache summary. |
-| `LoRAAdapter` | Adapter inspection and metadata helper. |
 | `AudioResult` | PCM samples and sample rate. |
 | `AudioChunkResult` | Streaming audio chunk. |
 | `TTSEvent` | `.progress`, `.audioChunk`, `.audio`. |

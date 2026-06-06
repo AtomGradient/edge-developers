@@ -197,7 +197,7 @@ Edge Mesh 面向私有本地网络设计：
 - 当工作离开当前设备时，app 应显示哪台设备处于活跃状态。
 - 本地网络权限文案应解释用户可见的收益。
 
-除非用户已启用该工作流且 peer 可信，否则不要向 peer 发送原始 prompt、私有训练示例或用户 correction。
+除非用户已启用该工作流且 peer 可信，否则不要向 peer 发送原始 prompt、私有 profile inputs 或用户 correction。
 
 ## API 概览
 
@@ -213,5 +213,5 @@ Edge Mesh 面向私有本地网络设计：
 
 ## 下一步
 
-- [模型进化](/docs/build/model-evolution) — 跨设备传输适配器。
+- [模型进化](/docs/build/model-evolution) — 在可信用户自有设备之间传输 Neural Imprint artifacts。
 - [架构](/docs/guides/architecture) — 了解所有层如何连接。

@@ -31,7 +31,7 @@ Edge Studio 的核心循环：分析模型、应用优化、对结果做基准�
 | **Pruning simulator** | 应用前预览尺寸缩减 | 估算目标是否现实 |
 | **Mixed precision** | 按 layer 控制量化 bit-width | 细粒度平衡质量与尺寸 |
 | **Distillation** | 从 teacher 训练更小的 student | 创建紧凑模型 |
-| **Merge** | 合并模型或适配器 | 从多个来源组装 |
+| **Merge** | 合并兼容模型来源 | 从多个来源组装 |
 | **Auto tune** | 搜索推理参数 | 寻找最优设备配置 |
 
 ## 质量验证

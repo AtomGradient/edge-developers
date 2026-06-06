@@ -27,7 +27,7 @@ Edge Engine and Edge Halo preview packages use newer Swift toolchains in some bu
 | 4B text or VLM models | 8 GB or more unified memory |
 | 9B models | 16 GB or more unified memory, or a validated high-memory iOS device |
 | Optimization and export | Mac with sufficient disk space for source and exported models |
-| Adapter training | User-owned Mac |
+| Edge Studio optimization and artifact generation | User-owned Mac |
 
 ## iOS entitlements
 

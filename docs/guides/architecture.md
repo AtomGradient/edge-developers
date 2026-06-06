@@ -3,82 +3,93 @@ sidebar_position: 6
 title: Architecture
 ---
 
-# Architecture and technology concepts
+# Architecture and product boundaries
 
-How the Edge platform layers connect, and what the core technologies mean for your agent.
+This page explains how the Edge developer products fit together and where your agent should integrate.
 
 ## Layer map
 
 ```text
 ┌─────────────────────────────────────────────┐
-│                Your Agent                      │
-├──────────────┬──────────────┬───────────────┤
-│  Edge Kit    │  Edge Halo   │  Edge Mesh    │
-│  Inference   │  Evolution   │  Multi-device │
-│  SDK         │  (HALO)      │               │
-├──────────────┴──────────────┴───────────────┤
-│          Edge Engine — Native Runtime        │
-│          (DSR Attention)                     │
+│                 Your Agent                  │
+│  UI · app policy · local user data · tools  │
+├─────────────────────────────────────────────┤
+│ Edge Kit        Edge Halo        Edge Mesh  │
+│ inference SDK   personalization  local mesh │
+├─────────────────────────────────────────────┤
+│              Edge Engine runtime            │
 └─────────────────────────────────────────────┘
 
-Tooling (development-time, not shipped in your agent):
-  Edge Studio  →  Edge Scaffold  →  App project
+Development-time tools:
+  Edge Studio  →  Edge Scaffold  →  Xcode project
 ```
 
-**Edge Engine** is the inference runtime. It owns Metal command scheduling, tensor storage, and model-family execution. Your agent never imports it directly — Edge Kit wraps it.
+## Product responsibilities
 
-**Edge Kit** is the developer surface. It provides `LLMEngine`, `VLMEngine`, `TTSEngine`, `WhisperEngine`, model download, memory management, and mesh networking. This is what you `import` in your agent.
+| Product | Responsibility | Does not own |
+| --- | --- | --- |
+| **Edge Engine** | Native model execution, runtime scheduling, and low-level cache primitives. | App UI, tool policy, user data, or app storage. |
+| **Edge Kit** | Public Swift SDK for inference, model management, EdgeData, EdgeMesh, EdgeSession, EdgeUI, and voice. | Product-specific business logic or private user-data policy. |
+| **Edge Halo** | Personalization lifecycle: profile jobs, Neural Imprint capsule validation, restore orchestration, and fail-closed compatibility checks. | Model forward passes, mesh transport, or app-specific data import. |
+| **Edge Studio** | Local workbench for optimization, benchmark, export, artifact generation, and device coordination. | Runtime behavior inside the shipped agent. |
+| **Edge Scaffold** | Reference iOS agent template showing the recommended integration. | A shared runtime dependency for production apps. Fork or export from it, then own your app. |
 
-**Edge Halo** is the evolution layer. Built on the patented **HALO** algorithm system, it handles user profiling, adapter lifecycle, and activation steering. It sits beside Edge Kit — your agent composes both.
+Your agent is the composition point. It chooses what user data is eligible, which tools are available, when personalization can run, and how the user can inspect or disable it.
 
-**Edge Mesh** is the networking layer. Local-network device discovery, capability-aware routing, adapter transfer between devices. No cloud relay.
+## Runtime flow
 
-**Edge Studio** and **Edge Scaffold** are development-time tools. Studio optimizes models. Scaffold generates app projects. Neither ships in your final binary.
+```text
+1. Load a base model with Edge Kit.
+2. Register tools and local data surfaces in your agent.
+3. Optionally run an Edge Halo profile job from local, app-approved inputs.
+4. Generate or receive a Neural Imprint artifact.
+5. Validate compatibility before restore.
+6. Run chat with the restored state, without replaying profile text into prompts.
+```
 
-## DSR Attention
+The important boundary: Neural Imprint is a local artifact and restore flow. It is not a request-time prompt stuffing pattern and it is not a remote profile service.
 
-DSR (Dynamic Sparse Retention) is how Edge Kit keeps multi-turn conversations fast on memory-constrained devices.
+## Development workflow
 
-What it means for you:
+```text
+Source model
+  → Edge Studio analysis / optimization / benchmark
+  → export model + runtime config
+  → Edge Scaffold reference project
+  → your agent integrates Edge Kit + Edge Halo
+  → real-device validation
+```
 
-- A 9B model holds stable throughput across 20 conversation turns on iPhone.
-- You do not configure DSR. Edge Kit applies it automatically based on the model and device.
-- Memory policy is computed at model load time. You can read it via `engine.memoryPolicy` but you should not need to override it.
-- If you clear the conversation with `clearPromptCache()`, the cache resets and the next turn starts fresh.
-
-What you observe in metrics:
-
-| Metric | Healthy pattern |
-|--------|----------------|
-| TPS across turns | Stable or gradual decline, not cliff. |
-| TTFT | Grows with context length, stays under 1s for typical conversations. |
-| Memory footprint | Bounded, not linear growth per turn. |
-
-## HALO (patented)
-
-HALO is the algorithm system behind Edge Halo's on-device continuous learning.
-
-What it means for you:
-
-- Your agent collects interaction events (feedback, corrections, session completions).
-- HALO extracts a local user profile — a geometric representation of preferences, not keywords.
-- Adapters are trained on the user's Mac and transferred via mesh. No data leaves the user's devices.
-- Activation steering lets you adjust model behavior for a session without retraining.
-- The user can roll back to the base model at any time.
-
-The industry context: Google, OpenAI, and Anthropic are exploring continuous learning in the cloud. HALO solves it on-device — privacy by architecture, not policy.
+Use Edge Studio during development. Use Edge Kit and Edge Halo in the shipping app. Use Edge Scaffold as a reference implementation, not as a hidden dependency.
 
 ## Data boundaries
 
-| Data | Where it lives | Leaves device? |
-|------|----------------|---------------|
-| Model weights | App bundle or local download | No |
-| KV cache | GPU memory | No |
-| Conversation history | App-managed local storage | No |
-| User profile (HALO) | App-managed local storage | No |
-| Trained adapter | User's Mac → mesh → device | Only within user's own devices |
-| Optimization artifacts | Edge Studio export | Developer's machine only |
+| Data | Owner | Leaves current device? |
+| --- | --- | --- |
+| Model weights | App bundle, local cache, or user download | No by default |
+| Prompt and conversation history | Your agent | No by default |
+| Tool results and app facts | Your agent / EdgeData | No by default |
+| Profile inputs | Your agent | No by default |
+| Neural Imprint artifact | Your agent / Edge Halo lifecycle | Only to trusted user-owned devices when enabled |
+| Device status and receipts | EdgeMesh / Edge Studio pairing | Local mesh only |
 
-## Platform architecture
+Do not put raw transcripts, corrections, or private facts in remote logs. If your support workflow needs diagnostics, export hashes, schema versions, status receipts, and local file names rather than user content.
 
-Edge is designed as a cross-platform system. The current release targets Apple (iOS 17+, macOS 14+). The runtime abstraction layer supports additional backends — Android, Linux, HarmonyOS, and Windows are on the roadmap.
+## Compatibility gates
+
+Personalization artifacts must fail closed when runtime identity changes. At minimum, validate:
+
+- Base model identity and family.
+- Model shape and layer count.
+- Tokenizer and chat template identity.
+- Runtime version.
+- Tool schema hash.
+- Neural Imprint artifact hash and prefix metadata.
+
+If a gate fails, keep the base model active and show a clear recovery path: regenerate, re-export, or load the matching model.
+
+## Public abstraction level
+
+Developer documentation intentionally describes concepts, APIs, and workflows. It does not describe private model-personalization algorithms, internal training objectives, kernel implementation details, or memory-budget implementation details.
+
+Use these docs to integrate the products. Use Edge Scaffold and the API reference for concrete code paths.

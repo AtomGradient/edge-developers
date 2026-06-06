@@ -49,7 +49,7 @@ A quick reference for every route in the Edge Studio web interface. For the main
 | `/mixed-precision` | Mixed precision | Per-layer bit-width control |
 | `/quality` | Quality validator | Perplexity, benchmark, custom prompts |
 | `/distill` | Distillation | Student model from teacher |
-| `/merge` | Merge | Combine models or adapters |
+| `/merge` | Merge | Combine compatible model sources |
 | `/auto-tune` | Auto tune | Search inference parameters |
 
 ## Pro mode — Testing
@@ -70,6 +70,6 @@ A quick reference for every route in the Edge Studio web interface. For the main
 
 | Route | Page | What it does |
 |-------|------|-------------|
-| `/personal-training` | Personal training | Train adapters from local user data |
+| `/neural-imprint-chat` | Neural Imprint Chat | Preview a generated Neural Imprint artifact with a Mac-side base model |
 | `/devices` | Devices | EdgeMesh device management and pairing |
 | `/export` | Export | Wizard-style export flow |

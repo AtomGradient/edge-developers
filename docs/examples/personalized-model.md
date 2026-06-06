@@ -3,301 +3,261 @@ sidebar_position: 4
 title: Personalized Model
 ---
 
-# Example: Personalized model
+# Example: Neural Imprint lifecycle
 
-This example builds the app-side control surface for model evolution with
-Edge Halo. It collects local events, checks evolution state, validates an
-adapter, applies it, updates steering, and rolls back.
+This example shows the app-side control surface for local personalization with Edge Halo.
 
-The profile-analysis job itself should live behind your private local data
-layer. That job prepares app-approved examples, runs the preview analysis API,
-and then exposes `currentProfile` to the UI shown here.
+It does four things:
 
-## Complete code
+1. Records local user signals.
+2. Shows profile readiness.
+3. Validates a Neural Imprint capsule.
+4. Restores the capsule only when compatibility checks pass.
 
-Create a SwiftUI app target that depends on Edge Halo and replace the app code
-with the following:
+The profile job and artifact generation should live behind your own local data layer or follow the Edge Scaffold reference flow.
+
+## SwiftUI settings flow
 
 ```swift
 import EdgeHalo
 import Foundation
 import SwiftUI
 
-@main
-struct PersonalizedModelExampleApp: App {
-    var body: some Scene {
-        WindowGroup {
-            PersonalizationView()
-        }
-    }
-}
-
 struct PersonalizationView: View {
     @StateObject private var model = PersonalizationViewModel()
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            Text("Evolution State")
-                .font(.headline)
-
-            Text(model.stateText)
-                .font(.body)
+        Form {
+            Section("State") {
+                LabeledContent("Evolution", value: model.evolutionText)
+                LabeledContent("Capsule", value: model.capsuleText)
+            }
 
             if let profile = model.profile {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("Profile")
-                        .font(.headline)
-                    Text(profile.narrative)
-                    Text("Signals: \(profile.directionNames.joined(separator: ", "))")
-                        .font(.caption)
-                    Text("Stability: \(profile.stabilityScore, format: .number.precision(.fractionLength(2)))")
-                        .font(.caption)
+                Section("Local Profile") {
+                    Text(profile.narrative.isEmpty ? "Profile ready" : profile.narrative)
+                    LabeledContent("Samples", value: "\(profile.sampleCount)")
+                    LabeledContent("Stability", value: profile.stabilityText)
                 }
             }
 
-            Divider()
-
-            TextField("Adapter path", text: $model.adapterPath)
-                .textFieldStyle(.roundedBorder)
-
-            HStack {
-                Button("Accepted Reply") {
-                    model.recordAcceptedReply()
+            Section("Signals") {
+                Button("Record positive feedback") {
+                    model.recordFeedback(accepted: true)
                 }
-
-                Button("Correction") {
+                Button("Record correction") {
                     model.recordCorrection()
                 }
-
-                Button("Session Ended") {
-                    model.recordSessionCompleted()
-                }
             }
 
-            HStack {
-                Button("Refresh") {
+            Section("Neural Imprint") {
+                Button("Refresh state") {
                     Task { await model.refreshState() }
                 }
-
-                Button("Apply Adapter") {
-                    Task { await model.applyAdapter() }
+                Button("Restore local capsule") {
+                    Task { await model.restoreLocalCapsule() }
                 }
-
-                Button("Steer") {
-                    Task { await model.updateSteering() }
-                }
-
-                Button("Roll Back") {
-                    Task { await model.rollback() }
+                Button("Reset personalization") {
+                    Task { await model.resetPersonalization() }
                 }
             }
 
-            Text(model.status)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-
-            Spacer()
+            if !model.status.isEmpty {
+                Text(model.status)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
         }
-        .padding()
-        .task {
-            await model.refreshState()
-        }
+        .navigationTitle("Personalization")
+        .task { await model.refreshState() }
     }
 }
 
 @MainActor
 final class PersonalizationViewModel: ObservableObject {
-    @Published var adapterPath = "\(NSHomeDirectory())/Adapters/user-v1"
-    @Published var stateText = "Idle"
-    @Published var status = "Ready"
+    @Published var evolutionText = "Idle"
+    @Published var capsuleText = "Base model"
+    @Published var status = ""
     @Published var profile: UserProfile?
 
     private let halo: EdgeHalo
-    private let eventSink: AsyncStream<HaloDataEvent>.Continuation
-    private let baseModelID = "qwen3.5-0.8b"
+    private let events: AsyncStream<HaloDataEvent>.Continuation
+    private let capsuleStore = LocalCapsuleStore()
 
     init() {
-        let events = AsyncStream.makeStream(of: HaloDataEvent.self)
-        eventSink = events.continuation
+        let stream = AsyncStream.makeStream(of: HaloDataEvent.self)
+        events = stream.continuation
 
         halo = EdgeHalo(
-            engine: DemoEngineSession(),
-            generator: DemoTextGenerator(),
-            dataStream: events.stream
+            engine: AppEngineSession(),
+            generator: AppTextGenerator(),
+            dataStream: stream.stream
         )
     }
 
-    func recordAcceptedReply() {
-        eventSink.yield(.feedback(
-            accepted: true,
+    func recordFeedback(accepted: Bool) {
+        events.yield(.feedback(
+            accepted: accepted,
             conversationID: UUID().uuidString
         ))
-        status = "Feedback stored locally"
+        status = "Feedback recorded locally"
     }
 
     func recordCorrection() {
-        eventSink.yield(.correction(
-            original: "Draft reply",
-            corrected: "Preferred reply",
+        events.yield(.correction(
+            original: "Original assistant reply",
+            corrected: "User-corrected reply",
             conversationID: UUID().uuidString
         ))
-        status = "Correction stored locally"
-    }
-
-    func recordSessionCompleted() {
-        eventSink.yield(.sessionCompleted(
-            turnCount: 8,
-            conversationID: UUID().uuidString
-        ))
-        status = "Session event stored locally"
+        status = "Correction recorded locally"
     }
 
     func refreshState() async {
-        let state = await halo.evolutionState
         profile = await halo.currentProfile
 
-        switch state {
+        switch await halo.evolutionState {
         case .idle:
-            stateText = "Idle"
+            evolutionText = "Idle"
         case .collecting(let progress):
-            stateText = "Collecting \(progress.collected)/\(progress.threshold)"
-        case .readyToTrain:
-            stateText = "Ready to train on this user's Mac"
-        case .training:
-            stateText = "Training"
-        case .validating:
-            stateText = "Validating"
-        case .evolved(let version):
-            stateText = "Adapter v\(version.version) active"
+            evolutionText = "Collecting \(progress.collected)/\(progress.threshold)"
+        case .readyToBuildCapsule:
+            evolutionText = "Ready to build"
+        case .buildingCapsule:
+            evolutionText = "Building"
+        case .validating(let capsuleID):
+            evolutionText = "Validating \(capsuleID)"
+        case .evolved(let capsuleID):
+            evolutionText = "Personalized \(capsuleID)"
+        }
+
+        switch await halo.haloState {
+        case .idle:
+            capsuleText = "Base model"
+        case .collecting(let factsCount, let threshold):
+            capsuleText = "Collecting \(factsCount)/\(threshold)"
+        case .profiling:
+            capsuleText = "Preparing profile"
+        case .buildingCapsule:
+            capsuleText = "Building capsule"
+        case .validating(let capsuleID):
+            capsuleText = "Validating \(capsuleID)"
+        case .active(let capsuleID):
+            capsuleText = "Neural Imprint active \(capsuleID)"
+        case .incompatible(_, let reason):
+            capsuleText = "Incompatible: \(reason)"
+        case .failed(let reason):
+            capsuleText = "Failed: \(reason)"
         }
     }
 
-    func applyAdapter() async {
-        let offer = AdapterVersion(
-            version: 1,
-            hash: "sha256-adapter-file",
-            baseModelID: baseModelID,
-            trainingDataHash: "sha256-training-data",
-            trainedAt: Date()
-        )
-
+    func restoreLocalCapsule() async {
         do {
-            switch await halo.validateAdapter(offer) {
-            case .apply:
-                try await halo.applyAdapter(path: adapterPath, version: offer)
-                status = "Adapter applied"
+            let capsule = try capsuleStore.loadLatestCapsule()
+            let current = try capsuleStore.currentRuntimeRequirements()
+            let compatibility = await halo.validateCapsule(
+                capsule.manifest,
+                currentRequirements: current
+            )
 
-            case .validateFirst(let rounds):
-                let passed = await runValidation(rounds: rounds)
-                if passed {
-                    try await halo.applyAdapter(path: adapterPath, version: offer)
-                    status = "Adapter validated and applied"
-                } else {
-                    status = "Adapter validation failed"
-                }
-
-            case .rejectIncompatible(let reason):
-                status = "Rejected: \(reason)"
-
-            case .rejectOutdated:
-                status = "Rejected: an equal or newer adapter is active"
+            guard compatibility.isCompatible else {
+                status = "Capsule does not match the loaded model. Regenerate it."
+                await refreshState()
+                return
             }
 
+            try await halo.activateCapsule(
+                capsule,
+                currentRequirements: current
+            )
+            status = "Neural Imprint restored"
             await refreshState()
         } catch {
-            status = "Apply failed: \(error.localizedDescription)"
+            status = "Restore failed: \(error.localizedDescription)"
         }
     }
 
-    func updateSteering() async {
-        do {
-            try await halo.updateSteering(scales: [0.08, 0.04, 0.02])
-            status = "Steering updated for this session"
-        } catch {
-            status = "Steering failed: \(error.localizedDescription)"
-        }
-    }
-
-    func rollback() async {
-        do {
-            try await halo.rollback()
-            status = "Rolled back to base model"
-            await refreshState()
-        } catch {
-            status = "Rollback failed: \(error.localizedDescription)"
-        }
-    }
-
-    private func runValidation(rounds: Int) async -> Bool {
-        // Replace with your local evaluation prompts and user-facing checks.
-        rounds > 0
+    func resetPersonalization() async {
+        capsuleStore.removeLocalArtifacts()
+        status = "Personalization artifacts removed. Reload the base model."
+        await refreshState()
     }
 }
 
-struct DemoTextGenerator: HaloTextGenerator {
-    func tokenize(_ text: String) async throws -> [Int] {
-        text.utf8.map(Int.init)
-    }
-
-    func generate(prompt: String, maxTokens: Int) async throws -> String {
-        "Profile summary for \(prompt.prefix(80))"
-    }
-}
-
-final class DemoEngineSession: HaloEngineSession, @unchecked Sendable {
-    private let lock = NSLock()
-    private var adapterPath: String?
-
-    func injectLoRA(adapterPath: String, scale: Float) throws {
-        lock.withLock {
-            self.adapterPath = adapterPath
-        }
-    }
-
-    func removeLoRA() throws {
-        lock.withLock {
-            self.adapterPath = nil
-        }
-    }
-
-    func captureHiddenState(tokens: [Int], layer: Int) async throws -> [Float] {
-        Array(repeating: 0, count: 4096)
-    }
-
-    func injectSteering(vectors: [[Float]], layers: [Int], scales: [Float]) throws {
-        // Bridge to your loaded model session in production.
-    }
-
-    func removeSteering() throws {
-        // Clear session-level steering in production.
+private extension UserProfile {
+    var stabilityText: String {
+        stabilityScore.formatted(.number.precision(.fractionLength(2)))
     }
 }
 ```
 
-## Add profile analysis
+## Runtime bridge
 
-The app-facing pattern is:
+Your agent implements the Edge Halo bridge by calling the same loaded model session used by chat.
 
-1. Collect only user-approved events.
-2. Prepare local examples for the profile job.
-3. Run the preview analysis API from your local data layer.
-4. Read `await halo.currentProfile`.
-5. Call `updateSteering(scales:)` or show the profile in settings.
+```swift
+struct AppTextGenerator: HaloTextGenerator {
+    func tokenize(_ text: String) async throws -> [Int] {
+        Array(text.utf8.map(Int.init))
+    }
 
-Keep the data-preparation code private to your agent. It should not copy raw
-corrections into logs or analytics.
+    func generate(prompt: String, maxTokens: Int) async throws -> String {
+        // Call your Edge Kit LLMEngine here.
+        "Local profile summary"
+    }
+}
 
-## Key concepts
+final class AppEngineSession: HaloEngineSession, @unchecked Sendable {
+    func captureHiddenState(tokens: [Int], layer: Int) async throws -> [Float] {
+        // Call your loaded model session's profile-capture path.
+        Array(repeating: 0, count: 4096)
+    }
 
-- The app composes Edge Kit and Edge Halo. Edge Halo does not own your UI or
-  product policy.
-- `HaloDataEvent` records the signals your agent allows.
-- `EvolutionState` drives training, validation, and rollback UI.
-- `AdapterVersion` and `AdapterDecision` protect the adapter lifecycle.
-- `UserProfile` is local user data and should be removable from settings.
+    func captureFullCache(tokenIds: [Int]) async throws -> HaloCacheSnapshot {
+        throw HaloCapsuleError.fullCacheCaptureUnsupported
+    }
+
+    func restoreFullCache(_ snapshot: HaloCacheSnapshot, artifactURL: URL) async throws {
+        // Restore the local Neural Imprint artifact into the loaded session.
+    }
+
+    // This snippet omits preview-only protocol hooks. Use the Edge Scaffold
+    // bridge as the complete reference for your pinned Edge Halo release.
+}
+```
+
+## Capsule storage placeholder
+
+The example above uses a small placeholder store. Production apps usually get these values from the Edge Scaffold flow, an Edge Studio export, or a trusted EdgeMesh transfer.
+
+```swift
+struct LocalCapsuleStore {
+    func loadLatestCapsule() throws -> HaloCapsule {
+        // Load manifest + local artifact URL from your app container.
+        throw CocoaError(.fileNoSuchFile)
+    }
+
+    func currentRuntimeRequirements() throws -> HaloCapsuleRequirements {
+        // Build from the currently loaded model, tokenizer, tool schema, and runtime.
+        throw CocoaError(.featureUnsupported)
+    }
+
+    func removeLocalArtifacts() {
+        // Delete local Neural Imprint files and receipts owned by the app.
+    }
+}
+```
+
+## Integration notes
+
+- Keep raw user text in local app storage.
+- Use hashes and status receipts in diagnostics.
+- Restore only after `validateCapsule` succeeds.
+- Keep the base model available when personalization is missing or incompatible.
+- Do not add profile text to every system prompt; restore the artifact instead.
+- Provide a user-visible reset path.
 
 ## Next steps
 
 - See the [Model evolution capability guide](/docs/build/model-evolution).
-- Use [Device mesh](/docs/build/device-mesh) when training or adapter
-  transfer should happen on another user-owned device.
+- Use [Device mesh](/docs/build/device-mesh) when artifacts should move between trusted user-owned devices.
+- Use [Edge Scaffold](/docs/optimize-and-ship/scaffold) for the reference iOS implementation.

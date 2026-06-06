@@ -31,7 +31,7 @@ Before optimizing, understand the model:
 | **Pruning simulator** | Preview size reduction before applying | Estimating if a target is realistic |
 | **Mixed precision** | Per-layer quantization bit-width | Fine-grained quality/size balance |
 | **Distillation** | Train a smaller student from a teacher | Creating compact models |
-| **Merge** | Combine models or adapters | Assembling from multiple sources |
+| **Merge** | Combine compatible model sources | Assembling from multiple sources |
 | **Auto tune** | Search inference parameters | Finding optimal device config |
 
 ## Quality validation

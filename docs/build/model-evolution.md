@@ -3,41 +3,38 @@ sidebar_position: 5
 title: Model Evolution
 ---
 
-# Model evolution
+# Model evolution with Edge Halo
 
-Edge Halo lets a local model adapt to a user's preferences without sending
-private interaction data to a server. It is built on the **patented HALO algorithm system** — AtomGradient's solution for on-device continuous learning, a problem that the entire industry (Google, OpenAI, Anthropic) is actively exploring in the cloud.
+Edge Halo helps your agent build and restore local personalization state without sending private user data to a server.
 
 Use it when your agent needs:
 
-- A local profile that summarizes user preferences over time.
-- Lightweight adapters trained from user-owned data.
-- Runtime steering for small behavior adjustments without retraining.
-- All of the above without any data leaving the device.
+- A local user profile derived from app-approved data.
+- A Neural Imprint artifact that can be restored by a compatible base model.
+- Compatibility checks that fail closed when model, tokenizer, runtime, or tool schema identity changes.
+- A clear user-facing lifecycle: base model, learning, artifact ready, restored, incompatible, or needs regeneration.
 
-Edge Halo is a developer-preview package. The app remains the composition
-point: it connects Edge Kit inference, Edge Halo evolution, local storage, and
-optional Edge Mesh transfer.
+Edge Halo is a developer-preview package. The agent remains the composition point: it connects Edge Kit inference, Edge Halo lifecycle APIs, local storage, EdgeData, optional EdgeMesh transfer, and product policy.
 
 ## What model evolution does
 
-Model evolution adds a private lifecycle around a base model:
+At the developer API level, model evolution is a private lifecycle around a base model:
 
-1. Collect app-approved interaction events.
-2. Build a user profile on the device.
-3. Train or receive a small adapter on a user-owned Mac.
-4. Validate, apply, or roll back that adapter.
-5. Apply session-level steering for temporary preference changes.
+1. Your agent collects eligible local events and facts.
+2. Your agent prepares profile inputs from local data.
+3. Edge Halo runs the profile job with resources exported by Edge Studio or bundled by Edge Scaffold.
+4. Edge Studio or your local runtime generates a Neural Imprint artifact.
+5. Edge Halo validates the artifact against the current model and runtime.
+6. The runtime restores the artifact or fails closed and keeps the base model active.
 
-The base model stays general. The profile, adapter, and steering state are the
-parts that make the experience personal.
+The base model stays unchanged. The personalization state is local, auditable, removable user data.
 
 ## Set up Edge Halo
 
 Edge Halo does not own your inference runtime. Your agent provides two bridges:
 
-- `HaloTextGenerator` for short local generations used by profile jobs.
-- `HaloEngineSession` for adapter and steering operations.
+- `HaloTextGenerator` for short local generation tasks used by the profile workflow.
+- `HaloEngineSession` for model-session operations such as profile capture and Neural Imprint restore.
 
 ```swift
 import EdgeHalo
@@ -50,32 +47,28 @@ struct AppTextGenerator: HaloTextGenerator {
     }
 
     func generate(prompt: String, maxTokens: Int) async throws -> String {
-        // In production, call your Edge Kit LLMEngine here.
-        "Local summary for: \(prompt.prefix(80))"
+        // In production, call the same Edge Kit model session used by chat.
+        "Local profile summary"
     }
 }
 
 final class AppEngineSession: HaloEngineSession, @unchecked Sendable {
-    func injectLoRA(adapterPath: String, scale: Float) throws {
-        // Bridge to the loaded model session.
-    }
-
-    func removeLoRA() throws {
-        // Remove the active adapter from the loaded model session.
-    }
-
     func captureHiddenState(tokens: [Int], layer: Int) async throws -> [Float] {
-        // Bridge to your model session's profile-capture path.
+        // Bridge to the loaded model session's profile-capture path.
         Array(repeating: 0, count: 4096)
     }
 
-    func injectSteering(vectors: [[Float]], layers: [Int], scales: [Float]) throws {
-        // Apply the current profile to the loaded model session.
+    func captureFullCache(tokenIds: [Int]) async throws -> HaloCacheSnapshot {
+        // Capture a local Neural Imprint prefix artifact.
+        throw HaloCapsuleError.fullCacheCaptureUnsupported
     }
 
-    func removeSteering() throws {
-        // Clear session-level steering.
+    func restoreFullCache(_ snapshot: HaloCacheSnapshot, artifactURL: URL) async throws {
+        // Restore a compatible Neural Imprint artifact into the loaded session.
     }
+
+    // This is a minimal bridge sketch. Use the Edge Scaffold reference for the
+    // complete preview protocol conformance required by your pinned release.
 }
 
 let halo = EdgeHalo(
@@ -84,215 +77,112 @@ let halo = EdgeHalo(
 )
 ```
 
-In a production app, the bridge methods should call the same loaded model
-session that serves user requests. This keeps inference and evolution aligned
-with the model the user is actually using.
+In a production agent, bridge methods should call the same loaded model session that serves user requests. This keeps inference, profile jobs, and restore behavior aligned with the model the user is actually using.
 
-## User profiling
+## Prepare profile inputs
 
-A profile is a compact representation of how the user's preferred behavior
-differs from the default model behavior. It includes machine-readable
-directions and human-readable labels that your agent can show in settings,
-debugging tools, or validation UI.
+Your agent owns data policy. Edge Halo should receive only the local inputs your agent has approved for personalization.
 
-`UserProfile` exposes:
+Common inputs:
 
-| Property | Use |
-| --- | --- |
-| `directions` | Numeric profile directions used by steering. |
-| `directionNames` | Short labels for the profile dimensions. |
-| `narrative` | A short natural-language summary. |
-| `sampleCount` | Number of examples used for the current profile. |
-| `stabilityScore` | A score from `0` to `1` for profile consistency. |
+- Classified local facts from `EdgeData`.
+- Explicit user feedback.
+- User corrections.
+- App-owned records converted into the profile input shape expected by your integration.
 
-Run profile analysis from an app-owned local data job. Keep raw user content in
-your agent's storage, pass only the prepared local inputs required by the preview
-API, and read the resulting profile from `currentProfile`.
+Keep raw user text in your app storage. Do not copy transcripts or corrections into analytics, logs, crash reports, or support bundles.
 
-```swift
-struct ProfileResources {
-    let examples: [String]
-    let preparedInputs: [PreparedProfileInput]
-    let profileDirectionsURL: URL
-    let modelID: String
-}
+## Run a profile job
 
-func refreshProfile(
-    halo: EdgeHalo,
-    resources: ProfileResources
-) async throws -> UserProfile? {
-    try await halo.runProfileAnalysis(
-        sentences: resources.examples,
-        rawTransactions: resources.preparedInputs,
-        directionsAURL: resources.profileDirectionsURL,
-        modelID: resources.modelID,
-        progress: { progress in
-            print("Profile progress:", progress)
-        }
-    )
+The preview profile API accepts prepared examples plus model-matched profile resources exported by Edge Studio or bundled by Edge Scaffold.
 
-    return await halo.currentProfile
-}
-```
+In a production agent:
 
-After the job finishes, use the profile for product UI and for runtime
-steering.
+1. Query local facts from your app storage or EdgeData.
+2. Convert them into the profile input shape used by your integration.
+3. Load the profile resources exported for the exact base model.
+4. Run the Edge Halo profile job.
+5. Read `await halo.currentProfile`.
+
+Use Edge Scaffold as the concrete reference for the current low-level parameters. Treat the profile result as local user data: show it only at a product-appropriate level and provide a way to reset it.
+
+## Restore a Neural Imprint capsule
+
+Before restoring an artifact, validate it against the loaded runtime. If any requirement does not match, keep the base model active.
 
 ```swift
-if let profile = await halo.currentProfile {
-    print(profile.narrative)
-    print(profile.directionNames)
-    print(profile.stabilityScore)
-}
-```
-
-## Adapter lifecycle
-
-Adapters are small model customizations trained from local user data. A common
-flow is:
-
-1. The iPhone or iPad collects approved interaction events.
-2. A user-owned Mac trains an adapter from those events.
-3. The adapter is transferred back over the local mesh.
-4. The app validates the adapter offer before applying it.
-
-Use `AdapterVersion` to describe an adapter and `AdapterDecision` to decide
-what to do with it.
-
-```swift
-let offer = AdapterVersion(
-    version: 3,
-    hash: "sha256-adapter-file",
-    baseModelID: "qwen3.5-0.8b",
-    trainingDataHash: "sha256-training-data",
-    trainedAt: Date()
+let result = await halo.validateCapsule(
+    capsule.manifest,
+    currentRequirements: currentRequirements
 )
 
-switch await halo.validateAdapter(offer) {
-case .apply:
-    try await halo.applyAdapter(
-        path: "/path/to/adapter",
-        version: offer
-    )
-
-case .validateFirst(let rounds):
-    let passed = try await runLocalValidation(rounds: rounds)
-    if passed {
-        try await halo.applyAdapter(
-            path: "/path/to/adapter",
-            version: offer
-        )
-    }
-
-case .rejectIncompatible(let reason):
-    print("Adapter rejected:", reason)
-
-case .rejectOutdated:
-    print("A newer adapter is already active.")
+guard result.isCompatible else {
+    // Show a recovery action: regenerate, re-export, or load the matching model.
+    return
 }
+
+try await halo.activateCapsule(
+    capsule,
+    currentRequirements: currentRequirements
+)
 ```
 
-If quality drops or the user disables personalization, roll back to the base
-model:
+After restore, chat should run through the same Edge Kit generation path. Do not replay profile text into the system prompt at request time.
 
-```swift
-try await halo.rollback()
-```
+## Lifecycle states
 
-## Activation steering
+Use `evolutionState` and `haloState` to drive settings UI and recovery actions.
 
-Steering adjusts model behavior for the current session without producing a new
-adapter. Use it for controls such as tone, formality, domain focus, or "follow
-my profile more gently in this conversation."
-
-```swift
-// Uses the current profile, if one is available.
-try await halo.updateSteering(scales: [0.08, 0.04, 0.02])
-
-// Generate with the same model session your agent already uses.
-let answer = try await generateAssistantReply()
-
-// Clear steering when leaving the session or changing mode.
-try engineSession.removeSteering()
-```
-
-Keep steering controls conservative and visible to the user. They should feel
-like session preferences, not permanent model changes.
-
-## Evolution state machine
-
-Use `evolutionState` to drive UI and background work.
-
-| State | What the app should do |
+| State | What the agent should do |
 | --- | --- |
-| `.idle` | Normal use. Data may be collected if the user opted in. |
-| `.collecting(progress:)` | Show progress toward the next local training opportunity. |
-| `.readyToTrain` | Offer to train on a user-owned Mac. |
-| `.training` | Show training status and keep the base model active. |
-| `.validating` | Evaluate the incoming adapter before applying it. |
-| `.evolved(version:)` | Show the active adapter version and rollback control. |
+| `.idle` | Base model is active. Personalization may collect local data if the user allows it. |
+| `.collecting(progress:)` | Show progress toward a profile refresh or artifact regeneration. |
+| `.readyToBuildCapsule` | Offer a user-visible action to build or receive a new artifact. |
+| `.buildingCapsule` | Show progress while the local artifact is being prepared. |
+| `.validating(capsuleID:)` | Show that compatibility gates are running. |
+| `.evolved(capsuleID:)` | Show the active personalized state and provide reset controls. |
 
-```swift
-switch await halo.evolutionState {
-case .idle:
-    print("Base model active")
-case .collecting(let progress):
-    print("\(progress.collected) of \(progress.threshold) examples")
-case .readyToTrain:
-    print("Ready to train on this user's Mac")
-case .training:
-    print("Training in progress")
-case .validating:
-    print("Validating adapter")
-case .evolved(let version):
-    print("Adapter version \(version.version) active")
-}
-```
+`haloState` adds capsule-level recovery states such as `.active(capsuleID:)`,
+`.incompatible(capsuleID:reason:)`, and `.failed(reason:)`. Keep the base model
+active whenever validation fails.
 
-## Architecture
+## Recommended agent workflow
 
-Edge Halo follows a V-shaped composition model:
+1. Load the base model with Edge Kit.
+2. Register app tools and local data surfaces.
+3. Collect eligible local facts and corrections.
+4. Run profile learning from Settings or a user-approved background flow.
+5. Generate or receive a Neural Imprint artifact.
+6. Validate and restore the artifact.
+7. Provide base-vs-personalized smoke tests and a reset button.
 
-```text
-App
-  |- Edge Kit for inference
-  |- Edge Halo for evolution lifecycle
-      \- shared engine runtime
-```
+Use [Edge Scaffold](/docs/optimize-and-ship/scaffold) as the reference implementation for this flow.
 
-The app owns policy decisions: what data is eligible, when to train, whether to
-apply an adapter, when to roll back, and how to explain personalization to the
-user.
+## Privacy checklist
 
-## Privacy
-
-Model evolution is designed for user-owned devices:
-
-- Interaction data stays on device.
-- Training runs on the user's Mac.
-- Adapter transfer uses the user's local mesh when enabled.
-- The user can disable personalization and roll back to the base model.
-
-Do not copy raw corrections, transcripts, or private prompts into logs,
-analytics, crash reports, or support bundles. Store local profile artifacts as
-user data and make them removable from app settings.
+- Keep profile inputs local.
+- Store Neural Imprint artifacts as removable user data.
+- Use EdgeMesh only for trusted user-owned devices.
+- Log hashes, schema versions, and status receipts instead of raw user content.
+- Fail closed on compatibility mismatch.
 
 ## API surface
 
-| Method | What it does |
-|--------|-------------|
-| `EdgeHalo(engine:generator:)` | Create the evolution actor. |
-| `runProfileAnalysis(...)` | Extract a local user profile. |
-| `validateAdapter(_:)` | Check an incoming adapter offer. |
-| `applyAdapter(path:version:)` | Apply an adapter to inference. |
-| `rollback()` | Revert to the base model. |
-| `updateSteering(scales:)` | Adjust session-level behavior. |
-| `evolutionState` | Current lifecycle state. |
-| `currentProfile` | Most recent `UserProfile`. |
+| Method or type | What it does |
+| --- | --- |
+| `EdgeHalo(engine:generator:dataStream:)` | Create the lifecycle actor with app-provided bridges. |
+| `runProfileAnalysis(...)` | Run a local profile job from prepared inputs and exported resources. |
+| `currentProfile` | Most recent local profile result. |
+| `validateCapsule(_:currentRequirements:)` | Check whether a Neural Imprint capsule matches the loaded runtime. |
+| `activateCapsule(_:currentRequirements:)` | Restore a compatible capsule into the current model session. |
+| `evolutionState` | High-level lifecycle state for UI. |
+| `haloState` | Capsule validation and restore state. |
+| `HaloCapsuleRequirements` | Runtime identity used for fail-closed compatibility. |
 
 Full signatures → [EdgeHalo API Reference](/docs/api-reference/edge-halo)
 
 ## Try it next
 
-- [Personalized model example](/docs/examples/personalized-model) — Complete lifecycle code.
-- [Text generation](/docs/build/text-generation) — Base inference before personalization.
+- [Personalized model example](/docs/examples/personalized-model) — Minimal settings flow.
+- [Device mesh](/docs/build/device-mesh) — Transfer artifacts between trusted user-owned devices.
+- [Architecture](/docs/guides/architecture) — Product boundaries and data ownership.

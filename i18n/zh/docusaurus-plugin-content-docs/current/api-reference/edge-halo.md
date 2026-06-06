@@ -5,10 +5,10 @@ title: EdgeHalo
 
 # EdgeHalo API 参考
 
-`EdgeHalo` 管理用户画像、适配器和会话调控。
+`EdgeHalo` 管理本地个性化生命周期：profile jobs、Neural Imprint capsule compatibility 和 restore orchestration。
 
 :::info 开发者预览
-当前预览版中的部分画像分析 API 有意保持较低层级，后续可能变化。
+当前 preview 中部分 profile-analysis 与 capsule API 仍偏底层。新集成建议先参考 Edge Scaffold 流程。
 :::
 
 ## EdgeHalo
@@ -17,19 +17,18 @@ title: EdgeHalo
 public actor EdgeHalo
 ```
 
-主入口点。
+主入口。
 
-| 属性或方法 | 描述 |
+| 属性或方法 | 说明 |
 | --- | --- |
-| `init(engine:generator:dataStream:)` | 使用注入的 engine 和 generator provider 创建 `EdgeHalo` actor。 |
-| `evolutionState` | 当前 `EvolutionState`。 |
-| `currentProfile` | 最近的 `UserProfile`，如果可用。 |
-| `activeAdapter` | 当前活跃的 `AdapterVersion`，如果有。 |
-| `runProfileAnalysis(...)` | 运行本地画像分析并更新 `currentProfile`。 |
-| `validateAdapter(_:)` | 为传入适配器返回 `AdapterDecision`。 |
-| `applyAdapter(path:version:scale:)` | 通过 engine session 应用适配器。 |
-| `rollback()` | 移除活跃适配器。 |
-| `updateSteering(scales:)` | 从当前画像应用调控。 |
+| `init(engine:generator:dataStream:)` | 使用 app-provided runtime bridges 创建 `EdgeHalo` actor。 |
+| `evolutionState` | 面向产品 UI 的高层模型进化状态。 |
+| `currentProfile` | 最近一次本地 profile result。 |
+| `haloState` | Capsule validation 和 restore 状态。 |
+| `activeCapsule` | 已恢复兼容 Neural Imprint 时的 active `HaloCapsule`。 |
+| `runProfileAnalysis(...)` | 从 prepared inputs 和导出资源运行本地 profile job。 |
+| `validateCapsule(_:currentRequirements:)` | 检查 capsule 是否能恢复到当前 runtime。 |
+| `activateCapsule(_:currentRequirements:)` | 恢复兼容 capsule；不匹配时 fail closed。 |
 
 ## HaloTextGenerator
 
@@ -37,12 +36,12 @@ public actor EdgeHalo
 public protocol HaloTextGenerator: Sendable
 ```
 
-由 app 实现的文本生成 provider。
+由 agent 实现的文本生成 provider。
 
-| 方法 | 描述 |
+| 方法 | 说明 |
 | --- | --- |
-| `tokenize(_:)` | 将文本转换为 token ID。 |
-| `generate(prompt:maxTokens:)` | 为标签和画像摘要生成文本。 |
+| `tokenize(_:)` | 使用匹配已加载模型的 tokenizer 将文本转为 token IDs。 |
+| `generate(prompt:maxTokens:)` | 运行 profile workflow 需要的短文本本地生成。 |
 
 ## HaloEngineSession
 
@@ -50,15 +49,15 @@ public protocol HaloTextGenerator: Sendable
 public protocol HaloEngineSession: Sendable
 ```
 
-Edge Halo 所需的 engine-session 操作。
+由 agent 实现的 runtime bridge。Edge Halo 不直接 import Edge Kit；app 负责把两个包接起来。
 
-| 方法 | 描述 |
+| 方法 | 说明 |
 | --- | --- |
-| `injectLoRA(adapterPath:scale:)` | 将适配器加载到 engine session。 |
-| `removeLoRA()` | 移除活跃适配器。 |
-| `captureHiddenState(tokens:layer:)` | 捕获画像分析向量。 |
-| `injectSteering(vectors:layers:scales:)` | 应用调控向量。 |
-| `removeSteering()` | 移除调控向量。 |
+| `captureHiddenState(tokens:layer:)` | 捕获 profile workflow 需要的模型状态。 |
+| `captureFullCache(tokenIds:)` | 在支持时捕获本地 Neural Imprint prefix artifact。 |
+| `restoreFullCache(_:artifactURL:)` | 恢复兼容的 Neural Imprint artifact。 |
+
+当前 preview protocol 还包含高级可选 runtime hooks。多数 agent 可以保持不支持，除非 release notes 或 scaffold 集成明确需要。
 
 ## EvolutionState
 
@@ -66,41 +65,90 @@ Edge Halo 所需的 engine-session 操作。
 public enum EvolutionState: Sendable, Equatable
 ```
 
-| Case | 描述 |
+| Case | 说明 |
 | --- | --- |
-| `.idle` | 没有活跃的进化任务。 |
-| `.collecting(progress:)` | 正在收集数据，朝下一次训练触发推进。 |
-| `.readyToTrain` | 已有足够数据可以请求训练。 |
-| `.training` | 正在用户的 Mac 上训练。 |
-| `.validating` | 正在验证新适配器。 |
-| `.evolved(version:)` | 适配器处于活跃状态。 |
+| `.idle` | 没有活动中的 evolution task。 |
+| `.collecting(progress:)` | 正在收集本地数据，等待 profile refresh。 |
+| `.readyToBuildCapsule` | 已有足够数据，可以 build 或 receive 新 artifact。 |
+| `.buildingCapsule` | 本地 artifact 正在准备。 |
+| `.validating(capsuleID:)` | Capsule 恢复前正在校验。 |
+| `.evolved(capsuleID:)` | 兼容 capsule 已 active。 |
 
-## AdapterVersion
+## HaloState
 
 ```swift
-public struct AdapterVersion: Sendable, Equatable, Codable
+public enum HaloState: Sendable, Equatable
 ```
+
+面向设置页和诊断的 capsule-level 状态。
+
+| Case | 说明 |
+| --- | --- |
+| `.idle` | 没有 capsule 状态。 |
+| `.collecting(factsCount:threshold:)` | 个性化运行前还需要更多本地数据。 |
+| `.profiling` | Profile inputs 正在准备。 |
+| `.buildingCapsule` | Neural Imprint artifact 正在准备。 |
+| `.validating(capsuleID:)` | 正在运行兼容性闸门。 |
+| `.active(capsuleID:)` | 兼容 capsule 已恢复。 |
+| `.incompatible(capsuleID:reason:)` | Restore 被拒绝。保持 base model active。 |
+| `.failed(reason:)` | 生命周期失败。展示恢复动作。 |
+
+## HaloCapsule
+
+```swift
+public struct HaloCapsule: Sendable, Equatable, Codable
+```
+
+Neural Imprint capsule manifest 和可选本地 artifact URL 的容器。
 
 | 属性 | 类型 |
 | --- | --- |
-| `version` | `Int` |
-| `hash` | `String` |
-| `baseModelID` | `String` |
-| `trainingDataHash` | `String` |
-| `trainedAt` | `Date` |
+| `manifest` | `HaloCapsuleManifest` |
+| `artifactURL` | `URL?` |
 
-## AdapterDecision
+## HaloCapsuleManifest
 
 ```swift
-public enum AdapterDecision: Sendable, Equatable
+public struct HaloCapsuleManifest: Sendable, Equatable, Codable
 ```
 
-| Case | 描述 |
+用于校验和描述 capsule 的 metadata。
+
+| 属性 | 说明 |
 | --- | --- |
-| `.apply` | 立即应用。 |
-| `.validateFirst(rounds:)` | 应用前先运行本地验证。 |
-| `.rejectIncompatible(reason:)` | 因基础模型不匹配而拒绝。 |
-| `.rejectOutdated` | 因当前活跃适配器更新而拒绝。 |
+| `capsuleID` | Capsule 的稳定 ID。 |
+| `createdAt` | 创建时间。 |
+| `baseModelID` | Capsule 目标 base model。 |
+| `requirements` | 恢复所需 runtime identity。 |
+| `cacheSnapshot` | Artifact snapshot metadata。 |
+| `artifactSHA256` | 本地 artifact bytes hash，如可用。 |
+
+## HaloCapsuleRequirements
+
+```swift
+public struct HaloCapsuleRequirements: Sendable, Equatable, Codable
+```
+
+用于 fail-closed restore check 的 runtime identity。
+
+| 属性 | 说明 |
+| --- | --- |
+| `modelFamily`, `hiddenSize`, `layerCount` | Model-shape identity。 |
+| `modelConfigSHA256`, `modelWeightsFingerprint` | Model config 和 weights identity。 |
+| `tokenizerJSONSHA256`, `tokenizerConfigSHA256` | Tokenizer identity。 |
+| `chatTemplateSHA256` | Chat-template identity。 |
+| `toolSchemaSHA256` | Tool schema identity。 |
+| `profileBodySHA256` | Profile source identity，不暴露 profile text。 |
+| `cacheBackend`, `cacheBackendVersion`, `cacheTopologySHA256` | Runtime cache identity。 |
+
+用法：
+
+```swift
+let result = capsule.manifest.requirements.compatibility(with: current)
+if result.isCompatible {
+    try await halo.activateCapsule(capsule, currentRequirements: current)
+}
+```
 
 ## UserProfile
 
@@ -108,14 +156,17 @@ public enum AdapterDecision: Sendable, Equatable
 public struct UserProfile: Sendable
 ```
 
+Preview profile workflow 产出的本地 profile summary。
+
 | 属性 | 类型 |
 | --- | --- |
-| `directions` | `[[Float]]` |
 | `directionNames` | `[String]` |
 | `narrative` | `String` |
 | `sampleCount` | `Int` |
 | `computedAt` | `Date` |
 | `stabilityScore` | `Float` |
+
+Numeric fields 属于 runtime data。产品 UI 通常展示 narrative、freshness、sample count 和 reset 控件，而不是 raw vectors。
 
 ## HaloDataEvent
 
@@ -123,8 +174,10 @@ public struct UserProfile: Sendable
 public enum HaloDataEvent: Sendable
 ```
 
-| Case | 描述 |
+用于 lifecycle decisions 的可选事件流。
+
+| Case | 说明 |
 | --- | --- |
-| `.feedback(accepted:conversationID:)` | 用户对响应的反馈。 |
-| `.correction(original:corrected:conversationID:)` | 用户对响应的 correction。 |
-| `.sessionCompleted(turnCount:conversationID:)` | 已完成的对话会话。 |
+| `.feedback(accepted:conversationID:)` | 用户对回复的反馈。 |
+| `.correction(original:corrected:conversationID:)` | 用户对回复的纠正。 |
+| `.sessionCompleted(turnCount:conversationID:)` | 已完成的对话 session。 |

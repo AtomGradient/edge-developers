@@ -5,7 +5,7 @@ title: Text Generation
 
 # Text generation with LLMEngine
 
-`LLMEngine` loads a local or registered text model and streams generated text. Under the hood, Edge Kit uses **DSR (Dynamic Sparse Retention)** attention to keep multi-turn conversations fast even on memory-constrained devices — a 9B model holds 12.6 TPS at turn 1 and 10.8 TPS at turn 20 on iPhone 17.
+`LLMEngine` loads a local or registered text model and streams generated text. Edge Kit applies the runtime memory policy automatically so multi-turn conversations stay bounded on device.
 
 ## Create and load
 
@@ -17,6 +17,19 @@ let modelURL = URL(fileURLWithPath: "/path/to/model")
 
 try await engine.loadLocal(directory: modelURL)
 ```
+
+For sessions that need a different memory posture, pass a high-level intent at
+load time:
+
+```swift
+try await engine.loadLocal(
+    directory: modelURL,
+    options: NativeRuntimeLoadOptions(memoryIntent: .exactRecall)
+)
+```
+
+Use `.exactRecall` with app-owned tools or fact storage for auditable facts such
+as amounts, dates, and counts.
 
 Load from a registered `ModelConfig`:
 
@@ -91,17 +104,6 @@ Clear conversation state when starting over:
 
 ```swift
 engine.clearPromptCache()
-```
-
-## LoRA adapters
-
-```swift
-let adapterURL = URL(fileURLWithPath: "/path/to/adapter")
-
-try await engine.loadLoRA(adapterPath: adapterURL)
-print(engine.hasLoRAAdapter)
-
-engine.unloadLoRA()
 ```
 
 ## Metrics
@@ -185,8 +187,6 @@ The methods you will use most often:
 | `generate(messages:parameters:)` | Stream `GenerateChunk` values. Async sequence. |
 | `generateOnce(messages:)` | Return one accumulated string. |
 | `clearPromptCache()` | Reset conversation state. |
-| `loadLoRA(adapterPath:)` | Load a personalized adapter. |
-| `unloadLoRA()` | Remove the active adapter. |
 | `lastMetrics` | TTFT, TPS, token counts after generation. |
 
 Full signatures and types → [EdgeInference API Reference](/docs/api-reference/edge-inference)

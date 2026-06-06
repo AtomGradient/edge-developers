@@ -5,10 +5,10 @@ title: EdgeHalo
 
 # EdgeHalo API reference
 
-`EdgeHalo` manages user profiles, adapters, and session steering. Built on the patented **HALO** algorithm system for on-device continuous learning.
+`EdgeHalo` manages the local personalization lifecycle: profile jobs, Neural Imprint capsule compatibility, and restore orchestration.
 
 :::info Developer Preview
-Some profile-analysis APIs are intentionally low-level in the current preview and may change.
+Some profile-analysis and capsule APIs are intentionally low-level in the current preview. Prefer the Edge Scaffold reference flow when starting a new integration.
 :::
 
 ## EdgeHalo
@@ -21,15 +21,14 @@ Main entry point.
 
 | Property or method | Description |
 | --- | --- |
-| `init(engine:generator:dataStream:)` | Creates an `EdgeHalo` actor with injected engine and generator providers. |
-| `evolutionState` | Current `EvolutionState`. |
-| `currentProfile` | Most recent `UserProfile`, if available. |
-| `activeAdapter` | Active `AdapterVersion`, if any. |
-| `runProfileAnalysis(...)` | Runs local profile analysis and updates `currentProfile`. |
-| `validateAdapter(_:)` | Returns an `AdapterDecision` for an incoming adapter. |
-| `applyAdapter(path:version:scale:)` | Applies an adapter through the engine session. |
-| `rollback()` | Removes the active adapter. |
-| `updateSteering(scales:)` | Applies steering from the current profile. |
+| `init(engine:generator:dataStream:)` | Creates an `EdgeHalo` actor with app-provided runtime bridges. |
+| `evolutionState` | High-level model evolution state for product UI. |
+| `currentProfile` | Most recent local profile result, if available. |
+| `haloState` | Capsule validation and restore state. |
+| `activeCapsule` | Active `HaloCapsule`, if a compatible Neural Imprint is restored. |
+| `runProfileAnalysis(...)` | Runs a local profile job from prepared inputs and exported resources. |
+| `validateCapsule(_:currentRequirements:)` | Checks whether a capsule can be restored into the current runtime. |
+| `activateCapsule(_:currentRequirements:)` | Restores a compatible capsule. Fails closed on mismatch. |
 
 ## HaloTextGenerator
 
@@ -37,12 +36,12 @@ Main entry point.
 public protocol HaloTextGenerator: Sendable
 ```
 
-Text-generation provider implemented by the app.
+Text-generation provider implemented by the agent.
 
 | Method | Description |
 | --- | --- |
-| `tokenize(_:)` | Converts text into token IDs. |
-| `generate(prompt:maxTokens:)` | Generates text for labels and profile summaries. |
+| `tokenize(_:)` | Converts text into token IDs with the tokenizer that matches the loaded model. |
+| `generate(prompt:maxTokens:)` | Runs short local generations used by the profile workflow. |
 
 ## HaloEngineSession
 
@@ -50,15 +49,15 @@ Text-generation provider implemented by the app.
 public protocol HaloEngineSession: Sendable
 ```
 
-Engine-session operations needed by Edge Halo.
+Runtime bridge implemented by the agent. Edge Halo does not import Edge Kit directly; the app wires both packages together.
 
 | Method | Description |
 | --- | --- |
-| `injectLoRA(adapterPath:scale:)` | Loads an adapter into the engine session. |
-| `removeLoRA()` | Removes the active adapter. |
-| `captureHiddenState(tokens:layer:)` | Captures a profile-analysis vector. |
-| `injectSteering(vectors:layers:scales:)` | Applies steering vectors. |
-| `removeSteering()` | Removes steering vectors. |
+| `captureHiddenState(tokens:layer:)` | Captures model state needed by the profile workflow. |
+| `captureFullCache(tokenIds:)` | Captures a local Neural Imprint prefix artifact when supported. |
+| `restoreFullCache(_:artifactURL:)` | Restores a compatible Neural Imprint artifact. |
+
+The current preview protocol also contains advanced optional runtime hooks. Most agents can leave those unsupported unless a release note or scaffold integration requires them.
 
 ## EvolutionState
 
@@ -69,38 +68,87 @@ public enum EvolutionState: Sendable, Equatable
 | Case | Description |
 | --- | --- |
 | `.idle` | No active evolution task. |
-| `.collecting(progress:)` | Collecting data toward the next training trigger. |
-| `.readyToTrain` | Enough data is available to request training. |
-| `.training` | Training is running on the user's Mac. |
-| `.validating` | A new adapter is being validated. |
-| `.evolved(version:)` | An adapter is active. |
+| `.collecting(progress:)` | Collecting eligible local data toward a profile refresh. |
+| `.readyToBuildCapsule` | Enough data is available to build or receive a new artifact. |
+| `.buildingCapsule` | A local artifact is being prepared. |
+| `.validating(capsuleID:)` | A capsule is being checked before restore. |
+| `.evolved(capsuleID:)` | A compatible capsule is active. |
 
-## AdapterVersion
-
-```swift
-public struct AdapterVersion: Sendable, Equatable, Codable
-```
-
-| Property | Type |
-| --- | --- |
-| `version` | `Int` |
-| `hash` | `String` |
-| `baseModelID` | `String` |
-| `trainingDataHash` | `String` |
-| `trainedAt` | `Date` |
-
-## AdapterDecision
+## HaloState
 
 ```swift
-public enum AdapterDecision: Sendable, Equatable
+public enum HaloState: Sendable, Equatable
 ```
+
+Capsule-level state for settings UI and diagnostics.
 
 | Case | Description |
 | --- | --- |
-| `.apply` | Apply immediately. |
-| `.validateFirst(rounds:)` | Run local validation before applying. |
-| `.rejectIncompatible(reason:)` | Reject due to base-model mismatch. |
-| `.rejectOutdated` | Reject because the active adapter is newer. |
+| `.idle` | No capsule state. |
+| `.collecting(factsCount:threshold:)` | More local data is needed before personalization can run. |
+| `.profiling` | Profile inputs are being prepared. |
+| `.buildingCapsule` | A Neural Imprint artifact is being prepared. |
+| `.validating(capsuleID:)` | Compatibility gates are running. |
+| `.active(capsuleID:)` | A compatible capsule is restored. |
+| `.incompatible(capsuleID:reason:)` | Restore was rejected. Keep the base model active. |
+| `.failed(reason:)` | Lifecycle failed. Show a recovery action. |
+
+## HaloCapsule
+
+```swift
+public struct HaloCapsule: Sendable, Equatable, Codable
+```
+
+Container for a Neural Imprint capsule manifest and optional local artifact URL.
+
+| Property | Type |
+| --- | --- |
+| `manifest` | `HaloCapsuleManifest` |
+| `artifactURL` | `URL?` |
+
+## HaloCapsuleManifest
+
+```swift
+public struct HaloCapsuleManifest: Sendable, Equatable, Codable
+```
+
+Metadata used to validate and describe a capsule.
+
+| Property | Description |
+| --- | --- |
+| `capsuleID` | Stable identifier for the capsule. |
+| `createdAt` | Creation time. |
+| `baseModelID` | Base model this capsule targets. |
+| `requirements` | Runtime identity required for restore. |
+| `cacheSnapshot` | Snapshot metadata for the artifact. |
+| `artifactSHA256` | Hash of the local artifact bytes, when available. |
+
+## HaloCapsuleRequirements
+
+```swift
+public struct HaloCapsuleRequirements: Sendable, Equatable, Codable
+```
+
+Runtime identity used for fail-closed restore checks.
+
+| Property | Description |
+| --- | --- |
+| `modelFamily`, `hiddenSize`, `layerCount` | Model-shape identity. |
+| `modelConfigSHA256`, `modelWeightsFingerprint` | Model config and weights identity. |
+| `tokenizerJSONSHA256`, `tokenizerConfigSHA256` | Tokenizer identity. |
+| `chatTemplateSHA256` | Chat-template identity. |
+| `toolSchemaSHA256` | Tool schema identity. |
+| `profileBodySHA256` | Profile source identity without exposing profile text. |
+| `cacheBackend`, `cacheBackendVersion`, `cacheTopologySHA256` | Runtime cache identity. |
+
+Use:
+
+```swift
+let result = capsule.manifest.requirements.compatibility(with: current)
+if result.isCompatible {
+    try await halo.activateCapsule(capsule, currentRequirements: current)
+}
+```
 
 ## UserProfile
 
@@ -108,20 +156,25 @@ public enum AdapterDecision: Sendable, Equatable
 public struct UserProfile: Sendable
 ```
 
+Local profile summary produced by the preview profile workflow.
+
 | Property | Type |
 | --- | --- |
-| `directions` | `[[Float]]` |
 | `directionNames` | `[String]` |
 | `narrative` | `String` |
 | `sampleCount` | `Int` |
 | `computedAt` | `Date` |
 | `stabilityScore` | `Float` |
 
+The numeric fields are runtime data. Product UI should usually show the narrative, freshness, sample count, and reset controls rather than raw vectors.
+
 ## HaloDataEvent
 
 ```swift
 public enum HaloDataEvent: Sendable
 ```
+
+Optional event stream for lifecycle decisions.
 
 | Case | Description |
 | --- | --- |

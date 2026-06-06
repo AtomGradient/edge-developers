@@ -5,20 +5,21 @@ title: Edge Studio 概览
 
 # Edge Studio
 
-Edge Studio 是用于模型优化的本地 Web 工作台。它接收源模型，并产出可部署产物：Edge Kit bundle、GGUF 文件，或完整 app 项目。
+Edge Studio 是本地 Web 工作台，用于模型优化、验证、导出和设备协同。它接收源模型，并产出可部署产物：Edge Kit bundle、GGUF/CoreML 导出、Neural Imprint artifact，或完整 Edge Scaffold 项目。
 
 :::info 开发者预览
-发布前请在目标设备上验证每个导出的模型。仅构建成功还不够。
+发布前请在目标设备上验证每个导出模型。仅构建成功还不够。
 :::
 
 ## 它的位置
 
 ```text
 Source model → Edge Studio → Optimized bundle → Edge Kit (inference) → Your agent
-                                             → Edge Scaffold (app project)
+                             Neural Imprint artifact → Edge Halo restore flow
+                             Edge Scaffold project → Xcode → Your agent
 ```
 
-Edge Studio 是离线优化工具。Edge Kit 是运行时。两者相互独立，你发布的 app 不依赖 Edge Studio。
+Edge Studio 是本地工作台。Edge Kit 和 Edge Halo 是运行时包。它们相互独立，你发布的 agent 不依赖 Edge Studio。
 
 ## 如何启动
 
@@ -43,13 +44,25 @@ Edge Studio 是离线优化工具。Edge Kit 是运行时。两者相互独立�
 | 优化 | Advisor、auto optimizer、pipeline、pruning simulator、mixed precision、quality validator、distillation、merge、auto tune |
 | 测试 | 多模态 chat（LLM/VLM/STT/TTS）、voice duplex |
 | 批处理 | 多模型 benchmark dashboard、batch operations |
-| 训练 | 基于本地数据的个人适配器训练 |
-| 设备 | EdgeMesh 设备管理和配对 |
+| 个性化 | Neural Imprint 生成、profile artifact inspection、model-matched profile resources、device backflow |
+| 设备 | EdgeMesh 配对、可信 peer 状态、capsule push/receive、apply-status receipts |
+
+## 开发者工作流
+
+1. 加载或选择源模型。
+2. 检查模型结构和设备适配情况。
+3. 面向目标设备优化并基准测试。
+4. 导出 Edge Kit bundle 或 Edge Scaffold 项目。
+5. 当需要个性化或设备 receipt 时，用 EdgeMesh 配对测试设备。
+6. 在本地生成或检查 Neural Imprint artifacts。
+7. 发布前在真实设备上验证。
+
+Edge Studio 负责准备和审计 artifact。发布后的 agent 通过 Edge Kit 和 Edge Halo 消费这些 artifact。
 
 ## 要求
 
 - Python 3.11+，Node.js 18+
-- 推荐：拥有足够内存来处理源模型的 Mac
+- 推荐：拥有足够内存处理源模型的 Mac
 
 ## 下一步
 

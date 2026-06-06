@@ -224,5 +224,5 @@ Full signatures → [EdgeMesh API Reference](/docs/api-reference/edge-mesh)
 
 ## Try it next
 
-- [Model evolution](/docs/build/model-evolution) — Transfer adapters across devices.
+- [Model evolution](/docs/build/model-evolution) — Transfer Neural Imprint artifacts across trusted devices.
 - [Architecture](/docs/guides/architecture) — How all the layers connect.

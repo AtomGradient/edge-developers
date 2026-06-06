@@ -49,7 +49,7 @@ Edge Studio Web 界面每个路由的速查。主工作流见 [Studio 概览](/d
 | `/mixed-precision` | Mixed precision | 按 layer 控制 bit-width |
 | `/quality` | Quality validator | Perplexity、benchmark、自定义 prompts |
 | `/distill` | Distillation | 从 teacher 训练 student 模型 |
-| `/merge` | Merge | 合并模型或适配器 |
+| `/merge` | Merge | 合并兼容模型来源 |
 | `/auto-tune` | Auto tune | 搜索推理参数 |
 
 ## Pro mode — Testing
@@ -70,6 +70,6 @@ Edge Studio Web 界面每个路由的速查。主工作流见 [Studio 概览](/d
 
 | Route | Page | 作用 |
 |-------|------|-------------|
-| `/personal-training` | Personal training | 从本地用户数据训练适配器 |
+| `/neural-imprint-chat` | Neural Imprint Chat | 使用 Mac 端 base model 预览已生成的 Neural Imprint artifact |
 | `/devices` | Devices | EdgeMesh 设备管理和配对 |
 | `/export` | Export | 向导式导出流程 |

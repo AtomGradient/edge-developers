@@ -34,15 +34,15 @@ During Developer Preview, releases follow `1.0.0-rcN` tags. Breaking changes are
 - LLM, VLM, TTS, STT engine support.
 - DSR Attention for long-context multi-turn sessions.
 - Automatic KV cache memory policy.
-- LoRA adapter loading.
+- Neural Imprint-compatible runtime restore primitives.
 
 ## edge-halo
 
 ### 1.0.0-rc1 (current)
 
 - Edge Halo initial Developer Preview.
-- HALO algorithm system for on-device model evolution.
-- User profiling, adapter lifecycle, activation steering.
+- Edge Halo lifecycle for local profile jobs and Neural Imprint capsule compatibility.
+- Fail-closed validation for model, tokenizer, runtime, and tool-schema identity.
 - `HaloTextGenerator` and `HaloEngineSession` protocols.
 
 ## edge-engine

@@ -5,7 +5,7 @@ title: Edge Scaffold
 
 # Edge Scaffold
 
-Edge Scaffold generates a ready-to-build app project from an optimized model. One configuration file, automatic device detection, four-tier model delivery. Currently generates iOS apps, with additional platforms planned.
+Edge Scaffold generates a ready-to-build reference agent from an optimized model. It shows the recommended iOS integration for Edge Kit, Edge Halo, EdgeMesh, EdgeData, and Neural Imprint.
 
 :::info Developer Preview
 Generated apps require signing, device testing, and store review before release.
@@ -17,7 +17,7 @@ Generated apps require signing, device testing, and store review before release.
 Edge Studio (export) → Edge Scaffold (template + config) → Xcode project → App
 ```
 
-Edge Studio writes a ZIP containing the app template, model metadata, and configuration. You unzip, configure, build, and ship.
+Edge Studio writes a ZIP containing the app template, model metadata, runtime configuration, and optional personalization resources. You unzip, configure signing, build, test on a real device, and then own the resulting app project.
 
 ## ScaffoldConfig.swift
 
@@ -49,6 +49,20 @@ The app UI automatically adapts based on `modelCategory`:
 | VLM | Text + photo | Streaming text |
 | TTS | Text | Audio |
 
+## Reference personalization lanes
+
+Edge Scaffold includes developer-facing settings screens for the full local personalization lifecycle:
+
+| Lane | What it demonstrates |
+| --- | --- |
+| **Base Model** | Load model, inspect runtime state, toggle Neural Imprint restore for A/B checks. |
+| **Tool Protocol Learning** | Register app-owned read-only tools and test tool-call behavior without putting live tool schema into every prompt. |
+| **User Profile Learning** | Run the profile workflow from local sample data and activate a combined Neural Imprint artifact. |
+| **Correction Learning** | Capture feedback and corrections as local data that can feed later profile refreshes. |
+| **EdgeMesh** | Pair with a Mac, upload receipts, receive compatible capsules, and report apply status. |
+
+Use these lanes as reference code. Replace the sample data and sample tools with your agent's own domain model.
+
 ## Build and test
 
 1. Unzip the export. Open in Xcode.
@@ -57,7 +71,7 @@ The app UI automatically adapts based on `modelCategory`:
 4. Build as **Release** for performance validation.
 5. Test: first launch, model load, first response, multi-turn, backgrounding.
 
-For models larger than ~2B parameters, enable the **Increased Memory Limit** entitlement.
+For larger models, enable the **Increased Memory Limit** entitlement and validate with a Release build on the target device.
 
 ## Model delivery
 
@@ -67,6 +81,17 @@ For models larger than ~2B parameters, enable the **Increased Memory Limit** ent
 | **On-Demand Resources** | Medium models. Downloaded after install, managed by the OS. |
 | **HuggingFace** | Large models. Downloaded on first launch from HuggingFace. |
 | **Cache** | Previously downloaded models. Fastest path on subsequent launches. |
+
+## What to customize
+
+Start with:
+
+1. `ScaffoldConfig.swift` for product name, model ID, model category, sample domain, and bundled resources.
+2. The sample data provider for your agent's local facts.
+3. The tool registry for your app-owned read-only tools.
+4. The settings copy that explains personalization and reset behavior to your users.
+
+Do not copy dogfood-specific business logic into a production agent. Keep app policy in the app layer and use Edge Kit / Edge Halo only for reusable infrastructure.
 
 ## Next steps
 

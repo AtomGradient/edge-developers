@@ -23,6 +23,27 @@ For larger models, enable the Increased Memory Limit entitlement.
 | Memory pressure | Responds to system memory warnings. |
 | Single-shot tasks | Releases temporary buffers after STT and TTS style workloads. |
 
+## Choose a memory intent
+
+For conversational agents, declare a product-level intent and let Edge Kit plan
+the low-level cache policy:
+
+| Intent | Use when |
+| --- | --- |
+| `.balanced` | Default for most chat sessions. |
+| `.longSession` | You want to preserve more resident context when the device budget allows it. |
+| `.exactRecall` | The session often asks about amounts, dates, counts, or audit-style facts. Use this with app-owned tool or fact-store recall for exact data. |
+| `.batteryFriendly` | You want lower resident-state pressure for thermal or battery-sensitive flows. |
+
+```swift
+let options = NativeRuntimeLoadOptions(memoryIntent: .longSession)
+try await engine.loadLocal(directory: modelURL, options: options)
+```
+
+Do not tune DSR windows or memory environment variables as product API. Those
+knobs are diagnostic and experimental. For exact facts, keep a tool or fact
+store as the source of truth rather than relying on conversation memory alone.
+
 ## Conversation cache
 
 Keep the prompt cache for one conversation:

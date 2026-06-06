@@ -27,7 +27,7 @@ Edge Engine 和 Edge Halo 预览包在某些构建中使用更新的 Swift toolc
 | 4B 文本或 VLM 模型 | 8 GB 或更多统一内存 |
 | 9B 模型 | 16 GB 或更多统一内存，或已验证的高内存 iOS 设备 |
 | 优化和导出 | 有足够磁盘空间存放源模型和导出模型的 Mac |
-| 适配器训练 | 用户自有 Mac |
+| Edge Studio 优化和 artifact 生成 | 用户自有 Mac |
 
 ## iOS entitlements
 

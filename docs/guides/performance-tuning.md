@@ -43,7 +43,7 @@ Larger models can improve quality, but they also increase load time, memory pres
 | Lowest latency | Start with a 0.8B or small 4-bit model. |
 | Balanced chat quality | Start with a 4B 4-bit model. |
 | Highest local quality | Use a larger model only on validated high-memory devices. |
-| Training or adapter work | Keep higher-precision source models on a Mac. |
+| Edge Studio optimization or artifact generation | Keep higher-precision source models on a Mac. |
 
 ## Use prompt cache for conversations
 

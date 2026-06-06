@@ -6,49 +6,74 @@ title: 概览
 
 # AtomGradient Edge
 
-让 AI 在每台设备上生长。无云端依赖，无延迟，完全隐私。
+构建运行在用户自有设备上的私有 AI agent。
 
-当前支持 Apple 平台。Android、Linux、鸿蒙和 Windows 在路线图中。
+当前版本面向 Apple 平台发布。Android、Linux、HarmonyOS 和 Windows 在路线图中。
 
 :::info 开发者预览
-所有 Edge 产品处于**开发者预览**阶段。API 可能在版本间发生变化。请锁定依赖版本，并在每次升级后在真机上验证。
+所有 Edge 产品都处于 **Developer Preview**。API 可能在版本间变化。请固定包版本，并在每次升级后用真机重新验证。
 :::
 
-## 选择你的路径
+## 产品栈
 
-### 我想构建端侧聊天 Agent
+| 产品 | 开发者用它做什么 |
+| --- | --- |
+| **Edge Studio** | 本地工作台：模型分析、优化、benchmark、Neural Imprint 生成、设备管理与导出。 |
+| **Edge Engine** | 原生端侧推理运行时。通常由 Edge Kit 打包使用，app 不直接 import。 |
+| **Edge Kit** | Swift SDK：LLM、VLM、语音、模型管理、EdgeData、EdgeMesh、EdgeSession 和 EdgeUI。 |
+| **Edge Halo** | 个性化生命周期层：画像任务、Neural Imprint capsule 校验、恢复编排与兼容性闸门。 |
+| **Edge Scaffold** | 参考 app 和导出模板，展示推荐的 iOS 集成方式。 |
 
-1. [安装 Edge Kit](/docs/get-started/quickstart) — SPM，5 分钟
-2. [文本生成](/docs/build/text-generation) — 加载模型，流式输出
-3. [基础聊天示例](/docs/examples/basic-chat) — 完整 SwiftUI Agent
-4. [内存管理](/docs/guides/memory-management) — 稳定上线不崩溃
+简化流程：
 
-### 我想添加视觉、语音或个性化能力
+```text
+Edge Studio 准备 artifacts
+        ↓
+Edge Scaffold 展示参考 app 结构
+        ↓
+你的 agent import Edge Kit + Edge Halo
+        ↓
+Edge Engine 在本地运行模型
+```
 
-- [视觉理解](/docs/build/vision) — 使用 VLM 理解图像
-- [语音转文字](/docs/build/speech-to-text) + [文字转语音](/docs/build/text-to-speech) — 语音管线
-- [模型进化](/docs/build/model-evolution) — HALO 驱动的端侧持续学习
-- [语音助手示例](/docs/examples/voice-assistant) — ASR → LLM → TTS 端到端
+## 选择路径
 
-### 我想优化模型并发布 Agent
+### 我想构建端侧聊天 agent
 
-1. [Edge Studio 概览](/docs/optimize-and-ship/studio-overview) — Web 优化工作台
-2. [优化与基准测试](/docs/optimize-and-ship/optimize-and-benchmark) — 分析、压缩、验证
-3. [导出](/docs/optimize-and-ship/export) — Edge Kit / GGUF / CoreML 格式
-4. [Edge Scaffold](/docs/optimize-and-ship/scaffold) — 生成可发布的 Agent
-5. [构建与发布示例](/docs/examples/build-and-ship) — 端到端完整流程
+1. [安装 Edge Kit](/docs/get-started/quickstart) — Swift Package Manager，5 分钟
+2. [文本生成](/docs/build/text-generation) — 加载模型并流式输出
+3. [基础聊天示例](/docs/examples/basic-chat) — 完整 SwiftUI agent
+4. [内存管理](/docs/guides/memory-management) — 避免真机崩溃
 
-## 核心技术
+### 我想加入视觉、语音或个性化
 
-| 技术 | 对你的意义 |
-|------|-----------|
-| **DSR Attention** | 动态稀疏保留。9B 模型在 iPhone 上跑 20 轮对话不掉速。无需配置 — Edge Kit 自动应用。 |
-| **HALO**（专利） | 端侧模型进化。模型从用户行为中学习，数据不上传。画像提取、适配器训练、实时调控 — 全部在本地完成。 |
+- [视觉](/docs/build/vision) — VLM 图像理解
+- [语音转文本](/docs/build/speech-to-text) + [文本转语音](/docs/build/text-to-speech) — 语音流水线
+- [模型进化](/docs/build/model-evolution) — Neural Imprint 与 Edge Halo 生命周期
+- [个性化模型示例](/docs/examples/personalized-model) — 画像、capsule 和恢复流程
+
+### 我想优化模型并发布 agent
+
+1. [Edge Studio 概览](/docs/optimize-and-ship/studio-overview) — 本地工作台
+2. [优化与 benchmark](/docs/optimize-and-ship/optimize-and-benchmark) — 分析、压缩、验证
+3. [导出](/docs/optimize-and-ship/export) — Edge Kit bundle、scaffold project、GGUF 或 CoreML
+4. [Edge Scaffold](/docs/optimize-and-ship/scaffold) — 生成可发布的参考 app
+5. [构建与发布示例](/docs/examples/build-and-ship) — 端到端 walkthrough
+
+## 核心概念
+
+| 概念 | 面向开发者的含义 |
+| --- | --- |
+| **本地优先推理** | 模型、prompt、用户数据和个性化 artifact 默认留在用户自有设备上。 |
+| **Neural Imprint** | 本地个性化 artifact，让兼容 base model 恢复用户相关状态，而不改模型权重。 |
+| **EdgeMesh** | 面向用户自有设备的本地网络信任、发现与设备间传输。 |
+| **Memory intent** | `balanced`、`longSession`、`exactRecall`、`batteryFriendly` 等高层策略提示；运行时细节由 Edge Kit 解析。 |
+| **Fail-closed compatibility** | 个性化和模型 artifacts 必须匹配模型、tokenizer/template、runtime 和 tool schema 后才能恢复。 |
 
 ## 快速开始
 
 ```swift
-import EdgeKit
+import EdgeInference
 
 let engine = LLMEngine()
 try await engine.loadLocal(directory: modelURL)
@@ -60,18 +85,13 @@ for try await chunk in engine.generate(
 }
 ```
 
-## 性能
+## 隐私模型
 
-真机实测数据。Qwen3.5-9B-4bit，20 轮对话：
+Edge 围绕用户自有计算设计：
 
-| 设备 | 第 1 轮 | 中位数 | 第 20 轮 | TTFT |
-|------|--------|--------|---------|------|
-| iPhone 17 (11GB) | 12.6 TPS | 11.6 TPS | 10.8 TPS | 566ms |
-| iPhone Air (11GB) | 9.5 TPS | 7.8 TPS | 7.5 TPS | 918ms |
+- 推理在本地运行。
+- 训练输入、纠错和对话历史由 app 本地管理。
+- EdgeMesh 传输是本地网络并受信任关系约束。
+- Neural Imprint artifacts 在恢复前做兼容性校验，也应由 app 提供删除路径。
 
-自研引擎 prefill（M2 Ultra）：
-
-| 工作负载 | Edge Engine | 通用实现 | 加速比 |
-|----------|-----------|---------|--------|
-| 文本 (4B) | 1,305 TPS | 187 TPS | **7×** |
-| VLM 图像 (4B) | 1,803 TPS | 851 TPS | **2.1×** |
+不要把用户 transcript、correction 或 profile artifact 上传到分析、崩溃日志或远程支持系统。

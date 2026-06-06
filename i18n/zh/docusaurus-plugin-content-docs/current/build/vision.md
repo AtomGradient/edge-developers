@@ -107,7 +107,6 @@ for try await chunk in engine.generate(
 | `loadLocal(directory:)` | 加载本地 VLM 模型。 |
 | `generate(messages:images:)` | 从 URL 图像流式生成文本。 |
 | `generate(messages:ciImages:)` | 从内存中的 `CIImage` 值流式生成文本。 |
-| `loadLoRA(adapterPath:)` | 为语言分支加载适配器。 |
 | `lastMetrics` | TTFT、TPS、token 数。 |
 
 完整签名 → [EdgeInference API Reference](/docs/api-reference/edge-inference)

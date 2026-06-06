@@ -34,15 +34,15 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 - 支持 LLM、VLM、TTS、STT engine。
 - 面向长上下文多轮会话的 DSR Attention。
 - 自动 KV cache 内存策略。
-- LoRA 适配器加载。
+- Neural Imprint-compatible runtime restore primitives。
 
 ## edge-halo
 
 ### 1.0.0-rc1 (当前)
 
 - Edge Halo 初始开发者预览版。
-- 面向端侧模型进化的 HALO 算法系统。
-- 用户画像分析、适配器生命周期、activation steering。
+- Edge Halo lifecycle：本地 profile jobs 与 Neural Imprint capsule compatibility。
+- 面向模型、tokenizer、runtime 和 tool-schema identity 的 fail-closed validation。
 - `HaloTextGenerator` 和 `HaloEngineSession` 协议。
 
 ## edge-engine
