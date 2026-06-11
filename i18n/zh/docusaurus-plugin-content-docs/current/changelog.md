@@ -39,13 +39,14 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 
 ## edge-halo
 
-### 1.0.0-rc16 (当前)
+### 1.0.0-rc17 (当前)
 
 - Edge Halo 当前开发者预览版。
 - Edge Halo lifecycle：本地 profile jobs 与 Neural Imprint capsule compatibility。
 - 面向模型、tokenizer、runtime 和 tool-schema identity 的 fail-closed validation。
 - `HaloTextGenerator` 和 `HaloEngineSession` 协议。
 - RPP A-library provenance validation 与 profile artifact lifecycle helpers。
+- dependency version metadata 已对齐当前 preview tag。
 - 依赖 Edge Engine `1.0.0-rc136`。
 
 ## edge-engine
@@ -65,4 +66,4 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 - 从 Edge Studio 导出生成 iOS app 模板。
 - 基于 ScaffoldConfig 的自定义。
 - 四层模型分发（Cache → Bundle → ODR → HuggingFace）。
-- 固定依赖 Edge Kit `1.0.0-rc94` 与 Edge Halo `1.0.0-rc16`。
+- 固定依赖 Edge Kit `1.0.0-rc94` 与 Edge Halo `1.0.0-rc17`。

@@ -39,13 +39,14 @@ During Developer Preview, releases follow `1.0.0-rcN` tags. Breaking changes are
 
 ## edge-halo
 
-### 1.0.0-rc16 (current)
+### 1.0.0-rc17 (current)
 
 - Edge Halo current Developer Preview.
 - Edge Halo lifecycle for local profile jobs and Neural Imprint capsule compatibility.
 - Fail-closed validation for model, tokenizer, runtime, and tool-schema identity.
 - `HaloTextGenerator` and `HaloEngineSession` protocols.
 - RPP A-library provenance validation and profile artifact lifecycle helpers.
+- Dependency version metadata aligned with the current preview tag.
 - Depends on Edge Engine `1.0.0-rc136`.
 
 ## edge-engine
@@ -65,4 +66,4 @@ During Developer Preview, releases follow `1.0.0-rcN` tags. Breaking changes are
 - iOS app template generation from Edge Studio export.
 - ScaffoldConfig-based customization.
 - Four-tier model delivery (Cache → Bundle → ODR → HuggingFace).
-- Pins Edge Kit `1.0.0-rc94` and Edge Halo `1.0.0-rc16`.
+- Pins Edge Kit `1.0.0-rc94` and Edge Halo `1.0.0-rc17`.
