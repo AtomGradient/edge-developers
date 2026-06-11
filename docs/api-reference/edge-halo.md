@@ -156,7 +156,7 @@ if result.isCompatible {
 public struct UserProfile: Sendable
 ```
 
-Local profile summary produced by the preview profile workflow.
+Local profile narrative produced by the preview profile workflow.
 
 | Property | Type |
 | --- | --- |

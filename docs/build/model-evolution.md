@@ -36,46 +36,14 @@ Edge Halo does not own your inference runtime. Your agent provides two bridges:
 - `HaloTextGenerator` for short local generation tasks used by the profile workflow.
 - `HaloEngineSession` for model-session operations such as profile capture and Neural Imprint restore.
 
-```swift
-import EdgeHalo
-import Foundation
+This page documents the lifecycle contract, not a standalone runnable bridge. Use the Edge Scaffold runtime bridge as the runnable reference. For a working example, see `EdgeScaffold/AI/ScaffoldHaloRuntimeAdapter.swift` in the `edge-scaffold` repository.
 
-struct AppTextGenerator: HaloTextGenerator {
-    func tokenize(_ text: String) async throws -> [Int] {
-        // Use the tokenizer that matches your loaded model.
-        Array(text.utf8.map(Int.init))
-    }
+The scaffold adapter is app-layer code:
 
-    func generate(prompt: String, maxTokens: Int) async throws -> String {
-        // In production, call the same Edge Kit model session used by chat.
-        "Local profile summary"
-    }
-}
-
-final class AppEngineSession: HaloEngineSession, @unchecked Sendable {
-    func captureHiddenState(tokens: [Int], layer: Int) async throws -> [Float] {
-        // Bridge to the loaded model session's profile-capture path.
-        Array(repeating: 0, count: 4096)
-    }
-
-    func captureFullCache(tokenIds: [Int]) async throws -> HaloCacheSnapshot {
-        // Capture a local Neural Imprint prefix artifact.
-        throw HaloCapsuleError.fullCacheCaptureUnsupported
-    }
-
-    func restoreFullCache(_ snapshot: HaloCacheSnapshot, artifactURL: URL) async throws {
-        // Restore a compatible Neural Imprint artifact into the loaded session.
-    }
-
-    // This is a minimal bridge sketch. Use the Edge Scaffold reference for the
-    // complete preview protocol conformance required by your pinned release.
-}
-
-let halo = EdgeHalo(
-    engine: AppEngineSession(),
-    generator: AppTextGenerator()
-)
-```
+- `ScaffoldHaloRuntimeAdapter` conforms to `HaloTextGenerator` and `HaloEngineSession`.
+- It tokenizes and generates through the loaded `LLMEngine` or `VLMEngine` session used by chat.
+- It captures profile activations through `LLMEngine.captureHiddenStates(...)` or `VLMEngine.captureHiddenStates(...)`.
+- It restores a compatible Neural Imprint artifact through `AIManager.restorePersonaKVCacheForHalo(from:)`.
 
 In a production agent, bridge methods should call the same loaded model session that serves user requests. This keeps inference, profile jobs, and restore behavior aligned with the model the user is actually using.
 

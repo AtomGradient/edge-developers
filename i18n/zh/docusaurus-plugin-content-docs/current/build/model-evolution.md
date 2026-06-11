@@ -36,46 +36,14 @@ Edge Halo 不拥有你的推理 runtime。你的 agent 需要提供两个 bridge
 - `HaloTextGenerator`：profile workflow 需要的短文本本地生成。
 - `HaloEngineSession`：模型会话操作，例如 profile capture 和 Neural Imprint restore。
 
-```swift
-import EdgeHalo
-import Foundation
+这个页面记录 lifecycle contract，不是 standalone runnable bridge。Use the Edge Scaffold runtime bridge as the runnable reference. 可运行参考见 `edge-scaffold` 仓库中的 `EdgeScaffold/AI/ScaffoldHaloRuntimeAdapter.swift`。
 
-struct AppTextGenerator: HaloTextGenerator {
-    func tokenize(_ text: String) async throws -> [Int] {
-        // Use the tokenizer that matches your loaded model.
-        Array(text.utf8.map(Int.init))
-    }
+Scaffold adapter 属于 app-layer code：
 
-    func generate(prompt: String, maxTokens: Int) async throws -> String {
-        // In production, call the same Edge Kit model session used by chat.
-        "Local profile summary"
-    }
-}
-
-final class AppEngineSession: HaloEngineSession, @unchecked Sendable {
-    func captureHiddenState(tokens: [Int], layer: Int) async throws -> [Float] {
-        // Bridge to the loaded model session's profile-capture path.
-        Array(repeating: 0, count: 4096)
-    }
-
-    func captureFullCache(tokenIds: [Int]) async throws -> HaloCacheSnapshot {
-        // Capture a local Neural Imprint prefix artifact.
-        throw HaloCapsuleError.fullCacheCaptureUnsupported
-    }
-
-    func restoreFullCache(_ snapshot: HaloCacheSnapshot, artifactURL: URL) async throws {
-        // Restore a compatible Neural Imprint artifact into the loaded session.
-    }
-
-    // 这是最小 bridge sketch。完整 preview protocol conformance 请以你固定版本的
-    // Edge Scaffold reference bridge 为准。
-}
-
-let halo = EdgeHalo(
-    engine: AppEngineSession(),
-    generator: AppTextGenerator()
-)
-```
+- `ScaffoldHaloRuntimeAdapter` 实现 `HaloTextGenerator` 和 `HaloEngineSession`。
+- 它通过 chat 使用的已加载 `LLMEngine` 或 `VLMEngine` session 做 tokenize 和 generate。
+- 它通过 `LLMEngine.captureHiddenStates(...)` 或 `VLMEngine.captureHiddenStates(...)` 捕获 profile activations。
+- 它通过 `AIManager.restorePersonaKVCacheForHalo(from:)` 恢复兼容的 Neural Imprint artifact。
 
 生产 agent 中，bridge 方法应调用同一个服务用户请求的已加载模型会话。这样推理、profile job 和 restore 行为都与用户实际使用的模型保持一致。
 

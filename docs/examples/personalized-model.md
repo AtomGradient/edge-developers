@@ -5,7 +5,7 @@ title: Personalized Model
 
 # Example: Neural Imprint lifecycle
 
-This example shows the app-side control surface for local personalization with Edge Halo.
+This page documents the settings/lifecycle integration contract, not a standalone runnable bridge.
 
 It does four things:
 
@@ -190,62 +190,24 @@ private extension UserProfile {
 }
 ```
 
-## Runtime bridge
+## Runtime bridge reference
 
-Your agent implements the Edge Halo bridge by calling the same loaded model session used by chat.
+Use the Edge Scaffold runtime bridge as the runnable reference. For a working example, see `EdgeScaffold/AI/ScaffoldHaloRuntimeAdapter.swift` in the `edge-scaffold` repository.
 
-```swift
-struct AppTextGenerator: HaloTextGenerator {
-    func tokenize(_ text: String) async throws -> [Int] {
-        Array(text.utf8.map(Int.init))
-    }
+The scaffold adapter is app-layer code, not framework code:
 
-    func generate(prompt: String, maxTokens: Int) async throws -> String {
-        // Call your Edge Kit LLMEngine here.
-        "Local profile summary"
-    }
-}
+- `ScaffoldHaloRuntimeAdapter` conforms to `HaloTextGenerator` and `HaloEngineSession`.
+- It tokenizes and generates through the loaded `LLMEngine` or `VLMEngine` session used by chat.
+- It captures profile activations through `LLMEngine.captureHiddenStates(...)` or `VLMEngine.captureHiddenStates(...)`.
+- It restores a compatible Neural Imprint artifact through `AIManager.restorePersonaKVCacheForHalo(from:)`.
 
-final class AppEngineSession: HaloEngineSession, @unchecked Sendable {
-    func captureHiddenState(tokens: [Int], layer: Int) async throws -> [Float] {
-        // Call your loaded model session's profile-capture path.
-        Array(repeating: 0, count: 4096)
-    }
+Do not stub generation output or hidden states in app code. If the loaded runtime is unavailable, incompatible, or missing the required capture/restore path, the app should fail closed and keep the base model active.
 
-    func captureFullCache(tokenIds: [Int]) async throws -> HaloCacheSnapshot {
-        throw HaloCapsuleError.fullCacheCaptureUnsupported
-    }
+## Capsule storage and runtime requirements
 
-    func restoreFullCache(_ snapshot: HaloCacheSnapshot, artifactURL: URL) async throws {
-        // Restore the local Neural Imprint artifact into the loaded session.
-    }
+Production apps usually load capsule manifests and local artifact URLs from an Edge Studio export, the Edge Scaffold flow, app-owned local storage, or a trusted EdgeMesh transfer. Runtime requirements should be built from the currently loaded model, tokenizer, tool schema, and runtime identity before calling `validateCapsule` and `activateCapsule`.
 
-    // This snippet omits preview-only protocol hooks. Use the Edge Scaffold
-    // bridge as the complete reference for your pinned Edge Halo release.
-}
-```
-
-## Capsule storage placeholder
-
-The example above uses a small placeholder store. Production apps usually get these values from the Edge Scaffold flow, an Edge Studio export, or a trusted EdgeMesh transfer.
-
-```swift
-struct LocalCapsuleStore {
-    func loadLatestCapsule() throws -> HaloCapsule {
-        // Load manifest + local artifact URL from your app container.
-        throw CocoaError(.fileNoSuchFile)
-    }
-
-    func currentRuntimeRequirements() throws -> HaloCapsuleRequirements {
-        // Build from the currently loaded model, tokenizer, tool schema, and runtime.
-        throw CocoaError(.featureUnsupported)
-    }
-
-    func removeLocalArtifacts() {
-        // Delete local Neural Imprint files and receipts owned by the app.
-    }
-}
-```
+Keep storage and reset policy in your app layer. Edge Kit and Edge Halo provide reusable runtime and lifecycle infrastructure; they should not own app-specific records or product policy.
 
 ## Integration notes
 

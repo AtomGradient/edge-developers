@@ -5,7 +5,7 @@ title: 个性化模型
 
 # 示例：Neural Imprint 生命周期
 
-这个示例展示使用 Edge Halo 做本地个性化时，app 侧设置页应该如何组织。
+这个页面记录 settings/lifecycle integration contract，不是 standalone runnable bridge。This page documents the settings/lifecycle integration contract, not a standalone runnable bridge.
 
 它做四件事：
 
@@ -190,62 +190,24 @@ private extension UserProfile {
 }
 ```
 
-## Runtime bridge
+## Runtime bridge reference
 
-你的 agent 通过调用同一个 chat 模型会话来实现 Edge Halo bridge。
+Use the Edge Scaffold runtime bridge as the runnable reference. 可运行参考见 `edge-scaffold` 仓库中的 `EdgeScaffold/AI/ScaffoldHaloRuntimeAdapter.swift`。
 
-```swift
-struct AppTextGenerator: HaloTextGenerator {
-    func tokenize(_ text: String) async throws -> [Int] {
-        Array(text.utf8.map(Int.init))
-    }
+Scaffold adapter 属于 app-layer code，不属于基础框架：
 
-    func generate(prompt: String, maxTokens: Int) async throws -> String {
-        // Call your Edge Kit LLMEngine here.
-        "Local profile summary"
-    }
-}
+- `ScaffoldHaloRuntimeAdapter` 实现 `HaloTextGenerator` 和 `HaloEngineSession`。
+- 它通过 chat 使用的已加载 `LLMEngine` 或 `VLMEngine` session 做 tokenize 和 generate。
+- 它通过 `LLMEngine.captureHiddenStates(...)` 或 `VLMEngine.captureHiddenStates(...)` 捕获 profile activations。
+- 它通过 `AIManager.restorePersonaKVCacheForHalo(from:)` 恢复兼容的 Neural Imprint artifact。
 
-final class AppEngineSession: HaloEngineSession, @unchecked Sendable {
-    func captureHiddenState(tokens: [Int], layer: Int) async throws -> [Float] {
-        // Call your loaded model session's profile-capture path.
-        Array(repeating: 0, count: 4096)
-    }
+不要在 app code 中 stub generation output 或 hidden states。如果已加载 runtime 不可用、不兼容，或缺少需要的 capture/restore path，app 应 fail closed，并保持 base model active。
 
-    func captureFullCache(tokenIds: [Int]) async throws -> HaloCacheSnapshot {
-        throw HaloCapsuleError.fullCacheCaptureUnsupported
-    }
+## Capsule storage 与 runtime requirements
 
-    func restoreFullCache(_ snapshot: HaloCacheSnapshot, artifactURL: URL) async throws {
-        // Restore the local Neural Imprint artifact into the loaded session.
-    }
+生产 app 通常从 Edge Studio export、Edge Scaffold flow、app-owned local storage 或可信 EdgeMesh transfer 加载 capsule manifest 与本地 artifact URL。调用 `validateCapsule` 和 `activateCapsule` 前，runtime requirements 应来自当前已加载模型、tokenizer、tool schema 和 runtime identity。
 
-    // 此处省略 preview-only protocol hooks。完整 bridge 请参考你固定版本中的
-    // Edge Scaffold 实现。
-}
-```
-
-## Capsule storage placeholder
-
-上面的示例使用了一个很小的 placeholder store。生产 app 通常从 Edge Scaffold flow、Edge Studio export 或可信 EdgeMesh transfer 获取这些值。
-
-```swift
-struct LocalCapsuleStore {
-    func loadLatestCapsule() throws -> HaloCapsule {
-        // Load manifest + local artifact URL from your app container.
-        throw CocoaError(.fileNoSuchFile)
-    }
-
-    func currentRuntimeRequirements() throws -> HaloCapsuleRequirements {
-        // Build from the currently loaded model, tokenizer, tool schema, and runtime.
-        throw CocoaError(.featureUnsupported)
-    }
-
-    func removeLocalArtifacts() {
-        // Delete local Neural Imprint files and receipts owned by the app.
-    }
-}
-```
+Storage 和 reset policy 留在 app layer。Edge Kit 与 Edge Halo 提供可复用 runtime 和 lifecycle infrastructure；它们不应拥有 app-specific records 或 product policy。
 
 ## 集成注意事项
 
