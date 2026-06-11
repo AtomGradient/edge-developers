@@ -59,10 +59,13 @@ edge doctor --json
 edge models list
 edge models where qwen3.5-0.8b
 edge models doctor qwen3.5-0.8b
+edge models fetch qwen3.5-0.8b --dry-run
+edge models fetch qwen3.5-0.8b --source auto
 ```
 
 `edge doctor` 是只读的 B1 环境检查。它不会下载模型、加载模型、启动 backend，也不会运行 Neural Imprint workflows。
 `edge models list`、`edge models where` 与 `edge models doctor` 是只读的 B2a 模型就绪检查。它们只解析 catalog entry 和本地模型路径，不下载模型、不写 receipt，也不做网络 probe。
+`edge models fetch` 是显式的 B2b 模型准备命令。demo 命令不会 silent 触发它；真实 fetch 会写本地 `edge.models.fetch.receipt.v1` receipt。
 
 ## 计划中的 Demo CLI
 
@@ -70,7 +73,6 @@ edge models doctor qwen3.5-0.8b
 
 计划中的 preview 命令包括：
 
-- `edge models fetch`：用于显式准备模型。
 - `edge demo imprint run`：用于 Neural Imprint 行为变化 demo。
 - `edge demo receipt`：用于检查 local-only receipt。
 

@@ -59,10 +59,13 @@ edge doctor --json
 edge models list
 edge models where qwen3.5-0.8b
 edge models doctor qwen3.5-0.8b
+edge models fetch qwen3.5-0.8b --dry-run
+edge models fetch qwen3.5-0.8b --source auto
 ```
 
 `edge doctor` is a read-only B1 environment check. It does not download models, load models, start the backend, or run Neural Imprint workflows.
 `edge models list`, `edge models where`, and `edge models doctor` are read-only B2a model readiness checks. They resolve catalog entries and local model paths without downloading models, writing receipts, or probing the network.
+`edge models fetch` is an explicit B2b model preparation command. It is never run silently by demo commands; it writes a local `edge.models.fetch.receipt.v1` receipt for real fetches.
 
 ## Planned Demo CLI
 
@@ -70,7 +73,6 @@ edge models doctor qwen3.5-0.8b
 
 Planned preview commands include:
 
-- `edge models fetch` for explicit model preparation.
 - `edge demo imprint run` for a Neural Imprint behavior-change demo.
 - `edge demo receipt` for local-only receipt inspection.
 
