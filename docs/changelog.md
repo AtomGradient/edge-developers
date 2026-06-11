@@ -23,6 +23,39 @@ During Developer Preview, releases follow `1.0.0-rcN` tags. Breaking changes are
 4. Run your test suite on a real device.
 5. Verify first-launch, multi-turn, and memory behavior.
 
+## Developer Preview boundaries
+
+Developer Preview is an internal preview channel. The changelog documents what is shipped, what requires preview access, and what is deliberately not enabled yet.
+
+### Access matrix
+
+| Surface | Current access | Notes |
+|---|---|---|
+| Swift SDK docs | Edge Kit `1.0.0-rc94` | Docs use an exact version pin. Upgrade only after validation. |
+| Edge Engine dependency | Edge Engine `1.0.0-rc136` | Some preview repos or dependencies may require AtomGradient internal preview access or SSH access today. This is surfaced here, not treated as a current internal preview blocker. |
+| Edge Halo dependency | Edge Halo `1.0.0-rc17` | Edge Halo depends on Edge Engine `1.0.0-rc136`; validate package resolution in your environment. |
+| Edge Scaffold | Pins Edge Kit `1.0.0-rc94` and Edge Halo `1.0.0-rc17` | Generated apps still require signing, device provisioning, and real-device validation. |
+
+### Compatibility matrix
+
+| Component | Compatible preview |
+|---|---|
+| Edge Kit | `1.0.0-rc94`, depends on Edge Engine `1.0.0-rc136` |
+| Edge Halo | `1.0.0-rc17`, depends on Edge Engine `1.0.0-rc136` |
+| Edge Scaffold | Current preview pins Edge Kit `1.0.0-rc94` and Edge Halo `1.0.0-rc17` |
+
+Generic builds and simulator checks are not enough for runtime claims. Re-run real-device validation after changing any preview tag.
+
+### Known limitations
+
+- Planned CLI commands are not shipped in current preview: `edge doctor`, `edge demo imprint run`, and `edge demo receipt` are tracked by B1/B4/B6 in the Developer Preview DX roadmap.
+- Product-default paired-device route is not enabled by this preview documentation or changelog. Broad live routing still requires separate explicit policy, opt-in, and real-device evidence.
+- Background automation scheduler is not shipped. The bounded automation API remains explicit, dry-run by default, and fail-closed.
+- Model push and Neural Imprint regen execution remain unsupported without separate explicit policy/design.
+- `edge demo reuse` is an artifact reuse smoke, not C2 cross-device sync.
+- A5.8 follow-ups remain: background scheduler, apply-status UI reference, and optional production embedded build stamp.
+- EdgeMesh capsule auto-restore SDK orchestration is already shipped through `HaloCapsuleAutoRestoreCoordinator` in Edge Kit `1.0.0-rc94`; it is not a current limitation.
+
 ---
 
 ## edge-kit
