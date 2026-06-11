@@ -6,7 +6,7 @@ title: 5 分钟 Neural Imprint demo
 # 5 分钟 Neural Imprint demo
 
 :::warning Not shipped in current preview
-这是由 Developer Preview DX roadmap 的 B2/B4/B6 跟踪的 planned first-wow flow。It should not be treated as runnable until the CLI commands are shipped. `edge doctor` 已作为只读 B1 环境检查发布，但本页的 model 和 demo 命令还没有发布。
+这是由 Developer Preview DX roadmap 的 B2/B4/B6 跟踪的 planned first-wow flow。完整 flow 在 download 和 demo CLI 命令发布前不应视为可运行。`edge doctor` 与只读的 `edge models list/where/doctor` 已发布，但 model download 和 demo 命令还没有发布。
 :::
 
 本页先固定 demo contract，等 CLI 落地后再变成可运行入口。目标是用同一个兼容模型展示 base answer 与 restored Neural Imprint answer 的行为差异，同时产出 local receipt，证明发生了什么，但不保存 raw private text。
@@ -60,12 +60,15 @@ Receipt 默认必须是 local，并且默认只记录 hash：
 
 ```bash
 edge doctor
+edge models list
+edge models where qwen3.5-0.8b
+edge models doctor qwen3.5-0.8b
 edge models fetch qwen3.5-0.8b
 edge demo imprint run --sample synthetic-finance --model auto --question "Summarize this synthetic finance profile."
 edge demo receipt --last
 ```
 
-当前 preview 只有 `edge doctor` 已发布。`edge models fetch`、`edge demo imprint run` 和 `edge demo receipt` 仍等待 B2/B4/B6。
+当前 preview 已发布 `edge doctor` 与只读的 `edge models list/where/doctor`。`edge models fetch`、`edge demo imprint run` 和 `edge demo receipt` 仍等待 B2/B4/B6。
 
 ## 可接受措辞
 

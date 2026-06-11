@@ -49,7 +49,8 @@ generic build 和 simulator check 不足以支撑 runtime claim。任何 preview
 ### Known limitations
 
 - `edge doctor` 已在当前 preview 发布，作为只读的 B1 环境检查。它不会下载模型、加载模型、启动 backend，也不会运行 Neural Imprint workflows。
-- 计划中的 demo CLI 命令还没有在当前 preview 发布：`edge models fetch`、`edge demo imprint run` 和 `edge demo receipt` 由 Developer Preview DX roadmap 的 B2/B4/B6 跟踪。
+- `edge models list`、`edge models where` 与 `edge models doctor` 已在当前 preview 发布，作为只读的 B2a 模型就绪检查。它们不下载模型、不写 receipt，也不做网络 probe。
+- 计划中的 side-effecting/demo CLI 命令还没有在当前 preview 发布：`edge models fetch`、`edge demo imprint run` 和 `edge demo receipt` 由 Developer Preview DX roadmap 的 B2/B4/B6 跟踪。
 - 产品默认的 paired-device route 没有被这份 preview 文档或 changelog 启用。Broad live routing 仍需要单独的显式 policy、opt-in 和真机证据。
 - background automation scheduler 尚未发布。当前 bounded automation API 仍是 explicit、默认 dry-run，并且 fail-closed。
 - model push 和 Neural Imprint regen execution 在没有单独显式 policy/design 前仍不支持。

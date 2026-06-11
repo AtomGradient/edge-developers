@@ -56,9 +56,13 @@ build 会产出英文和中文文档。
 ```bash
 edge doctor
 edge doctor --json
+edge models list
+edge models where qwen3.5-0.8b
+edge models doctor qwen3.5-0.8b
 ```
 
 `edge doctor` 是只读的 B1 环境检查。它不会下载模型、加载模型、启动 backend，也不会运行 Neural Imprint workflows。
+`edge models list`、`edge models where` 与 `edge models doctor` 是只读的 B2a 模型就绪检查。它们只解析 catalog entry 和本地模型路径，不下载模型、不写 receipt，也不做网络 probe。
 
 ## 计划中的 Demo CLI
 
