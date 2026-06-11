@@ -30,9 +30,11 @@ Edge Kit 目前处于**开发者预览**阶段。请固定你测试过的包版�
 ```swift
 // Package.swift
 dependencies: [
-    .package(url: "https://github.com/AtomGradient/edge-kit.git", from: "1.0.0")
+    .package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc94")
 ]
 ```
+
+开发者预览版本应使用 exact pin。升级到新的 `1.0.0-rcN` tag 前，请重新完成真机验证。
 
 然后添加你需要的 product：
 

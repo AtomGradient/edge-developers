@@ -27,37 +27,42 @@ During Developer Preview, releases follow `1.0.0-rcN` tags. Breaking changes are
 
 ## edge-kit
 
-### 1.0.0-rc13 (current)
+### 1.0.0-rc94 (current)
 
-- Edge Kit initial Developer Preview.
+- Edge Kit current Developer Preview.
 - Modules: EdgeInference, EdgeModelKit, EdgeVoice, EdgeMesh, EdgeData, EdgeUI.
 - LLM, VLM, TTS, STT engine support.
 - DSR Attention for long-context multi-turn sessions.
 - Automatic KV cache memory policy.
-- Neural Imprint-compatible runtime restore primitives.
+- Neural Imprint runtime restore primitives and EdgeMesh capsule auto-restore coordinator APIs.
+- Depends on Edge Engine `1.0.0-rc136`.
 
 ## edge-halo
 
-### 1.0.0-rc1 (current)
+### 1.0.0-rc16 (current)
 
-- Edge Halo initial Developer Preview.
+- Edge Halo current Developer Preview.
 - Edge Halo lifecycle for local profile jobs and Neural Imprint capsule compatibility.
 - Fail-closed validation for model, tokenizer, runtime, and tool-schema identity.
 - `HaloTextGenerator` and `HaloEngineSession` protocols.
+- RPP A-library provenance validation and profile artifact lifecycle helpers.
+- Depends on Edge Engine `1.0.0-rc136`.
 
 ## edge-engine
 
-### 1.0.0-rc96 (current)
+### 1.0.0-rc136 (current dependency tag)
 
-- Edge Engine initial Developer Preview.
+- Edge Engine current dependency tag used by Edge Kit and Edge Halo.
 - Native Metal inference runtime.
 - DSR Attention implementation.
+- Unreleased commits on `main` are not part of this Developer Preview tag until a new `1.0.0-rcN` release is published.
 
 ## edge-scaffold
 
-### Current
+### Current preview dependencies
 
 - Edge Scaffold initial Developer Preview.
 - iOS app template generation from Edge Studio export.
 - ScaffoldConfig-based customization.
 - Four-tier model delivery (Cache → Bundle → ODR → HuggingFace).
+- Pins Edge Kit `1.0.0-rc94` and Edge Halo `1.0.0-rc16`.

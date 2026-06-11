@@ -31,9 +31,11 @@ Add Edge Kit to your package:
 ```swift
 // Package.swift
 dependencies: [
-    .package(url: "https://github.com/AtomGradient/edge-kit.git", from: "1.0.0")
+    .package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc94")
 ]
 ```
+
+Developer Preview releases should be pinned exactly. Re-run your real-device validation before moving to a newer `1.0.0-rcN` tag.
 
 Then add the product you need:
 
