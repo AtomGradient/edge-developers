@@ -9,6 +9,7 @@ const sidebars: SidebarsConfig = {
       collapsed: false,
       items: [
         'get-started/quickstart',
+        'get-started/minute-demo',
         'get-started/installation',
       ],
     },
