@@ -61,20 +61,24 @@ edge models where qwen3.5-0.8b
 edge models doctor qwen3.5-0.8b
 edge models fetch qwen3.5-0.8b --dry-run
 edge models fetch qwen3.5-0.8b --source auto
+edge demo receipt --schema
+edge demo receipt --path ./receipt.json
+edge demo local-only --path ./receipt.json
 ```
 
 `edge doctor` is a read-only B1 environment check. It does not download models, load models, start the backend, or run Neural Imprint workflows.
 `edge models list`, `edge models where`, and `edge models doctor` are read-only B2a model readiness checks. They resolve catalog entries and local model paths without downloading models, writing receipts, or probing the network.
 `edge models fetch` is an explicit B2b model preparation command. It is never run silently by demo commands; it writes a local `edge.models.fetch.receipt.v1` receipt for real fetches.
+`edge demo receipt` and `edge demo local-only` are B6a receipt inspection commands. They validate `edge.demo.receipt.v1` local-only invariants without generating Neural Imprint artifacts or calling model runtimes.
 
 ## Planned Demo CLI
 
-> Not shipped in current preview. These commands are tracked by the Developer Preview DX roadmap and should not be treated as runnable until the B2/B4/B6 CLI work lands.
+> Not shipped in current preview. These commands are tracked by the Developer Preview DX roadmap and should not be treated as runnable until the B4 demo orchestration work lands.
 
 Planned preview commands include:
 
 - `edge demo imprint run` for a Neural Imprint behavior-change demo.
-- `edge demo receipt` for local-only receipt inspection.
+- `edge demo imprint compare` for before/after inspection from a completed demo run.
 
 ## Trust Boundaries
 

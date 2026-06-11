@@ -6,7 +6,7 @@ title: 5-minute Neural Imprint demo
 # 5-minute Neural Imprint demo
 
 :::warning Not shipped in current preview
-This is a planned first-wow flow tracked by B4/B6 in the Developer Preview DX roadmap. The full flow should not be treated as runnable until the demo CLI commands are shipped. `edge doctor`, read-only `edge models list/where/doctor`, and explicit `edge models fetch` are shipped, but the demo commands are not shipped yet.
+This is a planned first-wow flow tracked by B4 in the Developer Preview DX roadmap. The full flow should not be treated as runnable until `edge demo imprint run` is shipped. `edge doctor`, read-only `edge models list/where/doctor`, explicit `edge models fetch`, and B6a `edge demo receipt/local-only` inspection commands are shipped.
 :::
 
 This page defines the intended demo contract before the CLI lands. The goal is to show a base answer and a restored Neural Imprint answer from the same compatible model, with local receipts that prove what happened without storing raw private text.
@@ -33,10 +33,14 @@ Receipts must be local by default and hash-only by default:
 {
   "schema_version": "edge.demo.receipt.v1",
   "run_id": "edge-run-example",
+  "model_path": "~/Documents/mlx-community/Qwen3.5-4B-4bit",
+  "model_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
   "sample_id": "synthetic_finance_v1",
-  "artifact_sha256": "sha256:example",
-  "metadata_sha256": "sha256:example",
-  "raw_text_in_receipt": false,
+  "sample_sha256": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "artifact_id": "ni-example",
+  "artifact_sha256": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "metadata_sha256": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "raw_text_included": false,
   "network_used_during_demo": false,
   "status": "planned_contract"
 }
@@ -56,7 +60,7 @@ The planned demo must:
 
 ## Planned commands
 
-The planned flow combines shipped environment/model commands with planned demo commands:
+The planned flow combines shipped environment/model/receipt commands with planned demo orchestration:
 
 ```bash
 edge doctor
@@ -65,10 +69,11 @@ edge models where qwen3.5-0.8b
 edge models doctor qwen3.5-0.8b
 edge models fetch qwen3.5-0.8b
 edge demo imprint run --sample synthetic-finance --model auto --question "Summarize this synthetic finance profile."
-edge demo receipt --last
+edge demo receipt --path ~/Library/Application\ Support/edgestudio/demo_runs/edge-run-example/receipt.json
+edge demo local-only --path ~/Library/Application\ Support/edgestudio/demo_runs/edge-run-example/receipt.json
 ```
 
-`edge doctor` and `edge models list/where/doctor/fetch` are shipped in current preview. `edge demo imprint run` and `edge demo receipt` are pending B4/B6.
+`edge doctor`, `edge models list/where/doctor/fetch`, `edge demo receipt`, and `edge demo local-only` are shipped in current preview. `edge demo imprint run` is still pending B4, so the full first-wow flow is not runnable yet.
 
 ## Acceptable wording
 

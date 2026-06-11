@@ -6,7 +6,7 @@ title: 5 分钟 Neural Imprint demo
 # 5 分钟 Neural Imprint demo
 
 :::warning Not shipped in current preview
-这是由 Developer Preview DX roadmap 的 B4/B6 跟踪的 planned first-wow flow。完整 flow 在 demo CLI 命令发布前不应视为可运行。`edge doctor`、只读的 `edge models list/where/doctor` 与显式的 `edge models fetch` 已发布，但 demo 命令还没有发布。
+这是由 Developer Preview DX roadmap 的 B4 跟踪的 planned first-wow flow。完整 flow 在 `edge demo imprint run` 发布前不应视为可运行。`edge doctor`、只读的 `edge models list/where/doctor`、显式的 `edge models fetch` 与 B6a `edge demo receipt/local-only` 检查命令已经发布。
 :::
 
 本页先固定 demo contract，等 CLI 落地后再变成可运行入口。目标是用同一个兼容模型展示 base answer 与 restored Neural Imprint answer 的行为差异，同时产出 local receipt，证明发生了什么，但不保存 raw private text。
@@ -33,10 +33,14 @@ Receipt 默认必须是 local，并且默认只记录 hash：
 {
   "schema_version": "edge.demo.receipt.v1",
   "run_id": "edge-run-example",
+  "model_path": "~/Documents/mlx-community/Qwen3.5-4B-4bit",
+  "model_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
   "sample_id": "synthetic_finance_v1",
-  "artifact_sha256": "sha256:example",
-  "metadata_sha256": "sha256:example",
-  "raw_text_in_receipt": false,
+  "sample_sha256": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "artifact_id": "ni-example",
+  "artifact_sha256": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "metadata_sha256": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "raw_text_included": false,
   "network_used_during_demo": false,
   "status": "planned_contract"
 }
@@ -56,7 +60,7 @@ Receipt 默认必须是 local，并且默认只记录 hash：
 
 ## 计划中的命令
 
-计划中的 flow 会组合已发布的环境/模型命令和计划中的 demo 命令：
+计划中的 flow 会组合已发布的环境/模型/receipt 命令和计划中的 demo orchestration：
 
 ```bash
 edge doctor
@@ -65,10 +69,11 @@ edge models where qwen3.5-0.8b
 edge models doctor qwen3.5-0.8b
 edge models fetch qwen3.5-0.8b
 edge demo imprint run --sample synthetic-finance --model auto --question "Summarize this synthetic finance profile."
-edge demo receipt --last
+edge demo receipt --path ~/Library/Application\ Support/edgestudio/demo_runs/edge-run-example/receipt.json
+edge demo local-only --path ~/Library/Application\ Support/edgestudio/demo_runs/edge-run-example/receipt.json
 ```
 
-当前 preview 已发布 `edge doctor` 与 `edge models list/where/doctor/fetch`。`edge demo imprint run` 和 `edge demo receipt` 仍等待 B4/B6。
+当前 preview 已发布 `edge doctor`、`edge models list/where/doctor/fetch`、`edge demo receipt` 与 `edge demo local-only`。`edge demo imprint run` 仍等待 B4，所以完整 first-wow flow 还不能视为可运行。
 
 ## 可接受措辞
 
