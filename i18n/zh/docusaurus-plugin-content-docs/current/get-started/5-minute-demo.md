@@ -6,7 +6,7 @@ title: 5 分钟 Neural Imprint demo
 # 5 分钟 Neural Imprint demo
 
 :::warning Not shipped in current preview
-这是由 Developer Preview DX roadmap 的 B4 跟踪的 planned first-wow flow。完整 flow 在 `edge demo imprint run` 发布前不应视为可运行。`edge doctor`、只读的 `edge models list/where/doctor`、显式的 `edge models fetch` 与 B6a `edge demo receipt/local-only` 检查命令已经发布。
+这是由 Developer Preview DX roadmap 的 B4 跟踪的 planned first-wow flow。完整 flow 在不带 `--dry-run` 的 `edge demo imprint run` 发布前不应视为可运行。`edge doctor`、只读的 `edge models list/where/doctor`、显式的 `edge models fetch`、B6a `edge demo receipt/local-only` 与 B4a `edge demo imprint run --dry-run` 已经发布。
 :::
 
 本页先固定 demo contract，等 CLI 落地后再变成可运行入口。目标是用同一个兼容模型展示 base answer 与 restored Neural Imprint answer 的行为差异，同时产出 local receipt，证明发生了什么，但不保存 raw private text。
@@ -68,12 +68,13 @@ edge models list
 edge models where qwen3.5-0.8b
 edge models doctor qwen3.5-0.8b
 edge models fetch qwen3.5-0.8b
+edge demo imprint run --dry-run --sample synthetic_profile_v1 --model auto --question "Summarize this synthetic profile."
 edge demo imprint run --sample synthetic-finance --model auto --question "Summarize this synthetic finance profile."
 edge demo receipt --path ~/Library/Application\ Support/edgestudio/demo_runs/edge-run-example/receipt.json
 edge demo local-only --path ~/Library/Application\ Support/edgestudio/demo_runs/edge-run-example/receipt.json
 ```
 
-当前 preview 已发布 `edge doctor`、`edge models list/where/doctor/fetch`、`edge demo receipt` 与 `edge demo local-only`。`edge demo imprint run` 仍等待 B4，所以完整 first-wow flow 还不能视为可运行。
+当前 preview 已发布 `edge doctor`、`edge models list/where/doctor/fetch`、`edge demo receipt`、`edge demo local-only` 与 `edge demo imprint run --dry-run`。不带 `--dry-run` 的 `edge demo imprint run` 仍等待 B4b，所以完整 first-wow flow 还不能视为可运行。
 
 ## 可接受措辞
 

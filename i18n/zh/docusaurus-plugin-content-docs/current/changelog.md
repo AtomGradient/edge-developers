@@ -52,7 +52,8 @@ generic build 和 simulator check 不足以支撑 runtime claim。任何 preview
 - `edge models list`、`edge models where` 与 `edge models doctor` 已在当前 preview 发布，作为只读的 B2a 模型就绪检查。它们不下载模型、不写 receipt，也不做网络 probe。
 - `edge models fetch` 已在当前 preview 发布，作为显式的 B2b 模型准备命令，支持 `--dry-run`、source selection、本地 receipt，并且不会被 demo silent 触发。
 - `edge demo receipt` 与 `edge demo local-only` 已在当前 preview 发布，作为 B6a receipt 检查工具。它们只验证 `edge.demo.receipt.v1` local-only invariants，不生成 Neural Imprint artifacts，也不调用模型 runtime。
-- 计划中的 demo orchestration 还没有在当前 preview 发布：`edge demo imprint run` 由 Developer Preview DX roadmap 的 B4 跟踪。
+- `edge demo imprint run --dry-run` 已在当前 preview 发布，作为 B4a pre-flight planner。它只输出包含 hash-only sample/question metadata 和本地模型前置条件状态的 `edge.demo.imprint.plan.v1`。
+- 计划中的 demo orchestration 还没有在当前 preview 发布：不带 `--dry-run` 的 `edge demo imprint run` 由 Developer Preview DX roadmap 的 B4b 跟踪。
 - 产品默认的 paired-device route 没有被这份 preview 文档或 changelog 启用。Broad live routing 仍需要单独的显式 policy、opt-in 和真机证据。
 - background automation scheduler 尚未发布。当前 bounded automation API 仍是 explicit、默认 dry-run，并且 fail-closed。
 - model push 和 Neural Imprint regen execution 在没有单独显式 policy/design 前仍不支持。

@@ -6,7 +6,7 @@ title: 5-minute Neural Imprint demo
 # 5-minute Neural Imprint demo
 
 :::warning Not shipped in current preview
-This is a planned first-wow flow tracked by B4 in the Developer Preview DX roadmap. The full flow should not be treated as runnable until `edge demo imprint run` is shipped. `edge doctor`, read-only `edge models list/where/doctor`, explicit `edge models fetch`, and B6a `edge demo receipt/local-only` inspection commands are shipped.
+This is a planned first-wow flow tracked by B4 in the Developer Preview DX roadmap. The full flow should not be treated as runnable until `edge demo imprint run` without `--dry-run` is shipped. `edge doctor`, read-only `edge models list/where/doctor`, explicit `edge models fetch`, B6a `edge demo receipt/local-only`, and B4a `edge demo imprint run --dry-run` are shipped.
 :::
 
 This page defines the intended demo contract before the CLI lands. The goal is to show a base answer and a restored Neural Imprint answer from the same compatible model, with local receipts that prove what happened without storing raw private text.
@@ -68,12 +68,13 @@ edge models list
 edge models where qwen3.5-0.8b
 edge models doctor qwen3.5-0.8b
 edge models fetch qwen3.5-0.8b
+edge demo imprint run --dry-run --sample synthetic_profile_v1 --model auto --question "Summarize this synthetic profile."
 edge demo imprint run --sample synthetic-finance --model auto --question "Summarize this synthetic finance profile."
 edge demo receipt --path ~/Library/Application\ Support/edgestudio/demo_runs/edge-run-example/receipt.json
 edge demo local-only --path ~/Library/Application\ Support/edgestudio/demo_runs/edge-run-example/receipt.json
 ```
 
-`edge doctor`, `edge models list/where/doctor/fetch`, `edge demo receipt`, and `edge demo local-only` are shipped in current preview. `edge demo imprint run` is still pending B4, so the full first-wow flow is not runnable yet.
+`edge doctor`, `edge models list/where/doctor/fetch`, `edge demo receipt`, `edge demo local-only`, and `edge demo imprint run --dry-run` are shipped in current preview. `edge demo imprint run` without `--dry-run` is still pending B4b, so the full first-wow flow is not runnable yet.
 
 ## Acceptable wording
 
