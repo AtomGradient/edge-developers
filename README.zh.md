@@ -49,13 +49,24 @@ npm run build
 
 build 会产出英文和中文文档。
 
-## 计划中的 CLI
+## CLI
 
-> Not shipped in current preview。这些命令由 Developer Preview DX roadmap 跟踪，在 B1/B4 CLI 工作落地前不应视为可运行命令。
+当前 preview 已发布：
+
+```bash
+edge doctor
+edge doctor --json
+```
+
+`edge doctor` 是只读的 B1 环境检查。它不会下载模型、加载模型、启动 backend，也不会运行 Neural Imprint workflows。
+
+## 计划中的 Demo CLI
+
+> Not shipped in current preview。这些命令由 Developer Preview DX roadmap 跟踪，在 B2/B4/B6 CLI 工作落地前不应视为可运行命令。
 
 计划中的 preview 命令包括：
 
-- `edge doctor`：用于本地环境检查。
+- `edge models fetch`：用于显式准备模型。
 - `edge demo imprint run`：用于 Neural Imprint 行为变化 demo。
 - `edge demo receipt`：用于检查 local-only receipt。
 
@@ -64,4 +75,4 @@ build 会产出英文和中文文档。
 - 用户数据与 Neural Imprint artifacts 默认留在本地，只有在用户显式启用时才传到受信任的自有设备。
 - README 与文档不在缺少评估证据时声称质量变好。
 - Edge Scaffold 是开发者参考 app，不承载 dogfood 业务逻辑。
-- CLI 命令在实现和测试落地前必须标注为 planned。
+- Demo CLI 命令在实现和测试落地前必须标注为 planned。

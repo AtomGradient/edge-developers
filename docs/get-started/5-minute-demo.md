@@ -6,7 +6,7 @@ title: 5-minute Neural Imprint demo
 # 5-minute Neural Imprint demo
 
 :::warning Not shipped in current preview
-This is a planned first-wow flow tracked by B1/B4/B6 in the Developer Preview DX roadmap. It should not be treated as runnable until the CLI commands are shipped.
+This is a planned first-wow flow tracked by B2/B4/B6 in the Developer Preview DX roadmap. It should not be treated as runnable until the CLI commands are shipped. `edge doctor` is shipped as a read-only B1 environment check, but the model and demo commands on this page are not shipped yet.
 :::
 
 This page defines the intended demo contract before the CLI lands. The goal is to show a base answer and a restored Neural Imprint answer from the same compatible model, with local receipts that prove what happened without storing raw private text.
@@ -56,7 +56,7 @@ The planned demo must:
 
 ## Planned commands
 
-Planned commands include:
+The planned flow combines the shipped doctor with planned model and demo commands:
 
 ```bash
 edge doctor
@@ -65,7 +65,7 @@ edge demo imprint run --sample synthetic-finance --model auto --question "Summar
 edge demo receipt --last
 ```
 
-These commands are not shipped in current preview. The runnable implementation is pending B1/B4/B6.
+Only `edge doctor` is shipped in current preview. `edge models fetch`, `edge demo imprint run`, and `edge demo receipt` are pending B2/B4/B6.
 
 ## Acceptable wording
 

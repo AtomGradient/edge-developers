@@ -48,7 +48,8 @@ Generic builds and simulator checks are not enough for runtime claims. Re-run re
 
 ### Known limitations
 
-- Planned CLI commands are not shipped in current preview: `edge doctor`, `edge demo imprint run`, and `edge demo receipt` are tracked by B1/B4/B6 in the Developer Preview DX roadmap.
+- `edge doctor` is shipped in current preview as a read-only B1 environment check. It does not download models, load models, start the backend, or run Neural Imprint workflows.
+- Planned demo CLI commands are not shipped in current preview: `edge models fetch`, `edge demo imprint run`, and `edge demo receipt` are tracked by B2/B4/B6 in the Developer Preview DX roadmap.
 - Product-default paired-device route is not enabled by this preview documentation or changelog. Broad live routing still requires separate explicit policy, opt-in, and real-device evidence.
 - Background automation scheduler is not shipped. The bounded automation API remains explicit, dry-run by default, and fail-closed.
 - Model push and Neural Imprint regen execution remain unsupported without separate explicit policy/design.

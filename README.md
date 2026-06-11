@@ -49,13 +49,24 @@ npm run build
 
 The build emits English and Chinese documentation.
 
-## Planned CLI
+## CLI
 
-> Not shipped in current preview. These commands are tracked by the Developer Preview DX roadmap and should not be treated as runnable until the B1/B4 CLI work lands.
+Shipped in current preview:
+
+```bash
+edge doctor
+edge doctor --json
+```
+
+`edge doctor` is a read-only B1 environment check. It does not download models, load models, start the backend, or run Neural Imprint workflows.
+
+## Planned Demo CLI
+
+> Not shipped in current preview. These commands are tracked by the Developer Preview DX roadmap and should not be treated as runnable until the B2/B4/B6 CLI work lands.
 
 Planned preview commands include:
 
-- `edge doctor` for local environment checks.
+- `edge models fetch` for explicit model preparation.
 - `edge demo imprint run` for a Neural Imprint behavior-change demo.
 - `edge demo receipt` for local-only receipt inspection.
 
@@ -64,4 +75,4 @@ Planned preview commands include:
 - User data and Neural Imprint artifacts stay local unless the user explicitly moves them to trusted user-owned devices.
 - README and docs avoid unevaluated quality-improvement claims.
 - Edge Scaffold is a developer reference app, not dogfood business logic.
-- CLI commands are labeled as planned until their implementation and tests land.
+- Demo CLI commands are labeled as planned until their implementation and tests land.
