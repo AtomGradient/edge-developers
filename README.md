@@ -79,7 +79,7 @@ edge demo imprint run --dry-run --question "Summarize this synthetic profile."
 
 Planned preview commands include:
 
-- `edge demo imprint run` (without `--dry-run`) for the B4b real Neural Imprint demo; currently blocked pending real-model smoke and generation-path hardening.
+- `edge demo imprint run` (without `--dry-run`) for the B4b real Neural Imprint demo; currently blocked pending real-model smoke.
 - `edge demo imprint compare` for before/after inspection from a completed demo run.
 
 ## Trust Boundaries
