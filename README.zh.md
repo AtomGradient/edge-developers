@@ -79,7 +79,7 @@ edge demo imprint run --dry-run --question "Summarize this synthetic profile."
 
 计划中的 preview 命令包括：
 
-- `edge demo imprint run`（不带 `--dry-run`）：B4b 真实 Neural Imprint demo；当前因 real-path import/signature/test 修复未完成而 blocked。
+- `edge demo imprint run`（不带 `--dry-run`）：B4b 真实 Neural Imprint demo；当前因 real-model smoke 与 generation-path hardening 尚未完成而 blocked。
 - `edge demo imprint compare`：用于检查已完成 demo run 的 before/after 输出。
 
 ## 信任边界
