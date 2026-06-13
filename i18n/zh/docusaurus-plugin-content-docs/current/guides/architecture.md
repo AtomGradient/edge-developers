@@ -93,3 +93,5 @@ Source model
 开发者文档只描述概念、API 和工作流。不会描述私有个性化算法、内部训练目标、kernel 实现细节或内存预算实现细节。
 
 使用这些文档集成产品；使用 Edge Scaffold 和 API reference 查具体代码路径。
+
+如需了解 Neural Imprint artifact restore、LoRA/SFT 与 prompt stuffing 的部署取舍，请阅读 [Neural Imprint vs LoRA](neural-imprint-vs-lora.md)。

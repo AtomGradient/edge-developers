@@ -154,3 +154,4 @@ Full signatures → [EdgeHalo API Reference](/docs/api-reference/edge-halo)
 - [Personalized model example](/docs/examples/personalized-model) — Minimal settings flow.
 - [Device mesh](/docs/build/device-mesh) — Transfer artifacts between trusted user-owned devices.
 - [Architecture](/docs/guides/architecture) — Product boundaries and data ownership.
+- [Neural Imprint vs LoRA](/docs/guides/neural-imprint-vs-lora) — Deployment tradeoffs versus weight adaptation and prompt stuffing.

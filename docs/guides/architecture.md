@@ -93,3 +93,5 @@ If a gate fails, keep the base model active and show a clear recovery path: rege
 Developer documentation intentionally describes concepts, APIs, and workflows. It does not describe private model-personalization algorithms, internal training objectives, kernel implementation details, or memory-budget implementation details.
 
 Use these docs to integrate the products. Use Edge Scaffold and the API reference for concrete code paths.
+
+For the deployment tradeoffs between Neural Imprint artifact restore, LoRA/SFT, and prompt stuffing, see [Neural Imprint vs LoRA](neural-imprint-vs-lora.md).

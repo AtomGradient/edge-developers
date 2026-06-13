@@ -50,6 +50,7 @@ const sidebars: SidebarsConfig = {
         'guides/performance-tuning',
         'guides/platform-requirements',
         'guides/architecture',
+        'guides/neural-imprint-vs-lora',
         'guides/troubleshooting',
       ],
     },

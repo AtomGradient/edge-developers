@@ -154,3 +154,4 @@ base model active。
 - [个性化模型示例](/docs/examples/personalized-model) — 最小设置页流程。
 - [设备 Mesh](/docs/build/device-mesh) — 在受信任的用户自有设备之间传输 artifacts。
 - [架构](/docs/guides/architecture) — 产品边界与数据归属。
+- [Neural Imprint vs LoRA](/docs/guides/neural-imprint-vs-lora) — 与 weight adaptation 和 prompt stuffing 的部署取舍。
