@@ -62,6 +62,7 @@ const sidebars: SidebarsConfig = {
         'examples/vision-chat',
         'examples/voice-assistant',
         'examples/personalized-model',
+        'examples/artifact-reuse',
         'examples/build-and-ship',
       ],
     },

@@ -221,5 +221,6 @@ Storage 和 reset policy 留在 app layer。Edge Kit 与 Edge Halo 提供可复�
 ## 下一步
 
 - 阅读 [模型进化能力指南](/docs/build/model-evolution)。
+- 如需了解 Neural Imprint artifacts 的跨 App 兼容性检查，请阅读 [Artifact 复用](artifact-reuse.md)。
 - 当 artifacts 需要在受信任的用户自有设备间移动时，使用 [设备 Mesh](/docs/build/device-mesh)。
 - 使用 [Edge Scaffold](/docs/optimize-and-ship/scaffold) 作为参考 iOS 实现。
