@@ -88,7 +88,13 @@ edge demo reuse --run edge-run-example --apps notes,finance --json
 
 ## Phase 2 SDK Proof
 
-B 组 Python first-wow CLI 已发布。剩余 roadmap 项主要是 Phase 2 SDK proof，例如 Swift halo subcommands 与 SDK docs。
+B 组 Python first-wow CLI 已发布。Phase 2 SDK proof 现在包含 `tests/smoke_test` `edge-swift` product，可用于 Swift smoke validation、halo bridge checks、本地 package validation，以及 receipt-only restore coordinator smoke。
+
+面向开发者的 Swift CLI 文档位于：
+
+```bash
+docs/get-started/swift-cli.md
+```
 
 ## 信任边界
 
