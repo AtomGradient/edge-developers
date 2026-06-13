@@ -61,9 +61,10 @@ Generic builds and simulator checks are not enough for runtime claims. Re-run re
 - `edge demo reuse` is shipped in current preview as the B7 artifact reuse smoke. It reads a completed B4 receipt and writes per-app `edge.demo.reuse.receipt.v1` manifests without copying artifacts, syncing devices, restoring artifacts, loading models, or using the network.
 - Product-default paired-device route is not enabled by this preview documentation or changelog. Broad live routing still requires separate explicit policy, opt-in, and real-device evidence.
 - Background automation scheduler is not shipped. The bounded automation API remains explicit, dry-run by default, and fail-closed.
+- Generic capsule apply-status UI reference is shipped in Edge Scaffold and the dogfood validation app. Product-specific placement, layout, or copy remains outside the preview baseline.
 - Model push and product-default Neural Imprint regen execution remain unsupported without separate explicit policy/design. The shipped `edge demo learn run` path is an explicit local synthetic demo.
 - `edge demo reuse` is an artifact reuse smoke, not C2 cross-device sync.
-- A5.8 follow-ups remain: background scheduler and apply-status UI reference.
+- A5.8 follow-up remains: background scheduler.
 - EdgeMesh capsule auto-restore SDK orchestration is already shipped through `HaloCapsuleAutoRestoreCoordinator` in Edge Kit `1.0.0-rc94`; it is not a current limitation.
 
 ---

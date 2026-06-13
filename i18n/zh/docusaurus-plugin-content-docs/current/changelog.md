@@ -61,9 +61,10 @@ generic build 和 simulator check 不足以支撑 runtime claim。任何 preview
 - `edge demo reuse` 已在当前 preview 发布，作为 B7 artifact reuse smoke。它读取已完成的 B4 receipt，并为每个 synthetic app 写 `edge.demo.reuse.receipt.v1` manifest；不复制 artifact、不同步设备、不 restore artifact、不加载模型，也不触网。
 - 产品默认的 paired-device route 没有被这份 preview 文档或 changelog 启用。Broad live routing 仍需要单独的显式 policy、opt-in 和真机证据。
 - background automation scheduler 尚未发布。当前 bounded automation API 仍是 explicit、默认 dry-run，并且 fail-closed。
+- 通用 capsule apply-status UI reference 已在 Edge Scaffold 与 dogfood validation app 中发布；产品级 placement、layout 或 copy 不属于本次 preview baseline。
 - model push 和 product-default Neural Imprint regen execution 在没有单独显式 policy/design 前仍不支持；已发布的 `edge demo learn run` 路径是显式本地 synthetic demo。
 - `edge demo reuse` 是 artifact reuse smoke，不是 C2 跨设备同步。
-- A5.8 后续项仍包括：background scheduler、apply-status UI reference。
+- A5.8 后续项仅剩：background scheduler。
 - EdgeMesh capsule auto-restore SDK 编排已经通过 Edge Kit `1.0.0-rc94` 中的 `HaloCapsuleAutoRestoreCoordinator` 发布；它不是当前 limitation。
 
 ---
