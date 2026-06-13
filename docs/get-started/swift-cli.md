@@ -21,7 +21,7 @@ Pin Developer Preview packages exactly:
 ```swift
 // Package.swift
 dependencies: [
-    .package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc94"),
+    .package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc95"),
     .package(url: "git@github.com:AtomGradient/edge-halo.git", exact: "1.0.0-rc17")
 ]
 ```
@@ -39,7 +39,7 @@ Then add the products you need:
 )
 ```
 
-Edge Kit `1.0.0-rc94` and Edge Halo `1.0.0-rc17` both use Edge Engine `1.0.0-rc136` in this preview. Some preview package resolution paths may require AtomGradient preview access or SSH access.
+Edge Kit `1.0.0-rc95` and Edge Halo `1.0.0-rc17` both use Edge Engine `1.0.0-rc136` in this preview. Some preview package resolution paths may require AtomGradient preview access or SSH access.
 
 ## Run the EdgeStudio validation CLI
 
@@ -50,7 +50,7 @@ git clone git@github.com:AtomGradient/EdgeStudio.git
 cd EdgeStudio
 
 git clone git@github.com:AtomGradient/edge-kit.git edge-kit
-git -C edge-kit checkout 1.0.0-rc94
+git -C edge-kit checkout 1.0.0-rc95
 
 git clone git@github.com:AtomGradient/edge-halo.git edge-halo
 git -C edge-halo checkout 1.0.0-rc17
@@ -138,7 +138,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: AtomGradient/edge-kit
-          ref: 1.0.0-rc94
+          ref: 1.0.0-rc95
           path: EdgeStudio/edge-kit
 
       - name: Checkout Edge Halo

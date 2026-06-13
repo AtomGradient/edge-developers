@@ -21,7 +21,7 @@ Neural Imprint 是本地 artifact 和 restore flow。兼容的 base model 可以
 - 使用固定 preview 版本安装 Swift SDK：
 
   ```swift
-  .package(url: "git@github.com:AtomGradient/edge-kit.git", exact: "1.0.0-rc94")
+  .package(url: "git@github.com:AtomGradient/edge-kit.git", exact: "1.0.0-rc95")
   ```
 
 - 跟随 Swift quickstart：`docs/get-started/quickstart.md`
@@ -33,10 +33,10 @@ Neural Imprint 是本地 artifact 和 restore flow。兼容的 base model 可以
 
 | 组件 | 当前 preview |
 |---|---|
-| edge-kit | `1.0.0-rc94` |
+| edge-kit | `1.0.0-rc95` |
 | edge-halo | `1.0.0-rc17` |
 | edge-engine dependency tag | `1.0.0-rc136` |
-| edge-scaffold | 固定依赖 edge-kit `1.0.0-rc94` 和 edge-halo `1.0.0-rc17` |
+| edge-scaffold | 固定依赖 edge-kit `1.0.0-rc95` 和 edge-halo `1.0.0-rc17` |
 
 ## 文档开发
 

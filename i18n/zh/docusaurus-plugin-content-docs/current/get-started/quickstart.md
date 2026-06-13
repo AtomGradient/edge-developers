@@ -30,7 +30,7 @@ Edge Kit 目前处于**开发者预览**阶段。请固定你测试过的包版�
 ```swift
 // Package.swift
 dependencies: [
-    .package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc94")
+    .package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc95")
 ]
 ```
 

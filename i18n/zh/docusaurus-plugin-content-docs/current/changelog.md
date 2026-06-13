@@ -31,18 +31,18 @@ Developer Preview 是内部预览通道。更新日志会明确哪些能力已�
 
 | Surface | 当前 access | 说明 |
 |---|---|---|
-| Swift SDK docs | Edge Kit `1.0.0-rc94` | 文档使用 exact version pin。升级前必须重新验证。 |
+| Swift SDK docs | Edge Kit `1.0.0-rc95` | 文档使用 exact version pin。升级前必须重新验证。 |
 | Edge Engine dependency | Edge Engine `1.0.0-rc136` | 当前部分 preview 仓库或依赖可能需要 AtomGradient internal preview access 或 SSH access。这里是公开 surface，不把它当作当前内部 preview blocker。 |
 | Edge Halo dependency | Edge Halo `1.0.0-rc17` | Edge Halo 依赖 Edge Engine `1.0.0-rc136`；请在自己的环境里验证 package resolution。 |
-| Edge Scaffold | 固定依赖 Edge Kit `1.0.0-rc94` 与 Edge Halo `1.0.0-rc17` | 生成的 app 仍需要签名、设备 provisioning 和真机验证。 |
+| Edge Scaffold | 固定依赖 Edge Kit `1.0.0-rc95` 与 Edge Halo `1.0.0-rc17` | 生成的 app 仍需要签名、设备 provisioning 和真机验证。 |
 
 ### Compatibility matrix
 
 | Component | 兼容 preview |
 |---|---|
-| Edge Kit | `1.0.0-rc94`，依赖 Edge Engine `1.0.0-rc136` |
+| Edge Kit | `1.0.0-rc95`，依赖 Edge Engine `1.0.0-rc136` |
 | Edge Halo | `1.0.0-rc17`，依赖 Edge Engine `1.0.0-rc136` |
-| Edge Scaffold | 当前 preview 固定依赖 Edge Kit `1.0.0-rc94` 与 Edge Halo `1.0.0-rc17` |
+| Edge Scaffold | 当前 preview 固定依赖 Edge Kit `1.0.0-rc95` 与 Edge Halo `1.0.0-rc17` |
 
 generic build 和 simulator check 不足以支撑 runtime claim。任何 preview tag 变化后，都需要重新完成真机验证。
 
@@ -63,14 +63,14 @@ generic build 和 simulator check 不足以支撑 runtime claim。任何 preview
 - background automation scheduler 尚未发布。当前 bounded automation API 仍是 explicit、默认 dry-run，并且 fail-closed。
 - model push 和 product-default Neural Imprint regen execution 在没有单独显式 policy/design 前仍不支持；已发布的 `edge demo learn run` 路径是显式本地 synthetic demo。
 - `edge demo reuse` 是 artifact reuse smoke，不是 C2 跨设备同步。
-- A5.8 后续项仍包括：background scheduler、apply-status UI reference、可选 production embedded build stamp。
+- A5.8 后续项仍包括：background scheduler、apply-status UI reference。
 - EdgeMesh capsule auto-restore SDK 编排已经通过 Edge Kit `1.0.0-rc94` 中的 `HaloCapsuleAutoRestoreCoordinator` 发布；它不是当前 limitation。
 
 ---
 
 ## edge-kit
 
-### 1.0.0-rc94 (当前)
+### 1.0.0-rc95 (当前)
 
 - Edge Kit 当前开发者预览版。
 - 模块：EdgeInference、EdgeModelKit、EdgeVoice、EdgeMesh、EdgeData、EdgeUI。
@@ -78,6 +78,12 @@ generic build 和 simulator check 不足以支撑 runtime claim。任何 preview
 - 面向长上下文多轮会话的 DSR Attention。
 - 自动 KV cache 内存策略。
 - Neural Imprint runtime restore primitives 与 EdgeMesh capsule auto-restore coordinator APIs。
+- 生产 app build 可以嵌入通用 `EdgeBuildCommit` metadata，用于 snapshot traceability。
+- 依赖 Edge Engine `1.0.0-rc136`。
+
+### 1.0.0-rc94
+
+- 新增 EdgeMesh capsule auto-restore coordinator APIs。
 - 依赖 Edge Engine `1.0.0-rc136`。
 
 ## edge-halo
@@ -109,4 +115,4 @@ generic build 和 simulator check 不足以支撑 runtime claim。任何 preview
 - 从 Edge Studio 导出生成 iOS app 模板。
 - 基于 ScaffoldConfig 的自定义。
 - 四层模型分发（Cache → Bundle → ODR → HuggingFace）。
-- 固定依赖 Edge Kit `1.0.0-rc94` 与 Edge Halo `1.0.0-rc17`。
+- 固定依赖 Edge Kit `1.0.0-rc95` 与 Edge Halo `1.0.0-rc17`。

@@ -21,7 +21,7 @@ Current preview entry points:
 - Install the Swift SDK with the pinned preview package:
 
   ```swift
-  .package(url: "git@github.com:AtomGradient/edge-kit.git", exact: "1.0.0-rc94")
+  .package(url: "git@github.com:AtomGradient/edge-kit.git", exact: "1.0.0-rc95")
   ```
 
 - Follow the Swift quickstart: `docs/get-started/quickstart.md`
@@ -33,10 +33,10 @@ Current preview entry points:
 
 | Component | Current preview |
 |---|---|
-| edge-kit | `1.0.0-rc94` |
+| edge-kit | `1.0.0-rc95` |
 | edge-halo | `1.0.0-rc17` |
 | edge-engine dependency tag | `1.0.0-rc136` |
-| edge-scaffold | Pins edge-kit `1.0.0-rc94` and edge-halo `1.0.0-rc17` |
+| edge-scaffold | Pins edge-kit `1.0.0-rc95` and edge-halo `1.0.0-rc17` |
 
 ## Docs Development
 
