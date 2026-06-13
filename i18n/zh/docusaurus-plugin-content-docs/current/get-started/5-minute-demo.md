@@ -5,25 +5,43 @@ title: 5 分钟 Neural Imprint demo
 
 # 5 分钟 Neural Imprint demo
 
-:::warning Not shipped in current preview
-这是由 Developer Preview DX roadmap 的 B4 跟踪的 planned first-wow flow。完整 flow 在不带 `--dry-run` 的 `edge demo imprint run` 发布前不应视为可运行。`edge doctor`、只读的 `edge models list/where/doctor`、显式的 `edge models fetch`、B6a `edge demo receipt/local-only` 与 B4a `edge demo imprint run --dry-run` 已经发布。
+:::tip Runnable in current preview
+这个 flow 使用已经发布的 B2/B4/B6 CLI 命令。它只跑 synthetic sample，使用显式准备好的本地模型，并默认写入 hash-only local receipt。`edge demo imprint compare` 仍是 planned。
 :::
 
-本页先固定 demo contract，等 CLI 落地后再变成可运行入口。目标是用同一个兼容模型展示 base answer 与 restored Neural Imprint answer 的行为差异，同时产出 local receipt，证明发生了什么，但不保存 raw private text。
+目标是用同一个兼容模型展示 base answer 与 restored Neural Imprint answer 的行为差异，同时产出 local receipt，证明发生了什么，但不保存 raw private text。Neural Imprint 是本地 artifact 和 restore flow。恢复兼容的本地 Neural Imprint artifact 可以在 compatibility gates 下改变行为，不改模型权重。
 
-## 计划中的流程
+## Flow
 
-计划中的流程是：
+可运行 flow 是：
 
 1. 检查本地环境与 preview package access。
-2. 在 demo run 之外解析或下载受支持的本地模型。
-3. 加载 synthetic 或 redacted sample pack。
+2. 在 demo run 之外解析或显式下载受支持的本地模型。
+3. 对 synthetic sample plan 做 dry-run。
 4. 生成本地 Neural Imprint artifact。
 5. 在 compatibility gates 下恢复该 artifact。
-6. 对比 base answer 与 restored-artifact answer。
+6. 对比 base answer 与 restored-artifact answer 的 hash。
 7. 写入只包含 path、hash、schema version 与 status 的 local receipt。
 
-Neural Imprint 是本地 artifact 和 restore flow。恢复兼容的本地 Neural Imprint artifact 可以在 compatibility gates 下改变行为，不改模型权重。
+## Commands
+
+安装 preview CLI 后，在 EdgeStudio checkout 里运行：
+
+```bash
+edge doctor
+edge models list
+edge models where qwen3.5-0.8b
+edge models doctor qwen3.5-0.8b
+edge models fetch qwen3.5-0.8b --source auto
+edge demo imprint run --dry-run --sample synthetic_profile_v1 --model auto --question "Summarize this synthetic profile."
+edge demo imprint run --sample synthetic_profile_v1 --model qwen3.5-0.8b --question "Summarize this synthetic profile." --max-tokens 8 --json
+edge demo receipt --path ~/Library/Application\ Support/edgestudio/demo_runs/edge-run-example/receipt.json
+edge demo local-only --path ~/Library/Application\ Support/edgestudio/demo_runs/edge-run-example/receipt.json --json
+```
+
+`edge models fetch` 是显式命令，并且与 demo run 分离。如果 `edge models where qwen3.5-0.8b` 已经报告本地模型完整，可以跳过 fetch。demo 命令不会 silent download models。
+
+real run 会打印 `receipt_path`。后续 `edge demo receipt` 和 `edge demo local-only` 使用这个实际路径；上面的 `edge-run-example` 只是 placeholder。
 
 ## Receipt privacy contract
 
@@ -33,16 +51,17 @@ Receipt 默认必须是 local，并且默认只记录 hash：
 {
   "schema_version": "edge.demo.receipt.v1",
   "run_id": "edge-run-example",
-  "model_path": "~/Documents/mlx-community/Qwen3.5-4B-4bit",
+  "model_path": "~/Documents/mlx-community/mlx-community_Qwen3.5-0.8B-MLX-4bit",
   "model_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-  "sample_id": "synthetic_finance_v1",
+  "sample_id": "synthetic_profile_v1",
   "sample_sha256": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-  "artifact_id": "ni-example",
+  "artifact_id": "ni-edge-run-example",
   "artifact_sha256": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
   "metadata_sha256": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "prefix_tokens": 1234,
   "raw_text_included": false,
   "network_used_during_demo": false,
-  "status": "planned_contract"
+  "status": "completed"
 }
 ```
 
@@ -50,31 +69,13 @@ Receipt 默认必须是 local，并且默认只记录 hash：
 
 ## Offline 与 fail-closed 要求
 
-计划中的 demo 必须：
+demo 必须：
 
 - 将 model download 与 demo execution 分离。
 - 如果缺少必须的本地模型或 artifact，fail closed。
 - demo run 期间避免 silent network access。
 - offline mode 下禁止 non-localhost network access。
 - 在 local receipt 里记录 error status，而不是静默继续。
-
-## 计划中的命令
-
-计划中的 flow 会组合已发布的环境/模型/receipt 命令和计划中的 demo orchestration：
-
-```bash
-edge doctor
-edge models list
-edge models where qwen3.5-0.8b
-edge models doctor qwen3.5-0.8b
-edge models fetch qwen3.5-0.8b
-edge demo imprint run --dry-run --sample synthetic_profile_v1 --model auto --question "Summarize this synthetic profile."
-edge demo imprint run --sample synthetic-finance --model auto --question "Summarize this synthetic finance profile."
-edge demo receipt --path ~/Library/Application\ Support/edgestudio/demo_runs/edge-run-example/receipt.json
-edge demo local-only --path ~/Library/Application\ Support/edgestudio/demo_runs/edge-run-example/receipt.json
-```
-
-当前 preview 已发布 `edge doctor`、`edge models list/where/doctor/fetch`、`edge demo receipt`、`edge demo local-only` 与 `edge demo imprint run --dry-run`。不带 `--dry-run` 的 `edge demo imprint run` 仍等待 B4b，所以完整 first-wow flow 还不能视为可运行。
 
 ## 可接受措辞
 
