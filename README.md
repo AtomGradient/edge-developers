@@ -65,6 +65,7 @@ edge demo receipt --schema
 edge demo receipt --path ./receipt.json
 edge demo local-only --path ./receipt.json
 edge demo imprint run --dry-run --question "Summarize this synthetic profile."
+edge demo imprint run --question "Summarize this synthetic profile." --model qwen3.5-0.8b
 ```
 
 `edge doctor` is a read-only B1 environment check. It does not download models, load models, start the backend, or run Neural Imprint workflows.
@@ -72,6 +73,7 @@ edge demo imprint run --dry-run --question "Summarize this synthetic profile."
 `edge models fetch` is an explicit B2b model preparation command. It is never run silently by demo commands; it writes a local `edge.models.fetch.receipt.v1` receipt for real fetches.
 `edge demo receipt` and `edge demo local-only` are B6a receipt inspection commands. They validate `edge.demo.receipt.v1` local-only invariants without generating Neural Imprint artifacts or calling model runtimes.
 `edge demo imprint run --dry-run` is a B4a pre-flight planner. It emits `edge.demo.imprint.plan.v1` with hashes and local prerequisite status only; it does not generate artifacts, restore Neural Imprint, or write a demo receipt.
+`edge demo imprint run` (without `--dry-run`) is the B4b real Neural Imprint demo. It loads a local model, captures a Neural Imprint artifact from a synthetic sample, compares base vs personalized answer hashes, and writes an `edge.demo.receipt.v1` local-only receipt.
 
 ## Planned Demo CLI
 
@@ -79,7 +81,6 @@ edge demo imprint run --dry-run --question "Summarize this synthetic profile."
 
 Planned preview commands include:
 
-- `edge demo imprint run` (without `--dry-run`) for the B4b real Neural Imprint demo; currently blocked pending real-model smoke.
 - `edge demo imprint compare` for before/after inspection from a completed demo run.
 
 ## Trust Boundaries
