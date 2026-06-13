@@ -70,6 +70,7 @@ edge demo imprint run --question "Summarize this synthetic profile." --model qwe
 edge demo imprint compare --path ./receipt.json
 edge demo learn run --dry-run --sample synthetic_profile_correction_v1 --model auto
 edge demo learn run --sample synthetic_profile_correction_v1 --model qwen3.5-0.8b --max-tokens 8
+edge demo reuse --run edge-run-example --apps notes,finance --json
 ```
 
 `edge doctor` 是只读的 B1 环境检查。它不会下载模型、加载模型、启动 backend，也不会运行 Neural Imprint workflows。
@@ -82,18 +83,15 @@ edge demo learn run --sample synthetic_profile_correction_v1 --model qwen3.5-0.8
 `edge demo imprint compare` 是 B4 receipt-only 检查命令。它读取已完成的 `edge.demo.receipt.v1` receipt 并输出 `edge.demo.imprint.compare.v1`；不加载模型、不 restore artifact、不生成 answer，也不触网。
 `edge demo learn run --dry-run` 是 B5a correction-learning pre-flight planner。它输出只含 hash-only synthetic correction metadata 和 isolated-state paths 的 `edge.demo.learn.plan.v1`；不写 correction ledger、不调用 regen、不加载模型，也不写 learn receipt。
 `edge demo learn run`（不带 `--dry-run`）是 B5b 真实 isolated correction-learning demo。它只在 demo run state 下写 synthetic Persona/RPP input 与 correction ledger，触发 correction regen，恢复重新生成的本地 Neural Imprint artifact，对比 before/after answer hash，并写 `edge.demo.learn.receipt.v1`。
+`edge demo reuse` 是 B7 artifact reuse smoke。它读取已完成的本地 B4 receipt，并在 demo run 下为每个 synthetic app 写 `edge.demo.reuse.receipt.v1` manifest；不复制 artifact、不同步设备、不 restore artifact、不加载模型，也不触网。
 
-## 计划中的 Demo CLI
+## Phase 2 SDK Proof
 
-> Not shipped in current preview。这些命令由 Developer Preview DX roadmap 跟踪。
-
-计划中的 preview 命令包括：
-
-- `edge demo reuse --apps notes,finance`：用于跨 App artifact reuse smoke。
+B 组 Python first-wow CLI 已发布。剩余 roadmap 项主要是 Phase 2 SDK proof，例如 Swift halo subcommands 与 SDK docs。
 
 ## 信任边界
 
 - 用户数据与 Neural Imprint artifacts 默认留在本地，只有在用户显式启用时才传到受信任的自有设备。
 - README 与文档不在缺少评估证据时声称质量变好。
 - Edge Scaffold 是开发者参考 app，不承载 dogfood 业务逻辑。
-- Demo CLI 命令在实现和测试落地前必须标注为 planned。
+- Roadmap 项在实现和测试落地前必须标注为 planned。

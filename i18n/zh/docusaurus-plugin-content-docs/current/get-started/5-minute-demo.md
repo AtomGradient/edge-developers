@@ -6,7 +6,7 @@ title: 5 分钟 Neural Imprint demo
 # 5 分钟 Neural Imprint demo
 
 :::tip Runnable in current preview
-这个 flow 使用已经发布的 B2/B4/B6 CLI 命令。它只跑 synthetic sample，使用显式准备好的本地模型，并默认写入 hash-only local receipt。
+这个 flow 使用已经发布的 B2/B4/B6/B7 CLI 命令。它只跑 synthetic sample，使用显式准备好的本地模型，并默认写入 hash-only local receipts/manifests。
 :::
 
 目标是用同一个兼容模型展示 base answer 与 restored Neural Imprint answer 的行为差异，同时产出 local receipt，证明发生了什么，但不保存 raw private text。Neural Imprint 是本地 artifact 和 restore flow。恢复兼容的本地 Neural Imprint artifact 可以在 compatibility gates 下改变行为，不改模型权重。
@@ -23,6 +23,7 @@ title: 5 分钟 Neural Imprint demo
 6. 对比 base answer 与 restored-artifact answer 的 hash。
 7. 从 local receipt 检查已完成 run，不加载模型。
 8. 写入并验证只包含 path、hash、schema version 与 status 的 local receipt。
+9. 可选：写入 per-app reuse manifests，作为 artifact reuse smoke；它不是跨设备同步。
 
 ## Commands
 
@@ -39,11 +40,14 @@ edge demo imprint run --sample synthetic_profile_v1 --model qwen3.5-0.8b --quest
 edge demo imprint compare --path ~/Library/Application\ Support/edgestudio/demo_runs/edge-run-example/receipt.json --json
 edge demo receipt --path ~/Library/Application\ Support/edgestudio/demo_runs/edge-run-example/receipt.json
 edge demo local-only --path ~/Library/Application\ Support/edgestudio/demo_runs/edge-run-example/receipt.json --json
+edge demo reuse --run edge-run-example --apps notes,finance --json
 ```
 
 `edge models fetch` 是显式命令，并且与 demo run 分离。如果 `edge models where qwen3.5-0.8b` 已经报告本地模型完整，可以跳过 fetch。demo 命令不会 silent download models。
 
 real run 会打印 `receipt_path`。后续 `edge demo imprint compare`、`edge demo receipt` 和 `edge demo local-only` 使用这个实际路径；上面的 `edge-run-example` 只是 placeholder。compare 命令只读取 receipt：不加载模型、不 restore artifact、不生成 answer，也不触网。
+
+`edge demo reuse` 读取已完成的 B4 receipt，并在同一个 demo run 下写入 per-app reuse manifests。它只是 artifact reuse smoke：不复制 artifact、不同步设备、不 restore artifact、不加载模型，也不触网。
 
 ## Receipt privacy contract
 

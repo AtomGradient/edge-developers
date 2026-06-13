@@ -6,7 +6,7 @@ title: 5-minute Neural Imprint demo
 # 5-minute Neural Imprint demo
 
 :::tip Runnable in current preview
-This flow uses shipped B2/B4/B6 CLI commands. It runs on a synthetic sample, uses an explicitly prepared local model, and writes a hash-only local receipt by default.
+This flow uses shipped B2/B4/B6/B7 CLI commands. It runs on a synthetic sample, uses an explicitly prepared local model, and writes hash-only local receipts/manifests by default.
 :::
 
 The goal is to show a base answer and a restored Neural Imprint answer from the same compatible model, with local receipts that prove what happened without storing raw private text. Neural Imprint is a local artifact and restore flow. Restoring a compatible local Neural Imprint artifact can change behavior under compatibility gates without changing model weights.
@@ -23,6 +23,7 @@ The runnable flow is:
 6. Compare base and restored-artifact answer hashes.
 7. Inspect the completed run from the local receipt without loading a model.
 8. Write and validate a local receipt with paths, hashes, schema versions, and status.
+9. Optionally write per-app reuse manifests as an artifact reuse smoke, not cross-device sync.
 
 ## Commands
 
@@ -39,11 +40,14 @@ edge demo imprint run --sample synthetic_profile_v1 --model qwen3.5-0.8b --quest
 edge demo imprint compare --path ~/Library/Application\ Support/edgestudio/demo_runs/edge-run-example/receipt.json --json
 edge demo receipt --path ~/Library/Application\ Support/edgestudio/demo_runs/edge-run-example/receipt.json
 edge demo local-only --path ~/Library/Application\ Support/edgestudio/demo_runs/edge-run-example/receipt.json --json
+edge demo reuse --run edge-run-example --apps notes,finance --json
 ```
 
 `edge models fetch` is explicit and separate from the demo run. If `edge models where qwen3.5-0.8b` already reports a complete local model, you can skip the fetch command. The demo command does not silently download models.
 
 The real run prints a `receipt_path`. Use that path for `edge demo imprint compare`, `edge demo receipt`, and `edge demo local-only`; `edge-run-example` above is only a placeholder. The compare command reads the receipt only: it does not load a model, restore an artifact, generate answers, or use the network.
+
+`edge demo reuse` reads the completed B4 receipt and writes per-app reuse manifests under the same demo run. It is an artifact reuse smoke only: it does not copy artifacts, sync devices, restore artifacts, load models, or use the network.
 
 ## Receipt privacy contract
 

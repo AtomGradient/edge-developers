@@ -58,10 +58,11 @@ generic build 和 simulator check 不足以支撑 runtime claim。任何 preview
 - `edge demo imprint compare` 已在当前 preview 发布，作为 B4 receipt-only 对比检查命令。它读取已完成的 `edge.demo.receipt.v1` receipt 并输出 `edge.demo.imprint.compare.v1`，不加载模型、不 restore artifact、不生成 answer，也不触网。
 - `edge demo learn run --dry-run` 已在当前 preview 发布，作为 B5a correction-learning pre-flight planner。它输出只含 hash-only synthetic correction metadata 和 isolated-state paths 的 `edge.demo.learn.plan.v1`；不写 correction ledger、不调用 regen、不加载模型，也不写 learn receipt。
 - 不带 `--dry-run` 的 `edge demo learn run` 已在当前 preview 发布，作为 B5b 真实 isolated correction-learning demo。它只在 demo run state 下写 synthetic Persona/RPP input 与 correction ledger，触发 correction regen，恢复重新生成的本地 Neural Imprint artifact，对比 before/after answer hash，并写 `edge.demo.learn.receipt.v1`。
+- `edge demo reuse` 已在当前 preview 发布，作为 B7 artifact reuse smoke。它读取已完成的 B4 receipt，并为每个 synthetic app 写 `edge.demo.reuse.receipt.v1` manifest；不复制 artifact、不同步设备、不 restore artifact、不加载模型，也不触网。
 - 产品默认的 paired-device route 没有被这份 preview 文档或 changelog 启用。Broad live routing 仍需要单独的显式 policy、opt-in 和真机证据。
 - background automation scheduler 尚未发布。当前 bounded automation API 仍是 explicit、默认 dry-run，并且 fail-closed。
 - model push 和 product-default Neural Imprint regen execution 在没有单独显式 policy/design 前仍不支持；已发布的 `edge demo learn run` 路径是显式本地 synthetic demo。
-- `edge demo reuse` 仍是 planned artifact reuse smoke，不是 C2 跨设备同步。
+- `edge demo reuse` 是 artifact reuse smoke，不是 C2 跨设备同步。
 - A5.8 后续项仍包括：background scheduler、apply-status UI reference、可选 production embedded build stamp。
 - EdgeMesh capsule auto-restore SDK 编排已经通过 Edge Kit `1.0.0-rc94` 中的 `HaloCapsuleAutoRestoreCoordinator` 发布；它不是当前 limitation。
 

@@ -70,6 +70,7 @@ edge demo imprint run --question "Summarize this synthetic profile." --model qwe
 edge demo imprint compare --path ./receipt.json
 edge demo learn run --dry-run --sample synthetic_profile_correction_v1 --model auto
 edge demo learn run --sample synthetic_profile_correction_v1 --model qwen3.5-0.8b --max-tokens 8
+edge demo reuse --run edge-run-example --apps notes,finance --json
 ```
 
 `edge doctor` is a read-only B1 environment check. It does not download models, load models, start the backend, or run Neural Imprint workflows.
@@ -82,18 +83,15 @@ edge demo learn run --sample synthetic_profile_correction_v1 --model qwen3.5-0.8
 `edge demo imprint compare` is a B4 receipt-only inspection command. It reads an existing completed `edge.demo.receipt.v1` receipt and emits `edge.demo.imprint.compare.v1`; it does not load models, restore artifacts, generate answers, or use the network.
 `edge demo learn run --dry-run` is a B5a correction-learning pre-flight planner. It emits `edge.demo.learn.plan.v1` with hash-only synthetic correction metadata and isolated-state paths; it does not write correction ledgers, call regen, load models, or write a learn receipt.
 `edge demo learn run` (without `--dry-run`) is the B5b real isolated correction-learning demo. It writes synthetic Persona/RPP input and correction ledger entries under the demo run state, triggers correction regen, restores the regenerated local Neural Imprint artifact, compares before/after answer hashes, and writes `edge.demo.learn.receipt.v1`.
+`edge demo reuse` is a B7 artifact reuse smoke. It reads a completed local B4 receipt and writes per-app `edge.demo.reuse.receipt.v1` manifests under the demo run; it does not copy artifacts, sync devices, restore artifacts, load models, or use the network.
 
-## Planned Demo CLI
+## Phase 2 SDK Proof
 
-> Not shipped in current preview. These commands are tracked by the Developer Preview DX roadmap.
-
-Planned preview commands include:
-
-- `edge demo reuse --apps notes,finance` for cross-App artifact reuse smoke.
+The B-group Python first-wow CLI is shipped. Remaining roadmap items are Phase 2 SDK proof work such as Swift halo subcommands and SDK docs.
 
 ## Trust Boundaries
 
 - User data and Neural Imprint artifacts stay local unless the user explicitly moves them to trusted user-owned devices.
 - README and docs avoid unevaluated quality-improvement claims.
 - Edge Scaffold is a developer reference app, not dogfood business logic.
-- Demo CLI commands are labeled as planned until their implementation and tests land.
+- Roadmap items are labeled as planned until their implementation and tests land.
