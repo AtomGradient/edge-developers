@@ -6,7 +6,7 @@ title: 5-minute Neural Imprint demo
 # 5-minute Neural Imprint demo
 
 :::tip Runnable in current preview
-This flow uses shipped B2/B4/B6 CLI commands. It runs on a synthetic sample, uses an explicitly prepared local model, and writes a hash-only local receipt by default. `edge demo imprint compare` is still planned.
+This flow uses shipped B2/B4/B6 CLI commands. It runs on a synthetic sample, uses an explicitly prepared local model, and writes a hash-only local receipt by default.
 :::
 
 The goal is to show a base answer and a restored Neural Imprint answer from the same compatible model, with local receipts that prove what happened without storing raw private text. Neural Imprint is a local artifact and restore flow. Restoring a compatible local Neural Imprint artifact can change behavior under compatibility gates without changing model weights.
@@ -21,7 +21,8 @@ The runnable flow is:
 4. Generate a local Neural Imprint artifact from the synthetic sample.
 5. Restore that artifact under compatibility gates.
 6. Compare base and restored-artifact answer hashes.
-7. Write and validate a local receipt with paths, hashes, schema versions, and status.
+7. Inspect the completed run from the local receipt without loading a model.
+8. Write and validate a local receipt with paths, hashes, schema versions, and status.
 
 ## Commands
 
@@ -35,13 +36,14 @@ edge models doctor qwen3.5-0.8b
 edge models fetch qwen3.5-0.8b --source auto
 edge demo imprint run --dry-run --sample synthetic_profile_v1 --model auto --question "Summarize this synthetic profile."
 edge demo imprint run --sample synthetic_profile_v1 --model qwen3.5-0.8b --question "Summarize this synthetic profile." --max-tokens 8 --json
+edge demo imprint compare --path ~/Library/Application\ Support/edgestudio/demo_runs/edge-run-example/receipt.json --json
 edge demo receipt --path ~/Library/Application\ Support/edgestudio/demo_runs/edge-run-example/receipt.json
 edge demo local-only --path ~/Library/Application\ Support/edgestudio/demo_runs/edge-run-example/receipt.json --json
 ```
 
 `edge models fetch` is explicit and separate from the demo run. If `edge models where qwen3.5-0.8b` already reports a complete local model, you can skip the fetch command. The demo command does not silently download models.
 
-The real run prints a `receipt_path`. Use that path for `edge demo receipt` and `edge demo local-only`; `edge-run-example` above is only a placeholder.
+The real run prints a `receipt_path`. Use that path for `edge demo imprint compare`, `edge demo receipt`, and `edge demo local-only`; `edge-run-example` above is only a placeholder. The compare command reads the receipt only: it does not load a model, restore an artifact, generate answers, or use the network.
 
 ## Receipt privacy contract
 
@@ -56,9 +58,16 @@ Receipts must be local by default and hash-only by default:
   "sample_id": "synthetic_profile_v1",
   "sample_sha256": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
   "artifact_id": "ni-edge-run-example",
+  "artifact_path": "~/Library/Application Support/edgestudio/demo_runs/edge-run-example/persona_kv.safetensors",
+  "metadata_path": "~/Library/Application Support/edgestudio/demo_runs/edge-run-example/persona_kv_metadata.json",
   "artifact_sha256": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
   "metadata_sha256": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
   "prefix_tokens": 1234,
+  "base_answer_sha256": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+  "base_answer_tokens": 8,
+  "personalized_answer_sha256": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  "personalized_answer_tokens": 8,
+  "answers_differ": true,
   "raw_text_included": false,
   "network_used_during_demo": false,
   "status": "completed"

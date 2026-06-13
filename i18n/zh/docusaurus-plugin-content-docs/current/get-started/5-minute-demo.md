@@ -6,7 +6,7 @@ title: 5 分钟 Neural Imprint demo
 # 5 分钟 Neural Imprint demo
 
 :::tip Runnable in current preview
-这个 flow 使用已经发布的 B2/B4/B6 CLI 命令。它只跑 synthetic sample，使用显式准备好的本地模型，并默认写入 hash-only local receipt。`edge demo imprint compare` 仍是 planned。
+这个 flow 使用已经发布的 B2/B4/B6 CLI 命令。它只跑 synthetic sample，使用显式准备好的本地模型，并默认写入 hash-only local receipt。
 :::
 
 目标是用同一个兼容模型展示 base answer 与 restored Neural Imprint answer 的行为差异，同时产出 local receipt，证明发生了什么，但不保存 raw private text。Neural Imprint 是本地 artifact 和 restore flow。恢复兼容的本地 Neural Imprint artifact 可以在 compatibility gates 下改变行为，不改模型权重。
@@ -21,7 +21,8 @@ title: 5 分钟 Neural Imprint demo
 4. 生成本地 Neural Imprint artifact。
 5. 在 compatibility gates 下恢复该 artifact。
 6. 对比 base answer 与 restored-artifact answer 的 hash。
-7. 写入只包含 path、hash、schema version 与 status 的 local receipt。
+7. 从 local receipt 检查已完成 run，不加载模型。
+8. 写入并验证只包含 path、hash、schema version 与 status 的 local receipt。
 
 ## Commands
 
@@ -35,13 +36,14 @@ edge models doctor qwen3.5-0.8b
 edge models fetch qwen3.5-0.8b --source auto
 edge demo imprint run --dry-run --sample synthetic_profile_v1 --model auto --question "Summarize this synthetic profile."
 edge demo imprint run --sample synthetic_profile_v1 --model qwen3.5-0.8b --question "Summarize this synthetic profile." --max-tokens 8 --json
+edge demo imprint compare --path ~/Library/Application\ Support/edgestudio/demo_runs/edge-run-example/receipt.json --json
 edge demo receipt --path ~/Library/Application\ Support/edgestudio/demo_runs/edge-run-example/receipt.json
 edge demo local-only --path ~/Library/Application\ Support/edgestudio/demo_runs/edge-run-example/receipt.json --json
 ```
 
 `edge models fetch` 是显式命令，并且与 demo run 分离。如果 `edge models where qwen3.5-0.8b` 已经报告本地模型完整，可以跳过 fetch。demo 命令不会 silent download models。
 
-real run 会打印 `receipt_path`。后续 `edge demo receipt` 和 `edge demo local-only` 使用这个实际路径；上面的 `edge-run-example` 只是 placeholder。
+real run 会打印 `receipt_path`。后续 `edge demo imprint compare`、`edge demo receipt` 和 `edge demo local-only` 使用这个实际路径；上面的 `edge-run-example` 只是 placeholder。compare 命令只读取 receipt：不加载模型、不 restore artifact、不生成 answer，也不触网。
 
 ## Receipt privacy contract
 
@@ -56,9 +58,16 @@ Receipt 默认必须是 local，并且默认只记录 hash：
   "sample_id": "synthetic_profile_v1",
   "sample_sha256": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
   "artifact_id": "ni-edge-run-example",
+  "artifact_path": "~/Library/Application Support/edgestudio/demo_runs/edge-run-example/persona_kv.safetensors",
+  "metadata_path": "~/Library/Application Support/edgestudio/demo_runs/edge-run-example/persona_kv_metadata.json",
   "artifact_sha256": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
   "metadata_sha256": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
   "prefix_tokens": 1234,
+  "base_answer_sha256": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+  "base_answer_tokens": 8,
+  "personalized_answer_sha256": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  "personalized_answer_tokens": 8,
+  "answers_differ": true,
   "raw_text_included": false,
   "network_used_during_demo": false,
   "status": "completed"

@@ -67,6 +67,7 @@ edge demo receipt --path ./receipt.json
 edge demo local-only --path ./receipt.json
 edge demo imprint run --dry-run --question "Summarize this synthetic profile."
 edge demo imprint run --question "Summarize this synthetic profile." --model qwen3.5-0.8b
+edge demo imprint compare --path ./receipt.json
 edge demo learn run --dry-run --sample synthetic_profile_correction_v1 --model auto
 edge demo learn run --sample synthetic_profile_correction_v1 --model qwen3.5-0.8b --max-tokens 8
 ```
@@ -78,6 +79,7 @@ edge demo learn run --sample synthetic_profile_correction_v1 --model qwen3.5-0.8
 `edge demo receipt` and `edge demo local-only` are B6a receipt inspection commands. They validate `edge.demo.receipt.v1` local-only invariants without generating Neural Imprint artifacts or calling model runtimes.
 `edge demo imprint run --dry-run` is a B4a pre-flight planner. It emits `edge.demo.imprint.plan.v1` with hashes and local prerequisite status only; it does not generate artifacts, restore Neural Imprint, or write a demo receipt.
 `edge demo imprint run` (without `--dry-run`) is the B4b real Neural Imprint demo. It loads a local model, captures a Neural Imprint artifact from a synthetic sample, compares base vs personalized answer hashes, and writes an `edge.demo.receipt.v1` local-only receipt.
+`edge demo imprint compare` is a B4 receipt-only inspection command. It reads an existing completed `edge.demo.receipt.v1` receipt and emits `edge.demo.imprint.compare.v1`; it does not load models, restore artifacts, generate answers, or use the network.
 `edge demo learn run --dry-run` is a B5a correction-learning pre-flight planner. It emits `edge.demo.learn.plan.v1` with hash-only synthetic correction metadata and isolated-state paths; it does not write correction ledgers, call regen, load models, or write a learn receipt.
 `edge demo learn run` (without `--dry-run`) is the B5b real isolated correction-learning demo. It writes synthetic Persona/RPP input and correction ledger entries under the demo run state, triggers correction regen, restores the regenerated local Neural Imprint artifact, compares before/after answer hashes, and writes `edge.demo.learn.receipt.v1`.
 
@@ -87,7 +89,7 @@ edge demo learn run --sample synthetic_profile_correction_v1 --model qwen3.5-0.8
 
 Planned preview commands include:
 
-- `edge demo imprint compare` for before/after inspection from a completed demo run.
+- `edge demo reuse --apps notes,finance` for cross-App artifact reuse smoke.
 
 ## Trust Boundaries
 

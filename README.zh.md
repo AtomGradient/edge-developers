@@ -67,6 +67,7 @@ edge demo receipt --path ./receipt.json
 edge demo local-only --path ./receipt.json
 edge demo imprint run --dry-run --question "Summarize this synthetic profile."
 edge demo imprint run --question "Summarize this synthetic profile." --model qwen3.5-0.8b
+edge demo imprint compare --path ./receipt.json
 edge demo learn run --dry-run --sample synthetic_profile_correction_v1 --model auto
 edge demo learn run --sample synthetic_profile_correction_v1 --model qwen3.5-0.8b --max-tokens 8
 ```
@@ -78,6 +79,7 @@ edge demo learn run --sample synthetic_profile_correction_v1 --model qwen3.5-0.8
 `edge demo receipt` 与 `edge demo local-only` 是 B6a receipt 检查命令。它们只验证 `edge.demo.receipt.v1` 的 local-only invariants，不生成 Neural Imprint artifact，也不调用模型 runtime。
 `edge demo imprint run --dry-run` 是 B4a pre-flight planner。它只输出包含 hash 和本地前置条件状态的 `edge.demo.imprint.plan.v1`，不生成 artifact、不 restore Neural Imprint，也不写 demo receipt。
 `edge demo imprint run`（不带 `--dry-run`）是 B4b 真实 Neural Imprint demo。它加载本地模型，从合成样本 capture Neural Imprint artifact，对比 base vs personalized answer hash，并写 `edge.demo.receipt.v1` local-only receipt。
+`edge demo imprint compare` 是 B4 receipt-only 检查命令。它读取已完成的 `edge.demo.receipt.v1` receipt 并输出 `edge.demo.imprint.compare.v1`；不加载模型、不 restore artifact、不生成 answer，也不触网。
 `edge demo learn run --dry-run` 是 B5a correction-learning pre-flight planner。它输出只含 hash-only synthetic correction metadata 和 isolated-state paths 的 `edge.demo.learn.plan.v1`；不写 correction ledger、不调用 regen、不加载模型，也不写 learn receipt。
 `edge demo learn run`（不带 `--dry-run`）是 B5b 真实 isolated correction-learning demo。它只在 demo run state 下写 synthetic Persona/RPP input 与 correction ledger，触发 correction regen，恢复重新生成的本地 Neural Imprint artifact，对比 before/after answer hash，并写 `edge.demo.learn.receipt.v1`。
 
@@ -87,7 +89,7 @@ edge demo learn run --sample synthetic_profile_correction_v1 --model qwen3.5-0.8
 
 计划中的 preview 命令包括：
 
-- `edge demo imprint compare`：用于检查已完成 demo run 的 before/after 输出。
+- `edge demo reuse --apps notes,finance`：用于跨 App artifact reuse smoke。
 
 ## 信任边界
 
