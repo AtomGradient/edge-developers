@@ -55,11 +55,11 @@ Generic builds and simulator checks are not enough for runtime claims. Re-run re
 - `edge demo receipt` and `edge demo local-only` are shipped in current preview as B6a receipt inspection tools. They validate `edge.demo.receipt.v1` local-only invariants and do not generate Neural Imprint artifacts or call model runtimes.
 - `edge demo imprint run --dry-run` is shipped in current preview as a B4a pre-flight planner. It emits `edge.demo.imprint.plan.v1` with hash-only sample/question metadata and local model prerequisite status.
 - `edge demo imprint run` without `--dry-run` is shipped in current preview as the B4b real Neural Imprint demo. `edge demo imprint compare` is still planned.
-- `edge demo learn run --dry-run` is shipped in current preview as a B5a correction-learning pre-flight planner. It emits `edge.demo.learn.plan.v1` with hash-only synthetic correction metadata, isolated-state paths, and B5b prerequisites; it does not write correction ledgers, call regen, load models, or write a learn receipt.
-- `edge demo learn run` without `--dry-run` is still planned for isolated correction -> regen -> before/after receipt.
+- `edge demo learn run --dry-run` is shipped in current preview as a B5a correction-learning pre-flight planner. It emits `edge.demo.learn.plan.v1` with hash-only synthetic correction metadata and isolated-state paths; it does not write correction ledgers, call regen, load models, or write a learn receipt.
+- `edge demo learn run` without `--dry-run` is shipped in current preview as the B5b real isolated correction-learning demo. It writes synthetic Persona/RPP input and correction ledger entries under the demo run state, triggers correction regen, restores the regenerated local Neural Imprint artifact, compares before/after answer hashes, and writes `edge.demo.learn.receipt.v1`.
 - Product-default paired-device route is not enabled by this preview documentation or changelog. Broad live routing still requires separate explicit policy, opt-in, and real-device evidence.
 - Background automation scheduler is not shipped. The bounded automation API remains explicit, dry-run by default, and fail-closed.
-- Model push and Neural Imprint regen execution remain unsupported without separate explicit policy/design.
+- Model push and product-default Neural Imprint regen execution remain unsupported without separate explicit policy/design. The shipped `edge demo learn run` path is an explicit local synthetic demo.
 - `edge demo reuse` is an artifact reuse smoke, not C2 cross-device sync.
 - A5.8 follow-ups remain: background scheduler, apply-status UI reference, and optional production embedded build stamp.
 - EdgeMesh capsule auto-restore SDK orchestration is already shipped through `HaloCapsuleAutoRestoreCoordinator` in Edge Kit `1.0.0-rc94`; it is not a current limitation.

@@ -68,6 +68,7 @@ edge demo local-only --path ./receipt.json
 edge demo imprint run --dry-run --question "Summarize this synthetic profile."
 edge demo imprint run --question "Summarize this synthetic profile." --model qwen3.5-0.8b
 edge demo learn run --dry-run --sample synthetic_profile_correction_v1 --model auto
+edge demo learn run --sample synthetic_profile_correction_v1 --model qwen3.5-0.8b --max-tokens 8
 ```
 
 `edge doctor` is a read-only B1 environment check. It does not download models, load models, start the backend, or run Neural Imprint workflows.
@@ -78,6 +79,7 @@ edge demo learn run --dry-run --sample synthetic_profile_correction_v1 --model a
 `edge demo imprint run --dry-run` is a B4a pre-flight planner. It emits `edge.demo.imprint.plan.v1` with hashes and local prerequisite status only; it does not generate artifacts, restore Neural Imprint, or write a demo receipt.
 `edge demo imprint run` (without `--dry-run`) is the B4b real Neural Imprint demo. It loads a local model, captures a Neural Imprint artifact from a synthetic sample, compares base vs personalized answer hashes, and writes an `edge.demo.receipt.v1` local-only receipt.
 `edge demo learn run --dry-run` is a B5a correction-learning pre-flight planner. It emits `edge.demo.learn.plan.v1` with hash-only synthetic correction metadata and isolated-state paths; it does not write correction ledgers, call regen, load models, or write a learn receipt.
+`edge demo learn run` (without `--dry-run`) is the B5b real isolated correction-learning demo. It writes synthetic Persona/RPP input and correction ledger entries under the demo run state, triggers correction regen, restores the regenerated local Neural Imprint artifact, compares before/after answer hashes, and writes `edge.demo.learn.receipt.v1`.
 
 ## Planned Demo CLI
 
@@ -86,7 +88,6 @@ edge demo learn run --dry-run --sample synthetic_profile_correction_v1 --model a
 Planned preview commands include:
 
 - `edge demo imprint compare` for before/after inspection from a completed demo run.
-- `edge demo learn run` without `--dry-run` for isolated correction -> regen -> before/after receipt.
 
 ## Trust Boundaries
 
