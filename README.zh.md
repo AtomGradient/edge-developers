@@ -61,6 +61,7 @@ edge models where qwen3.5-0.8b
 edge models doctor qwen3.5-0.8b
 edge models fetch qwen3.5-0.8b --dry-run
 edge models fetch qwen3.5-0.8b --source auto
+edge demo chat --model qwen3.5-0.8b --prompt "What is edge AI?" --max-tokens 32
 edge demo receipt --schema
 edge demo receipt --path ./receipt.json
 edge demo local-only --path ./receipt.json
@@ -71,6 +72,7 @@ edge demo imprint run --question "Summarize this synthetic profile." --model qwe
 `edge doctor` 是只读的 B1 环境检查。它不会下载模型、加载模型、启动 backend，也不会运行 Neural Imprint workflows。
 `edge models list`、`edge models where` 与 `edge models doctor` 是只读的 B2a 模型就绪检查。它们只解析 catalog entry 和本地模型路径，不下载模型、不写 receipt，也不做网络 probe。
 `edge models fetch` 是显式的 B2b 模型准备命令。demo 命令不会 silent 触发它；真实 fetch 会写本地 `edge.models.fetch.receipt.v1` receipt。
+`edge demo chat` 是 B3 base-model sanity check。它加载显式准备好的本地模型，生成一个本地 answer，并默认写 hash-only `edge.demo.chat.receipt.v1` receipt。
 `edge demo receipt` 与 `edge demo local-only` 是 B6a receipt 检查命令。它们只验证 `edge.demo.receipt.v1` 的 local-only invariants，不生成 Neural Imprint artifact，也不调用模型 runtime。
 `edge demo imprint run --dry-run` 是 B4a pre-flight planner。它只输出包含 hash 和本地前置条件状态的 `edge.demo.imprint.plan.v1`，不生成 artifact、不 restore Neural Imprint，也不写 demo receipt。
 `edge demo imprint run`（不带 `--dry-run`）是 B4b 真实 Neural Imprint demo。它加载本地模型，从合成样本 capture Neural Imprint artifact，对比 base vs personalized answer hash，并写 `edge.demo.receipt.v1` local-only receipt。
