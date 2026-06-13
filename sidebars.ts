@@ -11,6 +11,7 @@ const sidebars: SidebarsConfig = {
         'get-started/quickstart',
         'get-started/minute-demo',
         'get-started/installation',
+        'get-started/swift-cli',
       ],
     },
     {

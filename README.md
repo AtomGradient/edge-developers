@@ -25,6 +25,7 @@ Current preview entry points:
   ```
 
 - Follow the Swift quickstart: `docs/get-started/quickstart.md`
+- Validate the Swift SDK path with EdgeStudio's CLI: `docs/get-started/swift-cli.md`
 - Review model evolution and Neural Imprint lifecycle: `docs/build/model-evolution.md`
 - Generate a reference app from Edge Studio with Edge Scaffold: `docs/optimize-and-ship/scaffold.md`
 

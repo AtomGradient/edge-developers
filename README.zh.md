@@ -25,6 +25,7 @@ Neural Imprint 是本地 artifact 和 restore flow。兼容的 base model 可以
   ```
 
 - 跟随 Swift quickstart：`docs/get-started/quickstart.md`
+- 用 EdgeStudio CLI 验证 Swift SDK 路径：`docs/get-started/swift-cli.md`
 - 查看模型进化与 Neural Imprint 生命周期：`docs/build/model-evolution.md`
 - 用 Edge Studio + Edge Scaffold 生成参考 app：`docs/optimize-and-ship/scaffold.md`
 
