@@ -46,10 +46,14 @@ Web UI 设置见 [从源码安装 Edge Studio](/docs/get-started/source-build)�
 preview demo 使用 `qwen3.5-9b-4bit` 作为基准模型：
 
 ```bash
+edge models list --json
+```
+
+```bash
 edge models fetch qwen3.5-9b-4bit --source auto
 ```
 
-这个命令是显式下载。如果模型已经存在，下载器可以复用本地 match，并报告 cached path。
+这个命令是显式下载。demo 不会 silent download models。如果模型已经存在，下载器可以复用本地 match，并报告 cached path。
 
 检查模型是否就绪：
 
@@ -135,6 +139,22 @@ receipt 会把同样的 comparison fields 作为顶层 receipt 字段保存。
 edge demo receipt --path <receipt_path>
 edge demo local-only --path <receipt_path> --json
 ```
+
+也可以直接检查更底层的 Neural Imprint sample 和 comparison 路径：
+
+```bash
+edge demo imprint run --dry-run --sample synthetic_profile_v1 --model qwen3.5-9b-4bit --json
+edge demo imprint run --sample synthetic_profile_v1 --model qwen3.5-9b-4bit --json
+edge demo imprint compare --path <receipt_path> --json
+```
+
+artifact reuse smoke 是 local、manifest-only：
+
+```bash
+edge demo reuse --run <run_id> --json
+```
+
+它不复制 artifact，也不是跨设备同步。
 
 ### Advanced shortcut
 

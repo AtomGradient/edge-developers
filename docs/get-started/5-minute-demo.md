@@ -46,10 +46,14 @@ Run these commands from the `edge-studio` checkout:
 Use `qwen3.5-9b-4bit` as the preview baseline:
 
 ```bash
+edge models list --json
+```
+
+```bash
 edge models fetch qwen3.5-9b-4bit --source auto
 ```
 
-This command is explicit. If the model is already present, the downloader can reuse the local match and report the cached path.
+This command is explicit. The demo does not silently download models. If the model is already present, the downloader can reuse the local match and report the cached path.
 
 Check readiness:
 
@@ -133,6 +137,22 @@ Inspect the receipt without loading the model again:
 edge demo receipt --path <receipt_path>
 edge demo local-only --path <receipt_path> --json
 ```
+
+You can also inspect the lower-level Neural Imprint sample and comparison path directly:
+
+```bash
+edge demo imprint run --dry-run --sample synthetic_profile_v1 --model qwen3.5-9b-4bit --json
+edge demo imprint run --sample synthetic_profile_v1 --model qwen3.5-9b-4bit --json
+edge demo imprint compare --path <receipt_path> --json
+```
+
+The artifact reuse smoke is local and manifest-only:
+
+```bash
+edge demo reuse --run <run_id> --json
+```
+
+It does not copy artifacts and is not cross-device sync.
 
 ### Advanced shortcut
 
