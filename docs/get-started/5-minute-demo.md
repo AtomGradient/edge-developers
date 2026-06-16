@@ -9,30 +9,15 @@ title: CLI learning demo
 This flow uses shipped B2/B4/B5/B6/B7 CLI commands. It runs on a synthetic sample, can explicitly prepare a compatible local model, and writes hash-only local receipts/manifests by default.
 :::
 
-The first-wow goal is to show a minimal local learning loop: a synthetic correction is written into isolated demo state, a new Neural Imprint artifact is generated, the artifact is restored under compatibility gates, and the command compares before/after answer hashes without storing raw private text by default. Neural Imprint is a local artifact and restore flow. Restoring a compatible local Neural Imprint artifact can change behavior under compatibility gates without changing model weights.
+The first-wow path should feel familiar before it introduces personalization:
 
-## Flow
+1. Download a model.
+2. Chat with the base model.
+3. Inspect the synthetic learning sample.
+4. Run the local correction-learning flow.
+5. Compare the base answer hash with the Neural Imprint restored answer hash.
 
-The one-command path is:
-
-```bash
-edge demo learn run --prepare-model --model qwen3.5-9b-4bit --source auto --max-tokens 8 --json
-```
-
-`--prepare-model` is explicit. If the model is already present, the command skips download. If the model is missing, model preparation may use the network and writes a model-fetch receipt. The learning demo itself remains local-only and records `network_used_during_demo=false`; the report records model preparation separately as `network_used_during_model_prepare`.
-
-The expanded auditable flow is:
-
-1. Check local environment and preview package access.
-2. Resolve or explicitly fetch a supported local model.
-3. Dry-run the synthetic learning sample plan.
-4. Write synthetic Persona/RPP input and correction entries under isolated demo state.
-5. Trigger correction-based Neural Imprint regeneration.
-6. Restore the regenerated artifact under compatibility gates.
-7. Compare before/after answer hashes.
-8. Inspect the completed run from the local receipt without loading a model.
-9. Write and validate a local receipt with paths, hashes, schema versions, and status.
-10. Optionally write per-app reuse manifests as an artifact reuse smoke, not cross-device sync.
+Neural Imprint is a local artifact and restore flow. Restoring a compatible local Neural Imprint artifact can change generated behavior under compatibility gates without changing model weights. This demo proves the local artifact path and receipt path; it does not claim general model quality improvement.
 
 ## Install the preview CLI
 
@@ -56,28 +41,104 @@ For Web UI setup, see [Install Edge Studio from source](/docs/get-started/source
 
 Run these commands from the `edge-studio` checkout:
 
+### 1. Download the baseline model
+
+Use `qwen3.5-9b-4bit` as the preview baseline:
+
 ```bash
-edge doctor
-edge models list
-edge models where qwen3.5-9b-4bit
-edge models doctor qwen3.5-9b-4bit
 edge models fetch qwen3.5-9b-4bit --source auto
-edge demo learn run --prepare-model --model qwen3.5-9b-4bit --source auto --max-tokens 8 --json
-edge demo learn run --dry-run --sample synthetic_profile_correction_v1 --model auto
-edge demo learn run --sample synthetic_profile_correction_v1 --model qwen3.5-9b-4bit --max-tokens 8 --json
-edge demo imprint run --dry-run --sample synthetic_profile_v1 --model auto --question "Summarize this synthetic profile."
-edge demo imprint run --sample synthetic_profile_v1 --model qwen3.5-9b-4bit --question "Summarize this synthetic profile." --max-tokens 8 --json
-edge demo imprint compare --path ~/Library/Application\ Support/edgestudio/demo_runs/edge-run-example/receipt.json --json
-edge demo receipt --path ~/Library/Application\ Support/edgestudio/demo_runs/edge-run-example/receipt.json
-edge demo local-only --path ~/Library/Application\ Support/edgestudio/demo_runs/edge-run-example/receipt.json --json
-edge demo reuse --run edge-run-example --apps notes,finance --json
 ```
 
-`edge models fetch` is explicit and separate from ordinary demo runs. If `edge models where qwen3.5-9b-4bit` already reports a complete local model, you can skip the fetch command. The demo path does not silently download models. `edge demo learn run --prepare-model` is the only one-command path here that may prepare a model, and the flag makes that behavior explicit.
+This command is explicit. If the model is already present, the downloader can reuse the local match and report the cached path.
 
-The real run prints a `receipt_path`. Use that path for receipt inspection commands; `edge-run-example` above is only a placeholder. The compare command reads the receipt only: it does not load a model, restore an artifact, generate answers, or use the network.
+Check readiness:
 
-`edge demo reuse` reads the completed B4 receipt and writes per-app reuse manifests under the same demo run. It is an artifact reuse smoke only: it does not copy artifacts, sync devices, restore artifacts, load models, or use the network.
+```bash
+edge models where qwen3.5-9b-4bit --json
+edge models doctor qwen3.5-9b-4bit --json
+```
+
+### 2. Chat with the base model
+
+Run a normal local chat before learning:
+
+```bash
+edge demo chat --model qwen3.5-9b-4bit --prompt "What is edge AI?" --max-tokens 64
+```
+
+The first model load can take tens of seconds on Apple Silicon. The command prints the answer and writes a local chat receipt. By default, the receipt stores hashes and paths, not raw prompt or answer text.
+
+### 3. Inspect the synthetic learning sample
+
+Look at the synthetic correction-learning plan before writing any demo state:
+
+```bash
+edge demo learn run --dry-run --sample synthetic_profile_correction_v1 --model qwen3.5-9b-4bit --include-text --json
+```
+
+`--include-text` is appropriate here because this is a synthetic fixture shipped for the demo. Do not use raw private user text in receipts or support logs. Without `--include-text`, the plan remains hash-only.
+
+This dry-run does not load a model, write correction ledgers, trigger regeneration, restore Neural Imprint, or use the network.
+
+### 4. Run local learning and Neural Imprint restore
+
+Now run the local correction-learning flow:
+
+```bash
+edge demo learn run --sample synthetic_profile_correction_v1 --model qwen3.5-9b-4bit --max-tokens 64 --json
+```
+
+The command:
+
+1. Writes synthetic Persona/RPP input under isolated demo state.
+2. Writes synthetic correction entries under an isolated correction ledger.
+3. Regenerates a local Neural Imprint artifact.
+4. Restores that artifact under compatibility gates.
+5. Generates a before answer and an after-restored answer.
+6. Writes an `edge.demo.learn.receipt.v1` receipt.
+
+### 5. Read the comparison
+
+In the JSON output, look for:
+
+```json
+{
+  "generation": {
+    "artifact_path": ".../neural_imprint.safetensors"
+  },
+  "comparison": {
+    "before_answer_sha256": "sha256:...",
+    "after_answer_sha256": "sha256:...",
+    "answers_differ": true
+  },
+  "receipt_path": "..."
+}
+```
+
+The receipt stores the same comparison fields as top-level receipt fields.
+
+`answers_differ=true` means the generated answer changed after restoring the local Neural Imprint artifact for this synthetic demo. It is not a broad claim that the model is better.
+
+Inspect the receipt without loading the model again:
+
+```bash
+edge demo receipt --path <receipt_path>
+edge demo local-only --path <receipt_path> --json
+```
+
+### Advanced shortcut
+
+After you understand the steps, you can prepare the model and run the learning demo in one command:
+
+```bash
+edge demo learn run --prepare-model --model qwen3.5-9b-4bit --source auto --max-tokens 64 --json
+```
+
+`--prepare-model` is explicit. If the model is missing, model preparation may use the network and writes a model-fetch receipt. The learning demo itself remains local-only and records `network_used_during_demo=false`; the report records model preparation separately as `network_used_during_model_prepare`.
+
+### Follow-up UX
+
+Current preview exposes sample inspection through `edge demo learn run --dry-run --include-text --json`. A future CLI should add a more beginner-friendly `edge demo learn sample show/list` command and a direct base-vs-Neural-Imprint chat replay command.
 
 ## Receipt privacy contract
 

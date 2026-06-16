@@ -9,30 +9,15 @@ title: CLI 学习 demo
 这个 flow 使用已经发布的 B2/B4/B5/B6/B7 CLI 命令。它只跑 synthetic sample，可以显式准备兼容的本地模型，并默认写入 hash-only local receipts/manifests。
 :::
 
-first-wow 目标是展示一个最小本地学习闭环：把 synthetic correction 写入隔离的 demo state，生成新的 Neural Imprint artifact，在 compatibility gates 下恢复该 artifact，并对比 before/after answer hash；默认不保存 raw private text。Neural Imprint 是本地 artifact 和 restore flow。恢复兼容的本地 Neural Imprint artifact 可以在 compatibility gates 下改变行为，不改模型权重。
+first-wow 路径应该先符合开发者熟悉的心智，再引入个性化：
 
-## Flow
+1. 下载模型。
+2. 和 base model 对话。
+3. 查看 synthetic learning sample。
+4. 运行本地 correction-learning flow。
+5. 对比 base answer hash 和 Neural Imprint restore 后的 answer hash。
 
-一条命令路径是：
-
-```bash
-edge demo learn run --prepare-model --model qwen3.5-9b-4bit --source auto --max-tokens 8 --json
-```
-
-`--prepare-model` 是显式开关。如果模型已经存在，命令会跳过下载。如果模型缺失，模型准备阶段可能联网并写入 model-fetch receipt。学习 demo 本身仍保持 local-only，并记录 `network_used_during_demo=false`；报告会把模型准备阶段单独记为 `network_used_during_model_prepare`。
-
-展开后的可审计 flow 是：
-
-1. 检查本地环境与 preview package access。
-2. 解析或显式下载受支持的本地模型。
-3. 对 synthetic learning sample plan 做 dry-run。
-4. 在隔离 demo state 下写入 synthetic Persona/RPP input 和 correction entries。
-5. 触发 correction-based Neural Imprint regeneration。
-6. 在 compatibility gates 下恢复重新生成的 artifact。
-7. 对比 before/after answer hash。
-8. 从 local receipt 检查已完成 run，不加载模型。
-9. 写入并验证只包含 path、hash、schema version 与 status 的 local receipt。
-10. 可选：写入 per-app reuse manifests，作为 artifact reuse smoke；它不是跨设备同步。
+Neural Imprint 是本地 artifact 和 restore flow。恢复兼容的本地 Neural Imprint artifact 可以在 compatibility gates 下改变生成行为，不改模型权重。这个 demo 证明的是本地 artifact 路径和 receipt 路径；它不声称模型质量整体变好。
 
 ## 安装 preview CLI
 
@@ -56,28 +41,104 @@ Web UI 设置见 [从源码安装 Edge Studio](/docs/get-started/source-build)�
 
 在 `edge-studio` checkout 里运行：
 
+### 1. 下载基准模型
+
+preview demo 使用 `qwen3.5-9b-4bit` 作为基准模型：
+
 ```bash
-edge doctor
-edge models list
-edge models where qwen3.5-9b-4bit
-edge models doctor qwen3.5-9b-4bit
 edge models fetch qwen3.5-9b-4bit --source auto
-edge demo learn run --prepare-model --model qwen3.5-9b-4bit --source auto --max-tokens 8 --json
-edge demo learn run --dry-run --sample synthetic_profile_correction_v1 --model auto
-edge demo learn run --sample synthetic_profile_correction_v1 --model qwen3.5-9b-4bit --max-tokens 8 --json
-edge demo imprint run --dry-run --sample synthetic_profile_v1 --model auto --question "Summarize this synthetic profile."
-edge demo imprint run --sample synthetic_profile_v1 --model qwen3.5-9b-4bit --question "Summarize this synthetic profile." --max-tokens 8 --json
-edge demo imprint compare --path ~/Library/Application\ Support/edgestudio/demo_runs/edge-run-example/receipt.json --json
-edge demo receipt --path ~/Library/Application\ Support/edgestudio/demo_runs/edge-run-example/receipt.json
-edge demo local-only --path ~/Library/Application\ Support/edgestudio/demo_runs/edge-run-example/receipt.json --json
-edge demo reuse --run edge-run-example --apps notes,finance --json
 ```
 
-`edge models fetch` 是显式命令，并且与普通 demo run 分离。如果 `edge models where qwen3.5-9b-4bit` 已经报告本地模型完整，可以跳过 fetch。普通 demo 命令不会 silent download models，demo path does not silently download models。这里唯一可能准备模型的一条命令路径是 `edge demo learn run --prepare-model`，该 flag 让行为保持显式。
+这个命令是显式下载。如果模型已经存在，下载器可以复用本地 match，并报告 cached path。
 
-real run 会打印 `receipt_path`。后续 receipt inspection 命令使用这个实际路径；上面的 `edge-run-example` 只是 placeholder。compare 命令只读取 receipt：不加载模型、不 restore artifact、不生成 answer，也不触网。
+检查模型是否就绪：
 
-`edge demo reuse` 读取已完成的 B4 receipt，并在同一个 demo run 下写入 per-app reuse manifests。它只是 artifact reuse smoke：不复制 artifact、不同步设备、不 restore artifact、不加载模型，也不触网。
+```bash
+edge models where qwen3.5-9b-4bit --json
+edge models doctor qwen3.5-9b-4bit --json
+```
+
+### 2. 和 base model 对话
+
+先跑一个普通本地聊天：
+
+```bash
+edge demo chat --model qwen3.5-9b-4bit --prompt "What is edge AI?" --max-tokens 64
+```
+
+第一次加载 9B 模型可能需要几十秒。命令会打印 answer，并写入本地 chat receipt。默认情况下，receipt 只保存 hash 和 path，不保存 raw prompt 或 raw answer。
+
+### 3. 查看 synthetic learning sample
+
+在写入任何 demo state 之前，先查看 synthetic correction-learning plan：
+
+```bash
+edge demo learn run --dry-run --sample synthetic_profile_correction_v1 --model qwen3.5-9b-4bit --include-text --json
+```
+
+这里可以使用 `--include-text`，因为这是 demo 自带的 synthetic fixture。不要把真实用户隐私文本写入 receipt 或 support log。不加 `--include-text` 时，plan 仍保持 hash-only。
+
+这个 dry-run 不加载模型、不写 correction ledger、不触发 regen、不 restore Neural Imprint，也不触网。
+
+### 4. 运行本地学习和 Neural Imprint restore
+
+现在运行本地 correction-learning flow：
+
+```bash
+edge demo learn run --sample synthetic_profile_correction_v1 --model qwen3.5-9b-4bit --max-tokens 64 --json
+```
+
+这个命令会：
+
+1. 在隔离 demo state 下写入 synthetic Persona/RPP input。
+2. 在隔离 correction ledger 下写入 synthetic correction entries。
+3. 重新生成本地 Neural Imprint artifact。
+4. 在 compatibility gates 下恢复该 artifact。
+5. 生成 before answer 和 after-restored answer。
+6. 写入 `edge.demo.learn.receipt.v1` receipt。
+
+### 5. 读取对比结果
+
+在 JSON output 里查看：
+
+```json
+{
+  "generation": {
+    "artifact_path": ".../neural_imprint.safetensors"
+  },
+  "comparison": {
+    "before_answer_sha256": "sha256:...",
+    "after_answer_sha256": "sha256:...",
+    "answers_differ": true
+  },
+  "receipt_path": "..."
+}
+```
+
+receipt 会把同样的 comparison fields 作为顶层 receipt 字段保存。
+
+`answers_differ=true` 表示这个 synthetic demo 在恢复本地 Neural Imprint artifact 后，生成结果发生了变化。这不是“模型整体变好”的泛化结论。
+
+不重新加载模型也可以检查 receipt：
+
+```bash
+edge demo receipt --path <receipt_path>
+edge demo local-only --path <receipt_path> --json
+```
+
+### Advanced shortcut
+
+理解分步流程后，可以用一条命令完成模型准备和学习 demo：
+
+```bash
+edge demo learn run --prepare-model --model qwen3.5-9b-4bit --source auto --max-tokens 64 --json
+```
+
+`--prepare-model` 是显式开关。如果模型缺失，模型准备阶段可能联网并写入 model-fetch receipt。学习 demo 本身仍保持 local-only，并记录 `network_used_during_demo=false`；报告会把模型准备阶段单独记为 `network_used_during_model_prepare`。
+
+### 后续 UX
+
+当前 preview 通过 `edge demo learn run --dry-run --include-text --json` 暴露 sample inspection。后续 CLI 应加入更小白的 `edge demo learn sample show/list` 命令，以及直接的 base-vs-Neural-Imprint chat replay 命令。
 
 ## Receipt privacy contract
 

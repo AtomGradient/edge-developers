@@ -20,21 +20,22 @@ Developer Preview 先面向 Apple 平台发布。Android、Linux、HarmonyOS、W
 
 | 目标 | 从这里开始 | 它证明什么 |
 | --- | --- | --- |
-| 先看到学习闭环 | [CLI 学习 demo](/docs/get-started/minute-demo) | 本地 correction 可以生成 Neural Imprint artifact，在兼容性闸门下恢复，并写入 hash-only receipt。 |
+| 下载模型、聊天、再教模型 | [CLI 学习 demo](/docs/get-started/minute-demo) | 本地模型先完成普通对话，然后 synthetic correction 生成 Neural Imprint artifact，并写入 hash-only 对比 receipt。 |
 | 安装预览 package | [从源码安装 Edge Studio](/docs/get-started/source-build) | `edge` CLI 和本地 Web UI 可以从未来 pip package 的源码结构运行。 |
 | 启动本地工作台 | [从源码启动 Web UI](/docs/get-started/source-build#启动-web-ui) | Edge Studio 可以作为 localhost 工作台运行在 `http://127.0.0.1:18842`。 |
 | 构建 iOS shell | [最小 iOS app](/docs/get-started/minimal-ios-app) | Edge Scaffold 可以作为当前最小 iOS 参考 app 编译。该路径需要 preview access。 |
 | 集成 Swift SDK | [Swift SDK 设置](/docs/get-started/quickstart) | Edge Kit 可以加入 Apple 平台 app，并加载本地模型。 |
 
-## 五分钟命令
+## 第一组命令
 
-预览 demo 推荐使用 `qwen3.5-9b-4bit` 作为基准模型：
+先从开发者熟悉的路径开始：下载模型，然后本地聊天。
 
 ```bash
-edge demo learn run --prepare-model --model qwen3.5-9b-4bit --source auto --max-tokens 8 --json
+edge models fetch qwen3.5-9b-4bit --source auto
+edge demo chat --model qwen3.5-9b-4bit --prompt "What is edge AI?" --max-tokens 64
 ```
 
-`--prepare-model` 是显式开关。如果模型缺失，该命令可能通过配置好的预览下载路径准备模型，并把模型准备阶段和本地学习 demo 分开记录。
+base chat 跑通后，再继续看 [CLI 学习 demo](/docs/get-started/minute-demo)：检查 synthetic correction sample，生成本地 Neural Imprint artifact，并对比 before/after answer hash。
 
 ## 产品栈
 

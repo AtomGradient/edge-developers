@@ -37,10 +37,12 @@ Use `edge` for model readiness checks, model fetch receipts, and local learning 
 ```bash
 edge models where qwen3.5-9b-4bit --json
 edge models fetch qwen3.5-9b-4bit --source auto
-edge demo learn run --prepare-model --model qwen3.5-9b-4bit --source auto --max-tokens 8 --json
+edge demo chat --model qwen3.5-9b-4bit --prompt "What is edge AI?" --max-tokens 64
 ```
 
 `edge models fetch --source auto` can select the best available preview download path from ModelScope, Hugging Face, or an HF mirror. The download is explicit and writes a receipt.
+
+After the base chat works, continue to the [CLI learning demo](/docs/get-started/minute-demo) to inspect the synthetic correction sample and compare base vs Neural Imprint restored answer hashes.
 
 ## Launch the Web UI
 
@@ -69,4 +71,3 @@ Use the release packaging script when you need the same shape as the future pip 
 ```
 
 The script builds the frontend, packages the backend resources, and writes the wheel under `dist/`.
-

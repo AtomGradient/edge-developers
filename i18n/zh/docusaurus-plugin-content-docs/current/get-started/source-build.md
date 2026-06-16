@@ -37,10 +37,12 @@ edge doctor
 ```bash
 edge models where qwen3.5-9b-4bit --json
 edge models fetch qwen3.5-9b-4bit --source auto
-edge demo learn run --prepare-model --model qwen3.5-9b-4bit --source auto --max-tokens 8 --json
+edge demo chat --model qwen3.5-9b-4bit --prompt "What is edge AI?" --max-tokens 64
 ```
 
 `edge models fetch --source auto` 可以在 ModelScope、Hugging Face 或 HF mirror 中选择当前可用的预览下载路径。下载行为是显式的，并会写入 receipt。
+
+base chat 跑通后，继续看 [CLI 学习 demo](/docs/get-started/minute-demo)，检查 synthetic correction sample，并对比 base answer 和 Neural Imprint restore 后的 answer hash。
 
 ## 启动 Web UI
 
@@ -69,4 +71,3 @@ http://127.0.0.1:18842
 ```
 
 该脚本会构建前端、打包后端资源，并把 wheel 写入 `dist/`。
-

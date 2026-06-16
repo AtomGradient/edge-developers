@@ -20,21 +20,22 @@ Start with the smallest path that proves something useful:
 
 | Goal | Start here | What it proves |
 | --- | --- | --- |
-| See the learning loop | [CLI learning demo](/docs/get-started/minute-demo) | A local correction can generate a Neural Imprint artifact, restore it under compatibility gates, and write a hash-only receipt. |
+| Download, chat, then teach the model | [CLI learning demo](/docs/get-started/minute-demo) | A local model can answer normally first, then a synthetic correction can generate a Neural Imprint artifact and write a hash-only comparison receipt. |
 | Install the preview package | [Install Edge Studio from source](/docs/get-started/source-build) | The `edge` CLI and local Web UI can run from the future pip package source tree. |
 | Launch the local workbench | [Web UI from source](/docs/get-started/source-build#launch-the-web-ui) | Edge Studio can run as a localhost workbench at `http://127.0.0.1:18842`. |
 | Build an iOS shell | [Minimal iOS app](/docs/get-started/minimal-ios-app) | Edge Scaffold compiles as the smallest current iOS reference app. Preview access is required. |
 | Integrate the Swift SDK | [Swift SDK setup](/docs/get-started/quickstart) | Edge Kit can be added to an Apple-platform app and load a local model. |
 
-## Five-minute command
+## First commands
 
-The recommended baseline model for the preview demo is `qwen3.5-9b-4bit`:
+Start with the familiar path: download a model, then chat with it locally.
 
 ```bash
-edge demo learn run --prepare-model --model qwen3.5-9b-4bit --source auto --max-tokens 8 --json
+edge models fetch qwen3.5-9b-4bit --source auto
+edge demo chat --model qwen3.5-9b-4bit --prompt "What is edge AI?" --max-tokens 64
 ```
 
-`--prepare-model` is explicit. If the model is missing, the command may fetch it through the configured preview download path and record that preparation separately from the local learning demo.
+After the base chat works, continue to the [CLI learning demo](/docs/get-started/minute-demo) to inspect a synthetic correction sample, generate a local Neural Imprint artifact, and compare before/after answer hashes.
 
 ## Product stack
 

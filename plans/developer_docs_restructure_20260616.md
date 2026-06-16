@@ -91,3 +91,14 @@ Codex and Claude aligned on a minimal first pass:
 7. Run `npm run typecheck` and `npm run build`.
 8. Commit, push, and send a Claude review request with the committed SHA.
 
+## Follow-up Alignment: Beginner Learning Ladder
+
+After the first docs pass, the developer onboarding path was refined again. The first command should not be a dense full-stack learning proof. A new developer should see a familiar model workflow first:
+
+1. Download or resolve `qwen3.5-9b-4bit`.
+2. Run a normal local chat with the base model.
+3. Inspect the synthetic correction-learning sample.
+4. Run local correction learning and Neural Imprint restore.
+5. Compare before/after answer hashes from the local receipt.
+
+The one-command learning demo remains useful, but only as an advanced shortcut after the developer understands the pieces. Future CLI UX should add a clearer `edge demo learn sample show/list` command and a direct base-vs-Neural-Imprint chat replay command.

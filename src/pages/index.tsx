@@ -82,7 +82,8 @@ cd edge-studio
 python3.11 -m venv .venv
 source .venv/bin/activate
 python -m pip install -e .
-edge demo learn run --prepare-model --model qwen3.5-9b-4bit --source auto --json`;
+edge models fetch qwen3.5-9b-4bit --source auto
+edge demo chat --model qwen3.5-9b-4bit --prompt "What is edge AI?" --max-tokens 64`;
 
 export default function Home(): React.JSX.Element {
   const {i18n} = useDocusaurusContext();
@@ -115,7 +116,7 @@ export default function Home(): React.JSX.Element {
         </p>
         <div className={styles.buttons}>
           <Link to="/docs/get-started/minute-demo" className={styles.primaryButton}>
-            {isZh ? '运行 CLI 学习 demo' : 'Run the CLI demo'}
+            {isZh ? '下载模型并聊天' : 'Download and chat'}
           </Link>
           <Link to="/docs/get-started/source-build" className={styles.secondaryButton}>
             {isZh ? '从源码安装' : 'Install from source'}
@@ -149,7 +150,7 @@ export default function Home(): React.JSX.Element {
         {/* Quick Start */}
         <section className={styles.codeSection}>
           <div className={styles.codeSectionLabel}>{isZh ? '快速开始' : 'Quick Start'}</div>
-          <CodeBlock language="bash" title={isZh ? '预览路径 — 安装 CLI，运行本地学习 demo' : 'Preview path — install the CLI, run a local learning demo'}>
+          <CodeBlock language="bash" title={isZh ? '预览路径 — 下载模型，先跑一次普通对话' : 'Preview path — download a model, run a normal chat first'}>
 {CODE}
           </CodeBlock>
         </section>

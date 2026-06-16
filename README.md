@@ -18,7 +18,7 @@ Neural Imprint is a local artifact and restore flow. A compatible base model can
 Current preview entry points:
 
 - Read the docs: `docs/overview.md`
-- Run the CLI learning first-wow from an `edge-studio` source checkout:
+- Run the CLI first-wow from an `edge-studio` source checkout:
 
   ```bash
   git clone https://github.com/AtomGradient/edge-studio.git
@@ -27,10 +27,11 @@ Current preview entry points:
   source .venv/bin/activate
   python -m pip install --upgrade pip
   python -m pip install -e .
-  edge demo learn run --prepare-model --model qwen3.5-9b-4bit --source auto --max-tokens 8 --json
+  edge models fetch qwen3.5-9b-4bit --source auto
+  edge demo chat --model qwen3.5-9b-4bit --prompt "What is edge AI?" --max-tokens 64
   ```
 
-  This single demo command explicitly prepares a compatible local model if needed, writes only synthetic correction-learning state under an isolated demo run, restores the regenerated Neural Imprint artifact, compares before/after answer hashes, and writes a local receipt. The demo run itself remains local-only; any model download happens only because `--prepare-model` was passed.
+  This gets the baseline model onto the Mac and runs a normal local chat first. Then continue with `docs/get-started/5-minute-demo.md` to inspect a synthetic correction-learning sample, generate a local Neural Imprint artifact, restore it under compatibility gates, and compare before/after answer hashes in a local receipt.
 
 - For the public release, the install step is intended to become:
 
@@ -124,7 +125,7 @@ edge demo reuse --run edge-run-example --apps notes,finance --json
 `edge demo imprint compare` is a B4 receipt-only inspection command. It reads an existing completed `edge.demo.receipt.v1` receipt and emits `edge.demo.imprint.compare.v1`; it does not load models, restore artifacts, generate answers, or use the network.
 `edge demo learn run --dry-run` is a B5a correction-learning pre-flight planner. It emits `edge.demo.learn.plan.v1` with hash-only synthetic correction metadata and isolated-state paths; it does not write correction ledgers, call regen, load models, or write a learn receipt.
 `edge demo learn run` (without `--dry-run`) is the B5b real isolated correction-learning demo. It writes synthetic Persona/RPP input and correction ledger entries under the demo run state, triggers correction regen, restores the regenerated local Neural Imprint artifact, compares before/after answer hashes, and writes `edge.demo.learn.receipt.v1`.
-`edge demo learn run --prepare-model` is the one-command first-wow path. It may explicitly run model preparation before the local demo, and the report records `network_used_during_model_prepare` separately from `network_used_during_demo`.
+`edge demo learn run --prepare-model` is an advanced shortcut after the beginner path is understood. It may explicitly run model preparation before the local demo, and the report records `network_used_during_model_prepare` separately from `network_used_during_demo`.
 `edge demo reuse` is a B7 artifact reuse smoke. It reads a completed local B4 receipt and writes per-app `edge.demo.reuse.receipt.v1` manifests under the demo run; it does not copy artifacts, sync devices, restore artifacts, load models, or use the network.
 
 ## Phase 2 SDK Proof
