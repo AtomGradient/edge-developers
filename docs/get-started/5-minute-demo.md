@@ -5,9 +5,9 @@ title: CLI learning demo
 
 # CLI learning demo
 
-:::tip Runnable in current preview
-This flow uses shipped B2/B4/B5/B6/B7 CLI commands. It runs on a synthetic sample, can explicitly prepare a compatible local model, and writes hash-only local receipts/manifests by default.
-:::
+> **Runnable in current preview**
+>
+> This flow uses shipped B2/B4/B5/B6/B7 CLI commands. It runs on a synthetic sample, can explicitly prepare a compatible local model, and writes hash-only local receipts/manifests by default.
 
 The first-wow path should feel familiar before it introduces personalization:
 

@@ -23,7 +23,7 @@ title: 故障排查
 
 ### 首次启动加载模型很慢
 
-首次加载包含权重反序列化。后续启动会使用缓存数据，速度更快。请在真实目标设备的 Release build 中测量冷启动加载时间。
+首次加载包含权重反序列化。后续启动会使用缓存数据，速度更快。请在真实目标设备的 Release 构建 中测量冷启动加载时间。
 
 ## 内存和崩溃
 
@@ -49,7 +49,7 @@ Edge Kit 的 DSR Attention 会让内存保持有界。如果看到无界增长�
 ### SPM “missing module” 或 “cannot find type”
 
 - 清理 DerivedData：`rm -rf ~/Library/Developer/Xcode/DerivedData`
-- 确保 `Package.swift` exact pin 到已验证的开发者预览 tag：`.package(url: "...", exact: "1.0.0-rc95")`
+- 确保 `Package.swift` 精确固定版本 到已验证的开发者预览 tag：`.package(url: "...", exact: "1.0.0-rc95")`
 - 确认 Xcode 版本为 15 或更高。
 
 ### “Metal library not found” 或 kernel crash

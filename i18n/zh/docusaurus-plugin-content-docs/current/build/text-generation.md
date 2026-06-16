@@ -27,7 +27,7 @@ try await engine.loadLocal(
 )
 ```
 
-对金额、日期、计数等可审计事实，`.exactRecall` 应和 app-owned tools 或 fact storage 配合使用。
+对金额、日期、计数等可审计事实，`.exactRecall` 应和 App 拥有 工具 或 fact storage 配合使用。
 
 用 `EdgeModelKit` 准备已注册的 `ModelConfig`，再加载本地缓存目录：
 
@@ -184,7 +184,7 @@ struct ChatView: View {
 |--------|-------------|
 | `LLMEngine()` | 创建 engine 实例。`@MainActor`。 |
 | `loadLocal(directory:)` | 从本地路径加载模型。 |
-| `load(config:)` | Preview metadata hook；native default build 不在这里执行远程下载。请使用 `EdgeModelKit` 加 `loadLocal(directory:)`。 |
+| `load(config:)` | Preview 元数据 hook；原生默认构建 不在这里执行远程下载。请使用 `EdgeModelKit` 加 `loadLocal(directory:)`。 |
 | `generate(messages:parameters:)` | 流式返回 `GenerateChunk` 值。Async sequence。 |
 | `generateOnce(messages:)` | 返回一次性累积字符串。 |
 | `clearPromptCache()` | 重置对话状态。 |
@@ -194,6 +194,6 @@ struct ChatView: View {
 
 ## 下一步
 
-- [基础聊天 app](/docs/examples/basic-chat) — 可直接粘贴运行的完整 SwiftUI app。
+- [基础聊天 app](/docs/examples/basic-chat) — 可直接粘贴运行的完整 SwiftUI App。
 - [视觉理解](/docs/build/vision) — 加入图像理解。
 - [模型进化](/docs/build/model-evolution) — 让模型适应用户。

@@ -33,7 +33,7 @@ Edge Engine 和 Edge Halo 预览包在某些构建中使用更新的 Swift toolc
 
 对于较大模型，请在 iOS target 中启用 Increased Memory Limit entitlement。
 
-如果 app 使用 Edge Mesh，也请添加本地网络权限：
+如果 App 使用 Edge Mesh，也请添加本地网络权限：
 
 ```xml
 <key>NSLocalNetworkUsageDescription</key>
@@ -42,7 +42,7 @@ Edge Engine 和 Edge Halo 预览包在某些构建中使用更新的 Swift toolc
 
 ## Build 设置
 
-使用 Release build 进行性能验证。Debug build 适合开发，但不能代表吞吐或延迟。
+使用 Release 构建 进行性能验证。Debug build 适合开发，但不能代表吞吐或延迟。
 
 ## 验证矩阵
 

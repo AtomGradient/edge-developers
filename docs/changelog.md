@@ -7,9 +7,9 @@ title: Changelog
 
 Breaking changes, new features, and migration notes for each Developer Preview release.
 
-:::info
-Edge products are in **Developer Preview**. Expect breaking changes between releases. Pin your package versions and validate after each upgrade.
-:::
+> **Info**
+>
+> Edge products are in **Developer Preview**. Expect breaking changes between releases. Pin your package versions and validate after each upgrade.
 
 ## Versioning policy
 

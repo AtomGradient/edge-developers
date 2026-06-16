@@ -5,9 +5,9 @@ title: EdgeData
 
 # EdgeData API 参考
 
-`EdgeData` 为 Edge app 提供本地数据收集和分类 primitive。
+`EdgeData` 为 Edge App 提供本地数据收集和分类 primitive。
 
-它是支撑基础设施。app-specific 业务规则应留在 app 内。
+它是支撑基础设施。App 专属 业务规则应留在 app 内。
 
 ## Edge
 
@@ -20,7 +20,7 @@ public enum Edge
 | 方法 | 描述 |
 | --- | --- |
 | `bootstrap(dbQueue:trainingDataSink:)` | 使用本地 GRDB queue 和可选训练 sink 初始化 EdgeData。 |
-| `registerSchema(_:)` | 在启动时注册 app 数据形状。 |
+| `registerSchema(_:)` | 在启动时注册 App 数据形状。 |
 | `schema(_:)` | 查找已注册的数据形状。 |
 | `registeredSchemaNames()` | 列出已注册名称。 |
 | `recordRaw(fact:customFactId:)` | 记录未分类的本地数据。 |
@@ -41,10 +41,10 @@ public enum Edge
 | --- | --- |
 | `Sensitivity` | `.localOnly`、`.meshOk`、`.trainingOk`。 |
 | `FactStatus` | 本地分类生命周期状态。 |
-| `FieldType` | app 数据形状支持的字段种类。 |
+| `FieldType` | App 数据形状支持的字段种类。 |
 | `FieldDef` | 字段声明。 |
 | `SemanticLabels` | 主时间戳、值和实体字段的标签。 |
-| `SchemaDef` | app 数据形状声明。 |
+| `SchemaDef` | App 数据形状声明。 |
 | `RawFact` | 等待分类的原始本地 payload。 |
 | `Fact` | 已分类的本地 payload。 |
 | `QueryStatus` | 针对已分类、待处理、失败或全部 fact 的查询过滤器。 |
@@ -76,7 +76,7 @@ app 实现此协议，以提供本地 LLM 分类。
 | --- | --- |
 | `isBusy` | 本地 LLM 是否正忙于面向用户的工作。 |
 | `generate(messages:)` | 生成分类响应。 |
-| `generate(messages:toolNames:)` | 可选的 tool-aware 生成路径。 |
+| `generate(messages:toolNames:)` | 可选的 工具感知 生成路径。 |
 
 ## ClassificationParser
 
@@ -94,4 +94,4 @@ public enum ClassificationParser
 
 ## 隐私指南
 
-使用 `Sensitivity` 将 local-only 数据留在本地。不要在日志、分析或协作消息中包含原始用户 correction 文本。
+使用 `Sensitivity` 将 仅本地 数据留在本地。不要在日志、分析或协作消息中包含原始用户 correction 文本。

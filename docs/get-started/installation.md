@@ -30,9 +30,9 @@ dependencies: [
 
 Developer Preview releases should be pinned exactly. Re-run your real-device validation before moving to a newer `1.0.0-rcN` tag.
 
-:::info Preview access
-The Swift package URL is HTTPS for public docs. Some current preview dependency paths can still require AtomGradient preview access or SSH access, especially while Edge Engine remains a pinned transitive dependency. Confirm package resolution before treating a tag as integrated.
-:::
+> **Preview access**
+>
+> The Swift package URL is HTTPS for public docs. Some current preview dependency paths can still require AtomGradient preview access or SSH access, especially while Edge Engine remains a pinned transitive dependency. Confirm package resolution before treating a tag as integrated.
 
 ## Add the umbrella product
 

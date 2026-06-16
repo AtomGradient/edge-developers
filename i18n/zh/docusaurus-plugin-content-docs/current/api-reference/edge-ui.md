@@ -5,33 +5,33 @@ title: EdgeUI
 
 # EdgeUI API 参考
 
-`EdgeUI` 包含面向 Edge-based apps 的通用 SwiftUI building blocks。这些 view 是基础设施组件，不是产品 UI 规定。
+`EdgeUI` 包含面向 Edge App 的通用 SwiftUI 构建块。这些 view 是基础设施组件，不是产品 UI 规定。
 
-:::info Developer Preview 边界
-这些 view 可作为 reference 或小型可复用组件。产品级 layout、copy、navigation 和业务 workflow 仍由 app 自己决定。
-:::
+> **开发者预览边界**
+>
+> 这些 view 可作为参考或小型可复用组件。产品级 layout、文案、navigation 和业务 workflow 仍由 App 自己决定。
 
-## Agent workbench components
+## Agent workbench 组件
 
 | Type | 说明 |
 | --- | --- |
-| `EdgeActivityStatus` | 活跃 agent operation 的 display model。 |
+| `EdgeActivityStatus` | 活跃 agent operation 的显示模型。 |
 | `EdgeActivityMotion` | activity chrome 的 motion profile。 |
-| `EdgeActivityStatusView` | 展示 active inference 或 tool work 的 SwiftUI status row。 |
+| `EdgeActivityStatusView` | 展示活跃推理或工具执行的 SwiftUI status row。 |
 | `EdgeActivityPulseView` | 紧凑 pulse indicator。 |
-| `EdgeActivityMetaLabel` | 小型 metadata label。 |
+| `EdgeActivityMetaLabel` | 小型元数据 label。 |
 | `EdgeActivityShimmer` | 可选 activity shimmer modifier。 |
-| `EdgeAgentTranscriptRow` | 支持 app-provided actions、trace content 和 body content 的 generic transcript row。 |
-| `EdgeAgentWorkbench` | Generic workbench composition surface。 |
+| `EdgeAgentTranscriptRow` | 支持 App 提供 actions、trace 内容和正文内容的通用 transcript row。 |
+| `EdgeAgentWorkbench` | 通用 workbench 组合表面。 |
 
 ## Classification UI
 
 | Type | 说明 |
 | --- | --- |
-| `ClassificationListView(namespace:)` | 按 status 分组的 generic EdgeData classification inbox。 |
-| `ClassificationCorrectionSheet(fact:onComplete:)` | 面向 EdgeData `Fact` 的 metadata-driven correction sheet。 |
+| `ClassificationListView(namespace:)` | 按 status 分组的通用 EdgeData classification inbox。 |
+| `ClassificationCorrectionSheet(fact:onComplete:)` | 面向 EdgeData `Fact` 的元数据驱动 correction sheet。 |
 
-这些组件从 `EdgeData` schema metadata 渲染。它们不应包含 app-specific categories、fields、prompts 或业务规则。
+这些组件从 `EdgeData` schema 元数据渲染。它们不应包含 App 专属 categories、fields、prompts 或业务规则。
 
 ## Diagnostics UI
 
@@ -44,6 +44,6 @@ title: EdgeUI
 
 ## 安全边界
 
-- 产品级 copy 和 information architecture 留在 app 内。
-- 不要用 `EdgeUI` 编码 DogFood behavior、domain defaults 或 app-specific data schemas。
-- 在完成 accessibility、localization 和 device layout 验证前，把这些 view 当作 preview reference。
+- 产品级文案和信息架构留在 App 内。
+- 不要用 `EdgeUI` 编码 DogFood behavior、domain defaults 或 App 专属 data schemas。
+- 在完成可访问性、本地化和设备布局验证前，把这些 view 当作预览参考。

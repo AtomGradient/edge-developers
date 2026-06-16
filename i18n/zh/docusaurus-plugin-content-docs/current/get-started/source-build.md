@@ -5,11 +5,11 @@ title: 从源码安装 Edge Studio
 
 # 从源码安装 Edge Studio CLI 和 Web UI
 
-在 Developer Preview 阶段，可运行的 package 路径是 `edge-studio` 仓库的源码 checkout。正式公开发布时，预期安装命令是 `python -m pip install edgestudio`，但当前 package 尚未发布到 PyPI。
+在开发者预览阶段，可运行的安装路径是从 `edge-studio` 仓库源码安装。正式公开发布时，预期安装命令是 `python -m pip install edgestudio`，但当前软件包尚未发布到 PyPI。
 
-:::info Preview access
-在 Developer Preview 仍为 private 的阶段，该仓库可能需要 AtomGradient preview access。请先确认你的 GitHub 账号已经开通访问权限，再运行下面的命令。
-:::
+> **预览访问权限**
+>
+> 在开发者预览仍未公开的阶段，该仓库可能需要 AtomGradient 预览访问权限。请先确认你的 GitHub 账号已经开通访问权限，再运行下面的命令。
 
 ## 要求
 
@@ -32,7 +32,7 @@ python -m pip install -e .
 edge doctor
 ```
 
-使用 `edge` 检查模型就绪状态、写入模型下载 receipt，并运行本地学习 demo：
+使用 `edge` 检查模型就绪状态、写入模型下载回执，并运行本地学习演示：
 
 ```bash
 edge models where qwen3.5-9b-4bit --json
@@ -40,11 +40,11 @@ edge models fetch qwen3.5-9b-4bit --source auto
 edge demo chat --model qwen3.5-9b-4bit --interactive
 ```
 
-`edge models fetch --source auto` 可以在 ModelScope、Hugging Face 或 HF mirror 中选择当前可用的预览下载路径。下载行为是显式的，并会写入 receipt。
+`edge models fetch --source auto` 可以在 ModelScope、Hugging Face 或 HF 镜像中选择当前可用的预览下载路径。下载行为是显式的，并会写入下载回执。
 
 看到 `[chat:ready]` 后，可以连续问几个普通问题，并用 `/exit` 退出。第一次加载 9B 模型可能需要几十秒。
 
-base chat 跑通后，继续看 [CLI 学习 demo](/docs/get-started/minute-demo)，检查 synthetic correction sample，并对比 base answer 和 Neural Imprint restore 后的 answer hash。
+基础对话跑通后，继续看 [CLI 学习演示](/docs/get-started/minute-demo)，检查合成纠错样本，并对比基础回答和 Neural Imprint 恢复后的回答哈希。
 
 ## 启动 Web UI
 
@@ -62,11 +62,11 @@ edgestudio
 http://127.0.0.1:18842
 ```
 
-服务默认运行在 localhost。用 `Ctrl+C` 停止。
+服务默认只运行在本机地址。用 `Ctrl+C` 停止。
 
 ## 本地构建 wheel
 
-需要验证未来 pip package 形态时，运行 release packaging 脚本：
+需要验证未来 pip 软件包形态时，运行发布打包脚本：
 
 ```bash
 ./scripts/build_wheel.sh

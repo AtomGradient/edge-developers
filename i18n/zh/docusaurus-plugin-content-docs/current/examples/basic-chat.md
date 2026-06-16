@@ -13,11 +13,11 @@ title: 基础聊天应用
 - 设备或模拟器上有本地文本模型目录。
 - iOS 17 或 macOS 14 或更高。
 
-基准开发路径使用 Qwen3.5 9B 4bit。如果是在受限设备上追求更低延迟迭代，可以选择更小的受支持模型，但 app wiring 保持一致。
+基准开发路径使用 Qwen3.5 9B 4bit。如果是在受限设备上追求更低延迟迭代，可以选择更小的受支持模型，但 App 接线 保持一致。
 
 ## 完整代码
 
-创建新的 SwiftUI app target，添加 Edge Kit，并将 app 代码替换为以下内容：
+创建新的 SwiftUI 应用 target，添加 Edge Kit，并将 App 代码替换为以下内容：
 
 ```swift
 import EdgeInference
@@ -215,9 +215,9 @@ final class ChatViewModel: ObservableObject {
 }
 ```
 
-:::note
-如果模型位于 app bundle 中，请将可编辑的 `modelPath` 替换为 `Bundle.main.url(forResource:withExtension:)`。
-:::
+> **说明**
+>
+> 如果模型位于 App bundle 中，请将可编辑的 `modelPath` 替换为 `Bundle.main.url(forResource:withExtension:)`。
 
 ## 关键概念
 

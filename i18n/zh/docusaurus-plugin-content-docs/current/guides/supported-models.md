@@ -7,9 +7,9 @@ title: 支持的模型
 
 Edge Kit 支持符合各 engine 预期模型家族布局的本地模型目录。
 
-:::info 开发者预览
-在开发者预览期间，模型支持范围正在扩展。发布前请在目标设备类别上验证每个模型。
-:::
+> **开发者预览**
+>
+> 在开发者预览期间，模型支持范围正在扩展。发布前请在目标设备类别上验证每个模型。
 
 ## 类别
 
@@ -17,7 +17,7 @@ Edge Kit 支持符合各 engine 预期模型家族布局的本地模型目录。
 | --- | --- | --- | --- |
 | LLM | `LLMEngine` | 文本消息 | 流式文本 |
 | VLM | `VLMEngine` | 文本消息和图像 | 流式文本 |
-| STT | 原生 ASR 使用 `STTEngine`；`WhisperEngine` 仅作为 preview bridge | 音频 | 文本 |
+| STT | 原生 ASR 使用 `STTEngine`；`WhisperEngine` 仅作为 预览桥接 | 音频 | 文本 |
 | TTS | `TTSEngine` | 文本 | PCM 音频 |
 
 ## 推荐预览模型

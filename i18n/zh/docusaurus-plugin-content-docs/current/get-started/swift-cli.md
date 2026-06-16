@@ -5,18 +5,18 @@ title: Swift CLI 验证
 
 # Swift CLI 验证
 
-当你想在接入 Edge Kit 和 Edge Halo 到 app 前，先跑一条可重复的 SDK 验证路径时，使用本页。
+当你想在接入 Edge Kit 和 Edge Halo 到 App 前，先跑一条可重复的 SDK 验证路径时，使用本页。
 
 这里有两条独立流程：
 
-1. **在 app 中接入 SDK。** 在 app 的 `Package.swift` 添加已发布的 Swift packages。
-2. **运行验证 CLI。** 从 EdgeStudio 的 `tests/smoke_test` 构建并运行 `edge-swift` smoke CLI。
+1. **在 App 中接入 SDK。** 在 App 的 `Package.swift` 添加已发布的 Swift 包。
+2. **运行验证 CLI。** 从 EdgeStudio 的 `tests/smoke_test` 构建并运行 `edge-swift` 冒烟检查 CLI。
 
-`edge-swift` 是验证工具，不是要加入 app 的 SDK product。它保留在 EdgeStudio，避免把验证 CLI 下沉到基础 SDK 仓库。
+`edge-swift` 是验证工具，不是要加入 App 的 SDK product。它保留在 EdgeStudio，避免把验证 CLI 下沉到基础 SDK 仓库。
 
-## 在 app 中接入 Edge packages
+## 在 App 中接入 Edge 包
 
-开发者预览包必须 exact pin：
+开发者预览包必须精确固定版本：
 
 ```swift
 // Package.swift
@@ -39,7 +39,7 @@ dependencies: [
 )
 ```
 
-当前 preview 中，Edge Kit `1.0.0-rc95` 与 Edge Halo `1.0.0-rc17` 都使用 Edge Engine `1.0.0-rc136`。部分 preview package resolution 路径可能需要 AtomGradient preview access 或 SSH access。
+当前预览版中，Edge Kit `1.0.0-rc95` 与 Edge Halo `1.0.0-rc17` 都使用 Edge Engine `1.0.0-rc136`。部分预览包解析路径可能需要 AtomGradient 预览访问权限或 SSH 访问权限。
 
 ## 运行 EdgeStudio 验证 CLI
 
@@ -56,7 +56,7 @@ git clone https://github.com/AtomGradient/edge-halo.git edge-halo
 git -C edge-halo checkout 1.0.0-rc17
 ```
 
-从 smoke package 目录运行：
+从冒烟检查 package 目录运行：
 
 ```bash
 cd tests/smoke_test
@@ -80,9 +80,9 @@ swift run edge-swift imprint validate --fixture --json
 swift run edge-swift imprint restore --fixture --json
 ```
 
-fixture restore 命令是 **receipt-only smoke**。它验证 restore coordinator 与 apply-status receipt 路径，但不会把 artifact 注入到 engine。
+fixture 恢复命令是 **仅回执冒烟检查**。它验证 restore coordinator 与 apply-status 回执路径，但不会把产物注入到 engine。
 
-验证 fail-closed receipt 路径：
+验证失败即关闭回执路径：
 
 ```bash
 set +e
@@ -92,9 +92,9 @@ set -e
 test "$status" -eq 1
 ```
 
-## 模型 smoke 检查
+## 模型冒烟检查
 
-准备好本地模型后，运行分类 smoke：
+准备好本地模型后，运行分类冒烟检查：
 
 ```bash
 swift run edge-swift smoke llm /path/to/qwen-model --level all
@@ -108,14 +108,14 @@ swift run edge-swift smoke tts /path/to/tts-model --output ./tts-output
 ## 安全边界
 
 - `halo-bridge-check`、`imprint validate --fixture` 和 `imprint restore --fixture` 不加载模型。
-- `imprint restore --fixture` 是 receipt-only smoke，不是生产 artifact restore。
-- fixture 命令使用 synthetic descriptors 和 hash-only reports；不包含原始用户文本或文件内容。
+- `imprint restore --fixture` 是仅回执冒烟检查，不是生产产物恢复。
+- fixture 命令使用合成 descriptors 和仅哈希 reports；不包含原始用户文本或文件内容。
 - Swift Package Manager 解析依赖完成后，fixture 命令本身不使用网络。
-- App 业务数据留在 app 层，不进入 Edge Kit、Edge Halo 或验证 CLI。
+- App 业务数据留在 App 层，不进入 Edge Kit、Edge Halo 或验证 CLI。
 
 ## CI 示例
 
-这个示例只作为 C3 文档片段。请按你的 preview access 环境调整路径和 token。
+这个示例只作为 C3 文档片段。请按你的预览访问权限环境调整路径和 token。
 
 ```yaml
 name: Edge Swift CLI smoke

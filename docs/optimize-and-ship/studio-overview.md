@@ -7,9 +7,9 @@ title: Edge Studio Overview
 
 Edge Studio is a local web workbench for model optimization, validation, export, and device coordination. It takes a source model and produces deployment-ready artifacts: Edge Kit bundles, GGUF/CoreML exports, Neural Imprint artifacts, or a complete Edge Scaffold project.
 
-:::info Developer Preview
-Validate every exported model on the target device before shipping. Build success alone is not sufficient.
-:::
+> **Developer Preview**
+>
+> Validate every exported model on the target device before shipping. Build success alone is not sufficient.
 
 ## Where it fits
 

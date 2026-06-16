@@ -28,7 +28,7 @@ Edge Studio 导出优化后的模型和 app 项目，供下游使用。
 
 Edge Scaffold 导出会创建一个 iOS 项目，其中包含：
 
-- App metadata。
+- App 元数据。
 - 模型引用。
 - 生成的配置文件。
 - Edge Kit 集成。

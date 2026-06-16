@@ -20,7 +20,7 @@ Microphone -> STTEngine -> LLMEngine -> TTSEngine -> Speaker
 - 已通过 Swift Package Manager 添加 Edge Kit。
 - 同一 package setup 中可用的 Edge Voice，用于麦克风录音。
 - STT、LLM 和 TTS 模型的本地模型目录。
-- app 的 `Info.plist` 中包含麦克风用途说明。
+- App 的 `Info.plist` 中包含麦克风用途说明。
 
 ```xml
 <key>NSMicrophoneUsageDescription</key>
@@ -29,7 +29,7 @@ Microphone -> STTEngine -> LLMEngine -> TTSEngine -> Speaker
 
 ## 完整代码
 
-创建新的 SwiftUI app target，添加 Edge Kit，并将 app 代码替换为以下内容：
+创建新的 SwiftUI 应用 target，添加 Edge Kit，并将 App 代码替换为以下内容：
 
 ```swift
 import AVFoundation

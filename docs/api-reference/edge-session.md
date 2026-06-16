@@ -7,9 +7,9 @@ title: EdgeSession
 
 `EdgeSession` contains SDK-owned conversation orchestration helpers. It keeps chat history, mode transitions, cancellation, timeout handling, optional tool loops, and memory-policy compaction out of product-specific app code.
 
-:::info Developer Preview boundary
-`EdgeSession` does not own model loading, product prompts, tool implementations, or business data. Apps provide an `EdgeGenerationClient` that bridges to their loaded `LLMEngine` or `VLMEngine`.
-:::
+> **Developer Preview boundary**
+>
+> `EdgeSession` does not own model loading, product prompts, tool implementations, or business data. Apps provide an `EdgeGenerationClient` that bridges to their loaded `LLMEngine` or `VLMEngine`.
 
 ## ChatSessionController
 

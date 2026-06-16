@@ -5,7 +5,7 @@ title: 内存管理
 
 # 内存管理
 
-Edge Kit 会自动管理模型和生成内存，但 app 层选择仍然重要。
+Edge Kit 会自动管理模型和生成内存，但 App 层选择仍然重要。
 
 ## 为什么 iOS 内存不同
 
@@ -31,7 +31,7 @@ iOS 可能在物理 RAM 耗尽前终止 app。请把进程 footprint 和真实�
 | --- | --- |
 | `.balanced` | 大多数聊天会话的默认选择。 |
 | `.longSession` | 希望在设备预算允许时保留更多 resident context。 |
-| `.exactRecall` | 会话经常涉及金额、日期、计数或可审计事实。精确数据仍应配合 app-owned tool 或 fact-store recall。 |
+| `.exactRecall` | 会话经常涉及金额、日期、计数或可审计事实。精确数据仍应配合 App 拥有 tool 或 fact-store recall。 |
 | `.batteryFriendly` | 面向热状态或电量敏感流程，降低 resident-state 压力。 |
 
 ```swift
@@ -72,7 +72,7 @@ await ttsEngine.unloadAsync()
 ## App 最佳实践
 
 - 在你支持的最低内存设备上测试。
-- 使用 Release build 验证内存。
+- 使用 Release 构建 验证内存。
 - 避免同时加载多个大型 engine。
 - 当不需要全分辨率时，在发送到 VLM 前缩小图像。
 - 保持长时间生成可取消。

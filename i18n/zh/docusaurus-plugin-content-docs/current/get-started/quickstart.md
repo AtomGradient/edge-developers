@@ -7,9 +7,9 @@ title: 快速开始
 
 安装 Edge Kit，加载本地模型，并从端侧 LLM 流式输出 token。
 
-:::info 开发者预览
-Edge Kit 目前处于**开发者预览**阶段。请固定你测试过的包版本，并在每次升级后重新进行真机验证。
-:::
+> **开发者预览**
+>
+> Edge Kit 目前处于**开发者预览**阶段。请固定你测试过的包版本，并在每次升级后重新进行真机验证。
 
 ## 要求
 
@@ -21,11 +21,11 @@ Edge Kit 目前处于**开发者预览**阶段。请固定你测试过的包版�
 | Swift | 5.9 或更高 |
 | 硬件 | Apple Silicon |
 
-对于运行较大模型的 iOS 应用，请在 app target 中启用 Increased Memory Limit entitlement。
+对于运行较大模型的 iOS 应用，请在应用 target 中启用 Increased Memory Limit entitlement。
 
 ## 使用 Swift Package Manager 安装
 
-将 Edge Kit 添加到你的 package：
+将 Edge Kit 添加到你的 Swift package：
 
 ```swift
 // Package.swift
@@ -34,11 +34,11 @@ dependencies: [
 ]
 ```
 
-开发者预览版本应使用 exact pin。升级到新的 `1.0.0-rcN` tag 前，请重新完成真机验证。
+开发者预览版本应精确固定版本。升级到新的 `1.0.0-rcN` tag 前，请重新完成真机验证。
 
-:::info Preview access
-公开文档使用 HTTPS package URL。当前 preview 中，部分 package resolution 路径仍可能因为 Edge Engine 等传递依赖需要 AtomGradient preview access 或 SSH access。请在实际开发和 CI 使用的同一环境里验证 `swift package resolve`。
-:::
+> **预览访问权限**
+>
+> 公开文档使用 HTTPS package URL。当前预览版中，部分包解析路径仍可能因为 Edge Engine 等传递依赖需要 AtomGradient 预览访问权限或 SSH 访问权限。请在实际开发和 CI 使用的同一环境里验证 `swift package resolve`。
 
 然后添加你需要的 product：
 
@@ -51,7 +51,7 @@ dependencies: [
 )
 ```
 
-如果需要 umbrella product，请使用 `EdgeKit`：
+如果需要 总入口 product，请使用 `EdgeKit`：
 
 ```swift
 .product(name: "EdgeKit", package: "edge-kit")
@@ -76,7 +76,7 @@ for try await chunk in engine.generate(
 
 ## 准备已注册模型
 
-`ModelConfig` 包含受支持模型家族的预览模型条目。在 native default build 中，先用 `EdgeModelKit` 准备模型，再通过 `loadLocal(directory:)` 加载本地缓存目录。
+`ModelConfig` 包含受支持模型家族的预览模型条目。在 原生默认构建 中，先用 `EdgeModelKit` 准备模型，再通过 `loadLocal(directory:)` 加载本地缓存目录。
 
 ```swift
 import EdgeInference

@@ -14,7 +14,7 @@ title: 个性化模型
 3. 校验 Neural Imprint capsule。
 4. 仅在兼容性检查通过后恢复 capsule。
 
-Profile job 和 artifact generation 应放在你的本地数据层后面，或直接参考 Edge Scaffold 流程。
+Profile job 和 产物生成 应放在你的本地数据层后面，或直接参考 Edge Scaffold 流程。
 
 ## SwiftUI 设置页流程
 
@@ -192,27 +192,27 @@ private extension UserProfile {
 
 ## Runtime bridge reference
 
-Use the Edge Scaffold runtime bridge as the runnable reference. 可运行参考见 `edge-scaffold` 仓库中的 `EdgeScaffold/AI/ScaffoldHaloRuntimeAdapter.swift`。
+Use the Edge Scaffold 运行时 bridge as the runnable reference. 可运行参考见 `edge-scaffold` 仓库中的 `EdgeScaffold/AI/ScaffoldHaloRuntimeAdapter.swift`。
 
 Scaffold adapter 属于 app-layer code，不属于基础框架：
 
 - `ScaffoldHaloRuntimeAdapter` 实现 `HaloTextGenerator` 和 `HaloEngineSession`。
 - 它通过 chat 使用的已加载 `LLMEngine` 或 `VLMEngine` session 做 tokenize 和 generate。
 - 它通过 `LLMEngine.captureHiddenStates(...)` 或 `VLMEngine.captureHiddenStates(...)` 捕获 profile activations。
-- 它通过 `AIManager.restorePersonaKVCacheForHalo(from:)` 恢复兼容的 Neural Imprint artifact。
+- 它通过 `AIManager.restorePersonaKVCacheForHalo(from:)` 恢复兼容的 Neural Imprint 产物。
 
-不要在 app code 中 stub generation output 或 hidden states。如果已加载 runtime 不可用、不兼容，或缺少需要的 capture/restore path，app 应 fail closed，并保持 base model active。
+不要在 app code 中 stub generation output 或 hidden states。如果已加载 runtime 不可用、不兼容，或缺少需要的 capture/restore path，app 应 失败即关闭，并保持 base model active。
 
 ## Capsule storage 与 runtime requirements
 
-生产 app 通常从 Edge Studio export、Edge Scaffold flow、app-owned local storage 或可信 EdgeMesh transfer 加载 capsule manifest 与本地 artifact URL。调用 `validateCapsule` 和 `activateCapsule` 前，runtime requirements 应来自当前已加载模型、tokenizer、tool schema 和 runtime identity。
+生产 App 通常从 Edge Studio export、Edge Scaffold flow、App 拥有 local storage 或可信 EdgeMesh transfer 加载 capsule manifest 与本地 产物 URL。调用 `validateCapsule` 和 `activateCapsule` 前，runtime requirements 应来自当前已加载模型、tokenizer、工具 schema 和 runtime identity。
 
-Storage 和 reset policy 留在 app layer。Edge Kit 与 Edge Halo 提供可复用 runtime 和 lifecycle infrastructure；它们不应拥有 app-specific records 或 product policy。
+Storage 和 reset policy 留在 App 层。Edge Kit 与 Edge Halo 提供可复用 runtime 和 lifecycle infrastructure；它们不应拥有 App 专属 records 或 产品策略。
 
 ## 集成注意事项
 
 - 原始用户文本留在本地 app storage。
-- 诊断使用 hashes 和 status receipts。
+- 诊断使用 hashes 和 状态回执s。
 - 只有 `validateCapsule` 成功后才 restore。
 - 个性化缺失或不兼容时，保持 base model 可用。
 - 不要把 profile text 加进每次 system prompt；应恢复 artifact。
@@ -221,6 +221,6 @@ Storage 和 reset policy 留在 app layer。Edge Kit 与 Edge Halo 提供可复�
 ## 下一步
 
 - 阅读 [模型进化能力指南](/docs/build/model-evolution)。
-- 如需了解 Neural Imprint artifacts 的跨 App 兼容性检查，请阅读 [Artifact 复用](artifact-reuse.md)。
-- 当 artifacts 需要在受信任的用户自有设备间移动时，使用 [设备 Mesh](/docs/build/device-mesh)。
+- 如需了解 Neural Imprint 产物的跨 App 兼容性检查，请阅读 [Artifact 复用](artifact-reuse.md)。
+- 当 产物需要在受信任的用户自有设备间移动时，使用 [设备 Mesh](/docs/build/device-mesh)。
 - 使用 [Edge Scaffold](/docs/optimize-and-ship/scaffold) 作为参考 iOS 实现。

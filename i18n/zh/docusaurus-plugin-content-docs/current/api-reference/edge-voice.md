@@ -5,11 +5,11 @@ title: EdgeVoice
 
 # EdgeVoice API 参考
 
-`EdgeVoice` 包含音频录制 API 和 Whisper preview bridge。
+`EdgeVoice` 包含音频录制 API 和 Whisper 预览桥接。
 
-:::info 当前 preview 边界
-在 `edge-kit@1.0.0-rc95` 中，`WhisperEngine` 是为未来 whisper.cpp xcframework integration 保留的 skeleton。它不执行真实转写。当前 preview 的可运行原生 ASR 示例请使用 `EdgeInference` 中的 `STTEngine`。
-:::
+> **当前预览版 边界**
+>
+> 在 `edge-kit@1.0.0-rc95` 中，`WhisperEngine` 是为未来 whisper.cpp xcframework integration 保留的 skeleton。它不执行真实转写。当前预览版 的可运行原生 ASR 示例请使用 `EdgeInference` 中的 `STTEngine`。
 
 ## AudioRecorder
 
@@ -42,7 +42,7 @@ let finalURL = recorder.stopRecording() ?? url
 public final class WhisperEngine: ObservableObject
 ```
 
-面向 Whisper 家族模型的 preview bridge。
+面向 Whisper 家族模型的 预览桥接。
 
 | 属性或方法 | 描述 |
 | --- | --- |

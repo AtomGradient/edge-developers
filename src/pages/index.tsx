@@ -52,7 +52,7 @@ const zhSteps: Step[] = [
   {
     label: '1',
     title: '安装预览版 CLI',
-    body: 'Preview 阶段先使用源码 checkout。公开 pip package 是目标发布路径，但现在还没有发布到 PyPI。',
+    body: '预览阶段先使用源码安装。公开 pip 包是目标发布路径，但现在还没有发布到 PyPI。',
     link: '/docs/get-started/source-build',
   },
   {
@@ -64,7 +64,7 @@ const zhSteps: Step[] = [
   {
     label: '3',
     title: '运行学习闭环',
-    body: '检查合成样本，生成本地 Neural Imprint artifact，在兼容性闸门下恢复，并对比 receipt。',
+    body: '检查合成样本，生成本地 Neural Imprint 产物，在兼容性闸门下恢复，并对比本地回执。',
     link: '/docs/get-started/minute-demo',
   },
 ];
@@ -94,17 +94,17 @@ const zhPaths: LinkCard[] = [
   {
     eyebrow: 'Python / CLI',
     title: '最快获得第一感的路径',
-    body: '如果你想先看到本地模型工作流，从这里开始：显式下载模型、普通多轮对话、合成纠错样本、Neural Imprint 恢复，以及 hash-only 对比 receipt。',
+    body: '如果你想先看到本地模型工作流，从这里开始：显式下载模型、普通多轮对话、合成纠错样本、Neural Imprint 恢复，以及仅哈希的对比回执。',
     primaryLabel: '开始 CLI 路径',
     primaryLink: '/docs/get-started/source-build',
-    secondaryLabel: '阅读学习 demo',
+    secondaryLabel: '阅读学习演示',
     secondaryLink: '/docs/get-started/minute-demo',
   },
   {
     eyebrow: 'iOS / Swift',
-    title: '最小 app 路径',
-    body: 'CLI 路径跑通后，或者你已经有 preview access 时，再走这条路径。先构建最小 iOS shell，再有意识地接入 Edge Kit、Edge Halo 和 Edge Scaffold。',
-    primaryLabel: '构建最小 iOS app',
+    title: '最小应用路径',
+    body: 'CLI 路径跑通后，或者你已经有预览访问权限时，再走这条路径。先构建最小 iOS 应用壳，再有意识地接入 Edge Kit、Edge Halo 和 Edge Scaffold。',
+    primaryLabel: '构建最小 iOS 应用',
     primaryLink: '/docs/get-started/minimal-ios-app',
     secondaryLabel: 'Swift SDK 设置',
     secondaryLink: '/docs/get-started/quickstart',
@@ -181,7 +181,7 @@ const zhCapabilities: LinkCard[] = [
   {
     eyebrow: '核心概念',
     title: 'Neural Imprint',
-    body: '本地个性化 artifact，在兼容性闸门下恢复用户相关运行时状态，不改模型权重。',
+    body: '本地个性化产物，在兼容性闸门下恢复用户相关运行时状态，不改模型权重。',
     primaryLabel: '模型进化',
     primaryLink: '/docs/build/model-evolution',
   },
@@ -195,13 +195,13 @@ const zhCapabilities: LinkCard[] = [
   {
     eyebrow: '本地设备网格',
     title: 'Device Mesh',
-    body: '在用户可信自有 Apple 设备之间路由和传输 artifacts。',
+    body: '在用户可信自有 Apple 设备之间路由和传输产物。',
     primaryLabel: 'Device Mesh 指南',
     primaryLink: '/docs/build/device-mesh',
   },
 ];
 
-const CODE = `# install once during Developer Preview
+const EN_CODE = `# install once during Developer Preview
 git clone https://github.com/AtomGradient/edge-studio.git
 cd edge-studio
 python3.11 -m venv .venv
@@ -212,12 +212,24 @@ python -m pip install -e .
 edge models fetch qwen3.5-9b-4bit --source auto
 edge demo chat --model qwen3.5-9b-4bit --interactive`;
 
+const ZH_CODE = `# 预览阶段安装一次
+git clone https://github.com/AtomGradient/edge-studio.git
+cd edge-studio
+python3.11 -m venv .venv
+source .venv/bin/activate
+python -m pip install -e .
+
+# 第一次本地多轮对话
+edge models fetch qwen3.5-9b-4bit --source auto
+edge demo chat --model qwen3.5-9b-4bit --interactive`;
+
 export default function Home(): React.JSX.Element {
   const {i18n} = useDocusaurusContext();
   const isZh = i18n.currentLocale === 'zh';
   const steps = isZh ? zhSteps : enSteps;
   const paths = isZh ? zhPaths : enPaths;
   const capabilities = isZh ? zhCapabilities : enCapabilities;
+  const code = isZh ? ZH_CODE : EN_CODE;
 
   return (
     <Layout
@@ -233,7 +245,7 @@ export default function Home(): React.JSX.Element {
             </h1>
             <p className={styles.heroSubtitle}>
               {isZh
-                ? 'Edge 的第一条开发者路径很简单：下载预览基准模型，进入本地多轮对话，然后用合成样本生成并恢复 Neural Imprint，用本地 receipt 对比结果。'
+                ? 'Edge 的第一条开发者路径很简单：下载预览基准模型，进入本地多轮对话，然后用合成样本生成并恢复 Neural Imprint，用本地回执对比结果。'
                 : 'The first Edge developer path is deliberately small: download the preview baseline model, enter a local multi-turn chat, then use a synthetic sample to generate and restore a Neural Imprint artifact with a local comparison receipt.'}
             </p>
             <p className={styles.heroNote}>
@@ -246,13 +258,13 @@ export default function Home(): React.JSX.Element {
                 {isZh ? '开始 CLI 路径' : 'Start the CLI path'}
               </Link>
               <Link to="/docs/get-started/minute-demo" className={styles.secondaryButton}>
-                {isZh ? '查看学习 demo' : 'View the learning demo'}
+                {isZh ? '查看学习演示' : 'View the learning demo'}
               </Link>
             </div>
           </div>
           <div className={styles.heroCode}>
             <CodeBlock language="bash" title={isZh ? '最快验证路径' : 'Fastest validation path'}>
-{CODE}
+{code}
             </CodeBlock>
           </div>
         </div>
@@ -286,7 +298,7 @@ export default function Home(): React.JSX.Element {
             <h2>{isZh ? 'Python 先证明价值，Swift 再集成到 app' : 'Python proves the value first, Swift takes it into apps'}</h2>
             <p>
               {isZh
-                ? '两条路径必须分清：CLI 是最快体验路径；iOS/Swift 是 app 集成路径，需要 preview access 和真机构建验证。'
+                ? '两条路径必须分清：CLI 是最快体验路径；iOS/Swift 是应用集成路径，需要预览访问权限和真机构建验证。'
                 : 'Keep the paths separate: CLI is the fastest experience path; iOS/Swift is the app integration path and requires preview access plus device validation.'}
             </p>
           </div>

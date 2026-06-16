@@ -7,9 +7,9 @@ title: EdgeHalo
 
 `EdgeHalo` 管理本地个性化生命周期：profile jobs、Neural Imprint capsule compatibility 和 restore orchestration。
 
-:::info 开发者预览
-当前 preview 中部分 profile-analysis 与 capsule API 仍偏底层。新集成建议先参考 Edge Scaffold 流程。
-:::
+> **开发者预览**
+>
+> 当前预览版 中部分 profile-analysis 与 capsule API 仍偏底层。新集成建议先参考 Edge Scaffold 流程。
 
 ## EdgeHalo
 
@@ -21,14 +21,14 @@ public actor EdgeHalo
 
 | 属性或方法 | 说明 |
 | --- | --- |
-| `init(engine:generator:dataStream:)` | 使用 app-provided runtime bridges 创建 `EdgeHalo` actor。 |
+| `init(engine:generator:dataStream:)` | 使用 App 提供 运行时 bridges 创建 `EdgeHalo` actor。 |
 | `evolutionState` | 面向产品 UI 的高层模型进化状态。 |
 | `currentProfile` | 最近一次本地 profile result。 |
 | `haloState` | Capsule validation 和 restore 状态。 |
 | `activeCapsule` | 已恢复兼容 Neural Imprint 时的 active `HaloCapsule`。 |
 | `runProfileAnalysis(...)` | 从 prepared inputs 和导出资源运行本地 profile job。 |
 | `validateCapsule(_:currentRequirements:)` | 检查 capsule 是否能恢复到当前 runtime。 |
-| `activateCapsule(_:currentRequirements:)` | 恢复兼容 capsule；不匹配时 fail closed。 |
+| `activateCapsule(_:currentRequirements:)` | 恢复兼容 capsule；不匹配时 失败即关闭。 |
 
 ## HaloTextGenerator
 
@@ -49,15 +49,15 @@ public protocol HaloTextGenerator: Sendable
 public protocol HaloEngineSession: Sendable
 ```
 
-由 agent 实现的 runtime bridge。Edge Halo 不直接 import Edge Kit；app 负责把两个包接起来。
+由 agent 实现的 运行时 bridge。Edge Halo 不直接 import Edge Kit；app 负责把两个包接起来。
 
 | 方法 | 说明 |
 | --- | --- |
 | `captureHiddenState(tokens:layer:)` | 捕获 profile workflow 需要的模型状态。 |
 | `captureFullCache(tokenIds:)` | 在支持时捕获本地 Neural Imprint prefix artifact。 |
-| `restoreFullCache(_:artifactURL:)` | 恢复兼容的 Neural Imprint artifact。 |
+| `restoreFullCache(_:artifactURL:)` | 恢复兼容的 Neural Imprint 产物。 |
 
-当前 preview protocol 还包含高级可选 runtime hooks。多数 agent 可以保持不支持，除非 release notes 或 scaffold 集成明确需要。
+当前预览版 protocol 还包含高级可选 运行时 hooks。多数 agent 可以保持不支持，除非 release notes 或 scaffold 集成明确需要。
 
 ## EvolutionState
 
@@ -70,7 +70,7 @@ public enum EvolutionState: Sendable, Equatable
 | `.idle` | 没有活动中的 evolution task。 |
 | `.collecting(progress:)` | 正在收集本地数据，等待 profile refresh。 |
 | `.readyToBuildCapsule` | 已有足够数据，可以 build 或 receive 新 artifact。 |
-| `.buildingCapsule` | 本地 artifact 正在准备。 |
+| `.buildingCapsule` | 本地 产物正在准备。 |
 | `.validating(capsuleID:)` | Capsule 恢复前正在校验。 |
 | `.evolved(capsuleID:)` | 兼容 capsule 已 active。 |
 
@@ -87,7 +87,7 @@ public enum HaloState: Sendable, Equatable
 | `.idle` | 没有 capsule 状态。 |
 | `.collecting(factsCount:threshold:)` | 个性化运行前还需要更多本地数据。 |
 | `.profiling` | Profile inputs 正在准备。 |
-| `.buildingCapsule` | Neural Imprint artifact 正在准备。 |
+| `.buildingCapsule` | Neural Imprint 产物正在准备。 |
 | `.validating(capsuleID:)` | 正在运行兼容性闸门。 |
 | `.active(capsuleID:)` | 兼容 capsule 已恢复。 |
 | `.incompatible(capsuleID:reason:)` | Restore 被拒绝。保持 base model active。 |
@@ -99,7 +99,7 @@ public enum HaloState: Sendable, Equatable
 public struct HaloCapsule: Sendable, Equatable, Codable
 ```
 
-Neural Imprint capsule manifest 和可选本地 artifact URL 的容器。
+Neural Imprint capsule manifest 和可选本地 产物 URL 的容器。
 
 | 属性 | 类型 |
 | --- | --- |
@@ -112,7 +112,7 @@ Neural Imprint capsule manifest 和可选本地 artifact URL 的容器。
 public struct HaloCapsuleManifest: Sendable, Equatable, Codable
 ```
 
-用于校验和描述 capsule 的 metadata。
+用于校验和描述 capsule 的 元数据。
 
 | 属性 | 说明 |
 | --- | --- |
@@ -120,8 +120,8 @@ public struct HaloCapsuleManifest: Sendable, Equatable, Codable
 | `createdAt` | 创建时间。 |
 | `baseModelID` | Capsule 目标 base model。 |
 | `requirements` | 恢复所需 runtime identity。 |
-| `cacheSnapshot` | Artifact snapshot metadata。 |
-| `artifactSHA256` | 本地 artifact bytes hash，如可用。 |
+| `cacheSnapshot` | Artifact snapshot 元数据。 |
+| `artifactSHA256` | 本地 产物字节哈希，如可用。 |
 
 ## HaloCapsuleRequirements
 
@@ -129,7 +129,7 @@ public struct HaloCapsuleManifest: Sendable, Equatable, Codable
 public struct HaloCapsuleRequirements: Sendable, Equatable, Codable
 ```
 
-用于 fail-closed restore check 的 runtime identity。
+用于 失败即关闭 restore check 的 runtime identity。
 
 | 属性 | 说明 |
 | --- | --- |

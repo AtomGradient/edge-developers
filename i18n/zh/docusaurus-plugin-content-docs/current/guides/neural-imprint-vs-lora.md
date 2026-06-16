@@ -9,7 +9,7 @@ Neural Imprint 是本地 artifact 和 restore flow。它面向需要用户特定
 
 本页只在公开产品层面对比三种有效的个性化模式：
 
-- Neural Imprint artifact restore
+- Neural Imprint 产物 restore
 - LoRA 或 SFT weight adaptation
 - Prompt stuffing
 
@@ -19,21 +19,21 @@ Neural Imprint 是本地 artifact 和 restore flow。它面向需要用户特定
 
 | Pattern | 改变什么 | 发生时机 | 隐私与更新契约 |
 |---|---|---|---|
-| Neural Imprint artifact restore | 将本地 runtime artifact 恢复进兼容 base model session | Runtime，且 compatibility gates 通过后 | Base weights 不变；artifact 是本地、可删除用户数据 |
+| Neural Imprint 产物 restore | 将本地 runtime artifact 恢复进兼容 base model session | Runtime，且 compatibility gates 通过后 | Base weights 不变；artifact 是本地、可删除用户数据 |
 | LoRA / SFT | 训练并发布 model weights 或 adapter weights | Training 或 fine-tuning 阶段 | 产生新的 model 或 adapter release，需要分发和验证 |
 | Prompt stuffing | 每次请求都插入额外 profile 或 instruction text | Request time | 在 prompt context 中重复私有 profile text，并占用 context budget |
 
-## Neural Imprint artifact restore
+## Neural Imprint 产物 restore
 
-Neural Imprint 保持 base model 不变。你的 app 或本地 workflow 创建 Neural Imprint artifact，把它作为本地用户数据存储，并且只在 compatibility gates 通过后 restore。
+Neural Imprint 保持 base model 不变。你的 app 或本地 workflow 创建 Neural Imprint 产物，把它作为本地用户数据存储，并且只在 compatibility gates 通过后 restore。
 
 关键属性：
 
 - **Base weights unchanged。** Base model package 保持不变。
 - **Local artifact。** 个性化状态作为本地 artifact 存储，并可删除。
-- **Compatibility gates。** Restore 前必须校验 model identity、runtime version、tokenizer identity、tool schema hash 和 artifact metadata。
+- **Compatibility gates。** Restore 前必须校验 model identity、runtime version、tokenizer identity、工具 schema hash 和 artifact 元数据。
 - **No profile text replay。** Restore 后 chat 仍走同一条 generation path；app 不应把 profile text 粘贴进每次 system prompt。
-- **Fail closed。** 如果 validation 失败，保持 base model active，并提供 regenerate、re-export 或 load matching model 等恢复路径。
+- **Fail closed。** 如果 validation 失败，保持 base model active，并提供 重新生成erate、re-export 或 load matching model 等恢复路径。
 
 这段解释刻意停留在公开 API 与 workflow 层级。它不描述私有 artifact 构造、模型个性化算法、训练内部机制、runtime 内部机制或实现公式。
 
@@ -63,11 +63,11 @@ Neural Imprint 避免 request-time profile replay。恢复后的 artifact 在 co
 
 ## 如何选择
 
-当你需要以下能力时，使用 Neural Imprint artifact restore：
+当你需要以下能力时，使用 Neural Imprint 产物 restore：
 
 - 本地用户特定状态；
 - 不改变 base weights；
-- fail-closed compatibility validation；
+- 失败即关闭 compatibility validation；
 - 用户可删除的个性化数据；
 - 不做 request-time profile text replay。
 

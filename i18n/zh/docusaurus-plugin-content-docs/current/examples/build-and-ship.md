@@ -12,9 +12,9 @@ title: 构建并发布 iOS App
 你将创建一个私有端侧聊天 app，包含：
 
 - 在 Edge Studio 中优化的模型。
-- 由 Edge Scaffold 生成的 SwiftUI app。
+- 由 Edge Scaffold 生成的 SwiftUI App。
 - 一个用于 app 名称、模型类别和 prompt 的配置文件。
-- 在真实 iPhone 或 iPad 上测试过的 Release build。
+- 在真实 iPhone 或 iPad 上测试过的 Release 构建。
 
 ## 1. 优化模型
 
@@ -42,7 +42,7 @@ title: 构建并发布 iOS App
 | Model delivery | 小模型使用 bundle；较大模型使用 remote 或 on-demand delivery。 |
 | Minimum OS | 与你验证过的设备匹配。 |
 
-Edge Studio 会写入一个 ZIP，其中包含 Edge Kit 所需的 app 模板、配置和模型 metadata。
+Edge Studio 会写入一个 ZIP，其中包含 Edge Kit 所需的 app 模板、配置和模型 元数据。
 
 ## 3. 在 Xcode 中打开
 
@@ -50,16 +50,16 @@ Edge Studio 会写入一个 ZIP，其中包含 Edge Kit 所需的 app 模板、�
 
 运行前：
 
-1. 选择你的 development team。
+1. 选择你的 开发者团队。
 2. 设置唯一 bundle identifier。
 3. 选择真实设备作为 run destination。
 4. 确认 deployment target 是 iOS 17 或更高。
 
-使用 Release build 进行性能验证。Debug build 适合编辑 UI，但不代表最终加载时间或吞吐。
+使用 Release 构建 进行性能验证。Debug build 适合编辑 UI，但不代表最终加载时间或吞吐。
 
 ## 4. 配置 ScaffoldConfig.swift
 
-`ScaffoldConfig.swift` 控制生成 app 的行为。
+`ScaffoldConfig.swift` 控制生成 App 的行为。
 
 ```swift
 import EdgeInference
@@ -76,7 +76,7 @@ enum ScaffoldConfig {
     static let modelDisplayName = "Qwen3.5 9B 4bit"
     static let modelSizeGB: Double = 5.4
 
-    // Use this when the model is included in the app bundle.
+    // Use this when the model is included in the App bundle.
     static let bundleModelName: String? = "Qwen3.5-9B-4bit"
 
     // Used only by TTS apps.
@@ -90,8 +90,8 @@ enum ScaffoldConfig {
 | --- | --- |
 | `appName` | app UI 中使用的显示名称。 |
 | `appDescription` | 简短 onboarding 和设置描述。 |
-| `defaultSystemPrompt` | 聊天类 app 的初始 system instruction。 |
-| `modelCategory` | app 使用哪条 UI 和 engine 路径。 |
+| `defaultSystemPrompt` | 聊天类 App 的初始 system instruction。 |
+| `modelCategory` | App 使用哪条 UI 和 engine 路径。 |
 | `modelID` | 用于日志、缓存 key 和设置的稳定标识符。 |
 | `modelDisplayName` | 人类可读的模型名称。 |
 | `modelSizeGB` | 设备检查中显示的近似大小。 |
@@ -115,7 +115,7 @@ enum ScaffoldConfig {
 <string>This app discovers your nearby devices for private on-device AI.</string>
 ```
 
-只包含已发布 app 实际使用的权限。
+只包含已发布 App 实际使用的权限。
 
 ## 6. 在设备上测试
 
@@ -123,7 +123,7 @@ Archive 前运行此检查清单：
 
 | 区域 | 验证内容 |
 | --- | --- |
-| First launch | app 打开，模型设置出现，没有缺失文件。 |
+| First launch | App 打开，模型设置出现，没有缺失文件。 |
 | Model load | 在最低支持设备上冷加载成功。 |
 | Generation | 第一条回复流式输出并完成。 |
 | Long session | 多轮使用保持响应。 |
@@ -151,9 +151,9 @@ Archive 前运行此检查清单：
 - 需要时已启用 Increased Memory Limit entitlement。
 - 模型交付策略已测试：bundled、on-demand 或 remote download。
 - 首次启动不依赖 developer-only 路径。
-- 已使用 Release build 在最低支持设备上测试。
+- 已使用 Release 构建 在最低支持设备上测试。
 - 设置中包含清理本地模型和个性化数据的方法。
-- App Store 隐私回答与已发布 app 行为一致。
+- App Store 隐私回答与已发布 App 行为一致。
 
 ## 下一步
 

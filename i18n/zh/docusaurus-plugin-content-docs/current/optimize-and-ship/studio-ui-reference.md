@@ -70,6 +70,6 @@ Edge Studio Web 界面每个路由的速查。主工作流见 [Studio 概览](/d
 
 | Route | Page | 作用 |
 |-------|------|-------------|
-| `/neural-imprint-chat` | Neural Imprint Chat | 使用 Mac 端 base model 预览已生成的 Neural Imprint artifact |
+| `/neural-imprint-chat` | Neural Imprint Chat | 使用 Mac 端 base model 预览已生成的 Neural Imprint 产物 |
 | `/devices` | Devices | EdgeMesh 设备管理和配对 |
 | `/export` | Export | 向导式导出流程 |

@@ -23,6 +23,10 @@
     "message": "语音转文字",
     "description": "The label of footer link with label=Speech to Text linking to /docs/capabilities/speech-to-text"
   },
+  "link.item.label.Speech & Voice": {
+    "message": "语音与声音",
+    "description": "The label of footer link with label=Speech & Voice linking to /docs/build/speech-to-text"
+  },
   "link.item.label.Text to Speech": {
     "message": "文字转语音",
     "description": "The label of footer link with label=Text to Speech linking to /docs/capabilities/text-to-speech"

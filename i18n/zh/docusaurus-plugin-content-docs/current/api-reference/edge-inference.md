@@ -21,7 +21,7 @@ public final class LLMEngine: ObservableObject
 | 属性 | 类型 | 描述 |
 | --- | --- | --- |
 | `state` | `EngineState` | 当前 engine 状态。 |
-| `loadedConfig` | `ModelConfig?` | 可用时记录的已注册模型 metadata。 |
+| `loadedConfig` | `ModelConfig?` | 可用时记录的已注册模型 元数据。 |
 | `downloadProgress` | `Double` | 从 `0` 到 `1` 的下载或加载进度。 |
 | `lastPolicy` | `InferencePolicy.Resolved?` | 上一次高层策略摘要。 |
 | `lastMetrics` | `InferenceMetrics?` | 上一次完成生成的指标。 |
@@ -33,7 +33,7 @@ public final class LLMEngine: ObservableObject
 | 方法 | 描述 |
 | --- | --- |
 | `init()` | 创建 engine。 |
-| `load(config:onProgress:)` | Preview metadata hook。native default build 不在这里下载远程模型；请用 `EdgeModelKit` 准备本地目录，再调用 `loadLocal(directory:)`。 |
+| `load(config:onProgress:)` | 预览元数据 hook。原生默认构建不在这里下载远程模型；请用 `EdgeModelKit` 准备本地目录，再调用 `loadLocal(directory:)`。 |
 | `loadLocal(directory:onProgress:)` | 加载本地模型目录。 |
 | `loadLocal(directory:options:onProgress:)` | 使用 runtime options 加载本地模型目录，例如 `memoryIntent`。 |
 | `generate(messages:tools:onToolCall:parameters:bypassPolicy:)` | 流式返回 `GenerateChunk` 值。 |
@@ -69,7 +69,7 @@ public final class VLMEngine: ObservableObject
 | --- | --- |
 | `init()` | 创建 engine。 |
 | `loadLocal(directory:onProgress:)` | 加载本地 VLM 目录。 |
-| `load(config:onProgress:)` | Preview metadata hook。native default build 不在这里下载远程 VLM；请先准备本地目录，再调用 `loadLocal(directory:)`。 |
+| `load(config:onProgress:)` | 预览元数据 hook。原生默认构建不在这里下载远程 VLM；请先准备本地目录，再调用 `loadLocal(directory:)`。 |
 | `generate(messages:images:tools:onToolCall:parameters:)` | 从 URL 图像流式生成文本。 |
 | `generate(messages:ciImages:tools:onToolCall:parameters:)` | 从内存中的 `CIImage` 值流式生成文本。 |
 | `generateStream(messages:images:parameters:)` | 对 URL-image generation 的便捷 stream wrapper。 |

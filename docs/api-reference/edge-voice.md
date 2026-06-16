@@ -7,9 +7,9 @@ title: EdgeVoice
 
 `EdgeVoice` contains audio recording APIs and a Whisper preview bridge.
 
-:::info Current preview boundary
-In `edge-kit@1.0.0-rc95`, `WhisperEngine` is a skeleton for future whisper.cpp xcframework integration. It does not perform real transcription. Use `STTEngine` from `EdgeInference` for runnable native ASR examples in the current preview.
-:::
+> **Current preview boundary**
+>
+> In `edge-kit@1.0.0-rc95`, `WhisperEngine` is a skeleton for future whisper.cpp xcframework integration. It does not perform real transcription. Use `STTEngine` from `EdgeInference` for runnable native ASR examples in the current preview.
 
 ## AudioRecorder
 

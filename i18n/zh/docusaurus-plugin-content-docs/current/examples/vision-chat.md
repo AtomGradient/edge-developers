@@ -17,7 +17,7 @@ title: 视觉聊天
 
 ## 完整代码
 
-创建新的 iOS SwiftUI app target，添加 Edge Kit，并将 app 代码替换为以下内容：
+创建新的 iOS SwiftUI 应用 target，添加 Edge Kit，并将 App 代码替换为以下内容：
 
 ```swift
 import CoreImage

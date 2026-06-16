@@ -7,9 +7,9 @@ title: EdgeHalo
 
 `EdgeHalo` manages the local personalization lifecycle: profile jobs, Neural Imprint capsule compatibility, and restore orchestration.
 
-:::info Developer Preview
-Some profile-analysis and capsule APIs are intentionally low-level in the current preview. Prefer the Edge Scaffold reference flow when starting a new integration.
-:::
+> **Developer Preview**
+>
+> Some profile-analysis and capsule APIs are intentionally low-level in the current preview. Prefer the Edge Scaffold reference flow when starting a new integration.
 
 ## EdgeHalo
 

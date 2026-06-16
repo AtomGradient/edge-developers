@@ -7,9 +7,9 @@ title: Quickstart
 
 Install Edge Kit, load a local model, and stream tokens from an on-device LLM.
 
-:::info Developer Preview
-Edge Kit is in **Developer Preview**. Pin the package version you test with and re-run device validation after each upgrade.
-:::
+> **Developer Preview**
+>
+> Edge Kit is in **Developer Preview**. Pin the package version you test with and re-run device validation after each upgrade.
 
 ## Requirements
 
@@ -37,9 +37,9 @@ dependencies: [
 
 Developer Preview releases should be pinned exactly. Re-run your real-device validation before moving to a newer `1.0.0-rcN` tag.
 
-:::info Preview access
-The public documentation uses HTTPS package URLs. In the current preview, some package resolution paths can still require AtomGradient preview access or SSH access for transitive dependencies such as Edge Engine. Validate `swift package resolve` in the same environment you will use for development and CI.
-:::
+> **Preview access**
+>
+> The public documentation uses HTTPS package URLs. In the current preview, some package resolution paths can still require AtomGradient preview access or SSH access for transitive dependencies such as Edge Engine. Validate `swift package resolve` in the same environment you will use for development and CI.
 
 Then add the product you need:
 

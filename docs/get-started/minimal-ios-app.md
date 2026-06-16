@@ -7,9 +7,9 @@ title: Minimal iOS app (Preview Access Required)
 
 The fastest iOS path in the current preview is Edge Scaffold in a no-model build. It verifies the app shell, signing, Swift package wiring, and real-device build path before you add a model.
 
-:::info Preview access
-Current preview package resolution can require AtomGradient preview access. If Swift Package Manager cannot resolve `edge-kit`, `edge-halo`, or the transitive Edge Engine dependency, finish preview onboarding before treating the app path as integrated.
-:::
+> **Preview access**
+>
+> Current preview package resolution can require AtomGradient preview access. If Swift Package Manager cannot resolve `edge-kit`, `edge-halo`, or the transitive Edge Engine dependency, finish preview onboarding before treating the app path as integrated.
 
 ## Build the minimal app shell
 

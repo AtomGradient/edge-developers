@@ -109,7 +109,7 @@ struct MeshView: View {
 }
 ```
 
-生产 app 需要添加本地网络用途说明，并在与目标设备相同的 Wi-Fi 网络上测试发现。
+生产 App 需要添加本地网络用途说明，并在与目标设备相同的 Wi-Fi 网络上测试发现。
 
 ## 任务路由
 
@@ -213,5 +213,5 @@ Edge Mesh 面向私有本地网络设计：
 
 ## 下一步
 
-- [模型进化](/docs/build/model-evolution) — 在可信用户自有设备之间传输 Neural Imprint artifacts。
+- [模型进化](/docs/build/model-evolution) — 在可信用户自有设备之间传输 Neural Imprint 产物。
 - [架构](/docs/guides/architecture) — 了解所有层如何连接。

@@ -113,6 +113,6 @@ for try await chunk in engine.generate(
 
 ## 下一步
 
-- [视觉聊天示例](/docs/examples/vision-chat) — 使用 PhotosPicker 的完整 SwiftUI app。
+- [视觉聊天示例](/docs/examples/vision-chat) — 使用 PhotosPicker 的完整 SwiftUI App。
 - [文本生成](/docs/build/text-generation) — 纯文本聊天。
 - [模型进化](/docs/build/model-evolution) — 个性化视觉模型。

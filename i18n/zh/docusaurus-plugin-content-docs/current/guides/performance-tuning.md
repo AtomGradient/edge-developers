@@ -27,7 +27,7 @@ if let metrics = engine.lastMetrics {
 
 ## 在 Release 中做基准测试
 
-Debug build 可能比 Release build 慢得多。始终从以下环境采集基准数字：
+Debug build 可能比 Release 构建 慢得多。始终从以下环境采集基准数字：
 
 - Release configuration。
 - 真实目标设备。
