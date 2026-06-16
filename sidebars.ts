@@ -15,6 +15,7 @@ const sidebars: SidebarsConfig = {
       items: [
         'get-started/quickstart',
         'get-started/minute-demo',
+        'get-started/minimal-ios-app',
         'get-started/installation',
         'get-started/swift-cli',
       ],

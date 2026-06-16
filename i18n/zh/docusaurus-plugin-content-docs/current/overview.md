@@ -38,6 +38,12 @@ Edge Engine 在本地运行模型
 
 ## 选择路径
 
+### 我想先看到学习闭环
+
+1. [5 分钟 Neural Imprint 学习 demo](/docs/get-started/minute-demo) — 用一条 CLI 命令跑 synthetic correction-learning loop
+2. [最小 iOS App](/docs/get-started/minimal-ios-app) — 快速构建参考 app shell
+3. [Swift CLI 验证](/docs/get-started/swift-cli) — 在 app 集成前验证 SDK contract
+
 ### 我想构建端侧聊天 agent
 
 1. [安装 Edge Kit](/docs/get-started/quickstart) — Swift Package Manager，5 分钟

@@ -18,6 +18,25 @@ Neural Imprint 是本地 artifact 和 restore flow。兼容的 base model 可以
 当前 preview 可用入口：
 
 - 阅读文档：`docs/overview.md`
+- 从 EdgeStudio 源码 checkout 运行 CLI 学习 first-wow：
+
+  ```bash
+  python -m pip install -e ./edgestudio-core
+  python -m pip install -e .
+  edge demo learn run --prepare-model --model qwen3.5-0.8b --source auto --max-tokens 8 --json
+  ```
+
+  这条 demo 命令会在显式传入 `--prepare-model` 时准备兼容本地模型，然后只在隔离的 demo run 目录中写入 synthetic correction-learning state，恢复重新生成的 Neural Imprint artifact，对比 before/after answer hash，并写本地 receipt。demo run 本身仍是 local-only；模型下载只会因为显式传入 `--prepare-model` 发生。
+
+- 正式公开发布时，安装命令预期会变成：
+
+  ```bash
+  python -m pip install edgestudio
+  ```
+
+  当前内部 preview 阶段还没有公开 PyPI package。
+
+- 构建最小 iOS app 路径：`docs/get-started/minimal-ios-app.md`
 - 使用固定 preview 版本安装 Swift SDK：
 
   ```swift
@@ -54,14 +73,15 @@ build 会产出英文和中文文档。
 
 ## CLI
 
-从 EdgeStudio package 安装 preview CLI：
+从源码 checkout 安装 preview CLI：
 
 ```bash
-python -m pip install edgestudio
+python -m pip install -e ./edgestudio-core
+python -m pip install -e .
 edge doctor
 ```
 
-如果使用源码 checkout，请在 EdgeStudio 仓库根目录运行 `python -m pip install -e .`。`edge` 命令是 `edgestudio` package 的 entry point。
+正式公开发布时，`python -m pip install edgestudio` 是预期安装命令。当前 preview 阶段 package 尚未发布到 PyPI，因此上面的源码 checkout 路径才是可运行路径。`edge` 命令是 `edgestudio` package 的 entry point。
 
 当前 preview 已发布：
 
@@ -82,6 +102,7 @@ edge demo imprint run --question "Summarize this synthetic profile." --model qwe
 edge demo imprint compare --path ./receipt.json
 edge demo learn run --dry-run --sample synthetic_profile_correction_v1 --model auto
 edge demo learn run --sample synthetic_profile_correction_v1 --model qwen3.5-0.8b --max-tokens 8
+edge demo learn run --prepare-model --model qwen3.5-0.8b --source auto --max-tokens 8 --json
 edge demo reuse --run edge-run-example --apps notes,finance --json
 ```
 
@@ -95,6 +116,7 @@ edge demo reuse --run edge-run-example --apps notes,finance --json
 `edge demo imprint compare` 是 B4 receipt-only 检查命令。它读取已完成的 `edge.demo.receipt.v1` receipt 并输出 `edge.demo.imprint.compare.v1`；不加载模型、不 restore artifact、不生成 answer，也不触网。
 `edge demo learn run --dry-run` 是 B5a correction-learning pre-flight planner。它输出只含 hash-only synthetic correction metadata 和 isolated-state paths 的 `edge.demo.learn.plan.v1`；不写 correction ledger、不调用 regen、不加载模型，也不写 learn receipt。
 `edge demo learn run`（不带 `--dry-run`）是 B5b 真实 isolated correction-learning demo。它只在 demo run state 下写 synthetic Persona/RPP input 与 correction ledger，触发 correction regen，恢复重新生成的本地 Neural Imprint artifact，对比 before/after answer hash，并写 `edge.demo.learn.receipt.v1`。
+`edge demo learn run --prepare-model` 是 one-command first-wow 路径。它可能先显式执行模型准备，再运行本地 demo；报告会把 `network_used_during_model_prepare` 与 `network_used_during_demo` 分开记录。
 `edge demo reuse` 是 B7 artifact reuse smoke。它读取已完成的本地 B4 receipt，并在 demo run 下为每个 synthetic app 写 `edge.demo.reuse.receipt.v1` manifest；不复制 artifact、不同步设备、不 restore artifact、不加载模型，也不触网。
 
 ## Phase 2 SDK Proof

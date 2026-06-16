@@ -38,6 +38,12 @@ Edge Engine runs the model locally
 
 ## Choose your path
 
+### I want to see the learning loop first
+
+1. [5-minute Neural Imprint learning demo](/docs/get-started/minute-demo) — One CLI command for a synthetic correction-learning loop
+2. [Minimal iOS app](/docs/get-started/minimal-ios-app) — Build the reference app shell quickly
+3. [Swift CLI validation](/docs/get-started/swift-cli) — Validate SDK contracts before app integration
+
 ### I want to build an on-device chat agent
 
 1. [Install Edge Kit](/docs/get-started/quickstart) — SPM, 5 minutes

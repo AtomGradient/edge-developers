@@ -18,6 +18,25 @@ Neural Imprint is a local artifact and restore flow. A compatible base model can
 Current preview entry points:
 
 - Read the docs: `docs/overview.md`
+- Run the CLI learning first-wow from an EdgeStudio source checkout:
+
+  ```bash
+  python -m pip install -e ./edgestudio-core
+  python -m pip install -e .
+  edge demo learn run --prepare-model --model qwen3.5-0.8b --source auto --max-tokens 8 --json
+  ```
+
+  This single demo command explicitly prepares a compatible local model if needed, writes only synthetic correction-learning state under an isolated demo run, restores the regenerated Neural Imprint artifact, compares before/after answer hashes, and writes a local receipt. The demo run itself remains local-only; any model download happens only because `--prepare-model` was passed.
+
+- For the public release, the install step is intended to become:
+
+  ```bash
+  python -m pip install edgestudio
+  ```
+
+  The PyPI package is not public during this internal preview phase.
+
+- Build the minimal iOS app path: `docs/get-started/minimal-ios-app.md`
 - Install the Swift SDK with the pinned preview package:
 
   ```swift
@@ -54,14 +73,15 @@ The build emits English and Chinese documentation.
 
 ## CLI
 
-Install the preview CLI from the EdgeStudio package:
+Install the preview CLI from a source checkout:
 
 ```bash
-python -m pip install edgestudio
+python -m pip install -e ./edgestudio-core
+python -m pip install -e .
 edge doctor
 ```
 
-For source checkouts, run `python -m pip install -e .` from the EdgeStudio repository root. The `edge` command is the `edgestudio` package entry point.
+For the public release, `python -m pip install edgestudio` is the intended install command. During this preview phase, the package is not yet published to PyPI, so the source checkout path above is the runnable path. The `edge` command is the `edgestudio` package entry point.
 
 Shipped in current preview:
 
@@ -82,6 +102,7 @@ edge demo imprint run --question "Summarize this synthetic profile." --model qwe
 edge demo imprint compare --path ./receipt.json
 edge demo learn run --dry-run --sample synthetic_profile_correction_v1 --model auto
 edge demo learn run --sample synthetic_profile_correction_v1 --model qwen3.5-0.8b --max-tokens 8
+edge demo learn run --prepare-model --model qwen3.5-0.8b --source auto --max-tokens 8 --json
 edge demo reuse --run edge-run-example --apps notes,finance --json
 ```
 
@@ -95,6 +116,7 @@ edge demo reuse --run edge-run-example --apps notes,finance --json
 `edge demo imprint compare` is a B4 receipt-only inspection command. It reads an existing completed `edge.demo.receipt.v1` receipt and emits `edge.demo.imprint.compare.v1`; it does not load models, restore artifacts, generate answers, or use the network.
 `edge demo learn run --dry-run` is a B5a correction-learning pre-flight planner. It emits `edge.demo.learn.plan.v1` with hash-only synthetic correction metadata and isolated-state paths; it does not write correction ledgers, call regen, load models, or write a learn receipt.
 `edge demo learn run` (without `--dry-run`) is the B5b real isolated correction-learning demo. It writes synthetic Persona/RPP input and correction ledger entries under the demo run state, triggers correction regen, restores the regenerated local Neural Imprint artifact, compares before/after answer hashes, and writes `edge.demo.learn.receipt.v1`.
+`edge demo learn run --prepare-model` is the one-command first-wow path. It may explicitly run model preparation before the local demo, and the report records `network_used_during_model_prepare` separately from `network_used_during_demo`.
 `edge demo reuse` is a B7 artifact reuse smoke. It reads a completed local B4 receipt and writes per-app `edge.demo.reuse.receipt.v1` manifests under the demo run; it does not copy artifacts, sync devices, restore artifacts, load models, or use the network.
 
 ## Phase 2 SDK Proof
