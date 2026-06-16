@@ -1,9 +1,9 @@
 ---
-sidebar_position: 2
-title: 5-minute Neural Imprint demo
+sidebar_position: 1
+title: CLI learning demo
 ---
 
-# 5-minute Neural Imprint learning demo
+# CLI learning demo
 
 :::tip Runnable in current preview
 This flow uses shipped B2/B4/B5/B6/B7 CLI commands. It runs on a synthetic sample, can explicitly prepare a compatible local model, and writes hash-only local receipts/manifests by default.
@@ -36,19 +36,25 @@ The expanded auditable flow is:
 
 ## Install the preview CLI
 
-During preview, install the `edge` command from an EdgeStudio source checkout:
+During preview, install the `edge` command from an `edge-studio` source checkout:
 
 ```bash
-python -m pip install -e ./edgestudio-core
+git clone https://github.com/AtomGradient/edge-studio.git
+cd edge-studio
+python3.11 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
 python -m pip install -e .
 edge doctor
 ```
 
 For the public release, `python -m pip install edgestudio` is the intended install command. During this preview phase, the package is not yet published to PyPI, so the source checkout path above is the runnable path.
 
+For Web UI setup, see [Install Edge Studio from source](/docs/get-started/source-build).
+
 ## Commands
 
-Run these commands from the EdgeStudio checkout:
+Run these commands from the `edge-studio` checkout:
 
 ```bash
 edge doctor

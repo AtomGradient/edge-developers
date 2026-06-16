@@ -1,9 +1,9 @@
 ---
-sidebar_position: 2
-title: 5 分钟 Neural Imprint demo
+sidebar_position: 1
+title: CLI 学习 demo
 ---
 
-# 5 分钟 Neural Imprint 学习 demo
+# CLI 学习 demo
 
 :::tip Runnable in current preview
 这个 flow 使用已经发布的 B2/B4/B5/B6/B7 CLI 命令。它只跑 synthetic sample，可以显式准备兼容的本地模型，并默认写入 hash-only local receipts/manifests。
@@ -36,19 +36,25 @@ edge demo learn run --prepare-model --model qwen3.5-9b-4bit --source auto --max-
 
 ## 安装 preview CLI
 
-preview 阶段，从 EdgeStudio 源码 checkout 安装 `edge` 命令：
+preview 阶段，从 `edge-studio` 源码 checkout 安装 `edge` 命令：
 
 ```bash
-python -m pip install -e ./edgestudio-core
+git clone https://github.com/AtomGradient/edge-studio.git
+cd edge-studio
+python3.11 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
 python -m pip install -e .
 edge doctor
 ```
 
 正式公开发布时，`python -m pip install edgestudio` 是预期安装命令。当前 preview 阶段 package 尚未发布到 PyPI，因此上面的源码 checkout 路径才是可运行路径。
 
+Web UI 设置见 [从源码安装 Edge Studio](/docs/get-started/source-build)。
+
 ## Commands
 
-在 EdgeStudio checkout 里运行：
+在 `edge-studio` checkout 里运行：
 
 ```bash
 edge doctor

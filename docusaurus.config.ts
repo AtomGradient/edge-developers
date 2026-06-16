@@ -113,7 +113,7 @@ const config: Config = {
         {
           title: 'Resources',
           items: [
-            { label: 'Quickstart', to: '/docs/get-started/quickstart' },
+            { label: 'CLI Quickstart', to: '/docs/get-started/minute-demo' },
             { label: 'Examples', to: '/docs/examples/basic-chat' },
             { label: 'API Reference', to: '/docs/api-reference/edge-inference' },
             { label: 'GitHub', href: 'https://github.com/AtomGradient' },

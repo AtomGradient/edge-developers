@@ -1,9 +1,9 @@
 ---
 sidebar_position: 3
-title: 最小 iOS App
+title: 最小 iOS App（需要 Preview Access）
 ---
 
-# 最小 iOS App
+# 最小 iOS App（需要 Preview Access）
 
 当前 preview 中最快的 iOS 路径，是用 Edge Scaffold 做 no-model build。它先验证 app shell、签名、Swift package wiring 和真机构建路径，然后再加入模型。
 

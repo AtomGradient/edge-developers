@@ -18,10 +18,14 @@ Neural Imprint is a local artifact and restore flow. A compatible base model can
 Current preview entry points:
 
 - Read the docs: `docs/overview.md`
-- Run the CLI learning first-wow from an EdgeStudio source checkout:
+- Run the CLI learning first-wow from an `edge-studio` source checkout:
 
   ```bash
-  python -m pip install -e ./edgestudio-core
+  git clone https://github.com/AtomGradient/edge-studio.git
+  cd edge-studio
+  python3.11 -m venv .venv
+  source .venv/bin/activate
+  python -m pip install --upgrade pip
   python -m pip install -e .
   edge demo learn run --prepare-model --model qwen3.5-9b-4bit --source auto --max-tokens 8 --json
   ```
@@ -76,7 +80,11 @@ The build emits English and Chinese documentation.
 Install the preview CLI from a source checkout:
 
 ```bash
-python -m pip install -e ./edgestudio-core
+git clone https://github.com/AtomGradient/edge-studio.git
+cd edge-studio
+python3.11 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
 python -m pip install -e .
 edge doctor
 ```

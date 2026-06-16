@@ -1,95 +1,50 @@
 ---
 sidebar_position: 1
 slug: /
-title: Overview
+title: Start Here
 ---
 
-# AtomGradient Edge
+# Start Here
 
-Build private AI agents that run on the user's own devices.
+AtomGradient Edge is a local-first developer platform for building private AI agents that run, learn, and coordinate on user-owned devices.
 
-Currently shipping on Apple platforms. Android, Linux, HarmonyOS, and Windows are on the roadmap.
+The Developer Preview ships on Apple platforms first. Android, Linux, HarmonyOS, Windows, robots, vehicles, and industrial devices share the same long-term technical core: local models, local learning artifacts, app-owned tools, and explicit compatibility gates.
 
 :::info Developer Preview
-All Edge products are in **Developer Preview**. APIs may change between releases. Pin your package versions and validate on real devices after each upgrade.
+All Edge products are in **Developer Preview**. APIs may change between releases. Some repositories and Swift package dependencies may still require AtomGradient preview access. Pin package versions and validate on real devices after each upgrade.
 :::
 
-## The product stack
+## Try it first
+
+Start with the smallest path that proves something useful:
+
+| Goal | Start here | What it proves |
+| --- | --- | --- |
+| See the learning loop | [CLI learning demo](/docs/get-started/minute-demo) | A local correction can generate a Neural Imprint artifact, restore it under compatibility gates, and write a hash-only receipt. |
+| Install the preview package | [Install Edge Studio from source](/docs/get-started/source-build) | The `edge` CLI and local Web UI can run from the future pip package source tree. |
+| Launch the local workbench | [Web UI from source](/docs/get-started/source-build#launch-the-web-ui) | Edge Studio can run as a localhost workbench at `http://127.0.0.1:18842`. |
+| Build an iOS shell | [Minimal iOS app](/docs/get-started/minimal-ios-app) | Edge Scaffold compiles as the smallest current iOS reference app. Preview access is required. |
+| Integrate the Swift SDK | [Swift SDK setup](/docs/get-started/quickstart) | Edge Kit can be added to an Apple-platform app and load a local model. |
+
+## Five-minute command
+
+The recommended baseline model for the preview demo is `qwen3.5-9b-4bit`:
+
+```bash
+edge demo learn run --prepare-model --model qwen3.5-9b-4bit --source auto --max-tokens 8 --json
+```
+
+`--prepare-model` is explicit. If the model is missing, the command may fetch it through the configured preview download path and record that preparation separately from the local learning demo.
+
+## Product stack
 
 | Product | What developers use it for |
 | --- | --- |
-| **Edge Studio** | Local workbench for model analysis, optimization, benchmark, Neural Imprint generation, device management, and export. |
-| **Edge Engine** | Native on-device inference runtime. It is packaged under Edge Kit; most apps do not import it directly. |
+| **Edge Studio** | Local workbench and CLI for model readiness, model fetch receipts, local learning demos, Neural Imprint generation, device management, benchmark, and export. |
 | **Edge Kit** | Swift SDK for LLM, VLM, speech, model management, EdgeData, EdgeMesh, EdgeDataMeshBridge, EdgeSession, and EdgeUI. |
+| **Edge Engine** | Native on-device inference runtime. It is packaged under Edge Kit; most apps do not import it directly. |
 | **Edge Halo** | Personalization lifecycle layer: profile jobs, Neural Imprint capsule validation, restore orchestration, and compatibility gates. |
 | **Edge Scaffold** | Reference app and export template that shows the recommended iOS integration pattern. |
-
-The short version:
-
-```text
-Edge Studio prepares artifacts
-        ↓
-Edge Scaffold shows the reference app structure
-        ↓
-Your agent imports Edge Kit + Edge Halo
-        ↓
-Edge Engine runs the model locally
-```
-
-## Choose your path
-
-### I want to see the learning loop first
-
-1. [5-minute Neural Imprint learning demo](/docs/get-started/minute-demo) — One CLI command for a synthetic correction-learning loop
-2. [Minimal iOS app](/docs/get-started/minimal-ios-app) — Build the reference app shell quickly
-3. [Swift CLI validation](/docs/get-started/swift-cli) — Validate SDK contracts before app integration
-
-### I want to build an on-device chat agent
-
-1. [Install Edge Kit](/docs/get-started/quickstart) — SPM, 5 minutes
-2. [Text generation](/docs/build/text-generation) — Load a model, stream tokens
-3. [Basic chat example](/docs/examples/basic-chat) — Complete SwiftUI agent
-4. [Memory management](/docs/guides/memory-management) — Ship without crashing
-
-### I want to add vision, voice, or personalization
-
-- [Vision](/docs/build/vision) — Image understanding with VLM
-- [Speech to text](/docs/build/speech-to-text) + [Text to speech](/docs/build/text-to-speech) — Voice pipeline
-- [Model evolution](/docs/build/model-evolution) — Neural Imprint and Edge Halo lifecycle
-- [Personalized model example](/docs/examples/personalized-model) — Profile, capsule, and restore workflow
-
-### I want to optimize a model and ship an agent
-
-1. [Edge Studio overview](/docs/optimize-and-ship/studio-overview) — Local workbench
-2. [Optimize and benchmark](/docs/optimize-and-ship/optimize-and-benchmark) — Analyze, compress, validate
-3. [Export](/docs/optimize-and-ship/export) — Edge Kit bundle, scaffold project, GGUF, or CoreML
-4. [Edge Scaffold](/docs/optimize-and-ship/scaffold) — Generate a publishable reference app
-5. [Build and ship example](/docs/examples/build-and-ship) — End-to-end walkthrough
-
-## Core concepts
-
-| Concept | Developer-facing meaning |
-| --- | --- |
-| **Local-first inference** | Models, prompts, user data, and personalization artifacts stay on user-owned devices unless the user explicitly enables local mesh transfer. |
-| **Neural Imprint** | A local personalization artifact that lets a compatible base model restore a user-specific state without changing model weights. |
-| **EdgeMesh** | Local-network trust, discovery, and device-to-device transfer for user-owned devices. |
-| **Memory intent** | A high-level policy hint such as `balanced`, `longSession`, `exactRecall`, or `batteryFriendly`; Edge Kit resolves the runtime memory details. |
-| **Fail-closed compatibility** | Personalization and model artifacts must match model identity, tokenizer/template identity, runtime version, and tool schema before restore. |
-
-## Quick start
-
-```swift
-import EdgeInference
-
-let engine = LLMEngine()
-try await engine.loadLocal(directory: modelURL)
-
-for try await chunk in engine.generate(
-    messages: [.user("What is edge AI?")]
-) {
-    print(chunk.text, terminator: "")
-}
-```
 
 ## Privacy model
 
@@ -101,3 +56,13 @@ Edge is designed around user-owned compute:
 - Neural Imprint artifacts are compatibility-checked before restore and can be removed by the app.
 
 Do not upload user transcripts, corrections, or profile artifacts to analytics, crash logs, or remote support systems.
+
+## Core concepts
+
+| Concept | Developer-facing meaning |
+| --- | --- |
+| **Local-first inference** | Models, prompts, user data, and personalization artifacts stay on user-owned devices unless the user explicitly enables local mesh transfer. |
+| **Neural Imprint** | A local personalization artifact that lets a compatible base model restore a user-specific state without changing model weights. |
+| **App-owned tools** | Apps define their own tool schemas and action surfaces. Edge infrastructure should not embed app business rules. |
+| **EdgeMesh** | Local-network trust, discovery, and device-to-device transfer for user-owned devices. |
+| **Fail-closed compatibility** | Personalization and model artifacts must match model identity, tokenizer/template identity, runtime version, and tool schema before restore. |

@@ -35,9 +35,9 @@
     "message": "设备网格",
     "description": "The label of footer link with label=Device Mesh linking to /docs/capabilities/device-mesh"
   },
-  "link.item.label.Quickstart": {
-    "message": "快速开始",
-    "description": "The label of footer link with label=Quickstart linking to /docs/get-started/quickstart"
+  "link.item.label.CLI Quickstart": {
+    "message": "CLI 快速开始",
+    "description": "The label of footer link with label=CLI Quickstart linking to /docs/get-started/minute-demo"
   },
   "link.item.label.Examples": {
     "message": "示例",

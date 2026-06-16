@@ -1,9 +1,9 @@
 ---
 sidebar_position: 3
-title: Minimal iOS app
+title: Minimal iOS app (Preview Access Required)
 ---
 
-# Minimal iOS app
+# Minimal iOS app (Preview Access Required)
 
 The fastest iOS path in the current preview is Edge Scaffold in a no-model build. It verifies the app shell, signing, Swift package wiring, and real-device build path before you add a model.
 

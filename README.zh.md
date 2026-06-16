@@ -18,10 +18,14 @@ Neural Imprint 是本地 artifact 和 restore flow。兼容的 base model 可以
 当前 preview 可用入口：
 
 - 阅读文档：`docs/overview.md`
-- 从 EdgeStudio 源码 checkout 运行 CLI 学习 first-wow：
+- 从 `edge-studio` 源码 checkout 运行 CLI 学习 first-wow：
 
   ```bash
-  python -m pip install -e ./edgestudio-core
+  git clone https://github.com/AtomGradient/edge-studio.git
+  cd edge-studio
+  python3.11 -m venv .venv
+  source .venv/bin/activate
+  python -m pip install --upgrade pip
   python -m pip install -e .
   edge demo learn run --prepare-model --model qwen3.5-9b-4bit --source auto --max-tokens 8 --json
   ```
@@ -76,7 +80,11 @@ build 会产出英文和中文文档。
 从源码 checkout 安装 preview CLI：
 
 ```bash
-python -m pip install -e ./edgestudio-core
+git clone https://github.com/AtomGradient/edge-studio.git
+cd edge-studio
+python3.11 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
 python -m pip install -e .
 edge doctor
 ```

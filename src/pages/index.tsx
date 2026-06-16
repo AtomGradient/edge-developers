@@ -77,16 +77,12 @@ const zhCapabilities = [
 ];
 
 // eslint-disable-next-line
-const CODE = `import EdgeKit
-
-let engine = LLMEngine()
-try await engine.loadLocal(directory: modelURL)
-
-for try await chunk in engine.generate(
-    messages: [.user("What is edge AI?")]
-) {
-    print(chunk.text, terminator: "")
-}`;
+const CODE = `git clone https://github.com/AtomGradient/edge-studio.git
+cd edge-studio
+python3.11 -m venv .venv
+source .venv/bin/activate
+python -m pip install -e .
+edge demo learn run --prepare-model --model qwen3.5-9b-4bit --source auto --json`;
 
 export default function Home(): React.JSX.Element {
   const {i18n} = useDocusaurusContext();
@@ -118,11 +114,11 @@ export default function Home(): React.JSX.Element {
             : 'On-device inference, personalization, cross-device mesh — full-stack, zero cloud dependency. Shipping on Apple first. More platforms coming.'}
         </p>
         <div className={styles.buttons}>
-          <Link to="/docs/get-started/quickstart" className={styles.primaryButton}>
-            {isZh ? '快速开始' : 'Get started'}
+          <Link to="/docs/get-started/minute-demo" className={styles.primaryButton}>
+            {isZh ? '运行 CLI 学习 demo' : 'Run the CLI demo'}
           </Link>
-          <Link to="/docs/" className={styles.secondaryButton}>
-            {isZh ? '查看文档' : 'Documentation'}
+          <Link to="/docs/get-started/source-build" className={styles.secondaryButton}>
+            {isZh ? '从源码安装' : 'Install from source'}
           </Link>
         </div>
       </header>
@@ -153,7 +149,7 @@ export default function Home(): React.JSX.Element {
         {/* Quick Start */}
         <section className={styles.codeSection}>
           <div className={styles.codeSectionLabel}>{isZh ? '快速开始' : 'Quick Start'}</div>
-          <CodeBlock language="swift" title={isZh ? '5 行 Swift — 加载模型，流式推理' : '5 lines of Swift — load a model, stream tokens'}>
+          <CodeBlock language="bash" title={isZh ? '预览路径 — 安装 CLI，运行本地学习 demo' : 'Preview path — install the CLI, run a local learning demo'}>
 {CODE}
           </CodeBlock>
         </section>
