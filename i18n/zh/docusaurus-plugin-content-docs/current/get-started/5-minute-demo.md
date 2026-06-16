@@ -63,10 +63,20 @@ edge models doctor qwen3.5-9b-4bit --json
 先跑一个普通本地聊天：
 
 ```bash
-edge demo chat --model qwen3.5-9b-4bit --prompt "What is edge AI?" --max-tokens 64
+edge demo chat --model qwen3.5-9b-4bit --interactive
 ```
 
 第一次加载 9B 模型可能需要几十秒。命令会打印 answer，并写入本地 chat receipt。默认情况下，receipt 只保存 hash 和 path，不保存 raw prompt 或 raw answer。
+
+看到 `[chat:ready]` 后，可以连续问几个普通问题，并用 `/exit` 退出。
+
+Interactive chat 只加载一次模型，在多轮对话中复用 session KV cache，打印每轮 answer，并为每轮写一个本地 chat receipt。默认情况下，每个 receipt 只保存 hash 和 path，不保存 raw prompt 或 raw answer。
+
+脚本或 CI smoke check 也可以使用 one-shot 形式：
+
+```bash
+edge demo chat --model qwen3.5-9b-4bit --prompt "What is edge AI?" --max-tokens 64
+```
 
 ### 3. 查看 synthetic learning sample
 

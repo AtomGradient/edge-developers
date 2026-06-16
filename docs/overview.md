@@ -32,7 +32,7 @@ Start with the familiar path: download a model, then chat with it locally.
 
 ```bash
 edge models fetch qwen3.5-9b-4bit --source auto
-edge demo chat --model qwen3.5-9b-4bit --prompt "What is edge AI?" --max-tokens 64
+edge demo chat --model qwen3.5-9b-4bit --interactive
 ```
 
 After the base chat works, continue to the [CLI learning demo](/docs/get-started/minute-demo) to inspect a synthetic correction sample, generate a local Neural Imprint artifact, and compare before/after answer hashes.

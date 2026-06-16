@@ -63,10 +63,18 @@ edge models doctor qwen3.5-9b-4bit --json
 Run a normal local chat before learning:
 
 ```bash
-edge demo chat --model qwen3.5-9b-4bit --prompt "What is edge AI?" --max-tokens 64
+edge demo chat --model qwen3.5-9b-4bit --interactive
 ```
 
-The first model load can take tens of seconds on Apple Silicon. The command prints the answer and writes a local chat receipt. By default, the receipt stores hashes and paths, not raw prompt or answer text.
+The first model load can take tens of seconds on Apple Silicon. After `[chat:ready]`, ask a few normal questions and exit with `/exit`.
+
+Interactive chat loads the model once, keeps a session KV cache across turns, prints each answer, and writes one local chat receipt per turn. By default, each receipt stores hashes and paths, not raw prompt or answer text.
+
+For scripts or CI smoke checks, the one-shot form is also available:
+
+```bash
+edge demo chat --model qwen3.5-9b-4bit --prompt "What is edge AI?" --max-tokens 64
+```
 
 ### 3. Inspect the synthetic learning sample
 

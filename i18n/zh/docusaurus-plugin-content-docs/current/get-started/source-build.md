@@ -37,10 +37,12 @@ edge doctor
 ```bash
 edge models where qwen3.5-9b-4bit --json
 edge models fetch qwen3.5-9b-4bit --source auto
-edge demo chat --model qwen3.5-9b-4bit --prompt "What is edge AI?" --max-tokens 64
+edge demo chat --model qwen3.5-9b-4bit --interactive
 ```
 
 `edge models fetch --source auto` 可以在 ModelScope、Hugging Face 或 HF mirror 中选择当前可用的预览下载路径。下载行为是显式的，并会写入 receipt。
+
+看到 `[chat:ready]` 后，可以连续问几个普通问题，并用 `/exit` 退出。第一次加载 9B 模型可能需要几十秒。
 
 base chat 跑通后，继续看 [CLI 学习 demo](/docs/get-started/minute-demo)，检查 synthetic correction sample，并对比 base answer 和 Neural Imprint restore 后的 answer hash。
 

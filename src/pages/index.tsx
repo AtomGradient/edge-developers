@@ -83,7 +83,7 @@ python3.11 -m venv .venv
 source .venv/bin/activate
 python -m pip install -e .
 edge models fetch qwen3.5-9b-4bit --source auto
-edge demo chat --model qwen3.5-9b-4bit --prompt "What is edge AI?" --max-tokens 64`;
+edge demo chat --model qwen3.5-9b-4bit --interactive`;
 
 export default function Home(): React.JSX.Element {
   const {i18n} = useDocusaurusContext();

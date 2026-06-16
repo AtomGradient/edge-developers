@@ -32,7 +32,7 @@ Developer Preview 先面向 Apple 平台发布。Android、Linux、HarmonyOS、W
 
 ```bash
 edge models fetch qwen3.5-9b-4bit --source auto
-edge demo chat --model qwen3.5-9b-4bit --prompt "What is edge AI?" --max-tokens 64
+edge demo chat --model qwen3.5-9b-4bit --interactive
 ```
 
 base chat 跑通后，再继续看 [CLI 学习 demo](/docs/get-started/minute-demo)：检查 synthetic correction sample，生成本地 Neural Imprint artifact，并对比 before/after answer hash。

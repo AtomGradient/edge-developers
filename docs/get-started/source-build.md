@@ -37,10 +37,12 @@ Use `edge` for model readiness checks, model fetch receipts, and local learning 
 ```bash
 edge models where qwen3.5-9b-4bit --json
 edge models fetch qwen3.5-9b-4bit --source auto
-edge demo chat --model qwen3.5-9b-4bit --prompt "What is edge AI?" --max-tokens 64
+edge demo chat --model qwen3.5-9b-4bit --interactive
 ```
 
 `edge models fetch --source auto` can select the best available preview download path from ModelScope, Hugging Face, or an HF mirror. The download is explicit and writes a receipt.
+
+After `[chat:ready]`, ask a few normal questions and exit with `/exit`. The first 9B model load can take tens of seconds.
 
 After the base chat works, continue to the [CLI learning demo](/docs/get-started/minute-demo) to inspect the synthetic correction sample and compare base vs Neural Imprint restored answer hashes.
 
