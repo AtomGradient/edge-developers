@@ -144,8 +144,8 @@ const enCapabilities: LinkCard[] = [
     eyebrow: 'SDK',
     title: 'Edge Kit',
     body: 'Swift APIs for local inference, model management, EdgeData, EdgeMesh, EdgeSession, EdgeUI, speech, and vision.',
-    primaryLabel: 'Build with Edge Kit',
-    primaryLink: '/docs/build/text-generation',
+    primaryLabel: 'Edge Inference API',
+    primaryLink: '/docs/api-reference/edge-inference',
   },
   {
     eyebrow: 'Local mesh',
@@ -189,8 +189,8 @@ const zhCapabilities: LinkCard[] = [
     eyebrow: 'SDK',
     title: 'Edge Kit',
     body: '面向本地推理、模型管理、EdgeData、EdgeMesh、EdgeSession、EdgeUI、语音和视觉的 Swift API。',
-    primaryLabel: '使用 Edge Kit 构建',
-    primaryLink: '/docs/build/text-generation',
+    primaryLabel: 'Edge Inference API',
+    primaryLink: '/docs/api-reference/edge-inference',
   },
   {
     eyebrow: '本地设备网格',
