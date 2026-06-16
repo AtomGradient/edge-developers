@@ -7,9 +7,9 @@ title: EdgeDataMeshBridge
 
 `EdgeDataMeshBridge` 是连接 `EdgeData` 与 `EdgeMesh` 的小型可选 bridge target。它让 app 可以把通用 EdgeData training events 写入 EdgeMesh `DataCollector`，同时避免让 `EdgeMesh` 直接依赖 `EdgeData`。
 
-> **开发者预览 边界**
->
-> 这个模块只是 通用胶水层。App 专属事件 schema、correction text、privacy policy 和业务规则仍由 app 自己拥有。
+:::info 开发者预览 边界
+这个模块只是 通用胶水层。App 专属事件 schema、correction text、privacy policy 和业务规则仍由 app 自己拥有。
+:::
 
 ## EdgeMeshTrainingSink
 

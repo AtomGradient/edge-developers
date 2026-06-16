@@ -7,9 +7,9 @@ title: Edge Scaffold
 
 Edge Scaffold generates a ready-to-build reference agent from an optimized model. It shows the recommended iOS integration for Edge Kit, Edge Halo, EdgeMesh, EdgeData, and Neural Imprint.
 
-> **Developer Preview**
->
-> Generated apps require signing, device testing, and store review before release.
+:::info Developer Preview
+Generated apps require signing, device testing, and store review before release.
+:::
 
 ## How it works
 

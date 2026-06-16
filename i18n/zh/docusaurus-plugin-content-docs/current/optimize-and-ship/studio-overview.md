@@ -7,9 +7,9 @@ title: Edge Studio 概览
 
 Edge Studio 是本地 Web 工作台，用于模型优化、验证、导出和设备协同。它接收源模型，并产出可部署产物：Edge Kit bundle、GGUF/CoreML 导出、Neural Imprint 产物，或完整 Edge Scaffold 项目。
 
-> **开发者预览**
->
-> 发布前请在目标设备上验证每个导出模型。仅构建成功还不够。
+:::info 开发者预览
+发布前请在目标设备上验证每个导出模型。仅构建成功还不够。
+:::
 
 ## 它的位置
 

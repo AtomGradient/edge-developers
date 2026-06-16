@@ -24,6 +24,9 @@ const config: Config = {
 
   onBrokenLinks: 'throw',
   markdown: {
+    mdx1Compat: {
+      admonitions: true,
+    },
     hooks: {
       onBrokenMarkdownLinks: 'warn',
     },

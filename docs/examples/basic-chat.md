@@ -219,10 +219,10 @@ final class ChatViewModel: ObservableObject {
 }
 ```
 
-> **Note**
->
-> If your model lives inside the app bundle, replace the editable `modelPath`
-> with `Bundle.main.url(forResource:withExtension:)`.
+:::note Note
+If your model lives inside the app bundle, replace the editable `modelPath`
+with `Bundle.main.url(forResource:withExtension:)`.
+:::
 
 ## Key concepts
 

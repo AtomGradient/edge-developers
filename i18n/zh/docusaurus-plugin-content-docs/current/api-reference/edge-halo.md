@@ -7,9 +7,9 @@ title: EdgeHalo
 
 `EdgeHalo` 管理本地个性化生命周期：profile jobs、Neural Imprint capsule compatibility 和 restore orchestration。
 
-> **开发者预览**
->
-> 当前预览版 中部分 profile-analysis 与 capsule API 仍偏底层。新集成建议先参考 Edge Scaffold 流程。
+:::info 开发者预览
+当前预览版 中部分 profile-analysis 与 capsule API 仍偏底层。新集成建议先参考 Edge Scaffold 流程。
+:::
 
 ## EdgeHalo
 

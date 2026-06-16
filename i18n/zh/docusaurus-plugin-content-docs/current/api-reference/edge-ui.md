@@ -7,9 +7,9 @@ title: EdgeUI
 
 `EdgeUI` 包含面向 Edge App 的通用 SwiftUI 构建块。这些 view 是基础设施组件，不是产品 UI 规定。
 
-> **开发者预览边界**
->
-> 这些 view 可作为参考或小型可复用组件。产品级 layout、文案、navigation 和业务 workflow 仍由 App 自己决定。
+:::info 开发者预览边界
+这些 view 可作为参考或小型可复用组件。产品级 layout、文案、navigation 和业务 workflow 仍由 App 自己决定。
+:::
 
 ## Agent workbench 组件
 

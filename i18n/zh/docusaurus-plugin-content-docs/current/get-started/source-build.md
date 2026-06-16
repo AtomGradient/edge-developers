@@ -7,9 +7,9 @@ title: 从源码安装 Edge Studio
 
 在开发者预览阶段，可运行的安装路径是从 `edge-studio` 仓库源码安装。正式公开发布时，预期安装命令是 `python -m pip install edgestudio`，但当前软件包尚未发布到 PyPI。
 
-> **预览访问权限**
->
-> 在开发者预览仍未公开的阶段，该仓库可能需要 AtomGradient 预览访问权限。请先确认你的 GitHub 账号已经开通访问权限，再运行下面的命令。
+:::info 预览访问权限
+在开发者预览仍未公开的阶段，该仓库可能需要 AtomGradient 预览访问权限。请先确认你的 GitHub 账号已经开通访问权限，再运行下面的命令。
+:::
 
 ## 要求
 

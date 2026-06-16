@@ -215,9 +215,9 @@ final class ChatViewModel: ObservableObject {
 }
 ```
 
-> **说明**
->
-> 如果模型位于 App bundle 中，请将可编辑的 `modelPath` 替换为 `Bundle.main.url(forResource:withExtension:)`。
+:::note 说明
+如果模型位于 App bundle 中，请将可编辑的 `modelPath` 替换为 `Bundle.main.url(forResource:withExtension:)`。
+:::
 
 ## 关键概念
 

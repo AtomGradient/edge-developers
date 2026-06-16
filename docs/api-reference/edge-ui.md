@@ -7,9 +7,9 @@ title: EdgeUI
 
 `EdgeUI` contains generic SwiftUI building blocks for Edge-based apps. The views are infrastructure components, not a product UI mandate.
 
-> **Developer Preview boundary**
->
-> Use these views as references or small reusable components. Product layout, copy, navigation, and business workflows remain app-owned decisions.
+:::info Developer Preview boundary
+Use these views as references or small reusable components. Product layout, copy, navigation, and business workflows remain app-owned decisions.
+:::
 
 ## Agent workbench components
 

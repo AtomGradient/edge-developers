@@ -7,9 +7,9 @@ title: Edge Scaffold
 
 Edge Scaffold 会从优化后的模型生成可直接构建的参考 agent。它展示 Edge Kit、Edge Halo、EdgeMesh、EdgeData 和 Neural Imprint 的推荐 iOS 接入方式。
 
-> **开发者预览**
->
-> 生成的 app 在发布前仍需要签名、真机测试和商店审核。
+:::info 开发者预览
+生成的 app 在发布前仍需要签名、真机测试和商店审核。
+:::
 
 ## 工作方式
 

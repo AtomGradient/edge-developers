@@ -7,9 +7,9 @@ title: 快速开始
 
 安装 Edge Kit，加载本地模型，并从端侧 LLM 流式输出 token。
 
-> **开发者预览**
->
-> Edge Kit 目前处于**开发者预览**阶段。请固定你测试过的包版本，并在每次升级后重新进行真机验证。
+:::info 开发者预览
+Edge Kit 目前处于**开发者预览**阶段。请固定你测试过的包版本，并在每次升级后重新进行真机验证。
+:::
 
 ## 要求
 
@@ -36,9 +36,9 @@ dependencies: [
 
 开发者预览版本应精确固定版本。升级到新的 `1.0.0-rcN` tag 前，请重新完成真机验证。
 
-> **预览访问权限**
->
-> 公开文档使用 HTTPS package URL。当前预览版中，部分包解析路径仍可能因为 Edge Engine 等传递依赖需要 AtomGradient 预览访问权限或 SSH 访问权限。请在实际开发和 CI 使用的同一环境里验证 `swift package resolve`。
+:::info 预览访问权限
+公开文档使用 HTTPS package URL。当前预览版中，部分包解析路径仍可能因为 Edge Engine 等传递依赖需要 AtomGradient 预览访问权限或 SSH 访问权限。请在实际开发和 CI 使用的同一环境里验证 `swift package resolve`。
+:::
 
 然后添加你需要的 product：
 

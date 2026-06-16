@@ -7,9 +7,9 @@ title: Supported Models
 
 Edge Kit supports local model directories that follow the expected model family layout for each engine.
 
-> **Developer Preview**
->
-> Model support is expanding during Developer Preview. Validate each model on the target device class before shipping.
+:::info Developer Preview
+Model support is expanding during Developer Preview. Validate each model on the target device class before shipping.
+:::
 
 ## Categories
 

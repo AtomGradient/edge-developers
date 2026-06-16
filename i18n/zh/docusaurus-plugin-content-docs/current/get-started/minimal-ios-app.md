@@ -7,9 +7,9 @@ title: 最小 iOS 应用（需要预览访问权限）
 
 当前预览版中最快的 iOS 路径，是用 Edge Scaffold 做无模型构建。它先验证应用壳、签名、Swift 包接线和真机构建路径，然后再加入模型。
 
-> **预览访问权限**
->
-> 当前预览版的包解析可能需要 AtomGradient 预览访问权限。如果 Swift Package Manager 无法解析 `edge-kit`、`edge-halo` 或传递依赖 Edge Engine，请先完成预览接入，再把应用路径视为已集成。
+:::info 预览访问权限
+当前预览版的包解析可能需要 AtomGradient 预览访问权限。如果 Swift Package Manager 无法解析 `edge-kit`、`edge-halo` 或传递依赖 Edge Engine，请先完成预览接入，再把应用路径视为已集成。
+:::
 
 ## 构建最小应用壳
 

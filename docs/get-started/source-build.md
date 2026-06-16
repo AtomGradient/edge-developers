@@ -7,9 +7,9 @@ title: Install Edge Studio from source
 
 During Developer Preview, the runnable package path is a source checkout of the `edge-studio` repository. The intended public release path is `python -m pip install edgestudio`, but the package is not published to PyPI yet.
 
-> **Preview access**
->
-> The repository may require AtomGradient preview access while the Developer Preview remains private. Use the commands below only after your GitHub account has been granted access.
+:::info Preview access
+The repository may require AtomGradient preview access while the Developer Preview remains private. Use the commands below only after your GitHub account has been granted access.
+:::
 
 ## Requirements
 

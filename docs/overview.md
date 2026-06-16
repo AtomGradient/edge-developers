@@ -10,9 +10,9 @@ AtomGradient Edge is a local-first developer platform for building private AI ag
 
 The Developer Preview ships on Apple platforms first. Android, Linux, HarmonyOS, Windows, robots, vehicles, and industrial devices share the same long-term technical core: local models, local learning artifacts, app-owned tools, and explicit compatibility gates.
 
-> **Developer Preview**
->
-> All Edge products are in **Developer Preview**. APIs may change between releases. Some repositories and Swift package dependencies may still require AtomGradient preview access. Pin package versions and validate on real devices after each upgrade.
+:::info Developer Preview
+All Edge products are in **Developer Preview**. APIs may change between releases. Some repositories and Swift package dependencies may still require AtomGradient preview access. Pin package versions and validate on real devices after each upgrade.
+:::
 
 ## Try it first
 

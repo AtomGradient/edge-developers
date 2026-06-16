@@ -7,9 +7,9 @@ title: EdgeSession
 
 `EdgeSession` 提供 SDK 拥有的对话编排 helper。它把 chat history、mode 切换、取消、超时、可选工具循环和 memory-policy compaction 从产品业务代码中拆出来。
 
-> **开发者预览边界**
->
-> `EdgeSession` 不负责模型加载、产品 prompt、工具实现或业务数据。App 需要提供 `EdgeGenerationClient`，桥接到自己已经加载好的 `LLMEngine` 或 `VLMEngine`。
+:::info 开发者预览边界
+`EdgeSession` 不负责模型加载、产品 prompt、工具实现或业务数据。App 需要提供 `EdgeGenerationClient`，桥接到自己已经加载好的 `LLMEngine` 或 `VLMEngine`。
+:::
 
 ## ChatSessionController
 
