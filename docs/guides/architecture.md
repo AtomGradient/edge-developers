@@ -29,7 +29,7 @@ Development-time tools:
 | Product | Responsibility | Does not own |
 | --- | --- | --- |
 | **Edge Engine** | Native model execution, runtime scheduling, and low-level cache primitives. | App UI, tool policy, user data, or app storage. |
-| **Edge Kit** | Public Swift SDK for inference, model management, EdgeData, EdgeMesh, EdgeSession, EdgeUI, and voice. | Product-specific business logic or private user-data policy. |
+| **Edge Kit** | Public Swift SDK for inference, model management, EdgeData, EdgeMesh, EdgeDataMeshBridge, EdgeSession, EdgeUI, and voice. | Product-specific business logic or private user-data policy. |
 | **Edge Halo** | Personalization lifecycle: profile jobs, Neural Imprint capsule validation, restore orchestration, and fail-closed compatibility checks. | Model forward passes, mesh transport, or app-specific data import. |
 | **Edge Studio** | Local workbench for optimization, benchmark, export, artifact generation, and device coordination. | Runtime behavior inside the shipped agent. |
 | **Edge Scaffold** | Reference iOS agent template showing the recommended integration. | A shared runtime dependency for production apps. Fork or export from it, then own your app. |

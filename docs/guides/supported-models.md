@@ -17,7 +17,7 @@ Model support is expanding during Developer Preview. Validate each model on the 
 | --- | --- | --- | --- |
 | LLM | `LLMEngine` | Text messages | Streaming text |
 | VLM | `VLMEngine` | Text messages and images | Streaming text |
-| STT | `WhisperEngine` or `STTEngine` | Audio | Text |
+| STT | `STTEngine` for native ASR; `WhisperEngine` only as a preview bridge | Audio | Text |
 | TTS | `TTSEngine` | Text | PCM audio |
 
 ## Recommended preview models
@@ -26,7 +26,7 @@ Model support is expanding during Developer Preview. Validate each model on the 
 | --- | --- |
 | LLM | Qwen3-4B-4bit, Qwen3.5-0.8B, Qwen3.5-4B-4bit, Qwen3.5-9B-4bit |
 | VLM | Qwen3.5-4B-4bit VLM variant |
-| STT | Qwen3-ASR-0.6B-8bit or Whisper-family models, depending on the engine |
+| STT | Qwen3-ASR-0.6B-8bit for `STTEngine`; Whisper-family files only when your app supplies a real Whisper binding |
 | TTS | Qwen3-TTS-12Hz-0.6B-CustomVoice-bf16 |
 
 ## Device fit

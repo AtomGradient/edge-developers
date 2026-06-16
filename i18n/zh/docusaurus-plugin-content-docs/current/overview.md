@@ -20,7 +20,7 @@ title: 概览
 | --- | --- |
 | **Edge Studio** | 本地工作台：模型分析、优化、benchmark、Neural Imprint 生成、设备管理与导出。 |
 | **Edge Engine** | 原生端侧推理运行时。通常由 Edge Kit 打包使用，app 不直接 import。 |
-| **Edge Kit** | Swift SDK：LLM、VLM、语音、模型管理、EdgeData、EdgeMesh、EdgeSession 和 EdgeUI。 |
+| **Edge Kit** | Swift SDK：LLM、VLM、语音、模型管理、EdgeData、EdgeMesh、EdgeDataMeshBridge、EdgeSession 和 EdgeUI。 |
 | **Edge Halo** | 个性化生命周期层：画像任务、Neural Imprint capsule 校验、恢复编排与兼容性闸门。 |
 | **Edge Scaffold** | 参考 app 和导出模板，展示推荐的 iOS 集成方式。 |
 

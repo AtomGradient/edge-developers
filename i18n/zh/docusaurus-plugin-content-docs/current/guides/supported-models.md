@@ -17,7 +17,7 @@ Edge Kit 支持符合各 engine 预期模型家族布局的本地模型目录。
 | --- | --- | --- | --- |
 | LLM | `LLMEngine` | 文本消息 | 流式文本 |
 | VLM | `VLMEngine` | 文本消息和图像 | 流式文本 |
-| STT | `WhisperEngine` 或 `STTEngine` | 音频 | 文本 |
+| STT | 原生 ASR 使用 `STTEngine`；`WhisperEngine` 仅作为 preview bridge | 音频 | 文本 |
 | TTS | `TTSEngine` | 文本 | PCM 音频 |
 
 ## 推荐预览模型
@@ -26,7 +26,7 @@ Edge Kit 支持符合各 engine 预期模型家族布局的本地模型目录。
 | --- | --- |
 | LLM | Qwen3-4B-4bit、Qwen3.5-0.8B、Qwen3.5-4B-4bit、Qwen3.5-9B-4bit |
 | VLM | Qwen3.5-4B-4bit VLM variant |
-| STT | Qwen3-ASR-0.6B-8bit 或 Whisper-family models，取决于 engine |
+| STT | `STTEngine` 使用 Qwen3-ASR-0.6B-8bit；Whisper-family 文件只适用于 app 已提供真实 Whisper binding 的场景 |
 | TTS | Qwen3-TTS-12Hz-0.6B-CustomVoice-bf16 |
 
 ## 设备适配

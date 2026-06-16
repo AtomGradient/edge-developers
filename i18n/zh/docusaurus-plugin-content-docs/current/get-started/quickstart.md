@@ -36,6 +36,10 @@ dependencies: [
 
 开发者预览版本应使用 exact pin。升级到新的 `1.0.0-rcN` tag 前，请重新完成真机验证。
 
+:::info Preview access
+公开文档使用 HTTPS package URL。当前 preview 中，部分 package resolution 路径仍可能因为 Edge Engine 等传递依赖需要 AtomGradient preview access 或 SSH access。请在实际开发和 CI 使用的同一环境里验证 `swift package resolve`。
+:::
+
 然后添加你需要的 product：
 
 ```swift
@@ -70,12 +74,13 @@ for try await chunk in engine.generate(
 }
 ```
 
-## 从模型注册表加载
+## 准备已注册模型
 
-`ModelConfig` 包含受支持模型家族的预览模型条目。
+`ModelConfig` 包含受支持模型家族的预览模型条目。在 native default build 中，先用 `EdgeModelKit` 准备模型，再通过 `loadLocal(directory:)` 加载本地缓存目录。
 
 ```swift
 import EdgeInference
+import EdgeModelKit
 
 let engine = LLMEngine()
 
@@ -83,9 +88,11 @@ guard let config = ModelConfig.find(modelID: "qwen3.5-0.8b") else {
     throw EdgeRuntimeError.modelNotFound("qwen3.5-0.8b")
 }
 
-try await engine.load(config: config) { progress in
-    print("Download/load progress:", progress)
+try await HFDownloader.shared.download(config: config) { progress in
+    print("Download progress:", progress)
 }
+
+try await engine.loadLocal(directory: ModelCache.shared.cachedURL(for: config))
 ```
 
 ## 运行你的第一个 VLM

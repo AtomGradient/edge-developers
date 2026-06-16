@@ -7,7 +7,7 @@ title: Speech to Text
 
 Edge Kit exposes Developer Preview speech-to-text APIs for local transcription.
 
-Use `EdgeVoice` for microphone recording and Whisper-based transcription. Native ASR paths are also available through `STTEngine` in EdgeInference builds that include the speech runtime.
+Use `EdgeVoice` for microphone recording. Use `STTEngine` from `EdgeInference` for native ASR in builds that include the speech runtime. `WhisperEngine` is currently a preview bridge for future whisper.cpp integration; in `edge-kit@1.0.0-rc95` it is a skeleton and does not perform real transcription.
 
 ## Record audio
 
@@ -21,44 +21,7 @@ let recordingURL = try await recorder.startRecording()
 let finalURL = recorder.stopRecording() ?? recordingURL
 ```
 
-## Transcribe an audio file
-
-```swift
-import EdgeVoice
-
-let engine = WhisperEngine()
-try await engine.load(.base)
-
-let result = try await engine.transcribe(
-    audioURL: finalURL,
-    language: "auto"
-)
-
-print(result.text)
-```
-
-## Realtime transcription
-
-`startRealtime(language:)` returns an `AsyncStream<String>`.
-
-```swift
-for await partial in engine.startRealtime(language: "auto") {
-    print(partial)
-}
-```
-
-## Whisper model sizes
-
-| Size | Filename |
-| --- | --- |
-| `.tiny` | `ggml-tiny.bin` |
-| `.base` | `ggml-base.bin` |
-| `.small` | `ggml-small.bin` |
-| `.medium` | `ggml-medium.bin` |
-
-## Native STT
-
-When your build includes native STT support, use `STTEngine`:
+## Transcribe an audio file with native STT
 
 ```swift
 import EdgeInference
@@ -72,6 +35,29 @@ let result = try await engine.transcribe(audioURL: finalURL)
 print(result.text)
 ```
 
+## Stream native transcription
+
+`transcribeStream(audioURL:language:)` returns `STTStreamEvent` values.
+
+```swift
+for try await event in engine.transcribeStream(audioURL: finalURL) {
+    switch event {
+    case .token(let text):
+        print(text, terminator: "")
+    case .result(let result):
+        print("\nFinal:", result.text)
+    default:
+        break
+    }
+}
+```
+
+## Whisper preview bridge
+
+`WhisperEngine` remains in `EdgeVoice` as a preview bridge for apps that plan to embed a whisper.cpp xcframework. In the current preview tag, `load(_:)` only marks the skeleton as loaded, `transcribe(audioURL:language:)` returns a placeholder string, and `startRealtime(language:)` completes immediately.
+
+Use `STTEngine` for runnable native ASR examples until your app provides a real Whisper binding.
+
 ## Supported audio
 
 Use file URLs recorded by `AudioRecorder` or WAV/PCM data prepared by your agent. Validate sample rate conversion on the devices you support.
@@ -80,14 +66,14 @@ Use file URLs recorded by `AudioRecorder` or WAV/PCM data prepared by your agent
 
 | Method | What it does |
 |--------|-------------|
-| `WhisperEngine()` | Create a speech-to-text engine. |
-| `load(_:)` | Load a Whisper model variant. |
+| `STTEngine()` | Create a native speech-to-text engine. |
+| `loadLocal(directory:)` | Load a local ASR model directory. |
 | `transcribe(audioURL:)` | Transcribe an audio file. |
 | `transcribe(samples:sampleRate:)` | Transcribe PCM samples. |
 | `transcribeStream(audioURL:)` | Stream transcription events. |
 | `AudioRecorder()` | Record from microphone. |
 
-Full signatures → [EdgeVoice API Reference](/docs/api-reference/edge-voice)
+Full signatures → [EdgeInference API Reference](/docs/api-reference/edge-inference) and [EdgeVoice API Reference](/docs/api-reference/edge-voice)
 
 ## Try it next
 

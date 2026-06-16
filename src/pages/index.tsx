@@ -8,7 +8,7 @@ import styles from './index.module.css';
 const enCapabilities = [
   {
     name: 'Text Generation',
-    description: 'Stream text from an on-device LLM. Multi-turn conversation, LoRA adapters.',
+    description: 'Stream text from an on-device LLM with multi-turn conversation state.',
     link: '/docs/build/text-generation',
   },
   {
@@ -28,7 +28,7 @@ const enCapabilities = [
   },
   {
     name: 'Model Evolution',
-    description: 'Models that grow with users. Profiling, adapters, real-time steering.',
+    description: 'Local Neural Imprint artifacts that restore user-specific runtime state under compatibility gates.',
     link: '/docs/build/model-evolution',
   },
   {
@@ -41,7 +41,7 @@ const enCapabilities = [
 const zhCapabilities = [
   {
     name: '文本生成',
-    description: '从端侧 LLM 流式生成文本。支持多轮对话和 LoRA 适配器。',
+    description: '从端侧 LLM 流式生成文本，并保留多轮对话状态。',
     link: '/docs/build/text-generation',
   },
   {
@@ -61,7 +61,7 @@ const zhCapabilities = [
   },
   {
     name: '模型进化',
-    description: '随用户成长的模型。画像分析、适配器和实时调控。',
+    description: '通过本地 Neural Imprint artifact，在兼容性闸门下恢复用户特定运行时状态。',
     link: '/docs/build/model-evolution',
   },
   {

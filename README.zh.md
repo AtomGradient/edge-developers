@@ -21,8 +21,10 @@ Neural Imprint 是本地 artifact 和 restore flow。兼容的 base model 可以
 - 使用固定 preview 版本安装 Swift SDK：
 
   ```swift
-  .package(url: "git@github.com:AtomGradient/edge-kit.git", exact: "1.0.0-rc95")
+  .package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc95")
   ```
+
+  当前 preview 中，部分 package resolution 路径仍可能因为 Edge Engine 等传递依赖需要 AtomGradient preview access 或 SSH access。请把 access setup 视为 preview onboarding 的一部分。
 
 - 跟随 Swift quickstart：`docs/get-started/quickstart.md`
 - 用 EdgeStudio CLI 验证 Swift SDK 路径：`docs/get-started/swift-cli.md`
@@ -51,6 +53,15 @@ npm run build
 build 会产出英文和中文文档。
 
 ## CLI
+
+从 EdgeStudio package 安装 preview CLI：
+
+```bash
+python -m pip install edgestudio
+edge doctor
+```
+
+如果使用源码 checkout，请在 EdgeStudio 仓库根目录运行 `python -m pip install -e .`。`edge` 命令是 `edgestudio` package 的 entry point。
 
 当前 preview 已发布：
 

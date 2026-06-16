@@ -25,9 +25,20 @@ The runnable flow is:
 8. Write and validate a local receipt with paths, hashes, schema versions, and status.
 9. Optionally write per-app reuse manifests as an artifact reuse smoke, not cross-device sync.
 
+## Install the preview CLI
+
+The `edge` command is installed by the EdgeStudio Python package:
+
+```bash
+python -m pip install edgestudio
+edge doctor
+```
+
+For a source checkout, create or activate your Python 3.11+ environment and run `python -m pip install -e .` from the EdgeStudio repository root. Then run the commands below from that checkout.
+
 ## Commands
 
-Run these commands from the EdgeStudio checkout after installing the preview CLI:
+Run these commands from the EdgeStudio checkout:
 
 ```bash
 edge doctor

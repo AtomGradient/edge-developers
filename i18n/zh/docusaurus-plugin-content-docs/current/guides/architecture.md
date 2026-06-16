@@ -29,7 +29,7 @@ title: 架构
 | 产品 | 职责 | 不负责 |
 | --- | --- | --- |
 | **Edge Engine** | 原生模型执行、运行时调度和底层 cache primitives。 | App UI、tool policy、用户数据或 app 存储。 |
-| **Edge Kit** | 公开 Swift SDK：推理、模型管理、EdgeData、EdgeMesh、EdgeSession、EdgeUI 和语音。 | 产品业务逻辑或私有用户数据策略。 |
+| **Edge Kit** | 公开 Swift SDK：推理、模型管理、EdgeData、EdgeMesh、EdgeDataMeshBridge、EdgeSession、EdgeUI 和语音。 | 产品业务逻辑或私有用户数据策略。 |
 | **Edge Halo** | 个性化生命周期：画像任务、Neural Imprint capsule 校验、恢复编排和 fail-closed 兼容性检查。 | 模型 forward、mesh 传输或 app-specific 数据导入。 |
 | **Edge Studio** | 本地工作台：优化、benchmark、导出、artifact 生成和设备协调。 | 已发布 agent 内的 runtime 行为。 |
 | **Edge Scaffold** | 参考 iOS agent 模板，展示推荐集成方式。 | 生产 app 的共享 runtime 依赖。请 fork/export 后由你的 app 自己拥有。 |

@@ -5,7 +5,7 @@ title: Text Generation
 
 # Text generation with LLMEngine
 
-`LLMEngine` loads a local or registered text model and streams generated text. Edge Kit applies the runtime memory policy automatically so multi-turn conversations stay bounded on device.
+`LLMEngine` loads a local text model directory and streams generated text. Edge Kit applies the runtime memory policy automatically so multi-turn conversations stay bounded on device.
 
 ## Create and load
 
@@ -31,14 +31,17 @@ try await engine.loadLocal(
 Use `.exactRecall` with app-owned tools or fact storage for auditable facts such
 as amounts, dates, and counts.
 
-Load from a registered `ModelConfig`:
+Prepare a registered `ModelConfig` with `EdgeModelKit`, then load the local cache directory:
 
 ```swift
+import EdgeModelKit
+
 guard let config = ModelConfig.find(modelID: "qwen3.5-0.8b") else {
     throw EdgeRuntimeError.modelNotFound("qwen3.5-0.8b")
 }
 
-try await engine.load(config: config)
+try await HFDownloader.shared.download(config: config)
+try await engine.loadLocal(directory: ModelCache.shared.cachedURL(for: config))
 ```
 
 ## Generate streaming text
@@ -183,7 +186,7 @@ The methods you will use most often:
 |--------|-------------|
 | `LLMEngine()` | Create an engine instance. `@MainActor`. |
 | `loadLocal(directory:)` | Load a model from a local path. |
-| `load(config:)` | Load a registered model by config. |
+| `load(config:)` | Preview metadata hook; the native default build does not perform remote downloads here. Use `EdgeModelKit` plus `loadLocal(directory:)`. |
 | `generate(messages:parameters:)` | Stream `GenerateChunk` values. Async sequence. |
 | `generateOnce(messages:)` | Return one accumulated string. |
 | `clearPromptCache()` | Reset conversation state. |

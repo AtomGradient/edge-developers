@@ -21,7 +21,7 @@ public final class LLMEngine: ObservableObject
 | Property | Type | Description |
 | --- | --- | --- |
 | `state` | `EngineState` | Current engine state. |
-| `loadedConfig` | `ModelConfig?` | Registered model config when loaded through `load(config:)`. |
+| `loadedConfig` | `ModelConfig?` | Registered model metadata when available. |
 | `downloadProgress` | `Double` | Download or load progress from `0` to `1`. |
 | `lastPolicy` | `InferencePolicy.Resolved?` | Last high-level policy summary. |
 | `lastMetrics` | `InferenceMetrics?` | Metrics from the last completed generation. |
@@ -33,11 +33,11 @@ public final class LLMEngine: ObservableObject
 | Method | Description |
 | --- | --- |
 | `init()` | Creates an engine. |
-| `load(config:onProgress:)` | Loads a registered Hugging Face model config. |
+| `load(config:onProgress:)` | Preview metadata hook. The native default build does not download remote models here; use `EdgeModelKit` to prepare a local directory, then call `loadLocal(directory:)`. |
 | `loadLocal(directory:onProgress:)` | Loads a local model directory. |
 | `loadLocal(directory:options:onProgress:)` | Loads a local model directory with runtime options such as `memoryIntent`. |
 | `generate(messages:tools:onToolCall:parameters:bypassPolicy:)` | Streams `GenerateChunk` values. |
-| `generateStream(prompt:maxTokens:temperature:topP:)` | Convenience text prompt stream. |
+| `generateStream(messages:parameters:)` | Convenience stream wrapper around `generate(messages:parameters:)`. |
 | `generateOnce(messages:parameters:)` | Returns a single accumulated string. |
 | `clearPromptCache()` | Clears conversation cache. |
 | `unload()` | Releases the loaded model. |
@@ -69,10 +69,10 @@ public final class VLMEngine: ObservableObject
 | --- | --- |
 | `init()` | Creates an engine. |
 | `loadLocal(directory:onProgress:)` | Loads a local VLM directory. |
-| `load(config:onProgress:)` | Loads a registered VLM config. |
+| `load(config:onProgress:)` | Preview metadata hook. The native default build does not download remote VLMs here; prepare a local directory and call `loadLocal(directory:)`. |
 | `generate(messages:images:tools:onToolCall:parameters:)` | Streams text from URL images. |
 | `generate(messages:ciImages:tools:onToolCall:parameters:)` | Streams text from in-memory `CIImage` values. |
-| `generateStream(prompt:imageURL:maxTokens:temperature:topP:)` | Convenience stream API. |
+| `generateStream(messages:images:parameters:)` | Convenience stream wrapper around URL-image generation. |
 | `unload()` | Releases the loaded model. |
 
 ## TTSEngine

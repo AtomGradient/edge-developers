@@ -25,7 +25,7 @@ During Developer Preview, releases follow `1.0.0-rcN` tags. Breaking changes are
 
 ## Developer Preview boundaries
 
-Developer Preview is an internal preview channel. The changelog documents what is shipped, what requires preview access, and what is deliberately not enabled yet.
+Developer Preview is a limited preview channel. The changelog documents what is shipped, what requires preview access, and what is deliberately not enabled yet.
 
 ### Access matrix
 
@@ -74,7 +74,7 @@ Generic builds and simulator checks are not enough for runtime claims. Re-run re
 ### 1.0.0-rc95 (current)
 
 - Edge Kit current Developer Preview.
-- Modules: EdgeInference, EdgeModelKit, EdgeVoice, EdgeMesh, EdgeData, EdgeUI.
+- Modules: EdgeInference, EdgeModelKit, EdgeVoice, EdgeMesh, EdgeData, EdgeDataMeshBridge, EdgeUI, EdgeSession.
 - LLM, VLM, TTS, STT engine support.
 - DSR Attention for long-context multi-turn sessions.
 - Automatic KV cache memory policy.

@@ -21,8 +21,10 @@ Current preview entry points:
 - Install the Swift SDK with the pinned preview package:
 
   ```swift
-  .package(url: "git@github.com:AtomGradient/edge-kit.git", exact: "1.0.0-rc95")
+  .package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc95")
   ```
+
+  Some current preview package resolution paths may still require AtomGradient preview access or SSH access for transitive dependencies such as Edge Engine. Treat access setup as part of preview onboarding.
 
 - Follow the Swift quickstart: `docs/get-started/quickstart.md`
 - Validate the Swift SDK path with EdgeStudio's CLI: `docs/get-started/swift-cli.md`
@@ -51,6 +53,15 @@ npm run build
 The build emits English and Chinese documentation.
 
 ## CLI
+
+Install the preview CLI from the EdgeStudio package:
+
+```bash
+python -m pip install edgestudio
+edge doctor
+```
+
+For source checkouts, run `python -m pip install -e .` from the EdgeStudio repository root. The `edge` command is the `edgestudio` package entry point.
 
 Shipped in current preview:
 

@@ -5,7 +5,11 @@ title: EdgeVoice
 
 # EdgeVoice API 参考
 
-`EdgeVoice` 包含音频录制和基于 Whisper 的语音转文字预览 API。
+`EdgeVoice` 包含音频录制 API 和 Whisper preview bridge。
+
+:::info 当前 preview 边界
+在 `edge-kit@1.0.0-rc95` 中，`WhisperEngine` 是为未来 whisper.cpp xcframework integration 保留的 skeleton。它不执行真实转写。当前 preview 的可运行原生 ASR 示例请使用 `EdgeInference` 中的 `STTEngine`。
+:::
 
 ## AudioRecorder
 
@@ -38,15 +42,15 @@ let finalURL = recorder.stopRecording() ?? url
 public final class WhisperEngine: ObservableObject
 ```
 
-面向 Whisper 家族模型的语音转文字 engine。
+面向 Whisper 家族模型的 preview bridge。
 
 | 属性或方法 | 描述 |
 | --- | --- |
 | `isLoaded` | 是否已加载模型。 |
 | `isTranscribing` | 是否正在转写。 |
-| `load(_:)` | 加载一个模型尺寸。 |
-| `transcribe(audioURL:language:)` | 转写音频文件。 |
-| `startRealtime(language:)` | 启动实时转写 stream。 |
+| `load(_:)` | 为 skeleton bridge 记录所选模型尺寸。 |
+| `transcribe(audioURL:language:)` | 在接入 whisper.cpp 前返回 placeholder 字符串。 |
+| `startRealtime(language:)` | 在接入 realtime Whisper 前会立即结束。 |
 | `unload()` | 释放已加载模型。 |
 
 ## WhisperEngine.ModelSize

@@ -25,7 +25,7 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 
 ## 开发者预览边界
 
-Developer Preview 是内部预览通道。更新日志会明确哪些能力已经发布、哪些依赖需要 preview access、哪些能力当前刻意不启用。
+Developer Preview 是 limited preview 通道。更新日志会明确哪些能力已经发布、哪些依赖需要 preview access、哪些能力当前刻意不启用。
 
 ### Access matrix
 
@@ -74,7 +74,7 @@ generic build 和 simulator check 不足以支撑 runtime claim。任何 preview
 ### 1.0.0-rc95 (当前)
 
 - Edge Kit 当前开发者预览版。
-- 模块：EdgeInference、EdgeModelKit、EdgeVoice、EdgeMesh、EdgeData、EdgeUI。
+- 模块：EdgeInference、EdgeModelKit、EdgeVoice、EdgeMesh、EdgeData、EdgeDataMeshBridge、EdgeUI、EdgeSession。
 - 支持 LLM、VLM、TTS、STT engine。
 - 面向长上下文多轮会话的 DSR Attention。
 - 自动 KV cache 内存策略。

@@ -12,7 +12,7 @@ audio.
 ## Architecture
 
 ```text
-Microphone -> WhisperEngine -> LLMEngine -> TTSEngine -> Speaker
+Microphone -> STTEngine -> LLMEngine -> TTSEngine -> Speaker
 ```
 
 Use this shape when you want a private assistant that can run without sending
@@ -21,8 +21,8 @@ voice or prompts to a server.
 ## Prerequisites
 
 - Edge Kit added with Swift Package Manager.
-- Edge Voice available in the same package setup.
-- Local model directories for the LLM and TTS model.
+- Edge Voice available in the same package setup for microphone recording.
+- Local model directories for the STT, LLM, and TTS models.
 - Microphone usage text in your agent's `Info.plist`.
 
 ```xml
@@ -56,6 +56,7 @@ struct VoiceAssistantView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             Group {
+                TextField("STT model directory", text: $model.sttModelPath)
                 TextField("LLM model directory", text: $model.llmModelPath)
                 TextField("TTS model directory", text: $model.ttsModelPath)
             }
@@ -99,6 +100,7 @@ struct VoiceAssistantView: View {
 
 @MainActor
 final class VoiceAssistantViewModel: ObservableObject {
+    @Published var sttModelPath = "\(NSHomeDirectory())/Models/Qwen3-ASR"
     @Published var llmModelPath = "\(NSHomeDirectory())/Models/Qwen3.5-0.8B"
     @Published var ttsModelPath = "\(NSHomeDirectory())/Models/Qwen3-TTS"
     @Published var transcript = ""
@@ -109,7 +111,7 @@ final class VoiceAssistantViewModel: ObservableObject {
     @Published var isProcessing = false
 
     private let recorder = AudioRecorder()
-    private let whisper = WhisperEngine()
+    private let stt = STTEngine()
     private let llm = LLMEngine()
     private let tts = TTSEngine()
 
@@ -131,7 +133,7 @@ final class VoiceAssistantViewModel: ObservableObject {
         defer { isLoading = false }
 
         do {
-            try await whisper.load(.base)
+            try await stt.loadLocal(directory: URL(fileURLWithPath: sttModelPath))
             try await llm.loadLocal(directory: URL(fileURLWithPath: llmModelPath))
             try await tts.loadLocal(directory: URL(fileURLWithPath: ttsModelPath))
             isReady = true
@@ -163,7 +165,7 @@ final class VoiceAssistantViewModel: ObservableObject {
 
         do {
             phase = "Transcribing..."
-            let result = try await whisper.transcribe(audioURL: audioURL)
+            let result = try await stt.transcribe(audioURL: audioURL)
             let userText = result.text.trimmingCharacters(in: .whitespacesAndNewlines)
             transcript = userText
 

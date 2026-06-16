@@ -22,7 +22,7 @@ Pin Developer Preview packages exactly:
 // Package.swift
 dependencies: [
     .package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc95"),
-    .package(url: "git@github.com:AtomGradient/edge-halo.git", exact: "1.0.0-rc17")
+    .package(url: "https://github.com/AtomGradient/edge-halo.git", exact: "1.0.0-rc17")
 ]
 ```
 
@@ -46,13 +46,13 @@ Edge Kit `1.0.0-rc95` and Edge Halo `1.0.0-rc17` both use Edge Engine `1.0.0-rc1
 Clone EdgeStudio and place the SDK repositories at the local paths expected by `tests/smoke_test/Package.swift`:
 
 ```bash
-git clone git@github.com:AtomGradient/EdgeStudio.git
+git clone https://github.com/AtomGradient/EdgeStudio.git
 cd EdgeStudio
 
-git clone git@github.com:AtomGradient/edge-kit.git edge-kit
+git clone https://github.com/AtomGradient/edge-kit.git edge-kit
 git -C edge-kit checkout 1.0.0-rc95
 
-git clone git@github.com:AtomGradient/edge-halo.git edge-halo
+git clone https://github.com/AtomGradient/edge-halo.git edge-halo
 git -C edge-halo checkout 1.0.0-rc17
 ```
 
@@ -162,4 +162,3 @@ jobs:
           set -e
           test "$status" -eq 1
 ```
-

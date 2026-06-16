@@ -7,7 +7,7 @@ title: 语音转文字
 
 Edge Kit 暴露了用于本地转写的开发者预览版语音转文字 API。
 
-使用 `EdgeVoice` 进行麦克风录音和基于 Whisper 的转写。在包含语音运行时的 EdgeInference 构建中，也可以通过 `STTEngine` 使用原生 ASR 路径。
+使用 `EdgeVoice` 进行麦克风录音。对于包含语音运行时的构建，使用 `EdgeInference` 中的 `STTEngine` 做原生 ASR。`WhisperEngine` 目前只是未来 whisper.cpp integration 的 preview bridge；在 `edge-kit@1.0.0-rc95` 中它仍是 skeleton，不执行真实转写。
 
 ## 录制音频
 
@@ -21,44 +21,7 @@ let recordingURL = try await recorder.startRecording()
 let finalURL = recorder.stopRecording() ?? recordingURL
 ```
 
-## 转写音频文件
-
-```swift
-import EdgeVoice
-
-let engine = WhisperEngine()
-try await engine.load(.base)
-
-let result = try await engine.transcribe(
-    audioURL: finalURL,
-    language: "auto"
-)
-
-print(result.text)
-```
-
-## 实时转写
-
-`startRealtime(language:)` 返回 `AsyncStream<String>`。
-
-```swift
-for await partial in engine.startRealtime(language: "auto") {
-    print(partial)
-}
-```
-
-## Whisper 模型尺寸
-
-| 尺寸 | 文件名 |
-| --- | --- |
-| `.tiny` | `ggml-tiny.bin` |
-| `.base` | `ggml-base.bin` |
-| `.small` | `ggml-small.bin` |
-| `.medium` | `ggml-medium.bin` |
-
-## 原生 STT
-
-当你的构建包含原生 STT 支持时，使用 `STTEngine`：
+## 使用原生 STT 转写音频文件
 
 ```swift
 import EdgeInference
@@ -72,6 +35,29 @@ let result = try await engine.transcribe(audioURL: finalURL)
 print(result.text)
 ```
 
+## 流式原生转写
+
+`transcribeStream(audioURL:language:)` 返回 `STTStreamEvent` 值。
+
+```swift
+for try await event in engine.transcribeStream(audioURL: finalURL) {
+    switch event {
+    case .token(let text):
+        print(text, terminator: "")
+    case .result(let result):
+        print("\nFinal:", result.text)
+    default:
+        break
+    }
+}
+```
+
+## Whisper preview bridge
+
+`WhisperEngine` 仍保留在 `EdgeVoice` 中，作为计划嵌入 whisper.cpp xcframework 的 app 的 preview bridge。当前 preview tag 中，`load(_:)` 只会把 skeleton 标为已加载，`transcribe(audioURL:language:)` 返回 placeholder 字符串，`startRealtime(language:)` 会立即结束。
+
+在 app 提供真实 Whisper binding 之前，请使用 `STTEngine` 作为可运行的原生 ASR 示例。
+
 ## 支持的音频
 
 使用由 `AudioRecorder` 录制的文件 URL，或使用你的 app 准备好的 WAV/PCM 数据。请在你支持的设备上验证采样率转换。
@@ -80,14 +66,14 @@ print(result.text)
 
 | Method | 作用 |
 |--------|-------------|
-| `WhisperEngine()` | 创建语音转文字 engine。 |
-| `load(_:)` | 加载 Whisper 模型变体。 |
+| `STTEngine()` | 创建原生语音转文字 engine。 |
+| `loadLocal(directory:)` | 加载本地 ASR 模型目录。 |
 | `transcribe(audioURL:)` | 转写音频文件。 |
 | `transcribe(samples:sampleRate:)` | 转写 PCM 采样。 |
 | `transcribeStream(audioURL:)` | 流式返回转写事件。 |
 | `AudioRecorder()` | 从麦克风录音。 |
 
-完整签名 → [EdgeVoice API Reference](/docs/api-reference/edge-voice)
+完整签名 → [EdgeInference API Reference](/docs/api-reference/edge-inference) 与 [EdgeVoice API Reference](/docs/api-reference/edge-voice)
 
 ## 下一步
 

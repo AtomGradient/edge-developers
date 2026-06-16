@@ -30,6 +30,10 @@ dependencies: [
 
 开发者预览版本应使用 exact pin。升级到新的 `1.0.0-rcN` tag 前，请重新完成真机验证。
 
+:::info Preview access
+公开文档中的 Swift package URL 使用 HTTPS。当前 preview 中，部分传递依赖路径仍可能需要 AtomGradient preview access 或 SSH access，尤其是 Edge Engine 仍作为固定依赖时。请先确认 package resolution，再把某个 tag 当作已完成集成。
+:::
+
 ## 添加 umbrella product
 
 ```swift

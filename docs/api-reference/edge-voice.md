@@ -5,7 +5,11 @@ title: EdgeVoice
 
 # EdgeVoice API reference
 
-`EdgeVoice` contains audio recording and Whisper-based speech-to-text preview APIs.
+`EdgeVoice` contains audio recording APIs and a Whisper preview bridge.
+
+:::info Current preview boundary
+In `edge-kit@1.0.0-rc95`, `WhisperEngine` is a skeleton for future whisper.cpp xcframework integration. It does not perform real transcription. Use `STTEngine` from `EdgeInference` for runnable native ASR examples in the current preview.
+:::
 
 ## AudioRecorder
 
@@ -38,15 +42,15 @@ let finalURL = recorder.stopRecording() ?? url
 public final class WhisperEngine: ObservableObject
 ```
 
-Speech-to-text engine for Whisper-family models.
+Preview bridge for Whisper-family models.
 
 | Property or method | Description |
 | --- | --- |
 | `isLoaded` | Whether a model is loaded. |
 | `isTranscribing` | Whether transcription is active. |
-| `load(_:)` | Loads a model size. |
-| `transcribe(audioURL:language:)` | Transcribes an audio file. |
-| `startRealtime(language:)` | Starts realtime transcription stream. |
+| `load(_:)` | Records the selected model size for the skeleton bridge. |
+| `transcribe(audioURL:language:)` | Returns a placeholder string until whisper.cpp integration is supplied. |
+| `startRealtime(language:)` | Completes immediately until realtime Whisper integration is supplied. |
 | `unload()` | Releases the loaded model. |
 
 ## WhisperEngine.ModelSize

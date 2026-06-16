@@ -20,7 +20,7 @@ All Edge products are in **Developer Preview**. APIs may change between releases
 | --- | --- |
 | **Edge Studio** | Local workbench for model analysis, optimization, benchmark, Neural Imprint generation, device management, and export. |
 | **Edge Engine** | Native on-device inference runtime. It is packaged under Edge Kit; most apps do not import it directly. |
-| **Edge Kit** | Swift SDK for LLM, VLM, speech, model management, EdgeData, EdgeMesh, EdgeSession, and EdgeUI. |
+| **Edge Kit** | Swift SDK for LLM, VLM, speech, model management, EdgeData, EdgeMesh, EdgeDataMeshBridge, EdgeSession, and EdgeUI. |
 | **Edge Halo** | Personalization lifecycle layer: profile jobs, Neural Imprint capsule validation, restore orchestration, and compatibility gates. |
 | **Edge Scaffold** | Reference app and export template that shows the recommended iOS integration pattern. |
 

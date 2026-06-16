@@ -25,9 +25,20 @@ title: 5 分钟 Neural Imprint demo
 8. 写入并验证只包含 path、hash、schema version 与 status 的 local receipt。
 9. 可选：写入 per-app reuse manifests，作为 artifact reuse smoke；它不是跨设备同步。
 
+## 安装 preview CLI
+
+`edge` 命令由 EdgeStudio Python package 安装：
+
+```bash
+python -m pip install edgestudio
+edge doctor
+```
+
+如果使用源码 checkout，请创建或激活 Python 3.11+ 环境，并在 EdgeStudio 仓库根目录运行 `python -m pip install -e .`。然后从该 checkout 运行下面的命令。
+
 ## Commands
 
-安装 preview CLI 后，在 EdgeStudio checkout 里运行：
+在 EdgeStudio checkout 里运行：
 
 ```bash
 edge doctor

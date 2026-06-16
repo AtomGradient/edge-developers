@@ -21,7 +21,7 @@ public final class LLMEngine: ObservableObject
 | 属性 | 类型 | 描述 |
 | --- | --- | --- |
 | `state` | `EngineState` | 当前 engine 状态。 |
-| `loadedConfig` | `ModelConfig?` | 通过 `load(config:)` 加载时使用的已注册模型配置。 |
+| `loadedConfig` | `ModelConfig?` | 可用时记录的已注册模型 metadata。 |
 | `downloadProgress` | `Double` | 从 `0` 到 `1` 的下载或加载进度。 |
 | `lastPolicy` | `InferencePolicy.Resolved?` | 上一次高层策略摘要。 |
 | `lastMetrics` | `InferenceMetrics?` | 上一次完成生成的指标。 |
@@ -33,11 +33,11 @@ public final class LLMEngine: ObservableObject
 | 方法 | 描述 |
 | --- | --- |
 | `init()` | 创建 engine。 |
-| `load(config:onProgress:)` | 加载已注册的 Hugging Face 模型配置。 |
+| `load(config:onProgress:)` | Preview metadata hook。native default build 不在这里下载远程模型；请用 `EdgeModelKit` 准备本地目录，再调用 `loadLocal(directory:)`。 |
 | `loadLocal(directory:onProgress:)` | 加载本地模型目录。 |
 | `loadLocal(directory:options:onProgress:)` | 使用 runtime options 加载本地模型目录，例如 `memoryIntent`。 |
 | `generate(messages:tools:onToolCall:parameters:bypassPolicy:)` | 流式返回 `GenerateChunk` 值。 |
-| `generateStream(prompt:maxTokens:temperature:topP:)` | 便捷文本 prompt stream。 |
+| `generateStream(messages:parameters:)` | 对 `generate(messages:parameters:)` 的便捷 stream wrapper。 |
 | `generateOnce(messages:parameters:)` | 返回累积后的单个字符串。 |
 | `clearPromptCache()` | 清理对话缓存。 |
 | `unload()` | 释放已加载模型。 |
@@ -69,10 +69,10 @@ public final class VLMEngine: ObservableObject
 | --- | --- |
 | `init()` | 创建 engine。 |
 | `loadLocal(directory:onProgress:)` | 加载本地 VLM 目录。 |
-| `load(config:onProgress:)` | 加载已注册的 VLM 配置。 |
+| `load(config:onProgress:)` | Preview metadata hook。native default build 不在这里下载远程 VLM；请先准备本地目录，再调用 `loadLocal(directory:)`。 |
 | `generate(messages:images:tools:onToolCall:parameters:)` | 从 URL 图像流式生成文本。 |
 | `generate(messages:ciImages:tools:onToolCall:parameters:)` | 从内存中的 `CIImage` 值流式生成文本。 |
-| `generateStream(prompt:imageURL:maxTokens:temperature:topP:)` | 便捷 stream API。 |
+| `generateStream(messages:images:parameters:)` | 对 URL-image generation 的便捷 stream wrapper。 |
 | `unload()` | 释放已加载模型。 |
 
 ## TTSEngine

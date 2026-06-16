@@ -37,6 +37,10 @@ dependencies: [
 
 Developer Preview releases should be pinned exactly. Re-run your real-device validation before moving to a newer `1.0.0-rcN` tag.
 
+:::info Preview access
+The public documentation uses HTTPS package URLs. In the current preview, some package resolution paths can still require AtomGradient preview access or SSH access for transitive dependencies such as Edge Engine. Validate `swift package resolve` in the same environment you will use for development and CI.
+:::
+
 Then add the product you need:
 
 ```swift
@@ -71,12 +75,13 @@ for try await chunk in engine.generate(
 }
 ```
 
-## Load from the model registry
+## Prepare a registered model
 
-`ModelConfig` contains preview model entries for supported model families.
+`ModelConfig` contains preview model entries for supported model families. In the native default build, prepare the model with `EdgeModelKit`, then load the local cache directory with `loadLocal(directory:)`.
 
 ```swift
 import EdgeInference
+import EdgeModelKit
 
 let engine = LLMEngine()
 
@@ -84,9 +89,11 @@ guard let config = ModelConfig.find(modelID: "qwen3.5-0.8b") else {
     throw EdgeRuntimeError.modelNotFound("qwen3.5-0.8b")
 }
 
-try await engine.load(config: config) { progress in
-    print("Download/load progress:", progress)
+try await HFDownloader.shared.download(config: config) { progress in
+    print("Download progress:", progress)
 }
+
+try await engine.loadLocal(directory: ModelCache.shared.cachedURL(for: config))
 ```
 
 ## Run your first VLM

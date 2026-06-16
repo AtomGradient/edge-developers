@@ -22,7 +22,7 @@ title: Swift CLI 验证
 // Package.swift
 dependencies: [
     .package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc95"),
-    .package(url: "git@github.com:AtomGradient/edge-halo.git", exact: "1.0.0-rc17")
+    .package(url: "https://github.com/AtomGradient/edge-halo.git", exact: "1.0.0-rc17")
 ]
 ```
 
@@ -46,13 +46,13 @@ dependencies: [
 克隆 EdgeStudio，并把 SDK 仓库放到 `tests/smoke_test/Package.swift` 期望的本地路径：
 
 ```bash
-git clone git@github.com:AtomGradient/EdgeStudio.git
+git clone https://github.com/AtomGradient/EdgeStudio.git
 cd EdgeStudio
 
-git clone git@github.com:AtomGradient/edge-kit.git edge-kit
+git clone https://github.com/AtomGradient/edge-kit.git edge-kit
 git -C edge-kit checkout 1.0.0-rc95
 
-git clone git@github.com:AtomGradient/edge-halo.git edge-halo
+git clone https://github.com/AtomGradient/edge-halo.git edge-halo
 git -C edge-halo checkout 1.0.0-rc17
 ```
 
@@ -162,4 +162,3 @@ jobs:
           set -e
           test "$status" -eq 1
 ```
-
