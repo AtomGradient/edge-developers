@@ -102,3 +102,28 @@ After the first docs pass, the developer onboarding path was refined again. The 
 5. Compare before/after answer hashes from the local receipt.
 
 The one-command learning demo remains useful, but only as an advanced shortcut after the developer understands the pieces. Future CLI UX should add a clearer `edge demo learn sample show/list` command and a direct base-vs-Neural-Imprint chat replay command.
+
+## Follow-up Alignment: Homepage as a Documentation Service
+
+After reviewing the live Docusaurus homepage, the homepage needs to behave like a professional documentation entry point rather than a broad product capability grid.
+
+User feedback:
+
+1. The first screen must make the developer's next action obvious.
+2. Python/CLI and iOS/Swift should not be mixed at the same priority level.
+3. The homepage's first job is to help a developer successfully try the product.
+4. `/Users/alex/Documents/Codes/edge-studio` remains the local external-test clone for following the docs exactly.
+
+Claude review agreed with the direction and added three implementation constraints:
+
+1. Keep `qwen3.5-9b-4bit` as the documented preview baseline only because it is the current verified baseline; do not switch to a lighter default until the full learning demo is tested on that model.
+2. Do not copy the full learning flow onto the homepage. The homepage should show a short teaser and link to `docs/get-started/5-minute-demo.md`, which remains the source of truth.
+3. Avoid wording that implies a developer is training on personal data during the first run. Use receipt-anchored wording: generate/restore a local Neural Imprint artifact from a synthetic sample and compare the local receipt.
+
+Homepage target:
+
+- First screen: "Run a local model, then validate the learning loop."
+- Primary lane: Python/CLI first-success path.
+- Secondary lane: iOS/Swift app integration path, clearly marked as preview-access/device-validation work.
+- Capability grid stays present but lower priority.
+- No claims of model quality improvement, router improvement, or behavior improvement without evaluation evidence.
