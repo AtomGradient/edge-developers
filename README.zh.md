@@ -23,7 +23,7 @@ Neural Imprint 是本地 artifact 和 restore flow。兼容的 base model 可以
   ```bash
   python -m pip install -e ./edgestudio-core
   python -m pip install -e .
-  edge demo learn run --prepare-model --model qwen3.5-0.8b --source auto --max-tokens 8 --json
+  edge demo learn run --prepare-model --model qwen3.5-9b-4bit --source auto --max-tokens 8 --json
   ```
 
   这条 demo 命令会在显式传入 `--prepare-model` 时准备兼容本地模型，然后只在隔离的 demo run 目录中写入 synthetic correction-learning state，恢复重新生成的 Neural Imprint artifact，对比 before/after answer hash，并写本地 receipt。demo run 本身仍是 local-only；模型下载只会因为显式传入 `--prepare-model` 发生。
@@ -89,20 +89,20 @@ edge doctor
 edge doctor
 edge doctor --json
 edge models list
-edge models where qwen3.5-0.8b
-edge models doctor qwen3.5-0.8b
-edge models fetch qwen3.5-0.8b --dry-run
-edge models fetch qwen3.5-0.8b --source auto
-edge demo chat --model qwen3.5-0.8b --prompt "What is edge AI?" --max-tokens 32
+edge models where qwen3.5-9b-4bit
+edge models doctor qwen3.5-9b-4bit
+edge models fetch qwen3.5-9b-4bit --dry-run
+edge models fetch qwen3.5-9b-4bit --source auto
+edge demo chat --model qwen3.5-9b-4bit --prompt "What is edge AI?" --max-tokens 32
 edge demo receipt --schema
 edge demo receipt --path ./receipt.json
 edge demo local-only --path ./receipt.json
 edge demo imprint run --dry-run --question "Summarize this synthetic profile."
-edge demo imprint run --question "Summarize this synthetic profile." --model qwen3.5-0.8b
+edge demo imprint run --question "Summarize this synthetic profile." --model qwen3.5-9b-4bit
 edge demo imprint compare --path ./receipt.json
 edge demo learn run --dry-run --sample synthetic_profile_correction_v1 --model auto
-edge demo learn run --sample synthetic_profile_correction_v1 --model qwen3.5-0.8b --max-tokens 8
-edge demo learn run --prepare-model --model qwen3.5-0.8b --source auto --max-tokens 8 --json
+edge demo learn run --sample synthetic_profile_correction_v1 --model qwen3.5-9b-4bit --max-tokens 8
+edge demo learn run --prepare-model --model qwen3.5-9b-4bit --source auto --max-tokens 8 --json
 edge demo reuse --run edge-run-example --apps notes,finance --json
 ```
 

@@ -44,13 +44,13 @@ open EdgeScaffold.xcodeproj
 
 模拟器不是模型执行的目标 runtime。模型加载、Neural Imprint restore、内存行为和性能验证都应该在真机上完成。
 
-## 加入小型本地模型
+## 加入基准本地模型
 
-shell 跑起来后，在 `edgescaffolding_model_config` 中配置小模型路径：
+shell 跑起来后，在 `edgescaffolding_model_config` 中配置基准模型路径：
 
 ```bash
 MODEL_COPY=true
-MODEL_NAME=Qwen3.5-0.8B-MLX-4bit
+MODEL_NAME=Qwen3.5-9B-4bit
 MODELS_SOURCE_DIR=$HOME/Documents/mlx-community
 ```
 
@@ -64,4 +64,3 @@ MODELS_SOURCE_DIR=$HOME/Documents/mlx-community
 - app-owned tool registration 和 schema snapshot 模式。
 
 Edge Scaffold 不是 dogfood 业务逻辑。把它视为当前最小参考 app，然后把 sample data、sample tools、copy、签名和模型交付替换成你的 app 自己的策略。
-

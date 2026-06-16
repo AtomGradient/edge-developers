@@ -14,7 +14,9 @@ model and streams multi-turn replies.
 - A local text model directory on the device or simulator.
 - iOS 17 or macOS 14 or later.
 
-For development, start with a small text model such as Qwen3.5 0.8B.
+For the baseline developer path, use Qwen3.5 9B 4bit. For lower-latency
+iteration on constrained devices, choose a smaller supported model and keep the
+same app wiring.
 
 ## Complete code
 
@@ -133,7 +135,7 @@ struct ChatTurn: Identifiable, Equatable {
 
 @MainActor
 final class ChatViewModel: ObservableObject {
-    @Published var modelPath = "\(NSHomeDirectory())/Models/Qwen3.5-0.8B"
+    @Published var modelPath = "\(NSHomeDirectory())/Models/Qwen3.5-9B-4bit"
     @Published var input = ""
     @Published var turns: [ChatTurn] = []
     @Published var status = "Load a model to begin."

@@ -23,7 +23,7 @@ Current preview entry points:
   ```bash
   python -m pip install -e ./edgestudio-core
   python -m pip install -e .
-  edge demo learn run --prepare-model --model qwen3.5-0.8b --source auto --max-tokens 8 --json
+  edge demo learn run --prepare-model --model qwen3.5-9b-4bit --source auto --max-tokens 8 --json
   ```
 
   This single demo command explicitly prepares a compatible local model if needed, writes only synthetic correction-learning state under an isolated demo run, restores the regenerated Neural Imprint artifact, compares before/after answer hashes, and writes a local receipt. The demo run itself remains local-only; any model download happens only because `--prepare-model` was passed.
@@ -89,20 +89,20 @@ Shipped in current preview:
 edge doctor
 edge doctor --json
 edge models list
-edge models where qwen3.5-0.8b
-edge models doctor qwen3.5-0.8b
-edge models fetch qwen3.5-0.8b --dry-run
-edge models fetch qwen3.5-0.8b --source auto
-edge demo chat --model qwen3.5-0.8b --prompt "What is edge AI?" --max-tokens 32
+edge models where qwen3.5-9b-4bit
+edge models doctor qwen3.5-9b-4bit
+edge models fetch qwen3.5-9b-4bit --dry-run
+edge models fetch qwen3.5-9b-4bit --source auto
+edge demo chat --model qwen3.5-9b-4bit --prompt "What is edge AI?" --max-tokens 32
 edge demo receipt --schema
 edge demo receipt --path ./receipt.json
 edge demo local-only --path ./receipt.json
 edge demo imprint run --dry-run --question "Summarize this synthetic profile."
-edge demo imprint run --question "Summarize this synthetic profile." --model qwen3.5-0.8b
+edge demo imprint run --question "Summarize this synthetic profile." --model qwen3.5-9b-4bit
 edge demo imprint compare --path ./receipt.json
 edge demo learn run --dry-run --sample synthetic_profile_correction_v1 --model auto
-edge demo learn run --sample synthetic_profile_correction_v1 --model qwen3.5-0.8b --max-tokens 8
-edge demo learn run --prepare-model --model qwen3.5-0.8b --source auto --max-tokens 8 --json
+edge demo learn run --sample synthetic_profile_correction_v1 --model qwen3.5-9b-4bit --max-tokens 8
+edge demo learn run --prepare-model --model qwen3.5-9b-4bit --source auto --max-tokens 8 --json
 edge demo reuse --run edge-run-example --apps notes,finance --json
 ```
 

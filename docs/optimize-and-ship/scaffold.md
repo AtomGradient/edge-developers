@@ -29,7 +29,7 @@ enum ScaffoldConfig {
     static let appDescription = "A private on-device assistant."
     static let defaultSystemPrompt = "You are a concise assistant."
     static let modelCategory: ModelCategory = .llm  // .llm | .vlm | .tts
-    static let bundleModelName: String? = "Qwen3.5-0.8B"
+    static let bundleModelName: String? = "Qwen3.5-9B-4bit"
     static let defaultTTSSpeaker: String? = nil
 }
 ```

@@ -13,7 +13,7 @@ title: 基础聊天应用
 - 设备或模拟器上有本地文本模型目录。
 - iOS 17 或 macOS 14 或更高。
 
-开发时，请从 Qwen3.5 0.8B 这样的小型文本模型开始。
+基准开发路径使用 Qwen3.5 9B 4bit。如果是在受限设备上追求更低延迟迭代，可以选择更小的受支持模型，但 app wiring 保持一致。
 
 ## 完整代码
 
@@ -131,7 +131,7 @@ struct ChatTurn: Identifiable, Equatable {
 
 @MainActor
 final class ChatViewModel: ObservableObject {
-    @Published var modelPath = "\(NSHomeDirectory())/Models/Qwen3.5-0.8B"
+    @Published var modelPath = "\(NSHomeDirectory())/Models/Qwen3.5-9B-4bit"
     @Published var input = ""
     @Published var turns: [ChatTurn] = []
     @Published var status = "Load a model to begin."

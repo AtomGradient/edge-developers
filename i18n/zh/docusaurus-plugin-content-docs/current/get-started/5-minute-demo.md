@@ -16,7 +16,7 @@ first-wow 目标是展示一个最小本地学习闭环：把 synthetic correcti
 一条命令路径是：
 
 ```bash
-edge demo learn run --prepare-model --model qwen3.5-0.8b --source auto --max-tokens 8 --json
+edge demo learn run --prepare-model --model qwen3.5-9b-4bit --source auto --max-tokens 8 --json
 ```
 
 `--prepare-model` 是显式开关。如果模型已经存在，命令会跳过下载。如果模型缺失，模型准备阶段可能联网并写入 model-fetch receipt。学习 demo 本身仍保持 local-only，并记录 `network_used_during_demo=false`；报告会把模型准备阶段单独记为 `network_used_during_model_prepare`。
@@ -53,21 +53,21 @@ edge doctor
 ```bash
 edge doctor
 edge models list
-edge models where qwen3.5-0.8b
-edge models doctor qwen3.5-0.8b
-edge models fetch qwen3.5-0.8b --source auto
-edge demo learn run --prepare-model --model qwen3.5-0.8b --source auto --max-tokens 8 --json
+edge models where qwen3.5-9b-4bit
+edge models doctor qwen3.5-9b-4bit
+edge models fetch qwen3.5-9b-4bit --source auto
+edge demo learn run --prepare-model --model qwen3.5-9b-4bit --source auto --max-tokens 8 --json
 edge demo learn run --dry-run --sample synthetic_profile_correction_v1 --model auto
-edge demo learn run --sample synthetic_profile_correction_v1 --model qwen3.5-0.8b --max-tokens 8 --json
+edge demo learn run --sample synthetic_profile_correction_v1 --model qwen3.5-9b-4bit --max-tokens 8 --json
 edge demo imprint run --dry-run --sample synthetic_profile_v1 --model auto --question "Summarize this synthetic profile."
-edge demo imprint run --sample synthetic_profile_v1 --model qwen3.5-0.8b --question "Summarize this synthetic profile." --max-tokens 8 --json
+edge demo imprint run --sample synthetic_profile_v1 --model qwen3.5-9b-4bit --question "Summarize this synthetic profile." --max-tokens 8 --json
 edge demo imprint compare --path ~/Library/Application\ Support/edgestudio/demo_runs/edge-run-example/receipt.json --json
 edge demo receipt --path ~/Library/Application\ Support/edgestudio/demo_runs/edge-run-example/receipt.json
 edge demo local-only --path ~/Library/Application\ Support/edgestudio/demo_runs/edge-run-example/receipt.json --json
 edge demo reuse --run edge-run-example --apps notes,finance --json
 ```
 
-`edge models fetch` 是显式命令，并且与普通 demo run 分离。如果 `edge models where qwen3.5-0.8b` 已经报告本地模型完整，可以跳过 fetch。普通 demo 命令不会 silent download models，demo path does not silently download models。这里唯一可能准备模型的一条命令路径是 `edge demo learn run --prepare-model`，该 flag 让行为保持显式。
+`edge models fetch` 是显式命令，并且与普通 demo run 分离。如果 `edge models where qwen3.5-9b-4bit` 已经报告本地模型完整，可以跳过 fetch。普通 demo 命令不会 silent download models，demo path does not silently download models。这里唯一可能准备模型的一条命令路径是 `edge demo learn run --prepare-model`，该 flag 让行为保持显式。
 
 real run 会打印 `receipt_path`。后续 receipt inspection 命令使用这个实际路径；上面的 `edge-run-example` 只是 placeholder。compare 命令只读取 receipt：不加载模型、不 restore artifact、不生成 answer，也不触网。
 
@@ -81,7 +81,7 @@ Receipt 默认必须是 local，并且默认只记录 hash：
 {
   "schema_version": "edge.demo.learn.receipt.v1",
   "run_id": "edge-run-example",
-  "model_path": "~/Documents/mlx-community/mlx-community_Qwen3.5-0.8B-MLX-4bit",
+  "model_path": "~/Documents/mlx-community/mlx-community_Qwen3.5-9B-4bit",
   "model_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
   "sample_id": "synthetic_profile_correction_v1",
   "sample_sha256": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",

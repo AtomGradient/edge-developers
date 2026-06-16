@@ -16,7 +16,7 @@ The first-wow goal is to show a minimal local learning loop: a synthetic correct
 The one-command path is:
 
 ```bash
-edge demo learn run --prepare-model --model qwen3.5-0.8b --source auto --max-tokens 8 --json
+edge demo learn run --prepare-model --model qwen3.5-9b-4bit --source auto --max-tokens 8 --json
 ```
 
 `--prepare-model` is explicit. If the model is already present, the command skips download. If the model is missing, model preparation may use the network and writes a model-fetch receipt. The learning demo itself remains local-only and records `network_used_during_demo=false`; the report records model preparation separately as `network_used_during_model_prepare`.
@@ -53,21 +53,21 @@ Run these commands from the EdgeStudio checkout:
 ```bash
 edge doctor
 edge models list
-edge models where qwen3.5-0.8b
-edge models doctor qwen3.5-0.8b
-edge models fetch qwen3.5-0.8b --source auto
-edge demo learn run --prepare-model --model qwen3.5-0.8b --source auto --max-tokens 8 --json
+edge models where qwen3.5-9b-4bit
+edge models doctor qwen3.5-9b-4bit
+edge models fetch qwen3.5-9b-4bit --source auto
+edge demo learn run --prepare-model --model qwen3.5-9b-4bit --source auto --max-tokens 8 --json
 edge demo learn run --dry-run --sample synthetic_profile_correction_v1 --model auto
-edge demo learn run --sample synthetic_profile_correction_v1 --model qwen3.5-0.8b --max-tokens 8 --json
+edge demo learn run --sample synthetic_profile_correction_v1 --model qwen3.5-9b-4bit --max-tokens 8 --json
 edge demo imprint run --dry-run --sample synthetic_profile_v1 --model auto --question "Summarize this synthetic profile."
-edge demo imprint run --sample synthetic_profile_v1 --model qwen3.5-0.8b --question "Summarize this synthetic profile." --max-tokens 8 --json
+edge demo imprint run --sample synthetic_profile_v1 --model qwen3.5-9b-4bit --question "Summarize this synthetic profile." --max-tokens 8 --json
 edge demo imprint compare --path ~/Library/Application\ Support/edgestudio/demo_runs/edge-run-example/receipt.json --json
 edge demo receipt --path ~/Library/Application\ Support/edgestudio/demo_runs/edge-run-example/receipt.json
 edge demo local-only --path ~/Library/Application\ Support/edgestudio/demo_runs/edge-run-example/receipt.json --json
 edge demo reuse --run edge-run-example --apps notes,finance --json
 ```
 
-`edge models fetch` is explicit and separate from ordinary demo runs. If `edge models where qwen3.5-0.8b` already reports a complete local model, you can skip the fetch command. The demo path does not silently download models. `edge demo learn run --prepare-model` is the only one-command path here that may prepare a model, and the flag makes that behavior explicit.
+`edge models fetch` is explicit and separate from ordinary demo runs. If `edge models where qwen3.5-9b-4bit` already reports a complete local model, you can skip the fetch command. The demo path does not silently download models. `edge demo learn run --prepare-model` is the only one-command path here that may prepare a model, and the flag makes that behavior explicit.
 
 The real run prints a `receipt_path`. Use that path for receipt inspection commands; `edge-run-example` above is only a placeholder. The compare command reads the receipt only: it does not load a model, restore an artifact, generate answers, or use the network.
 
@@ -81,7 +81,7 @@ Receipts must be local by default and hash-only by default:
 {
   "schema_version": "edge.demo.learn.receipt.v1",
   "run_id": "edge-run-example",
-  "model_path": "~/Documents/mlx-community/mlx-community_Qwen3.5-0.8B-MLX-4bit",
+  "model_path": "~/Documents/mlx-community/mlx-community_Qwen3.5-9B-4bit",
   "model_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
   "sample_id": "synthetic_profile_correction_v1",
   "sample_sha256": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",

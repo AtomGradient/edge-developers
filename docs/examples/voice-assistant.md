@@ -101,7 +101,7 @@ struct VoiceAssistantView: View {
 @MainActor
 final class VoiceAssistantViewModel: ObservableObject {
     @Published var sttModelPath = "\(NSHomeDirectory())/Models/Qwen3-ASR"
-    @Published var llmModelPath = "\(NSHomeDirectory())/Models/Qwen3.5-0.8B"
+    @Published var llmModelPath = "\(NSHomeDirectory())/Models/Qwen3.5-9B-4bit"
     @Published var ttsModelPath = "\(NSHomeDirectory())/Models/Qwen3-TTS"
     @Published var transcript = ""
     @Published var reply = ""

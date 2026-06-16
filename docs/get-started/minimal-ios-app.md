@@ -44,13 +44,13 @@ Then:
 
 The simulator is not the target runtime for model execution. Use a real device for model load, Neural Imprint restore, memory behavior, and performance validation.
 
-## Add a small local model
+## Add the baseline local model
 
-After the shell runs, configure a small model path in `edgescaffolding_model_config`:
+After the shell runs, configure the baseline model path in `edgescaffolding_model_config`:
 
 ```bash
 MODEL_COPY=true
-MODEL_NAME=Qwen3.5-0.8B-MLX-4bit
+MODEL_NAME=Qwen3.5-9B-4bit
 MODELS_SOURCE_DIR=$HOME/Documents/mlx-community
 ```
 
@@ -64,4 +64,3 @@ Then build without `SKIP_MODEL_COPY=1`. For larger models, enable the Increased 
 - App-owned tool registration and schema snapshot patterns.
 
 Edge Scaffold is not dogfood business logic. Treat it as the smallest current reference app, then replace sample data, sample tools, copy, signing, and model delivery with your app's own policy.
-

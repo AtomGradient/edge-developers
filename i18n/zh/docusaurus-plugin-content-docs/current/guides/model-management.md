@@ -13,8 +13,8 @@ title: 模型管理
 import EdgeInference
 import EdgeModelKit
 
-guard let config = ModelConfig.find(modelID: "qwen3.5-0.8b") else {
-    throw EdgeRuntimeError.modelNotFound("qwen3.5-0.8b")
+guard let config = ModelConfig.find(modelID: "qwen3.5-9b-4bit") else {
+    throw EdgeRuntimeError.modelNotFound("qwen3.5-9b-4bit")
 }
 
 try await HFDownloader.shared.download(config: config) { progress in

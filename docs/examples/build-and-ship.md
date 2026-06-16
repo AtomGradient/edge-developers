@@ -76,12 +76,12 @@ enum ScaffoldConfig {
     """
 
     static let modelCategory: ModelCategory = .llm
-    static let modelID = "qwen3.5-0.8b"
-    static let modelDisplayName = "Qwen3.5 0.8B"
-    static let modelSizeGB: Double = 1.6
+    static let modelID = "qwen3.5-9b-4bit"
+    static let modelDisplayName = "Qwen3.5 9B 4bit"
+    static let modelSizeGB: Double = 5.4
 
     // Use this when the model is included in the app bundle.
-    static let bundleModelName: String? = "Qwen3.5-0.8B"
+    static let bundleModelName: String? = "Qwen3.5-9B-4bit"
 
     // Used only by TTS apps.
     static let defaultTTSSpeaker: String? = nil
