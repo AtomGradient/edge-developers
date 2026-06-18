@@ -6,10 +6,10 @@ title: CLI 学习演示
 # CLI 学习演示
 
 :::tip 当前预览版可运行
-这个流程使用已经发布的 B2/B4/B5/B6/B7 CLI 命令。它只运行合成样本，可以显式准备兼容的本地模型，并默认写入仅哈希的本地回执和清单。
+本教程使用已发布的 CLI 命令。只运行合成样本，可以显式准备兼容的本地模型，并默认写入仅哈希的本地回执。
 :::
 
-第一体验路径应该先符合开发者熟悉的心智，再引入个性化：
+本教程覆盖完整的本地学习路径：
 
 1. 下载模型。
 2. 和基础模型对话。
@@ -17,7 +17,7 @@ title: CLI 学习演示
 4. 运行本地纠错学习流程。
 5. 对比基础回答哈希和 Neural Imprint 恢复后的回答哈希。
 
-Neural Imprint 是本地产物和恢复流程。恢复兼容的本地 Neural Imprint 产物可以在兼容性闸门下改变生成行为，不改模型权重。这个演示证明的是本地产物路径和回执路径；它不声称模型质量整体变好。
+Neural Imprint 是本地产物和恢复流程。恢复兼容的本地 Neural Imprint 产物可以在兼容性闸门下改变生成行为，不改模型权重。这个演示验证的是本地产物路径和回执路径；它不声称模型质量整体变好。
 
 ## 安装预览版 CLI
 
@@ -53,7 +53,7 @@ edge models list --json
 edge models fetch qwen3.5-9b-4bit --source auto
 ```
 
-这个命令是显式下载。演示不会静默下载模型。如果模型已经存在，下载器可以复用本地匹配项，并报告缓存路径。
+这个命令是显式下载。演示不会静默下载模型。如果模型已经存在，下载器复用本地匹配项，并报告缓存路径。
 
 检查模型是否就绪：
 
@@ -70,11 +70,9 @@ edge models doctor qwen3.5-9b-4bit --json
 edge demo chat --model qwen3.5-9b-4bit --interactive
 ```
 
-第一次加载 9B 模型可能需要几十秒。命令会打印回答，并写入本地聊天回执。默认情况下，回执只保存哈希和路径，不保存原始 prompt 或原始回答。
+第一次加载 9B 模型可能需要几十秒。看到 `[chat:ready]` 后，可以连续问几个普通问题，并用 `/exit` 退出。
 
-看到 `[chat:ready]` 后，可以连续问几个普通问题，并用 `/exit` 退出。
-
-交互式聊天只加载一次模型，在多轮对话中复用 session KV 缓存，打印每轮回答，并为每轮写一个本地聊天回执。默认情况下，每个回执只保存哈希和路径，不保存原始 prompt 或原始回答。
+交互式聊天只加载一次模型，在多轮对话中复用 session KV cache，打印每轮回答，并为每轮写一个本地聊天回执。默认情况下，每个回执只保存哈希和路径，不保存原始 prompt 或原始回答。
 
 脚本或 CI 冒烟检查也可以使用一次性命令形式：
 
@@ -96,7 +94,7 @@ edge demo learn run --dry-run --sample synthetic_profile_correction_v1 --model q
 
 ### 4. 运行本地学习和 Neural Imprint 恢复
 
-现在运行本地纠错学习流程：
+运行本地纠错学习流程：
 
 ```bash
 edge demo learn run --sample synthetic_profile_correction_v1 --model qwen3.5-9b-4bit --max-tokens 64 --json
@@ -131,7 +129,7 @@ edge demo learn run --sample synthetic_profile_correction_v1 --model qwen3.5-9b-
 
 回执会把同样的对比字段作为顶层回执字段保存。
 
-`answers_differ=true` 表示这个合成演示在恢复本地 Neural Imprint 产物后，生成结果发生了变化。这不是“模型整体变好”的泛化结论。
+`answers_differ=true` 表示这个合成演示在恢复本地 Neural Imprint 产物后，生成结果发生了变化。这不是"模型整体变好"的泛化结论。
 
 不重新加载模型也可以检查回执：
 
@@ -166,13 +164,9 @@ edge demo learn run --prepare-model --model qwen3.5-9b-4bit --source auto --max-
 
 `--prepare-model` 是显式开关。如果模型缺失，模型准备阶段可能联网并写入模型下载回执。学习演示本身仍保持仅本地，并记录 `network_used_during_demo=false`；报告会把模型准备阶段单独记为 `network_used_during_model_prepare`。
 
-### 后续 UX
-
-当前预览版通过 `edge demo learn run --dry-run --include-text --json` 暴露样本检查。后续 CLI 应加入更小白的 `edge demo learn sample show/list` 命令，以及直接的基础模型与 Neural Imprint 对比聊天重放命令。
-
 ## 回执隐私约定
 
-回执默认必须是本地的，并且默认只记录哈希：
+回执默认是本地的，并且默认只记录哈希：
 
 ```json
 {
@@ -186,7 +180,7 @@ edge demo learn run --prepare-model --model qwen3.5-9b-4bit --source auto --max-
   "artifact_id": "learn-edge-run-example",
   "artifact_path": "~/Library/Application Support/edgestudio/demo_runs/edge-run-example/learn_state/neural_imprint_artifacts/neural_imprint.safetensors",
   "artifact_sha256": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
-  "元数据_sha256": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "metadata_sha256": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
   "before_answer_sha256": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
   "before_answer_tokens": 8,
   "after_answer_sha256": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
@@ -204,25 +198,15 @@ edge demo learn run --prepare-model --model qwen3.5-9b-4bit --source auto --max-
 }
 ```
 
-默认回执应只包含哈希标识、本地路径、schema 版本和状态，不应包含原始用户文本。未来若提供显式 include-text 模式，必须由用户主动选择，并在回执中可见。
+默认回执只包含哈希标识、本地路径、schema 版本和状态，不包含原始用户文本。未来若提供显式 include-text 模式，必须由用户主动选择，并在回执中可见。
 
-## 离线与失败即关闭要求
+## 离线与 fail-closed 要求
 
 演示必须：
 
 - 将模型下载与演示执行分离。
 - 只有显式传入 `--prepare-model` 时，一条命令学习演示才可以准备模型。
-- 如果缺少必须的本地模型或产物，必须失败即关闭。
+- 如果缺少必须的本地模型或产物，必须 fail closed。
 - 演示运行期间避免静默联网。
 - 离线模式下禁止非本机地址网络访问。
 - 在本地回执里记录错误状态，而不是静默继续。
-
-## 可接受措辞
-
-可以使用：
-
-- “恢复本地 Neural Imprint 产物后，行为发生变化”
-- “在兼容性闸门下，恢复本地 Neural Imprint 产物可以改变行为”
-- “回执默认只包含哈希标识，不包含原始用户文本”
-
-没有评估证据时，不写质量变好这类结论。

@@ -72,8 +72,8 @@ const zhSteps: Step[] = [
 const enPaths: LinkCard[] = [
   {
     eyebrow: 'Python / CLI',
-    title: 'Fastest path to the first wow',
-    body: 'Start here if you want to see the local model workflow: explicit model download, interactive base chat, synthetic correction sample, Neural Imprint restore, and a hash-only comparison receipt.',
+    title: 'CLI and local model workflow',
+    body: 'Download a model, run a local chat, inspect a synthetic correction sample, generate and restore a Neural Imprint artifact, and compare answer hashes in a local receipt.',
     primaryLabel: 'Start the CLI path',
     primaryLink: '/docs/get-started/source-build',
     secondaryLabel: 'Read the learning demo',
@@ -81,8 +81,8 @@ const enPaths: LinkCard[] = [
   },
   {
     eyebrow: 'iOS / Swift',
-    title: 'Smallest app path',
-    body: 'Use this lane after the CLI path, or when you already have preview access. Build the minimal iOS shell first, then wire Edge Kit, Edge Halo, and Edge Scaffold deliberately.',
+    title: 'iOS app integration',
+    body: 'Build the minimal iOS shell, then integrate Edge Kit, Edge Halo, and Edge Scaffold. Requires preview access and real-device validation.',
     primaryLabel: 'Build the minimal iOS app',
     primaryLink: '/docs/get-started/minimal-ios-app',
     secondaryLabel: 'Swift SDK setup',
@@ -93,8 +93,8 @@ const enPaths: LinkCard[] = [
 const zhPaths: LinkCard[] = [
   {
     eyebrow: 'Python / CLI',
-    title: '最快获得第一感的路径',
-    body: '如果你想先看到本地模型工作流，从这里开始：显式下载模型、普通多轮对话、合成纠错样本、Neural Imprint 恢复，以及仅哈希的对比回执。',
+    title: 'CLI 和本地模型工作流',
+    body: '下载模型、运行本地对话、检查合成纠错样本、生成并恢复 Neural Imprint 产物，在本地回执中对比回答哈希。',
     primaryLabel: '开始 CLI 路径',
     primaryLink: '/docs/get-started/source-build',
     secondaryLabel: '阅读学习演示',
@@ -102,8 +102,8 @@ const zhPaths: LinkCard[] = [
   },
   {
     eyebrow: 'iOS / Swift',
-    title: '最小应用路径',
-    body: 'CLI 路径跑通后，或者你已经有预览访问权限时，再走这条路径。先构建最小 iOS 应用壳，再有意识地接入 Edge Kit、Edge Halo 和 Edge Scaffold。',
+    title: 'iOS 应用集成',
+    body: '构建最小 iOS 应用壳，再接入 Edge Kit、Edge Halo 和 Edge Scaffold。需要预览访问权限和真机验证。',
     primaryLabel: '构建最小 iOS 应用',
     primaryLink: '/docs/get-started/minimal-ios-app',
     secondaryLabel: 'Swift SDK 设置',
@@ -273,12 +273,12 @@ export default function Home(): React.JSX.Element {
       <main>
         <section className={styles.section}>
           <div className={styles.sectionHeader}>
-            <div className={styles.sectionLabel}>{isZh ? '第一目标' : 'First objective'}</div>
-            <h2>{isZh ? '让开发者成功跑通一次' : 'Help the developer succeed once'}</h2>
+            <div className={styles.sectionLabel}>{isZh ? '快速开始' : 'Quick start'}</div>
+            <h2>{isZh ? '三步完成：下载、对话、学习' : 'Three steps: download, chat, learn'}</h2>
             <p>
               {isZh
-                ? '首页不再把 Python、Swift、能力列表混在同一层。第一屏只服务一个目标：让开发者从本地模型对话自然走到学习流程。'
-                : 'The homepage now optimizes for one goal: move a developer from local base chat to the learning loop before asking them to choose deeper SDK surfaces.'}
+                ? '从本地模型对话开始，然后用合成样本验证学习闭环。'
+                : 'Start with a local model chat, then validate the learning loop with a synthetic sample.'}
             </p>
           </div>
           <div className={styles.stepsGrid}>
@@ -294,12 +294,12 @@ export default function Home(): React.JSX.Element {
 
         <section className={styles.section}>
           <div className={styles.sectionHeader}>
-            <div className={styles.sectionLabel}>{isZh ? '选择路径' : 'Choose a lane'}</div>
-            <h2>{isZh ? 'Python 先证明价值，Swift 再集成到 app' : 'Python proves the value first, Swift takes it into apps'}</h2>
+            <div className={styles.sectionLabel}>{isZh ? '集成路径' : 'Integration'}</div>
+            <h2>{isZh ? '选择你的集成路径' : 'Choose your integration path'}</h2>
             <p>
               {isZh
-                ? '两条路径必须分清：CLI 是最快体验路径；iOS/Swift 是应用集成路径，需要预览访问权限和真机构建验证。'
-                : 'Keep the paths separate: CLI is the fastest experience path; iOS/Swift is the app integration path and requires preview access plus device validation.'}
+                ? 'CLI 是最快的体验路径。iOS/Swift 是应用集成路径，需要预览访问权限和真机验证。'
+                : 'The CLI path is the fastest way to try Edge. The iOS/Swift path is for app integration and requires preview access plus device validation.'}
             </p>
           </div>
           <div className={styles.pathGrid}>
@@ -325,8 +325,8 @@ export default function Home(): React.JSX.Element {
 
         <section className={styles.section}>
           <div className={styles.sectionHeader}>
-            <div className={styles.sectionLabel}>{isZh ? '深入阅读' : 'Read next'}</div>
-            <h2>{isZh ? '核心概念和产品表面放在成功路径之后' : 'Core concepts and product surfaces come after the first path'}</h2>
+            <div className={styles.sectionLabel}>{isZh ? '构建' : 'Build'}</div>
+            <h2>{isZh ? '核心能力' : 'Core capabilities'}</h2>
           </div>
           <div className={styles.capabilitiesGrid}>
             {capabilities.map((item) => (

@@ -1,84 +1,10 @@
 # AtomGradient Edge 开发者预览
 
-AtomGradient Edge 是面向 Apple 平台的本地 AI stack，用来构建能在用户自有设备上运行、学习并恢复用户特定状态的 agent。
+面向 Apple 平台的本地优先 AI 开发平台。构建在用户自有设备上运行、学习并协调的应用。
 
-当前 preview 由四层组成：
+## 快速开始
 
-| 层 | 职责 |
-|---|---|
-| Edge Studio | Mac 本地工作台，负责模型优化、benchmark、导出、设备协调和 Neural Imprint artifact 管理。 |
-| Edge Kit | Swift SDK surface，负责加载优化后的模型、EdgeMesh transport、EdgeData 与 app runtime 接入。 |
-| Edge Halo | 个性化生命周期层，负责本地 profile jobs、Neural Imprint capsule compatibility、restore orchestration 与 fail-closed gates。 |
-| Edge Scaffold | 开发者参考 iOS app 模板，展示推荐的 Edge Kit + Edge Halo 接入方式。 |
-
-Neural Imprint 是本地 artifact 和 restore flow。兼容的 base model 可以恢复本地 Neural Imprint artifact，并在 compatibility gates 下改变行为，不改模型权重。
-
-## 当前入口
-
-当前 preview 可用入口：
-
-- 阅读文档：`docs/overview.md`
-- 从 `edge-studio` 源码 checkout 运行 CLI first-wow：
-
-  ```bash
-  git clone https://github.com/AtomGradient/edge-studio.git
-  cd edge-studio
-  python3.11 -m venv .venv
-  source .venv/bin/activate
-  python -m pip install --upgrade pip
-  python -m pip install -e .
-  edge models fetch qwen3.5-9b-4bit --source auto
-  edge demo chat --model qwen3.5-9b-4bit --interactive
-  ```
-
-  这会先把基准模型下载到 Mac，并进入普通多轮本地聊天。然后继续阅读 `docs/get-started/5-minute-demo.md`：查看 synthetic correction-learning sample，生成本地 Neural Imprint artifact，在 compatibility gates 下恢复，并在本地 receipt 中对比 before/after answer hash。
-
-- 正式公开发布时，安装命令预期会变成：
-
-  ```bash
-  python -m pip install edgestudio
-  ```
-
-  当前内部 preview 阶段还没有公开 PyPI package。
-
-- 构建最小 iOS app 路径：`docs/get-started/minimal-ios-app.md`
-- 使用固定 preview 版本安装 Swift SDK：
-
-  ```swift
-  .package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc95")
-  ```
-
-  当前 preview 中，部分 package resolution 路径仍可能因为 Edge Engine 等传递依赖需要 AtomGradient preview access 或 SSH access。请把 access setup 视为 preview onboarding 的一部分。
-
-- 跟随 Swift quickstart：`docs/get-started/quickstart.md`
-- 用 EdgeStudio CLI 验证 Swift SDK 路径：`docs/get-started/swift-cli.md`
-- 查看模型进化与 Neural Imprint 生命周期：`docs/build/model-evolution.md`
-- 用 Edge Studio + Edge Scaffold 生成参考 app：`docs/optimize-and-ship/scaffold.md`
-
-## 当前 Preview 版本
-
-| 组件 | 当前 preview |
-|---|---|
-| edge-kit | `1.0.0-rc95` |
-| edge-halo | `1.0.0-rc17` |
-| edge-engine dependency tag | `1.0.0-rc136` |
-| edge-scaffold | 固定依赖 edge-kit `1.0.0-rc95` 和 edge-halo `1.0.0-rc17` |
-
-## 文档开发
-
-本仓库是 Docusaurus 文档站。
-
-```bash
-npm ci
-npm run start
-npm run build
-```
-
-build 会产出英文和中文文档。
-
-## CLI
-
-从源码 checkout 安装 preview CLI：
+从源码安装 CLI（PyPI 包尚未公开）：
 
 ```bash
 git clone https://github.com/AtomGradient/edge-studio.git
@@ -90,57 +16,137 @@ python -m pip install -e .
 edge doctor
 ```
 
-正式公开发布时，`python -m pip install edgestudio` 是预期安装命令。当前 preview 阶段 package 尚未发布到 PyPI，因此上面的源码 checkout 路径才是可运行路径。`edge` 命令是 `edgestudio` package 的 entry point。
-
-当前 preview 已发布：
+下载模型并启动本地对话：
 
 ```bash
-edge doctor
-edge doctor --json
-edge models list
-edge models where qwen3.5-9b-4bit
-edge models doctor qwen3.5-9b-4bit
-edge models fetch qwen3.5-9b-4bit --dry-run
 edge models fetch qwen3.5-9b-4bit --source auto
 edge demo chat --model qwen3.5-9b-4bit --interactive
-edge demo receipt --schema
-edge demo receipt --path ./receipt.json
-edge demo local-only --path ./receipt.json
-edge demo imprint run --dry-run --question "Summarize this synthetic profile."
-edge demo imprint run --question "Summarize this synthetic profile." --model qwen3.5-9b-4bit
-edge demo imprint compare --path ./receipt.json
-edge demo learn run --dry-run --sample synthetic_profile_correction_v1 --model auto
-edge demo learn run --sample synthetic_profile_correction_v1 --model qwen3.5-9b-4bit --max-tokens 8
-edge demo learn run --prepare-model --model qwen3.5-9b-4bit --source auto --max-tokens 8 --json
-edge demo reuse --run edge-run-example --apps notes,finance --json
 ```
 
-`edge doctor` 是只读的 B1 环境检查。它不会下载模型、加载模型、启动 backend，也不会运行 Neural Imprint workflows。
-`edge models list`、`edge models where` 与 `edge models doctor` 是只读的 B2a 模型就绪检查。它们只解析 catalog entry 和本地模型路径，不下载模型、不写 receipt，也不做网络 probe。
-`edge models fetch` 是显式的 B2b 模型准备命令。demo 命令不会 silent 触发它；真实 fetch 会写本地 `edge.models.fetch.receipt.v1` receipt。
-`edge demo chat` 是 B3 base-model sanity check。interactive 模式会加载一次显式准备好的本地模型，在多轮对话中复用 session KV cache，并默认每轮写一个 hash-only `edge.demo.chat.receipt.v1` receipt；输入 `/exit` 或 `/quit` 退出。脚本化场景仍可使用 one-shot `--prompt` 形式。
-`edge demo receipt` 与 `edge demo local-only` 是 B6a receipt 检查命令。它们只验证 `edge.demo.receipt.v1` 的 local-only invariants，不生成 Neural Imprint artifact，也不调用模型 runtime。
-`edge demo imprint run --dry-run` 是 B4a pre-flight planner。它只输出包含 hash 和本地前置条件状态的 `edge.demo.imprint.plan.v1`，不生成 artifact、不 restore Neural Imprint，也不写 demo receipt。
-`edge demo imprint run`（不带 `--dry-run`）是 B4b 真实 Neural Imprint demo。它加载本地模型，从合成样本 capture Neural Imprint artifact，对比 base vs personalized answer hash，并写 `edge.demo.receipt.v1` local-only receipt。
-`edge demo imprint compare` 是 B4 receipt-only 检查命令。它读取已完成的 `edge.demo.receipt.v1` receipt 并输出 `edge.demo.imprint.compare.v1`；不加载模型、不 restore artifact、不生成 answer，也不触网。
-`edge demo learn run --dry-run` 是 B5a correction-learning pre-flight planner。它输出只含 hash-only synthetic correction metadata 和 isolated-state paths 的 `edge.demo.learn.plan.v1`；不写 correction ledger、不调用 regen、不加载模型，也不写 learn receipt。
-`edge demo learn run`（不带 `--dry-run`）是 B5b 真实 isolated correction-learning demo。它只在 demo run state 下写 synthetic Persona/RPP input 与 correction ledger，触发 correction regen，恢复重新生成的本地 Neural Imprint artifact，对比 before/after answer hash，并写 `edge.demo.learn.receipt.v1`。
-`edge demo learn run --prepare-model` 是理解分步路径后的 advanced shortcut。它可能先显式执行模型准备，再运行本地 demo；报告会把 `network_used_during_model_prepare` 与 `network_used_during_demo` 分开记录。
-`edge demo reuse` 是 B7 artifact reuse smoke。它读取已完成的本地 B4 receipt，并在 demo run 下为每个 synthetic app 写 `edge.demo.reuse.receipt.v1` manifest；不复制 artifact、不同步设备、不 restore artifact、不加载模型，也不触网。
+对话跑通后，继续 [CLI 学习演示](docs/get-started/5-minute-demo.md)：生成本地 Neural Imprint 产物，对比 before/after 回答哈希。
 
-## Phase 2 SDK Proof
-
-B 组 Python first-wow CLI 已发布。Phase 2 SDK proof 现在包含 `tests/smoke_test` `edge-swift` product，可用于 Swift smoke validation、halo bridge checks、本地 package validation，以及 receipt-only restore coordinator smoke。
-
-面向开发者的 Swift CLI 文档位于：
+正式公开发布时，安装命令为：
 
 ```bash
-docs/get-started/swift-cli.md
+python -m pip install edgestudio
 ```
+
+## 组件
+
+| 组件 | 说明 |
+|---|---|
+| Edge Studio | Mac 工作台和 CLI，负责模型优化、benchmark、导出、设备协调和 Neural Imprint 管理。 |
+| Edge Kit | Swift SDK，负责加载优化后的模型、EdgeMesh transport、EdgeData 和 app runtime 接入。 |
+| Edge Halo | 个性化生命周期层：本地 profile jobs、Neural Imprint capsule 兼容性校验、restore 编排和 fail-closed 闸门。 |
+| Edge Engine | 原生端侧推理运行时，由 Edge Kit 打包使用。 |
+| Edge Scaffold | 参考 iOS app 模板，展示推荐的 Edge Kit + Edge Halo 接入方式。 |
+
+Neural Imprint 是本地产物和恢复流程。兼容的基础模型可以恢复 Neural Imprint 产物，并在兼容性闸门下改变行为，不改模型权重。
+
+## 版本固定
+
+| 组件 | 版本 |
+|---|---|
+| edge-kit | `1.0.0-rc95` |
+| edge-halo | `1.0.0-rc17` |
+| edge-engine | `1.0.0-rc136` |
+| edge-scaffold | 固定依赖 edge-kit `1.0.0-rc95` 和 edge-halo `1.0.0-rc17` |
+
+## 文档
+
+| 主题 | 路径 |
+|---|---|
+| 概览与入门 | `docs/overview.md` |
+| CLI 学习演示 | `docs/get-started/5-minute-demo.md` |
+| 最小 iOS app | `docs/get-started/minimal-ios-app.md` |
+| Swift SDK 快速开始 | `docs/get-started/quickstart.md` |
+| Swift CLI 验证 | `docs/get-started/swift-cli.md` |
+| 模型进化与 Neural Imprint 生命周期 | `docs/build/model-evolution.md` |
+| 用 Edge Studio 生成 iOS app | `docs/optimize-and-ship/scaffold.md` |
+
+安装 Swift SDK：
+
+```swift
+.package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc95")
+```
+
+部分 package 解析路径可能因为 Edge Engine 等传递依赖需要 AtomGradient 预览访问权限或 SSH 访问权限。
+
+## CLI 参考
+
+### 环境检查
+
+```bash
+edge doctor                 # 检查环境就绪状态（只读）
+edge doctor --json
+```
+
+### 模型管理
+
+```bash
+edge models list                                  # 列出 catalog 条目（只读）
+edge models where qwen3.5-9b-4bit                 # 查看本地路径（只读）
+edge models doctor qwen3.5-9b-4bit                # 检查模型就绪状态（只读）
+edge models fetch qwen3.5-9b-4bit --dry-run       # 预览下载
+edge models fetch qwen3.5-9b-4bit --source auto   # 下载模型，写入 fetch 回执
+```
+
+### 对话
+
+```bash
+edge demo chat --model qwen3.5-9b-4bit --interactive          # 多轮本地对话
+edge demo chat --model qwen3.5-9b-4bit --prompt "..." --max-tokens 64  # 脚本用单次模式
+```
+
+交互模式只加载一次模型，在多轮对话中复用 session KV cache，并默认每轮写一个仅哈希的聊天回执。输入 `/exit` 或 `/quit` 退出。
+
+### 回执检查
+
+```bash
+edge demo receipt --schema                      # 查看回执 schema
+edge demo receipt --path ./receipt.json          # 检查回执
+edge demo local-only --path ./receipt.json       # 验证 local-only 不变量
+```
+
+### Neural Imprint 演示
+
+```bash
+edge demo imprint run --dry-run --question "Summarize this synthetic profile."   # 仅计划，不生成产物
+edge demo imprint run --question "Summarize this synthetic profile." --model qwen3.5-9b-4bit  # 生成并对比
+edge demo imprint compare --path ./receipt.json  # 从已有回执对比（只读）
+```
+
+### 纠错学习演示
+
+```bash
+edge demo learn run --dry-run --sample synthetic_profile_correction_v1 --model auto     # 仅计划
+edge demo learn run --sample synthetic_profile_correction_v1 --model qwen3.5-9b-4bit --max-tokens 8  # 运行学习流程
+edge demo learn run --prepare-model --model qwen3.5-9b-4bit --source auto --max-tokens 8 --json      # 准备模型 + 运行
+```
+
+### 产物复用
+
+```bash
+edge demo reuse --run edge-run-example --apps notes,finance --json  # 仅清单冒烟检查（只读，不复制产物）
+```
+
+## Swift 验证 CLI
+
+`tests/smoke_test` 目录包含 `edge-swift` Swift CLI，用于 SDK 验证、halo bridge 检查和 receipt-only restore coordinator 冒烟测试。详见 `docs/get-started/swift-cli.md`。
+
+## 文档开发
+
+```bash
+npm ci
+npm run start
+npm run build
+```
+
+构建英文和中文文档。
 
 ## 信任边界
 
-- 用户数据与 Neural Imprint artifacts 默认留在本地，只有在用户显式启用时才传到受信任的自有设备。
-- README 与文档不在缺少评估证据时声称质量变好。
+- 用户数据与 Neural Imprint 产物默认留在本地，只有用户显式启用时才传到受信任的自有设备。
+- 文档不在缺少评估证据时声称质量变好。
 - Edge Scaffold 是开发者参考 app，不承载 dogfood 业务逻辑。
 - Roadmap 项在实现和测试落地前必须标注为 planned。

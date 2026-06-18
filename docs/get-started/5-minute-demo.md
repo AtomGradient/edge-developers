@@ -6,10 +6,10 @@ title: CLI learning demo
 # CLI learning demo
 
 :::tip Runnable in current preview
-This flow uses shipped B2/B4/B5/B6/B7 CLI commands. It runs on a synthetic sample, can explicitly prepare a compatible local model, and writes hash-only local receipts/manifests by default.
+This tutorial uses shipped CLI commands. It runs on a synthetic sample, can explicitly prepare a compatible local model, and writes hash-only local receipts by default.
 :::
 
-The first-wow path should feel familiar before it introduces personalization:
+This walkthrough covers the full local learning path:
 
 1. Download a model.
 2. Chat with the base model.
@@ -17,7 +17,7 @@ The first-wow path should feel familiar before it introduces personalization:
 4. Run the local correction-learning flow.
 5. Compare the base answer hash with the Neural Imprint restored answer hash.
 
-Neural Imprint is a local artifact and restore flow. Restoring a compatible local Neural Imprint artifact can change generated behavior under compatibility gates without changing model weights. This demo proves the local artifact path and receipt path; it does not claim general model quality improvement.
+Neural Imprint is a local artifact and restore flow. Restoring a compatible local Neural Imprint artifact can change generated behavior under compatibility gates without changing model weights. This demo validates the local artifact path and receipt path; it does not claim general model quality improvement.
 
 ## Install the preview CLI
 
@@ -53,7 +53,7 @@ edge models list --json
 edge models fetch qwen3.5-9b-4bit --source auto
 ```
 
-This command is explicit. The demo does not silently download models. If the model is already present, the downloader can reuse the local match and report the cached path.
+This command is explicit. The demo does not silently download models. If the model is already present, the downloader reuses the local match and reports the cached path.
 
 Check readiness:
 
@@ -94,7 +94,7 @@ This dry-run does not load a model, write correction ledgers, trigger regenerati
 
 ### 4. Run local learning and Neural Imprint restore
 
-Now run the local correction-learning flow:
+Run the local correction-learning flow:
 
 ```bash
 edge demo learn run --sample synthetic_profile_correction_v1 --model qwen3.5-9b-4bit --max-tokens 64 --json
@@ -156,7 +156,7 @@ It does not copy artifacts and is not cross-device sync.
 
 ### Advanced shortcut
 
-After you understand the steps, you can prepare the model and run the learning demo in one command:
+After you understand the steps, prepare the model and run the learning demo in one command:
 
 ```bash
 edge demo learn run --prepare-model --model qwen3.5-9b-4bit --source auto --max-tokens 64 --json
@@ -164,13 +164,9 @@ edge demo learn run --prepare-model --model qwen3.5-9b-4bit --source auto --max-
 
 `--prepare-model` is explicit. If the model is missing, model preparation may use the network and writes a model-fetch receipt. The learning demo itself remains local-only and records `network_used_during_demo=false`; the report records model preparation separately as `network_used_during_model_prepare`.
 
-### Follow-up UX
-
-Current preview exposes sample inspection through `edge demo learn run --dry-run --include-text --json`. A future CLI should add a more beginner-friendly `edge demo learn sample show/list` command and a direct base-vs-Neural-Imprint chat replay command.
-
 ## Receipt privacy contract
 
-Receipts must be local by default and hash-only by default:
+Receipts are local by default and hash-only by default:
 
 ```json
 {
@@ -202,7 +198,7 @@ Receipts must be local by default and hash-only by default:
 }
 ```
 
-The default receipt should contain hashed identifiers, local paths, schema versions, and status. It should not contain raw user text. A future explicit include-text mode must be opt-in and visible in the receipt.
+The default receipt contains hashed identifiers, local paths, schema versions, and status. It does not contain raw user text. Any future include-text mode must be opt-in and visible in the receipt.
 
 ## Offline and fail-closed requirements
 
@@ -214,13 +210,3 @@ The demo must:
 - Avoid silent network access during the demo run.
 - Treat non-localhost network access as disallowed in offline mode.
 - Record error status in the local receipt instead of continuing silently.
-
-## Acceptable wording
-
-Use:
-
-- "behavior changed after restoring local Neural Imprint artifact"
-- "restore local Neural Imprint artifact can change behavior under compatibility gates"
-- "receipt contains hashed identifiers and no raw user text by default"
-
-Do not use quality-improvement claims without evaluation evidence.

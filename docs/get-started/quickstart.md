@@ -8,12 +8,12 @@ title: Quickstart
 Install Edge Kit, load a local model, and stream tokens from an on-device LLM.
 
 :::info Developer Preview
-Edge Kit is in **Developer Preview**. Pin the package version you test with and re-run device validation after each upgrade.
+Edge Kit is in **Developer Preview**. Pin the package version you test with and re-validate on real devices after each upgrade.
 :::
 
 ## Requirements
 
-Edge Kit currently ships on Apple platforms. Support for Android, Linux, HarmonyOS, and Windows is planned.
+Edge Kit ships on Apple platforms. Android, Linux, HarmonyOS, and Windows support is planned.
 
 | Requirement | Version |
 | --- | --- |
@@ -35,10 +35,10 @@ dependencies: [
 ]
 ```
 
-Developer Preview releases should be pinned exactly. Re-run your real-device validation before moving to a newer `1.0.0-rcN` tag.
+Pin preview releases exactly. Re-validate on real devices before moving to a newer `1.0.0-rcN` tag.
 
 :::info Preview access
-The public documentation uses HTTPS package URLs. In the current preview, some package resolution paths can still require AtomGradient preview access or SSH access for transitive dependencies such as Edge Engine. Validate `swift package resolve` in the same environment you will use for development and CI.
+Some package resolution paths may require AtomGradient preview access or SSH access for transitive dependencies such as Edge Engine. Run `swift package resolve` in your development and CI environment to verify.
 :::
 
 Then add the product you need:
@@ -77,7 +77,7 @@ for try await chunk in engine.generate(
 
 ## Prepare a registered model
 
-`ModelConfig` contains preview model entries for supported model families. In the native default build, prepare the model with `EdgeModelKit`, then load the local cache directory with `loadLocal(directory:)`.
+`ModelConfig` contains entries for supported model families. Prepare the model with `EdgeModelKit`, then load the local cache directory with `loadLocal(directory:)`.
 
 ```swift
 import EdgeInference

@@ -14,21 +14,19 @@ The Developer Preview ships on Apple platforms first. Android, Linux, HarmonyOS,
 All Edge products are in **Developer Preview**. APIs may change between releases. Some repositories and Swift package dependencies may still require AtomGradient preview access. Pin package versions and validate on real devices after each upgrade.
 :::
 
-## Try it first
+## Getting started
 
-Start with the smallest path that proves something useful:
-
-| Goal | Start here | What it proves |
+| Goal | Guide | Expected result |
 | --- | --- | --- |
-| Download, chat, then teach the model | [CLI learning demo](/docs/get-started/minute-demo) | A local model can answer normally first, then a synthetic correction can generate a Neural Imprint artifact and write a hash-only comparison receipt. |
-| Install the preview package | [Install Edge Studio from source](/docs/get-started/source-build) | The `edge` CLI and local Web UI can run from the future pip package source tree. |
-| Launch the local workbench | [Web UI from source](/docs/get-started/source-build#launch-the-web-ui) | Edge Studio can run as a localhost workbench at `http://127.0.0.1:18842`. |
-| Build an iOS shell | [Minimal iOS app](/docs/get-started/minimal-ios-app) | Edge Scaffold compiles as the smallest current iOS reference app. Preview access is required. |
-| Integrate the Swift SDK | [Swift SDK setup](/docs/get-started/quickstart) | Edge Kit can be added to an Apple-platform app and load a local model. |
+| Download, chat, then run a learning demo | [CLI learning demo](/docs/get-started/minute-demo) | Local chat works, then a synthetic correction generates a Neural Imprint artifact with a hash-only comparison receipt. |
+| Install the preview package | [Install Edge Studio from source](/docs/get-started/source-build) | The `edge` CLI and local Web UI run from the source tree. |
+| Launch the local workbench | [Web UI from source](/docs/get-started/source-build#launch-the-web-ui) | Edge Studio runs at `http://127.0.0.1:18842`. |
+| Build an iOS shell | [Minimal iOS app](/docs/get-started/minimal-ios-app) | Edge Scaffold compiles as the smallest iOS reference app. Preview access required. |
+| Integrate the Swift SDK | [Swift SDK setup](/docs/get-started/quickstart) | Edge Kit loads a local model in an Apple-platform app. |
 
 ## First commands
 
-Start with the familiar path: download a model, then chat with it locally.
+Download a model and chat locally:
 
 ```bash
 edge models fetch qwen3.5-9b-4bit --source auto
@@ -43,9 +41,9 @@ After the base chat works, continue to the [CLI learning demo](/docs/get-started
 | --- | --- |
 | **Edge Studio** | Local workbench and CLI for model readiness, model fetch receipts, local learning demos, Neural Imprint generation, device management, benchmark, and export. |
 | **Edge Kit** | Swift SDK for LLM, VLM, speech, model management, EdgeData, EdgeMesh, EdgeDataMeshBridge, EdgeSession, and EdgeUI. |
-| **Edge Engine** | Native on-device inference runtime. It is packaged under Edge Kit; most apps do not import it directly. |
+| **Edge Engine** | Native on-device inference runtime. Packaged under Edge Kit; most apps do not import it directly. |
 | **Edge Halo** | Personalization lifecycle layer: profile jobs, Neural Imprint capsule validation, restore orchestration, and compatibility gates. |
-| **Edge Scaffold** | Reference app and export template that shows the recommended iOS integration pattern. |
+| **Edge Scaffold** | Reference app and export template showing the recommended iOS integration pattern. |
 
 ## Privacy model
 

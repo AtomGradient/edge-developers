@@ -8,10 +8,12 @@ title: 快速开始
 安装 Edge Kit，加载本地模型，并从端侧 LLM 流式输出 token。
 
 :::info 开发者预览
-Edge Kit 目前处于**开发者预览**阶段。请固定你测试过的包版本，并在每次升级后重新进行真机验证。
+Edge Kit 处于**开发者预览**阶段。请固定测试过的包版本，并在每次升级后重新真机验证。
 :::
 
 ## 要求
+
+Edge Kit 面向 Apple 平台发布。Android、Linux、HarmonyOS 和 Windows 支持在计划中。
 
 | 要求 | 版本 |
 | --- | --- |
@@ -21,7 +23,7 @@ Edge Kit 目前处于**开发者预览**阶段。请固定你测试过的包版�
 | Swift | 5.9 或更高 |
 | 硬件 | Apple Silicon |
 
-对于运行较大模型的 iOS 应用，请在应用 target 中启用 Increased Memory Limit entitlement。
+运行较大模型的 iOS 应用需要在 target 中启用 Increased Memory Limit entitlement。
 
 ## 使用 Swift Package Manager 安装
 
@@ -34,10 +36,10 @@ dependencies: [
 ]
 ```
 
-开发者预览版本应精确固定版本。升级到新的 `1.0.0-rcN` tag 前，请重新完成真机验证。
+预览版本应精确固定。升级到新的 `1.0.0-rcN` tag 前，请重新真机验证。
 
 :::info 预览访问权限
-公开文档使用 HTTPS package URL。当前预览版中，部分包解析路径仍可能因为 Edge Engine 等传递依赖需要 AtomGradient 预览访问权限或 SSH 访问权限。请在实际开发和 CI 使用的同一环境里验证 `swift package resolve`。
+部分包解析路径可能因为 Edge Engine 等传递依赖需要 AtomGradient 预览访问权限或 SSH 访问权限。请在开发和 CI 环境中运行 `swift package resolve` 验证。
 :::
 
 然后添加你需要的 product：
@@ -76,7 +78,7 @@ for try await chunk in engine.generate(
 
 ## 准备已注册模型
 
-`ModelConfig` 包含受支持模型家族的预览模型条目。在 原生默认构建 中，先用 `EdgeModelKit` 准备模型，再通过 `loadLocal(directory:)` 加载本地缓存目录。
+`ModelConfig` 包含受支持模型家族的条目。先用 `EdgeModelKit` 准备模型，再通过 `loadLocal(directory:)` 加载本地缓存目录。
 
 ```swift
 import EdgeInference
