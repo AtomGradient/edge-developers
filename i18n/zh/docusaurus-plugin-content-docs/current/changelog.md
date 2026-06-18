@@ -48,24 +48,24 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 
 ### 已知限制
 
-- `edge doctor` 已在当前预览版发布，作为只读的 B1 环境检查。它不会下载模型、加载模型、启动后端，也不会运行 Neural Imprint 工作流。
-- `edge models list`、`edge models where` 与 `edge models doctor` 已在当前预览版发布，作为只读的 B2a 模型就绪检查。它们不下载模型、不写回执，也不做网络探测。
-- `edge models fetch` 已在当前预览版发布，作为显式的 B2b 模型准备命令，支持 `--dry-run`、来源选择、本地回执，并且不会被演示静默触发。
-- `edge demo chat` 已在当前预览版发布，作为 B3 基础模型冒烟检查。它使用显式准备好的本地模型，并默认写仅哈希的 `edge.demo.chat.receipt.v1` 回执。
-- `edge demo receipt` 与 `edge demo local-only` 已在当前预览版发布，作为 B6a 回执检查工具。它们只验证 `edge.demo.receipt.v1` 的仅本地约束，不生成 Neural Imprint 产物，也不调用模型运行时。
-- `edge demo imprint run --dry-run` 已在当前预览版发布，作为 B4a 预检计划。它只输出包含仅哈希样本、问题元数据和本地模型前置条件状态的 `edge.demo.imprint.plan.v1`。
-- 不带 `--dry-run` 的 `edge demo imprint run` 已在当前预览版发布，作为 B4b 真实 Neural Imprint 演示。
-- `edge demo imprint compare` 已在当前预览版发布，作为 B4 仅回执对比检查命令。它读取已完成的 `edge.demo.receipt.v1` 回执并输出 `edge.demo.imprint.compare.v1`，不加载模型、不恢复产物、不生成回答，也不触网。
-- `edge demo learn run --dry-run` 已在当前预览版发布，作为 B5a 纠错学习预检计划。它输出只含仅哈希合成纠错元数据和隔离状态路径的 `edge.demo.learn.plan.v1`；不写纠错 ledger、不触发重新生成、不加载模型，也不写学习回执。
-- 不带 `--dry-run` 的 `edge demo learn run` 已在当前预览版发布，作为 B5b 真实隔离纠错学习演示。它只在演示运行状态下写合成 Persona/RPP 输入与纠错 ledger，触发纠错重新生成，恢复重新生成的本地 Neural Imprint 产物，对比恢复前后的回答哈希，并写入 `edge.demo.learn.receipt.v1`。
-- `edge demo learn run --prepare-model` 已作为一条命令的首次体验路径发布。它可能先显式准备兼容本地模型，然后把模型准备阶段的网络使用以 `network_used_during_model_prepare` 与本地学习演示分开记录。
-- `edge demo reuse` 已在当前预览版发布，作为 B7 产物复用冒烟检查。它读取已完成的 B4 回执，并为每个合成应用写 `edge.demo.reuse.receipt.v1` manifest；不复制产物、不同步设备、不恢复产物、不加载模型，也不触网。
+- `edge doctor` 是只读环境检查。不下载模型、不加载模型、不启动后端，也不运行 Neural Imprint 工作流。
+- `edge models list`、`edge models where` 与 `edge models doctor` 是只读模型就绪检查。不下载模型、不写回执，也不做网络探测。
+- `edge models fetch` 是显式模型准备命令，支持 `--dry-run`、来源选择、本地回执，不会被演示静默触发。
+- `edge demo chat` 是基础模型对话命令。使用显式准备好的本地模型，默认写仅哈希的 `edge.demo.chat.receipt.v1` 回执。
+- `edge demo receipt` 与 `edge demo local-only` 是回执检查工具。只验证 `edge.demo.receipt.v1` 的仅本地约束，不生成 Neural Imprint 产物，也不调用模型运行时。
+- `edge demo imprint run --dry-run` 是预检计划命令。只输出包含仅哈希样本、问题元数据和本地模型前置条件状态的 `edge.demo.imprint.plan.v1`。
+- 不带 `--dry-run` 的 `edge demo imprint run` 是 Neural Imprint 演示。生成并恢复本地产物，写入对比回执。
+- `edge demo imprint compare` 是仅回执对比检查命令。读取已完成的 `edge.demo.receipt.v1` 回执并输出 `edge.demo.imprint.compare.v1`，不加载模型、不恢复产物、不生成回答，也不触网。
+- `edge demo learn run --dry-run` 是纠错学习预检计划命令。输出只含仅哈希合成纠错元数据和隔离状态路径的 `edge.demo.learn.plan.v1`；不写纠错 ledger、不触发重新生成、不加载模型，也不写学习回执。
+- 不带 `--dry-run` 的 `edge demo learn run` 是纠错学习演示。在演示运行状态下写合成 Persona/RPP 输入与纠错 ledger，触发纠错重新生成，恢复重新生成的本地 Neural Imprint 产物，对比恢复前后的回答哈希，并写入 `edge.demo.learn.receipt.v1`。
+- `edge demo learn run --prepare-model` 在一条命令中同时完成模型准备和学习演示。可能先显式准备兼容本地模型，然后把模型准备阶段的网络使用以 `network_used_during_model_prepare` 与本地学习演示分开记录。
+- `edge demo reuse` 是产物复用冒烟检查。读取已完成的回执，并为每个合成应用写 `edge.demo.reuse.receipt.v1` manifest；不复制产物、不同步设备、不恢复产物、不加载模型，也不触网。
 - 产品默认的配对设备路径没有被这份预览文档或更新日志启用。宽泛实时路由仍需要单独的显式策略、显式选择和真机证据。
 - 后台自动化调度器尚未发布。当前有界自动化 API 仍是显式调用、默认 dry-run，并且失败即关闭。
 - 通用 capsule apply-status UI 参考已在 Edge Scaffold 与 dogfood validation App 中发布；产品级位置、布局或文案不属于本次预览基线。
 - model push 和产品默认 Neural Imprint 重新生成执行在没有单独显式策略/设计前仍不支持；已发布的 `edge demo learn run` 路径是显式本地合成演示。
-- `edge demo reuse` 是产物复用冒烟检查，不是 C2 跨设备同步。
-- A5.8 后续项仅剩：background scheduler。
+- `edge demo reuse` 是产物复用冒烟检查，不是跨设备同步。
+- 后台调度器尚未发布。
 - EdgeMesh capsule auto-restore SDK 编排已经通过 Edge Kit `1.0.0-rc94` 中的 `HaloCapsuleAutoRestoreCoordinator` 发布；它不是当前限制。
 
 ---

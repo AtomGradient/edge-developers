@@ -48,24 +48,24 @@ Generic builds and simulator checks are not enough for runtime claims. Re-run re
 
 ### Known limitations
 
-- `edge doctor` is shipped in current preview as a read-only B1 environment check. It does not download models, load models, start the backend, or run Neural Imprint workflows.
-- `edge models list`, `edge models where`, and `edge models doctor` are shipped in current preview as read-only B2a model readiness checks. They do not download models, write receipts, or probe the network.
-- `edge models fetch` is shipped in current preview as an explicit B2b model preparation command with `--dry-run`, source selection, local receipts, and no silent demo download.
-- `edge demo chat` is shipped in current preview as a B3 base-model sanity check. It uses an explicitly prepared local model and writes a hash-only `edge.demo.chat.receipt.v1` receipt by default.
-- `edge demo receipt` and `edge demo local-only` are shipped in current preview as B6a receipt inspection tools. They validate `edge.demo.receipt.v1` local-only invariants and do not generate Neural Imprint artifacts or call model runtimes.
-- `edge demo imprint run --dry-run` is shipped in current preview as a B4a pre-flight planner. It emits `edge.demo.imprint.plan.v1` with hash-only sample/question metadata and local model prerequisite status.
-- `edge demo imprint run` without `--dry-run` is shipped in current preview as the B4b real Neural Imprint demo.
-- `edge demo imprint compare` is shipped in current preview as a receipt-only B4 comparison inspector. It reads a completed `edge.demo.receipt.v1` receipt and emits `edge.demo.imprint.compare.v1` without loading models, restoring artifacts, generating answers, or using the network.
-- `edge demo learn run --dry-run` is shipped in current preview as a B5a correction-learning pre-flight planner. It emits `edge.demo.learn.plan.v1` with hash-only synthetic correction metadata and isolated-state paths; it does not write correction ledgers, call regen, load models, or write a learn receipt.
-- `edge demo learn run` without `--dry-run` is shipped in current preview as the B5b real isolated correction-learning demo. It writes synthetic Persona/RPP input and correction ledger entries under the demo run state, triggers correction regen, restores the regenerated local Neural Imprint artifact, compares before/after answer hashes, and writes `edge.demo.learn.receipt.v1`.
-- `edge demo learn run --prepare-model` is shipped as the one-command first-wow path. It may explicitly prepare a compatible local model first, then records model-preparation network use separately as `network_used_during_model_prepare` from the local learning demo.
-- `edge demo reuse` is shipped in current preview as the B7 artifact reuse smoke. It reads a completed B4 receipt and writes per-app `edge.demo.reuse.receipt.v1` manifests without copying artifacts, syncing devices, restoring artifacts, loading models, or using the network.
+- `edge doctor` is a read-only environment check. It does not download models, load models, start the backend, or run Neural Imprint workflows.
+- `edge models list`, `edge models where`, and `edge models doctor` are read-only model readiness checks. They do not download models, write receipts, or probe the network.
+- `edge models fetch` is an explicit model preparation command with `--dry-run`, source selection, local receipts, and no silent demo download.
+- `edge demo chat` is a base-model chat command. It uses an explicitly prepared local model and writes a hash-only `edge.demo.chat.receipt.v1` receipt by default.
+- `edge demo receipt` and `edge demo local-only` are receipt inspection tools. They validate `edge.demo.receipt.v1` local-only invariants and do not generate Neural Imprint artifacts or call model runtimes.
+- `edge demo imprint run --dry-run` is a pre-flight planner. It emits `edge.demo.imprint.plan.v1` with hash-only sample/question metadata and local model prerequisite status.
+- `edge demo imprint run` without `--dry-run` is the Neural Imprint demo. It generates and restores a local artifact and writes a comparison receipt.
+- `edge demo imprint compare` is a receipt-only comparison inspector. It reads a completed `edge.demo.receipt.v1` receipt and emits `edge.demo.imprint.compare.v1` without loading models, restoring artifacts, generating answers, or using the network.
+- `edge demo learn run --dry-run` is a correction-learning pre-flight planner. It emits `edge.demo.learn.plan.v1` with hash-only synthetic correction metadata and isolated-state paths; it does not write correction ledgers, call regen, load models, or write a learn receipt.
+- `edge demo learn run` without `--dry-run` is the correction-learning demo. It writes synthetic Persona/RPP input and correction ledger entries under the demo run state, triggers correction regen, restores the regenerated local Neural Imprint artifact, compares before/after answer hashes, and writes `edge.demo.learn.receipt.v1`.
+- `edge demo learn run --prepare-model` combines model preparation and the learning demo in one command. It may explicitly prepare a compatible local model first, then records model-preparation network use separately as `network_used_during_model_prepare` from the local learning demo.
+- `edge demo reuse` is an artifact reuse smoke check. It reads a completed receipt and writes per-app `edge.demo.reuse.receipt.v1` manifests without copying artifacts, syncing devices, restoring artifacts, loading models, or using the network.
 - Product-default paired-device route is not enabled by this preview documentation or changelog. Broad live routing still requires separate explicit policy, opt-in, and real-device evidence.
 - Background automation scheduler is not shipped. The bounded automation API remains explicit, dry-run by default, and fail-closed.
 - Generic capsule apply-status UI reference is shipped in Edge Scaffold and the dogfood validation app. Product-specific placement, layout, or copy remains outside the preview baseline.
 - Model push and product-default Neural Imprint regen execution remain unsupported without separate explicit policy/design. The shipped `edge demo learn run` path is an explicit local synthetic demo.
-- `edge demo reuse` is an artifact reuse smoke, not C2 cross-device sync.
-- A5.8 follow-up remains: background scheduler.
+- `edge demo reuse` is an artifact reuse smoke check, not cross-device sync.
+- Background scheduler is not yet shipped.
 - EdgeMesh capsule auto-restore SDK orchestration is already shipped through `HaloCapsuleAutoRestoreCoordinator` in Edge Kit `1.0.0-rc94`; it is not a current limitation.
 
 ---
