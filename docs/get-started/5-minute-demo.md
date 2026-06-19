@@ -5,9 +5,9 @@ title: See local learning in 5 minutes
 
 # See local learning in 5 minutes
 
-This guide shows one visible result: a local model answers a question before a
-synthetic learning step, then answers differently after a local Neural Imprint
-artifact is restored.
+This guide shows one visible result: you chat with a local model before a
+synthetic learning step, run the learning demo, then chat again with the local
+Neural Imprint artifact loaded.
 
 The demo uses a built-in synthetic sample. It does not use your private data,
 does not change the model weights, and does not claim the model became better in
@@ -28,16 +28,16 @@ The demo asks:
 How should this assistant respond to technical workflow questions?
 ```
 
-Before learning, the model may answer with a broad generic framework. After the
-synthetic correction is restored, the answer should move toward:
+Before learning, the model may answer with a broad generic framework. After you
+load the synthetic correction, the answer should move toward:
 
 ```text
 Provide short, direct summaries of the workflow steps. Avoid making quality
 claims unless you have specific evidence to support them.
 ```
 
-Exact text can vary by model version and sampling, but the terminal output shows
-the before and after answers directly.
+Exact text can vary by model version and sampling, but the terminal flow lets
+you ask the same question before and after learning.
 
 ## 1. Install Edge Studio
 
@@ -124,7 +124,30 @@ Look for `sample_text` in the output:
 This dry run does not load the model, write demo state, restore an artifact, or
 use the network. It is a preview of the exact synthetic learning data.
 
-## 4. Run the learning demo
+## 4. Chat before learning
+
+Start an interactive base-model chat:
+
+```bash
+edge demo chat --model qwen3.5-9b-4bit --interactive
+```
+
+Ask the demo question:
+
+```text
+[chat:load] loading model=Qwen3.5-9B-4bit (first load can take 30-90s)
+[chat:ready] type a message, /exit to quit
+you> How should this assistant respond to technical workflow questions?
+assistant> A good assistant should first understand the user's goal, identify
+the relevant workflow constraints, break the problem into steps, and explain
+tradeoffs clearly...
+you> /exit
+```
+
+This is the base model response. It has not loaded the synthetic learning
+artifact yet.
+
+## 5. Run the learning demo
 
 Run the local learning flow and ask the CLI to print the before and after text:
 
@@ -163,7 +186,41 @@ claims unless you have specific evidence to support them.
 The important part is not the exact wording. The important part is that the
 after answer reflects the synthetic correction you inspected in step 3.
 
-## 5. Read the result
+Copy the path printed after `receipt:`. You will use it in the next step:
+
+```bash
+LEARN_RECEIPT="<path printed after receipt:>"
+```
+
+## 6. Chat after learning
+
+Start interactive chat again, this time loading the local Neural Imprint
+artifact from the learning receipt:
+
+```bash
+edge demo chat \
+  --model qwen3.5-9b-4bit \
+  --interactive \
+  --with-imprint "$LEARN_RECEIPT"
+```
+
+Ask the same question:
+
+```text
+[chat:load] loading model=Qwen3.5-9B-4bit (first load can take 30-90s)
+[chat:imprint] restoring artifact=.../neural_imprint_full_cache.safetensors
+[chat:ready] type a message, /exit to quit
+you> How should this assistant respond to technical workflow questions?
+assistant> Provide short, direct summaries of the workflow steps. Avoid making
+quality claims unless you have specific evidence to support them.
+you> /exit
+```
+
+The second chat is still local. `--with-imprint` reads the completed learning
+receipt, restores the generated Neural Imprint artifact, and fails closed if the
+receipt or artifact is missing.
+
+## 7. Read the result
 
 The run does four local things:
 
@@ -185,20 +242,6 @@ It does not mean:
 By default, receipts are local and hash-only. In this guide, `--include-text`
 prints and stores raw text only because the sample is synthetic and meant to be
 read.
-
-## Optional: try normal chat
-
-You can also run a normal interactive local chat:
-
-```bash
-edge demo chat --model qwen3.5-9b-4bit --interactive
-```
-
-The first model load can take a few seconds or longer depending on your Mac and
-disk cache. After `[chat:ready]`, ask a question and exit with `/exit`.
-
-This chat command is useful for trying the model. The learning demo above is the
-command that prints the controlled before and after comparison.
 
 ## Advanced checks
 

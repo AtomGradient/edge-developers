@@ -5,7 +5,7 @@ title: 5 分钟看懂本地学习
 
 # 5 分钟看懂本地学习
 
-这个教程只看一个可见结果：本地模型先回答一个问题，然后运行一次合成学习步骤，恢复本地 Neural Imprint 产物后，再给出不同的回答。
+这个教程只看一个可见结果：你先和本地模型对话，运行一次合成学习步骤，然后加载本地 Neural Imprint 产物，再和模型对话一次。
 
 这个演示使用内置合成样本。它不会使用你的私人数据，不会修改模型权重，也不声称模型整体变聪明。它只说明：在一个受控样本里，本地学习产物可以改变模型行为。
 
@@ -23,14 +23,14 @@ title: 5 分钟看懂本地学习
 How should this assistant respond to technical workflow questions?
 ```
 
-学习前，模型可能会给出泛化的长框架。恢复合成纠错样本后，回答应该更接近：
+学习前，模型可能会给出泛化的长框架。加载合成纠错样本后，回答应该更接近：
 
 ```text
 Provide short, direct summaries of the workflow steps. Avoid making quality
 claims unless you have specific evidence to support them.
 ```
 
-不同模型版本和采样结果会让具体文字略有变化，但终端会直接显示学习前和学习后的回答。
+不同模型版本和采样结果会让具体文字略有变化，但这个终端流程会让你用同一个问题，对比学习前和学习后的对话。
 
 ## 1. 安装 Edge Studio
 
@@ -115,7 +115,29 @@ edge demo learn run --dry-run \
 
 这个 dry run 不加载模型、不写演示状态、不恢复产物，也不联网。它只是让你看到这次合成学习到底会学习什么。
 
-## 4. 运行学习演示
+## 4. 学习前先聊天
+
+先启动基础模型的交互式聊天：
+
+```bash
+edge demo chat --model qwen3.5-9b-4bit --interactive
+```
+
+输入演示问题：
+
+```text
+[chat:load] loading model=Qwen3.5-9B-4bit (first load can take 30-90s)
+[chat:ready] type a message, /exit to quit
+you> How should this assistant respond to technical workflow questions?
+assistant> A good assistant should first understand the user's goal, identify
+the relevant workflow constraints, break the problem into steps, and explain
+tradeoffs clearly...
+you> /exit
+```
+
+这是基础模型的回答。此时还没有加载合成学习产物。
+
+## 5. 运行学习演示
 
 运行本地学习流程，并让 CLI 打印学习前和学习后的文本：
 
@@ -151,7 +173,38 @@ claims unless you have specific evidence to support them.
 
 重点不是每个字完全一致。重点是：学习后的回答反映了第 3 步里你亲眼看到的合成纠错内容。
 
-## 5. 理解结果
+复制 `receipt:` 后面的路径，下一步会用到：
+
+```bash
+LEARN_RECEIPT="<path printed after receipt:>"
+```
+
+## 6. 学习后再聊天
+
+再次启动交互式聊天，这次从学习回执加载本地 Neural Imprint 产物：
+
+```bash
+edge demo chat \
+  --model qwen3.5-9b-4bit \
+  --interactive \
+  --with-imprint "$LEARN_RECEIPT"
+```
+
+继续问同一个问题：
+
+```text
+[chat:load] loading model=Qwen3.5-9B-4bit (first load can take 30-90s)
+[chat:imprint] restoring artifact=.../neural_imprint_full_cache.safetensors
+[chat:ready] type a message, /exit to quit
+you> How should this assistant respond to technical workflow questions?
+assistant> Provide short, direct summaries of the workflow steps. Avoid making
+quality claims unless you have specific evidence to support them.
+you> /exit
+```
+
+第二次聊天仍然完全在本地完成。`--with-imprint` 会读取已完成的学习回执，恢复生成出来的 Neural Imprint 产物；如果回执或产物不存在，命令会直接失败，而不是静默退回基础模型聊天。
+
+## 7. 理解结果
 
 这条命令在本地做了四件事：
 
@@ -170,18 +223,6 @@ claims unless you have specific evidence to support them.
 - 生产级学习流水线已经开启。
 
 默认情况下，回执是本地的，并且只记录哈希。本教程使用 `--include-text`，只是因为样本是合成的，本来就用于阅读和演示。
-
-## 可选：普通聊天
-
-你也可以运行普通本地聊天：
-
-```bash
-edge demo chat --model qwen3.5-9b-4bit --interactive
-```
-
-第一次加载模型可能需要几秒或更久，取决于你的 Mac 和磁盘缓存。看到 `[chat:ready]` 后，可以提问，并用 `/exit` 退出。
-
-这个聊天命令适合体验模型。上面的学习演示命令才会打印受控的学习前和学习后对比。
 
 ## 进阶检查
 
