@@ -1,35 +1,53 @@
 ---
 sidebar_position: 1
-title: CLI learning demo
+title: See local learning in 5 minutes
 ---
 
-# CLI learning demo
+# See local learning in 5 minutes
 
-:::tip Runnable in current preview
-This tutorial uses shipped CLI commands. It runs on a synthetic sample, can explicitly prepare a compatible local model, and writes hash-only local receipts by default.
-:::
+This guide shows one visible result: a local model answers a question before a
+synthetic learning step, then answers differently after a local Neural Imprint
+artifact is restored.
 
-This page uses the shipped B2/B4/B5/B6/B7 CLI commands. Receipts use hashed identifiers, include no raw user text by default, and describe only that behavior changed after restoring local Neural Imprint artifact.
+The demo uses a built-in synthetic sample. It does not use your private data,
+does not change the model weights, and does not claim the model became better in
+general. It only shows that a local learning artifact can change behavior for a
+controlled example.
 
-This walkthrough covers the full local learning path:
+## What you will see
 
-1. Download a model.
-2. Chat with the base model.
-3. Inspect the synthetic learning sample.
-4. Run the local correction-learning flow.
-5. Compare the base answer hash with the Neural Imprint restored answer hash.
+The built-in sample teaches this preference:
 
-Neural Imprint is a local artifact and restore flow. Restoring a compatible local Neural Imprint artifact can change generated behavior under compatibility gates without changing model weights. This demo validates the local artifact path and receipt path; it does not claim general model quality improvement.
+- Prefer concise technical answers.
+- Keep workflow explanations short and direct.
+- Avoid quality claims unless there is specific evidence.
 
-## Install the CLI
+The demo asks:
 
-Create and activate a Python 3.11 environment, then install Edge Studio:
+```text
+How should this assistant respond to technical workflow questions?
+```
+
+Before learning, the model may answer with a broad generic framework. After the
+synthetic correction is restored, the answer should move toward:
+
+```text
+Provide short, direct summaries of the workflow steps. Avoid making quality
+claims unless you have specific evidence to support them.
+```
+
+Exact text can vary by model version and sampling, but the terminal output shows
+the before and after answers directly.
+
+## 1. Install Edge Studio
+
+Create a Python 3.11 environment and install the developer preview package:
 
 ```bash
 python3.11 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
-python -m pip install edge-studio
+python -m pip install --upgrade --pre edge-studio
 edge doctor
 ```
 
@@ -38,182 +56,167 @@ If you use `uv`:
 ```bash
 uv venv --python 3.11 .venv
 source .venv/bin/activate
-uv pip install edge-studio
+uv pip install --upgrade --pre edge-studio
 edge doctor
 ```
 
-For source install and local UI development, see [Install Edge Studio](/docs/get-started/source-build).
+For source install and local UI development, see [Install from source](/docs/get-started/source-build).
 
-## Commands
+## 2. Prepare the demo model
 
-Run these commands after `edge doctor` passes:
-
-### 1. Download the baseline model
-
-Use `qwen3.5-9b-4bit` as the preview baseline:
+The preview demo uses `qwen3.5-9b-4bit`.
 
 ```bash
-edge models list --json
+edge models where qwen3.5-9b-4bit
 ```
+
+If the model is missing, download it explicitly:
 
 ```bash
 edge models fetch qwen3.5-9b-4bit --source auto
 ```
 
-This command is explicit. The demo does not silently download models. If the model is already present, the downloader reuses the local match and reports the cached path.
+The demo does not silently download models. If the model is already present, the
+fetch command reuses the local match and reports the cached path.
 
-Check readiness:
+## 3. Inspect what the demo will learn
+
+Before running the learning step, inspect the synthetic sample:
 
 ```bash
-edge models where qwen3.5-9b-4bit --json
-edge models doctor qwen3.5-9b-4bit --json
+edge demo learn run --dry-run \
+  --sample synthetic_profile_correction_v1 \
+  --model qwen3.5-9b-4bit \
+  --include-text \
+  --json
 ```
 
-### 2. Chat with the base model
+Look for `sample_text` in the output:
 
-Run a normal local chat before learning:
+```json
+{
+  "question": "How should this assistant respond to technical workflow questions?",
+  "records": [
+    {
+      "kind": "preference",
+      "text": "The synthetic user prefers concise technical answers."
+    },
+    {
+      "kind": "trust_boundary",
+      "text": "The synthetic user asks for local-only receipts before trusting a workflow."
+    }
+  ],
+  "corrections": [
+    {
+      "correction_type": "profile_correction",
+      "target": {"profile_field": "answer_style"},
+      "correction": {
+        "profile_overlay": {
+          "style": "short direct summaries",
+          "boundary": "avoid quality claims without evidence"
+        }
+      }
+    }
+  ]
+}
+```
+
+This dry run does not load the model, write demo state, restore an artifact, or
+use the network. It is a preview of the exact synthetic learning data.
+
+## 4. Run the learning demo
+
+Run the local learning flow and ask the CLI to print the before and after text:
+
+```bash
+edge demo learn run \
+  --sample synthetic_profile_correction_v1 \
+  --model qwen3.5-9b-4bit \
+  --max-tokens 64 \
+  --include-text
+```
+
+`--include-text` is used here because the sample is synthetic. Do not use it with
+private prompts or real user data that you would not want printed in a terminal
+or stored in a local receipt.
+
+You should see output shaped like this:
+
+```text
+Edge demo learn (edge.demo.learn.run.v1)
+status: completed
+model: qwen3.5-9b-4bit
+sample: synthetic_profile_correction_v1
+answers_differ: true
+receipt: .../learn_receipt.json
+raw_text_in_receipt: true
+
+[Before]
+To respond effectively to technical workflow questions, an assistant should
+adopt a structured, user-centric, and context-aware approach...
+
+[After]
+Provide short, direct summaries of the workflow steps. Avoid making quality
+claims unless you have specific evidence to support them.
+```
+
+The important part is not the exact wording. The important part is that the
+after answer reflects the synthetic correction you inspected in step 3.
+
+## 5. Read the result
+
+The run does four local things:
+
+1. Writes the synthetic records into isolated demo state.
+2. Records the synthetic correction.
+3. Generates and restores a local Neural Imprint artifact.
+4. Compares the answer before and after restore.
+
+`answers_differ: true` means the answer changed after restoring the local Neural
+Imprint artifact for this synthetic sample.
+
+It does not mean:
+
+- The base model weights changed.
+- The model became generally smarter.
+- Your private data was used.
+- A production learning pipeline was enabled.
+
+By default, receipts are local and hash-only. In this guide, `--include-text`
+prints and stores raw text only because the sample is synthetic and meant to be
+read.
+
+## Optional: try normal chat
+
+You can also run a normal interactive local chat:
 
 ```bash
 edge demo chat --model qwen3.5-9b-4bit --interactive
 ```
 
-The first model load can take tens of seconds on Apple Silicon. After `[chat:ready]`, ask a few normal questions and exit with `/exit`.
+The first model load can take a few seconds or longer depending on your Mac and
+disk cache. After `[chat:ready]`, ask a question and exit with `/exit`.
 
-Interactive chat loads the model once, keeps a session KV cache across turns, prints each answer, and writes one local chat receipt per turn. By default, each receipt stores hashes and paths, not raw prompt or answer text.
+This chat command is useful for trying the model. The learning demo above is the
+command that prints the controlled before and after comparison.
 
-For scripts or CI smoke checks, the one-shot form is also available:
+## Advanced checks
 
-```bash
-edge demo chat --model qwen3.5-9b-4bit --prompt "What is edge AI?" --max-tokens 64
-```
-
-### 3. Inspect the synthetic learning sample
-
-Look at the synthetic correction-learning plan before writing any demo state:
-
-```bash
-edge demo learn run --dry-run --sample synthetic_profile_correction_v1 --model qwen3.5-9b-4bit --include-text --json
-```
-
-`--include-text` is appropriate here because this is a synthetic fixture shipped for the demo. Do not use raw private user text in receipts or support logs. Without `--include-text`, the plan remains hash-only.
-
-This dry-run does not load a model, write correction ledgers, trigger regeneration, restore Neural Imprint, or use the network.
-
-### 4. Run local learning and Neural Imprint restore
-
-Run the local correction-learning flow:
-
-```bash
-edge demo learn run --sample synthetic_profile_correction_v1 --model qwen3.5-9b-4bit --max-tokens 64 --json
-```
-
-The command:
-
-1. Writes synthetic Persona/RPP input under isolated demo state.
-2. Writes synthetic correction entries under an isolated correction ledger.
-3. Regenerates a local Neural Imprint artifact.
-4. Restores that artifact under compatibility gates.
-5. Generates a before answer and an after-restored answer.
-6. Writes an `edge.demo.learn.receipt.v1` receipt.
-
-### 5. Read the comparison
-
-In the JSON output, look for:
-
-```json
-{
-  "generation": {
-    "artifact_path": ".../neural_imprint.safetensors"
-  },
-  "comparison": {
-    "before_answer_sha256": "sha256:...",
-    "after_answer_sha256": "sha256:...",
-    "answers_differ": true
-  },
-  "receipt_path": "..."
-}
-```
-
-The receipt stores the same comparison fields as top-level receipt fields.
-
-`answers_differ=true` means the generated answer changed after restoring the local Neural Imprint artifact for this synthetic demo. It is not a broad claim that the model is better.
-
-Inspect the receipt without loading the model again:
+Inspect a receipt without loading the model again:
 
 ```bash
 edge demo receipt --path <receipt_path>
 edge demo local-only --path <receipt_path> --json
 ```
 
-You can also inspect the lower-level Neural Imprint sample and comparison path directly:
+Lower-level Neural Imprint commands are available after you understand the
+first demo:
 
 ```bash
 edge demo imprint run --dry-run --sample synthetic_profile_v1 --model qwen3.5-9b-4bit --json
 edge demo imprint run --sample synthetic_profile_v1 --model qwen3.5-9b-4bit --json
 edge demo imprint compare --path <receipt_path> --json
-```
-
-The artifact reuse smoke is local and manifest-only:
-
-```bash
 edge demo reuse --run <run_id> --json
 ```
 
-It does not copy artifacts and is not cross-device sync.
-
-### Advanced shortcut
-
-After you understand the steps, prepare the model and run the learning demo in one command:
-
-```bash
-edge demo learn run --prepare-model --model qwen3.5-9b-4bit --source auto --max-tokens 64 --json
-```
-
-`--prepare-model` is explicit. If the model is missing, model preparation may use the network and writes a model-fetch receipt. The learning demo itself remains local-only and records `network_used_during_demo=false`; the report records model preparation separately as `network_used_during_model_prepare`.
-
-## Receipt privacy contract
-
-Receipts are local by default and hash-only by default:
-
-```json
-{
-  "schema_version": "edge.demo.learn.receipt.v1",
-  "run_id": "edge-run-example",
-  "model_path": "~/Documents/mlx-community/mlx-community_Qwen3.5-9B-4bit",
-  "model_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-  "sample_id": "synthetic_profile_correction_v1",
-  "sample_sha256": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-  "correction_pack_sha256": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
-  "artifact_id": "learn-edge-run-example",
-  "artifact_path": "~/Library/Application Support/edgestudio/demo_runs/edge-run-example/learn_state/neural_imprint_artifacts/neural_imprint.safetensors",
-  "artifact_sha256": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
-  "metadata_sha256": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
-  "before_answer_sha256": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
-  "before_answer_tokens": 8,
-  "after_answer_sha256": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-  "after_answer_tokens": 8,
-  "answers_differ": true,
-  "model_prepare": {
-    "requested": true,
-    "status": "skipped_existing",
-    "network_used": false
-  },
-  "network_used_during_model_prepare": false,
-  "raw_text_included": false,
-  "network_used_during_demo": false,
-  "status": "completed"
-}
-```
-
-The default receipt contains hashed identifiers, local paths, schema versions, and status. It does not contain raw user text. Any future include-text mode must be opt-in and visible in the receipt.
-
-## Offline and fail-closed requirements
-
-The demo must:
-
-- Separate model download from demo execution.
-- Allow the one-command learning demo to prepare a model only when `--prepare-model` is explicitly passed.
-- Fail closed if a required local model or artifact is missing.
-- Avoid silent network access during the demo run.
-- Treat non-localhost network access as disallowed in offline mode.
-- Record error status in the local receipt instead of continuing silently.
+These are implementation checks. They are not required for the 5-minute demo.

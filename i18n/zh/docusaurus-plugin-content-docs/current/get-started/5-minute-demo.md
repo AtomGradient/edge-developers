@@ -1,35 +1,46 @@
 ---
 sidebar_position: 1
-title: CLI 学习演示
+title: 5 分钟看懂本地学习
 ---
 
-# CLI 学习演示
+# 5 分钟看懂本地学习
 
-:::tip 当前预览版可运行
-本教程使用已发布的 CLI 命令。只运行合成样本，可以显式准备兼容的本地模型，并默认写入仅哈希的本地回执。
-:::
+这个教程只看一个可见结果：本地模型先回答一个问题，然后运行一次合成学习步骤，恢复本地 Neural Imprint 产物后，再给出不同的回答。
 
-本页使用已经发布的 B2/B4/B5/B6/B7 CLI 命令。回执使用哈希标识符，默认不保存原始用户文本，并且只描述“恢复本地 Neural Imprint 产物后行为发生变化”。
+这个演示使用内置合成样本。它不会使用你的私人数据，不会修改模型权重，也不声称模型整体变聪明。它只说明：在一个受控样本里，本地学习产物可以改变模型行为。
 
-本教程覆盖完整的本地学习路径：
+## 你会看到什么
 
-1. 下载模型。
-2. 和基础模型对话。
-3. 查看合成学习样本。
-4. 运行本地纠错学习流程。
-5. 对比基础回答哈希和 Neural Imprint 恢复后的回答哈希。
+内置样本要教给模型的是：
 
-Neural Imprint 是本地产物和恢复流程。恢复兼容的本地 Neural Imprint 产物可以在兼容性闸门下改变生成行为，不改模型权重。这个演示验证的是本地产物路径和回执路径；它不声称模型质量整体变好。
+- 偏好简洁的技术回答。
+- 工作流说明要短、直接。
+- 没有具体证据时，不要做质量提升类声明。
 
-## 安装 CLI
+演示会问这个问题：
 
-先创建并激活 Python 3.11 环境，再从 Python 软件包安装 Edge Studio：
+```text
+How should this assistant respond to technical workflow questions?
+```
+
+学习前，模型可能会给出泛化的长框架。恢复合成纠错样本后，回答应该更接近：
+
+```text
+Provide short, direct summaries of the workflow steps. Avoid making quality
+claims unless you have specific evidence to support them.
+```
+
+不同模型版本和采样结果会让具体文字略有变化，但终端会直接显示学习前和学习后的回答。
+
+## 1. 安装 Edge Studio
+
+创建 Python 3.11 环境，并安装开发者预览包：
 
 ```bash
 python3.11 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
-python -m pip install edge-studio
+python -m pip install --upgrade --pre edge-studio
 edge doctor
 ```
 
@@ -38,105 +49,141 @@ edge doctor
 ```bash
 uv venv --python 3.11 .venv
 source .venv/bin/activate
-uv pip install edge-studio
+uv pip install --upgrade --pre edge-studio
 edge doctor
 ```
 
-源码安装和本地 UI 开发见 [安装 Edge Studio](/docs/get-started/source-build)。
+源码安装和本地 UI 开发见 [源码安装](/docs/get-started/source-build)。
 
-## 命令
+## 2. 准备演示模型
 
-`edge doctor` 通过后运行下面的命令：
-
-### 1. 下载基准模型
-
-预览演示使用 `qwen3.5-9b-4bit` 作为基准模型：
+预览演示使用 `qwen3.5-9b-4bit`。
 
 ```bash
-edge models list --json
+edge models where qwen3.5-9b-4bit
 ```
+
+如果模型不存在，显式下载：
 
 ```bash
 edge models fetch qwen3.5-9b-4bit --source auto
 ```
 
-这个命令是显式下载。演示不会静默下载模型。如果模型已经存在，下载器复用本地匹配项，并报告缓存路径。
+演示不会静默下载模型。如果模型已经存在，下载命令会复用本地匹配项，并报告缓存路径。
 
-检查模型是否就绪：
+## 3. 查看模型会学习什么
+
+运行学习之前，先查看内置合成样本：
 
 ```bash
-edge models where qwen3.5-9b-4bit --json
-edge models doctor qwen3.5-9b-4bit --json
+edge demo learn run --dry-run \
+  --sample synthetic_profile_correction_v1 \
+  --model qwen3.5-9b-4bit \
+  --include-text \
+  --json
 ```
 
-### 2. 和基础模型对话
+在输出里找到 `sample_text`：
 
-先跑一个普通本地聊天：
+```json
+{
+  "question": "How should this assistant respond to technical workflow questions?",
+  "records": [
+    {
+      "kind": "preference",
+      "text": "The synthetic user prefers concise technical answers."
+    },
+    {
+      "kind": "trust_boundary",
+      "text": "The synthetic user asks for local-only receipts before trusting a workflow."
+    }
+  ],
+  "corrections": [
+    {
+      "correction_type": "profile_correction",
+      "target": {"profile_field": "answer_style"},
+      "correction": {
+        "profile_overlay": {
+          "style": "short direct summaries",
+          "boundary": "avoid quality claims without evidence"
+        }
+      }
+    }
+  ]
+}
+```
+
+这个 dry run 不加载模型、不写演示状态、不恢复产物，也不联网。它只是让你看到这次合成学习到底会学习什么。
+
+## 4. 运行学习演示
+
+运行本地学习流程，并让 CLI 打印学习前和学习后的文本：
+
+```bash
+edge demo learn run \
+  --sample synthetic_profile_correction_v1 \
+  --model qwen3.5-9b-4bit \
+  --max-tokens 64 \
+  --include-text
+```
+
+这里可以使用 `--include-text`，因为样本是合成的。不要把这个选项用于你不希望打印到终端或写入本地回执的私人 prompt 或真实用户数据。
+
+你会看到类似这样的输出：
+
+```text
+Edge demo learn (edge.demo.learn.run.v1)
+status: completed
+model: qwen3.5-9b-4bit
+sample: synthetic_profile_correction_v1
+answers_differ: true
+receipt: .../learn_receipt.json
+raw_text_in_receipt: true
+
+[Before]
+To respond effectively to technical workflow questions, an assistant should
+adopt a structured, user-centric, and context-aware approach...
+
+[After]
+Provide short, direct summaries of the workflow steps. Avoid making quality
+claims unless you have specific evidence to support them.
+```
+
+重点不是每个字完全一致。重点是：学习后的回答反映了第 3 步里你亲眼看到的合成纠错内容。
+
+## 5. 理解结果
+
+这条命令在本地做了四件事：
+
+1. 把合成记录写入隔离的演示状态。
+2. 记录合成纠错。
+3. 生成并恢复本地 Neural Imprint 产物。
+4. 对比恢复前和恢复后的回答。
+
+`answers_differ: true` 表示：对这个合成样本，恢复本地 Neural Imprint 产物后，回答发生了变化。
+
+它不表示：
+
+- 基础模型权重被修改了。
+- 模型整体变聪明了。
+- 你的私人数据被使用了。
+- 生产级学习流水线已经开启。
+
+默认情况下，回执是本地的，并且只记录哈希。本教程使用 `--include-text`，只是因为样本是合成的，本来就用于阅读和演示。
+
+## 可选：普通聊天
+
+你也可以运行普通本地聊天：
 
 ```bash
 edge demo chat --model qwen3.5-9b-4bit --interactive
 ```
 
-第一次加载 9B 模型可能需要几十秒。看到 `[chat:ready]` 后，可以连续问几个普通问题，并用 `/exit` 退出。
+第一次加载模型可能需要几秒或更久，取决于你的 Mac 和磁盘缓存。看到 `[chat:ready]` 后，可以提问，并用 `/exit` 退出。
 
-交互式聊天只加载一次模型，在多轮对话中复用 session KV cache，打印每轮回答，并为每轮写一个本地聊天回执。默认情况下，每个回执只保存哈希和路径，不保存原始 prompt 或原始回答。
+这个聊天命令适合体验模型。上面的学习演示命令才会打印受控的学习前和学习后对比。
 
-脚本或 CI 冒烟检查也可以使用一次性命令形式：
-
-```bash
-edge demo chat --model qwen3.5-9b-4bit --prompt "What is edge AI?" --max-tokens 64
-```
-
-### 3. 查看合成学习样本
-
-在写入任何演示状态之前，先查看合成纠错学习计划：
-
-```bash
-edge demo learn run --dry-run --sample synthetic_profile_correction_v1 --model qwen3.5-9b-4bit --include-text --json
-```
-
-这里可以使用 `--include-text`，因为这是演示自带的合成 fixture。不要把真实用户隐私文本写入回执或支持日志。不加 `--include-text` 时，计划仍保持仅哈希。
-
-这个 dry-run 不加载模型、不写纠错 ledger、不触发重新生成、不恢复 Neural Imprint，也不触网。
-
-### 4. 运行本地学习和 Neural Imprint 恢复
-
-运行本地纠错学习流程：
-
-```bash
-edge demo learn run --sample synthetic_profile_correction_v1 --model qwen3.5-9b-4bit --max-tokens 64 --json
-```
-
-这个命令会：
-
-1. 在隔离的演示状态下写入合成 Persona/RPP 输入。
-2. 在隔离的纠错 ledger 下写入合成纠错条目。
-3. 重新生成本地 Neural Imprint 产物。
-4. 在兼容性闸门下恢复该产物。
-5. 生成恢复前回答和恢复后回答。
-6. 写入 `edge.demo.learn.receipt.v1` 回执。
-
-### 5. 读取对比结果
-
-在 JSON 输出里查看：
-
-```json
-{
-  "generation": {
-    "artifact_path": ".../neural_imprint.safetensors"
-  },
-  "comparison": {
-    "before_answer_sha256": "sha256:...",
-    "after_answer_sha256": "sha256:...",
-    "answers_differ": true
-  },
-  "receipt_path": "..."
-}
-```
-
-回执会把同样的对比字段作为顶层回执字段保存。
-
-`answers_differ=true` 表示这个合成演示在恢复本地 Neural Imprint 产物后，生成结果发生了变化。这不是"模型整体变好"的泛化结论。
+## 进阶检查
 
 不重新加载模型也可以检查回执：
 
@@ -145,75 +192,13 @@ edge demo receipt --path <receipt_path>
 edge demo local-only --path <receipt_path> --json
 ```
 
-也可以直接检查更底层的 Neural Imprint 样本和对比路径：
+理解第一个演示后，也可以再看更底层的 Neural Imprint 命令：
 
 ```bash
 edge demo imprint run --dry-run --sample synthetic_profile_v1 --model qwen3.5-9b-4bit --json
 edge demo imprint run --sample synthetic_profile_v1 --model qwen3.5-9b-4bit --json
 edge demo imprint compare --path <receipt_path> --json
-```
-
-产物复用冒烟检查是本地、仅清单的检查：
-
-```bash
 edge demo reuse --run <run_id> --json
 ```
 
-它不复制产物，也不是跨设备同步。
-
-### 进阶快捷方式
-
-理解分步流程后，可以用一条命令完成模型准备和学习演示：
-
-```bash
-edge demo learn run --prepare-model --model qwen3.5-9b-4bit --source auto --max-tokens 64 --json
-```
-
-`--prepare-model` 是显式开关。如果模型缺失，模型准备阶段可能联网并写入模型下载回执。学习演示本身仍保持仅本地，并记录 `network_used_during_demo=false`；报告会把模型准备阶段单独记为 `network_used_during_model_prepare`。
-
-## 回执隐私约定
-
-回执默认是本地的，并且默认只记录哈希：
-
-```json
-{
-  "schema_version": "edge.demo.learn.receipt.v1",
-  "run_id": "edge-run-example",
-  "model_path": "~/Documents/mlx-community/mlx-community_Qwen3.5-9B-4bit",
-  "model_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-  "sample_id": "synthetic_profile_correction_v1",
-  "sample_sha256": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-  "correction_pack_sha256": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
-  "artifact_id": "learn-edge-run-example",
-  "artifact_path": "~/Library/Application Support/edgestudio/demo_runs/edge-run-example/learn_state/neural_imprint_artifacts/neural_imprint.safetensors",
-  "artifact_sha256": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
-  "metadata_sha256": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
-  "before_answer_sha256": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
-  "before_answer_tokens": 8,
-  "after_answer_sha256": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-  "after_answer_tokens": 8,
-  "answers_differ": true,
-  "model_prepare": {
-    "requested": true,
-    "status": "skipped_existing",
-    "network_used": false
-  },
-  "network_used_during_model_prepare": false,
-  "raw_text_included": false,
-  "network_used_during_demo": false,
-  "status": "completed"
-}
-```
-
-默认回执只包含哈希标识、本地路径、schema 版本和状态，不包含原始用户文本。未来若提供显式 include-text 模式，必须由用户主动选择，并在回执中可见。
-
-## 离线与 fail-closed 要求
-
-演示必须：
-
-- 将模型下载与演示执行分离。
-- 只有显式传入 `--prepare-model` 时，一条命令学习演示才可以准备模型。
-- 如果缺少必须的本地模型或产物，必须 fail closed。
-- 演示运行期间避免静默联网。
-- 离线模式下禁止非本机地址网络访问。
-- 在本地回执里记录错误状态，而不是静默继续。
+这些是实现层检查，不是 5 分钟演示必须执行的步骤。
