@@ -13,7 +13,7 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 
 ## 版本策略
 
-开发者预览阶段，Swift 包使用 `1.0.0-rcN` 标签发布。Edge Studio 的 Python 包当前使用 `rc_1` 发布标签。破坏性变更会在这里记录迁移步骤。正式可用后会遵循语义化版本。
+开发者预览阶段，Swift 包使用 `1.0.0-rcN` 标签发布。Edge Studio 的 Python 包当前使用 PyPI 版本 `0.0.1rc1` 和 GitHub tag `v0.0.1rc1`。破坏性变更会在这里记录迁移步骤。正式可用后会遵循语义化版本。
 
 ## 如何升级
 
@@ -31,7 +31,7 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 
 | 产品表面 | 当前访问方式 | 说明 |
 |---|---|---|
-| Edge Studio | Python 软件包 `edge-studio`，GitHub tag `rc_1` | 安装后只暴露一个 `edge` 命令。用 `edge studio` 启动本地 Studio UI。 |
+| Edge Studio | Python 软件包 `edge-studio==0.0.1rc1`，GitHub tag `v0.0.1rc1` | 安装后只暴露一个 `edge` 命令。用 `edge studio` 启动本地 Studio UI。 |
 | Swift SDK 文档 | Edge Kit `1.0.0-rc97` | 文档使用精确固定版本。升级前必须重新验证。 |
 | Edge Engine 依赖 | Edge Engine `1.0.0-rc137` | 当前部分预览仓库或依赖可能需要 AtomGradient 内部预览访问权限或 SSH 访问权限。这里记录公开产品表面，不把它当作当前内部预览阻塞项。 |
 | Edge Halo 依赖 | Edge Halo `1.0.0-rc22` | Edge Halo 依赖 Edge Engine `1.0.0-rc137`；请在自己的环境里验证包解析。 |
@@ -41,7 +41,7 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 
 | 组件 | 兼容预览版本 |
 |---|---|
-| Edge Studio | `rc_1` |
+| Edge Studio | `v0.0.1rc1` |
 | Edge Kit | `1.0.0-rc97`，依赖 Edge Engine `1.0.0-rc137` |
 | Edge Halo | `1.0.0-rc22`，依赖 Edge Engine `1.0.0-rc137` |
 | Edge Scaffold | 当前预览版固定依赖 Edge Kit `1.0.0-rc97` 与 Edge Halo `1.0.0-rc22` |
@@ -77,13 +77,14 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 
 ## edge-studio
 
-### rc_1
+### v0.0.1rc1
 
 - 公开 Python 软件包 distribution name：`edge-studio`。
+- PyPI release candidate 版本：`0.0.1rc1`。确定性安装：`python -m pip install edge-studio==0.0.1rc1`。
 - 安装后的命令面刻意统一为单一 `edge` 入口。
 - `edge studio` 默认在 `http://127.0.0.1:18842` 启动本地 Studio UI/API server。
 - `edge demo chat`、`edge demo learn`、模型就绪检查、显式模型下载、回执检查和源码安装文档已对齐公开软件包路径。
-- 仓库公开发布前，历史已压缩为单个 `rc_1` root commit。
+- 仓库公开发布前，历史已压缩为单个 root commit，并打上 `v0.0.1rc1` 标签。
 
 ## edge-kit
 

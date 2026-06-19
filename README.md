@@ -48,7 +48,7 @@ Neural Imprint is a local artifact and restore flow. A compatible base model can
 
 | Component | Version |
 |---|---|
-| edge-studio | `rc_1` |
+| edge-studio | `v0.0.1rc1` |
 | edge-kit | `1.0.0-rc97` |
 | edge-halo | `1.0.0-rc22` |
 | edge-engine | `1.0.0-rc137` |
