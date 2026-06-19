@@ -47,10 +47,10 @@ Neural Imprint is a local artifact and restore flow. A compatible base model can
 
 | Component | Version |
 |---|---|
-| edge-kit | `1.0.0-rc95` |
-| edge-halo | `1.0.0-rc17` |
-| edge-engine | `1.0.0-rc136` |
-| edge-scaffold | Pins edge-kit `1.0.0-rc95` and edge-halo `1.0.0-rc17` |
+| edge-kit | `1.0.0-rc96` |
+| edge-halo | `1.0.0-rc21` |
+| edge-engine | `1.0.0-rc137` |
+| edge-scaffold | Pins edge-kit `1.0.0-rc96` and edge-halo `1.0.0-rc21` |
 
 ## Documentation
 
@@ -67,12 +67,14 @@ Neural Imprint is a local artifact and restore flow. A compatible base model can
 Install the Swift SDK:
 
 ```swift
-.package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc95")
+.package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc96")
 ```
 
 Some package resolution paths may require AtomGradient preview access or SSH access for transitive dependencies such as Edge Engine.
 
 ## CLI Reference
+
+Phase 2 SDK Proof commands are available through `edge-swift` for halo bridge checks and receipt-only restore coordinator smoke.
 
 ### Environment checks
 
@@ -82,6 +84,9 @@ edge doctor --json
 ```
 
 ### Model management
+
+Model preparation commands download models only when explicitly invoked.
+The one-command learning flow records `network_used_during_model_prepare` separately from demo execution.
 
 ```bash
 edge models list                                  # List catalog entries (read-only)
@@ -117,6 +122,8 @@ edge demo imprint compare --path ./receipt.json  # Compare from existing receipt
 ```
 
 ### Correction learning demo
+
+`edge demo learn run` without `--dry-run` is the shipped local correction-learning demo.
 
 ```bash
 edge demo learn run --dry-run --sample synthetic_profile_correction_v1 --model auto     # Plan only

@@ -21,8 +21,8 @@ Pin Developer Preview packages exactly:
 ```swift
 // Package.swift
 dependencies: [
-    .package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc95"),
-    .package(url: "https://github.com/AtomGradient/edge-halo.git", exact: "1.0.0-rc17")
+    .package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc96"),
+    .package(url: "https://github.com/AtomGradient/edge-halo.git", exact: "1.0.0-rc21")
 ]
 ```
 
@@ -39,7 +39,7 @@ Then add the products you need:
 )
 ```
 
-Edge Kit `1.0.0-rc95` and Edge Halo `1.0.0-rc17` both use Edge Engine `1.0.0-rc136` in this preview. Some preview package resolution paths may require AtomGradient preview access or SSH access.
+Edge Kit `1.0.0-rc96` and Edge Halo `1.0.0-rc21` both use Edge Engine `1.0.0-rc137` in this preview. Some preview package resolution paths may require AtomGradient preview access or SSH access.
 
 ## Run the EdgeStudio validation CLI
 
@@ -50,10 +50,10 @@ git clone https://github.com/AtomGradient/EdgeStudio.git
 cd EdgeStudio
 
 git clone https://github.com/AtomGradient/edge-kit.git edge-kit
-git -C edge-kit checkout 1.0.0-rc95
+git -C edge-kit checkout 1.0.0-rc96
 
 git clone https://github.com/AtomGradient/edge-halo.git edge-halo
-git -C edge-halo checkout 1.0.0-rc17
+git -C edge-halo checkout 1.0.0-rc21
 ```
 
 Run commands from the smoke package directory:
@@ -138,14 +138,14 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: AtomGradient/edge-kit
-          ref: 1.0.0-rc95
+          ref: 1.0.0-rc96
           path: EdgeStudio/edge-kit
 
       - name: Checkout Edge Halo
         uses: actions/checkout@v4
         with:
           repository: AtomGradient/edge-halo
-          ref: 1.0.0-rc17
+          ref: 1.0.0-rc21
           path: EdgeStudio/edge-halo
 
       - name: Run zero-model Swift CLI checks

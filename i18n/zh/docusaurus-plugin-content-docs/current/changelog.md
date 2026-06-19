@@ -31,22 +31,24 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 
 | 产品表面 | 当前访问方式 | 说明 |
 |---|---|---|
-| Swift SDK 文档 | Edge Kit `1.0.0-rc95` | 文档使用精确固定版本。升级前必须重新验证。 |
-| Edge Engine 依赖 | Edge Engine `1.0.0-rc136` | 当前部分预览仓库或依赖可能需要 AtomGradient 内部预览访问权限或 SSH 访问权限。这里记录公开产品表面，不把它当作当前内部预览阻塞项。 |
-| Edge Halo 依赖 | Edge Halo `1.0.0-rc17` | Edge Halo 依赖 Edge Engine `1.0.0-rc136`；请在自己的环境里验证包解析。 |
-| Edge Scaffold | 固定依赖 Edge Kit `1.0.0-rc95` 与 Edge Halo `1.0.0-rc17` | 生成的应用仍需要签名、设备 provisioning 和真机验证。 |
+| Swift SDK 文档 | Edge Kit `1.0.0-rc96` | 文档使用精确固定版本。升级前必须重新验证。 |
+| Edge Engine 依赖 | Edge Engine `1.0.0-rc137` | 当前部分预览仓库或依赖可能需要 AtomGradient 内部预览访问权限或 SSH 访问权限。这里记录公开产品表面，不把它当作当前内部预览阻塞项。 |
+| Edge Halo 依赖 | Edge Halo `1.0.0-rc21` | Edge Halo 依赖 Edge Engine `1.0.0-rc137`；请在自己的环境里验证包解析。 |
+| Edge Scaffold | 固定依赖 Edge Kit `1.0.0-rc96` 与 Edge Halo `1.0.0-rc21` | 生成的应用仍需要签名、设备 provisioning 和真机验证。 |
 
 ### 兼容矩阵
 
 | 组件 | 兼容预览版本 |
 |---|---|
-| Edge Kit | `1.0.0-rc95`，依赖 Edge Engine `1.0.0-rc136` |
-| Edge Halo | `1.0.0-rc17`，依赖 Edge Engine `1.0.0-rc136` |
-| Edge Scaffold | 当前预览版固定依赖 Edge Kit `1.0.0-rc95` 与 Edge Halo `1.0.0-rc17` |
+| Edge Kit | `1.0.0-rc96`，依赖 Edge Engine `1.0.0-rc137` |
+| Edge Halo | `1.0.0-rc21`，依赖 Edge Engine `1.0.0-rc137` |
+| Edge Scaffold | 当前预览版固定依赖 Edge Kit `1.0.0-rc96` 与 Edge Halo `1.0.0-rc21` |
 
 通用构建和模拟器检查不足以支撑运行时结论。任何预览 tag 变化后，都需要重新完成真机验证。
 
 ### 已知限制
+
+下面列出的 B2/B4/B5/B6/B7 CLI 命令已在当前 preview 发布；这些限制描述的是它们的安全边界。
 
 - `edge doctor` 是只读环境检查。不下载模型、不加载模型、不启动后端，也不运行 Neural Imprint 工作流。
 - `edge models list`、`edge models where` 与 `edge models doctor` 是只读模型就绪检查。不下载模型、不写回执，也不做网络探测。
@@ -72,7 +74,7 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 
 ## edge-kit
 
-### 1.0.0-rc95 (当前)
+### Edge Kit 当前预览
 
 - Edge Kit 当前开发者预览版。
 - 模块：EdgeInference、EdgeModelKit、EdgeVoice、EdgeMesh、EdgeData、EdgeDataMeshBridge、EdgeUI、EdgeSession。
@@ -81,16 +83,16 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 - 自动 KV cache 内存策略。
 - Neural Imprint 运行时恢复 primitives 与 EdgeMesh capsule auto-restore coordinator APIs。
 - 生产应用构建可以嵌入通用 `EdgeBuildCommit` 元数据，用于 snapshot traceability。
-- 依赖 Edge Engine `1.0.0-rc136`。
+- 依赖 Edge Engine `1.0.0-rc137`。
 
 ### 1.0.0-rc94
 
 - 新增 EdgeMesh capsule auto-restore coordinator APIs。
-- 依赖 Edge Engine `1.0.0-rc136`。
+- 依赖 Edge Engine `1.0.0-rc137`。
 
 ## edge-halo
 
-### 1.0.0-rc17 (当前)
+### Edge Halo 当前预览
 
 - Edge Halo 当前开发者预览版。
 - Edge Halo lifecycle：本地 profile jobs 与 Neural Imprint capsule compatibility。
@@ -98,11 +100,11 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 - `HaloTextGenerator` 和 `HaloEngineSession` 协议。
 - RPP A-library provenance 验证与 profile 产物生命周期 helpers。
 - 依赖版本元数据已对齐当前预览 tag。
-- 依赖 Edge Engine `1.0.0-rc136`。
+- 依赖 Edge Engine `1.0.0-rc137`。
 
 ## edge-engine
 
-### 1.0.0-rc136（当前依赖 tag）
+### Edge Engine 当前依赖 tag
 
 - Edge Kit 与 Edge Halo 当前依赖的 Edge Engine tag。
 - 原生 Metal 推理运行时。
@@ -117,4 +119,4 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 - 从 Edge Studio 导出生成 iOS 应用模板。
 - 基于 ScaffoldConfig 的自定义。
 - 四层模型分发（Cache → Bundle → ODR → HuggingFace）。
-- 固定依赖 Edge Kit `1.0.0-rc95` 与 Edge Halo `1.0.0-rc17`。
+- 固定依赖 Edge Kit `1.0.0-rc96` 与 Edge Halo `1.0.0-rc21`。

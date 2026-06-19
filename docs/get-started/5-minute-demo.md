@@ -9,6 +9,8 @@ title: CLI learning demo
 This tutorial uses shipped CLI commands. It runs on a synthetic sample, can explicitly prepare a compatible local model, and writes hash-only local receipts by default.
 :::
 
+This page uses the shipped B2/B4/B5/B6/B7 CLI commands. Receipts use hashed identifiers, include no raw user text by default, and describe only that behavior changed after restoring local Neural Imprint artifact.
+
 This walkthrough covers the full local learning path:
 
 1. Download a model.

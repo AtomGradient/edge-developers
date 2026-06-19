@@ -24,7 +24,7 @@ For iOS apps that run larger models, enable the Increased Memory Limit entitleme
 ```swift
 // Package.swift
 dependencies: [
-    .package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc95")
+    .package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc96")
 ]
 ```
 

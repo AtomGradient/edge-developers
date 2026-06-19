@@ -47,10 +47,10 @@ Neural Imprint 是本地产物和恢复流程。兼容的基础模型可以恢�
 
 | 组件 | 版本 |
 |---|---|
-| edge-kit | `1.0.0-rc95` |
-| edge-halo | `1.0.0-rc17` |
-| edge-engine | `1.0.0-rc136` |
-| edge-scaffold | 固定依赖 edge-kit `1.0.0-rc95` 和 edge-halo `1.0.0-rc17` |
+| edge-kit | `1.0.0-rc96` |
+| edge-halo | `1.0.0-rc21` |
+| edge-engine | `1.0.0-rc137` |
+| edge-scaffold | 固定依赖 edge-kit `1.0.0-rc96` 和 edge-halo `1.0.0-rc21` |
 
 ## 文档
 
@@ -67,12 +67,14 @@ Neural Imprint 是本地产物和恢复流程。兼容的基础模型可以恢�
 安装 Swift SDK：
 
 ```swift
-.package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc95")
+.package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc96")
 ```
 
 部分 package 解析路径可能因为 Edge Engine 等传递依赖需要 AtomGradient 预览访问权限或 SSH 访问权限。
 
 ## CLI 参考
+
+Phase 2 SDK Proof 命令通过 `edge-swift` 提供 halo bridge 检查和 receipt-only restore coordinator 冒烟测试。
 
 ### 环境检查
 
@@ -82,6 +84,9 @@ edge doctor --json
 ```
 
 ### 模型管理
+
+模型准备命令只在显式调用时下载模型。
+一条命令学习流程会把 `network_used_during_model_prepare` 与演示执行分开记录。
 
 ```bash
 edge models list                                  # 列出 catalog 条目（只读）
@@ -117,6 +122,8 @@ edge demo imprint compare --path ./receipt.json  # 从已有回执对比（只�
 ```
 
 ### 纠错学习演示
+
+不带 `--dry-run` 的 `edge demo learn run` 是已发布的本地纠错学习演示。
 
 ```bash
 edge demo learn run --dry-run --sample synthetic_profile_correction_v1 --model auto     # 仅计划

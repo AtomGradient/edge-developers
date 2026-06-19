@@ -31,22 +31,24 @@ Developer Preview is a limited preview channel. The changelog documents what is 
 
 | Surface | Current access | Notes |
 |---|---|---|
-| Swift SDK docs | Edge Kit `1.0.0-rc95` | Docs use an exact version pin. Upgrade only after validation. |
-| Edge Engine dependency | Edge Engine `1.0.0-rc136` | Some preview repos or dependencies may require AtomGradient internal preview access or SSH access today. This is surfaced here, not treated as a current internal preview blocker. |
-| Edge Halo dependency | Edge Halo `1.0.0-rc17` | Edge Halo depends on Edge Engine `1.0.0-rc136`; validate package resolution in your environment. |
-| Edge Scaffold | Pins Edge Kit `1.0.0-rc95` and Edge Halo `1.0.0-rc17` | Generated apps still require signing, device provisioning, and real-device validation. |
+| Swift SDK docs | Edge Kit `1.0.0-rc96` | Docs use an exact version pin. Upgrade only after validation. |
+| Edge Engine dependency | Edge Engine `1.0.0-rc137` | Some preview repos or dependencies may require AtomGradient internal preview access or SSH access today. This is surfaced here, not treated as a current internal preview blocker. |
+| Edge Halo dependency | Edge Halo `1.0.0-rc21` | Edge Halo depends on Edge Engine `1.0.0-rc137`; validate package resolution in your environment. |
+| Edge Scaffold | Pins Edge Kit `1.0.0-rc96` and Edge Halo `1.0.0-rc21` | Generated apps still require signing, device provisioning, and real-device validation. |
 
 ### Compatibility matrix
 
 | Component | Compatible preview |
 |---|---|
-| Edge Kit | `1.0.0-rc95`, depends on Edge Engine `1.0.0-rc136` |
-| Edge Halo | `1.0.0-rc17`, depends on Edge Engine `1.0.0-rc136` |
-| Edge Scaffold | Current preview pins Edge Kit `1.0.0-rc95` and Edge Halo `1.0.0-rc17` |
+| Edge Kit | `1.0.0-rc96`, depends on Edge Engine `1.0.0-rc137` |
+| Edge Halo | `1.0.0-rc21`, depends on Edge Engine `1.0.0-rc137` |
+| Edge Scaffold | Current preview pins Edge Kit `1.0.0-rc96` and Edge Halo `1.0.0-rc21` |
 
 Generic builds and simulator checks are not enough for runtime claims. Re-run real-device validation after changing any preview tag.
 
 ### Known limitations
+
+The B2/B4/B5/B6/B7 CLI commands listed below are shipped in current preview; the limitations describe their safety boundaries.
 
 - `edge doctor` is a read-only environment check. It does not download models, load models, start the backend, or run Neural Imprint workflows.
 - `edge models list`, `edge models where`, and `edge models doctor` are read-only model readiness checks. They do not download models, write receipts, or probe the network.
@@ -72,7 +74,7 @@ Generic builds and simulator checks are not enough for runtime claims. Re-run re
 
 ## edge-kit
 
-### 1.0.0-rc95 (current)
+### Edge Kit current preview
 
 - Edge Kit current Developer Preview.
 - Modules: EdgeInference, EdgeModelKit, EdgeVoice, EdgeMesh, EdgeData, EdgeDataMeshBridge, EdgeUI, EdgeSession.
@@ -81,16 +83,16 @@ Generic builds and simulator checks are not enough for runtime claims. Re-run re
 - Automatic KV cache memory policy.
 - Neural Imprint runtime restore primitives and EdgeMesh capsule auto-restore coordinator APIs.
 - Production app builds can embed generic `EdgeBuildCommit` metadata for snapshot traceability.
-- Depends on Edge Engine `1.0.0-rc136`.
+- Depends on Edge Engine `1.0.0-rc137`.
 
 ### 1.0.0-rc94
 
 - Added EdgeMesh capsule auto-restore coordinator APIs.
-- Depends on Edge Engine `1.0.0-rc136`.
+- Depends on Edge Engine `1.0.0-rc137`.
 
 ## edge-halo
 
-### 1.0.0-rc17 (current)
+### Edge Halo current preview
 
 - Edge Halo current Developer Preview.
 - Edge Halo lifecycle for local profile jobs and Neural Imprint capsule compatibility.
@@ -98,11 +100,11 @@ Generic builds and simulator checks are not enough for runtime claims. Re-run re
 - `HaloTextGenerator` and `HaloEngineSession` protocols.
 - RPP A-library provenance validation and profile artifact lifecycle helpers.
 - Dependency version metadata aligned with the current preview tag.
-- Depends on Edge Engine `1.0.0-rc136`.
+- Depends on Edge Engine `1.0.0-rc137`.
 
 ## edge-engine
 
-### 1.0.0-rc136 (current dependency tag)
+### Edge Engine current dependency tag
 
 - Edge Engine current dependency tag used by Edge Kit and Edge Halo.
 - Native Metal inference runtime.
@@ -117,4 +119,4 @@ Generic builds and simulator checks are not enough for runtime claims. Re-run re
 - iOS app template generation from Edge Studio export.
 - ScaffoldConfig-based customization.
 - Four-tier model delivery (Cache → Bundle → ODR → HuggingFace).
-- Pins Edge Kit `1.0.0-rc95` and Edge Halo `1.0.0-rc17`.
+- Pins Edge Kit `1.0.0-rc96` and Edge Halo `1.0.0-rc21`.
