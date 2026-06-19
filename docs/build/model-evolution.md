@@ -43,7 +43,7 @@ The scaffold adapter is app-layer code:
 - `ScaffoldHaloRuntimeAdapter` conforms to `HaloTextGenerator` and `HaloEngineSession`.
 - It tokenizes and generates through the loaded `LLMEngine` or `VLMEngine` session used by chat.
 - It captures profile activations through `LLMEngine.captureHiddenStates(...)` or `VLMEngine.captureHiddenStates(...)`.
-- It restores a compatible Neural Imprint artifact through `AIManager.restorePersonaKVCacheForHalo(from:)`.
+- It restores a compatible Neural Imprint artifact through `AIManager.restoreNeuralImprintCacheForHalo(from:)`.
 
 In a production agent, bridge methods should call the same loaded model session that serves user requests. This keeps inference, profile jobs, and restore behavior aligned with the model the user is actually using.
 

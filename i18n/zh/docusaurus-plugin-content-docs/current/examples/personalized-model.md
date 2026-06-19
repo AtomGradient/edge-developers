@@ -199,7 +199,7 @@ Scaffold adapter 属于 app-layer code，不属于基础框架：
 - `ScaffoldHaloRuntimeAdapter` 实现 `HaloTextGenerator` 和 `HaloEngineSession`。
 - 它通过 chat 使用的已加载 `LLMEngine` 或 `VLMEngine` session 做 tokenize 和 generate。
 - 它通过 `LLMEngine.captureHiddenStates(...)` 或 `VLMEngine.captureHiddenStates(...)` 捕获 profile activations。
-- 它通过 `AIManager.restorePersonaKVCacheForHalo(from:)` 恢复兼容的 Neural Imprint 产物。
+- 它通过 `AIManager.restoreNeuralImprintCacheForHalo(from:)` 恢复兼容的 Neural Imprint 产物。
 
 不要在 app code 中 stub generation output 或 hidden states。如果已加载 runtime 不可用、不兼容，或缺少需要的 capture/restore path，app 应 失败即关闭，并保持 base model active。
 

@@ -199,7 +199,7 @@ The scaffold adapter is app-layer code, not framework code:
 - `ScaffoldHaloRuntimeAdapter` conforms to `HaloTextGenerator` and `HaloEngineSession`.
 - It tokenizes and generates through the loaded `LLMEngine` or `VLMEngine` session used by chat.
 - It captures profile activations through `LLMEngine.captureHiddenStates(...)` or `VLMEngine.captureHiddenStates(...)`.
-- It restores a compatible Neural Imprint artifact through `AIManager.restorePersonaKVCacheForHalo(from:)`.
+- It restores a compatible Neural Imprint artifact through `AIManager.restoreNeuralImprintCacheForHalo(from:)`.
 
 Do not stub generation output or hidden states in app code. If the loaded runtime is unavailable, incompatible, or missing the required capture/restore path, the app should fail closed and keep the base model active.
 
