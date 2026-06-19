@@ -13,7 +13,7 @@ Edge products are in **Developer Preview**. Expect breaking changes between rele
 
 ## Versioning policy
 
-During Developer Preview, releases follow `1.0.0-rcN` tags. Breaking changes are documented here with migration steps. After general availability, we will follow semantic versioning.
+During Developer Preview, Swift package releases follow `1.0.0-rcN` tags. Edge Studio's Python package currently uses the `rc_1` release tag. Breaking changes are documented here with migration steps. After general availability, we will follow semantic versioning.
 
 ## How to upgrade
 
@@ -31,6 +31,7 @@ Developer Preview is a limited preview channel. The changelog documents what is 
 
 | Surface | Current access | Notes |
 |---|---|---|
+| Edge Studio | Python package `edge-studio`, GitHub tag `rc_1` | Installs the single `edge` command. Launch the local Studio UI with `edge studio`. |
 | Swift SDK docs | Edge Kit `1.0.0-rc97` | Docs use an exact version pin. Upgrade only after validation. |
 | Edge Engine dependency | Edge Engine `1.0.0-rc137` | Some preview repos or dependencies may require AtomGradient internal preview access or SSH access today. This is surfaced here, not treated as a current internal preview blocker. |
 | Edge Halo dependency | Edge Halo `1.0.0-rc22` | Edge Halo depends on Edge Engine `1.0.0-rc137`; validate package resolution in your environment. |
@@ -40,6 +41,7 @@ Developer Preview is a limited preview channel. The changelog documents what is 
 
 | Component | Compatible preview |
 |---|---|
+| Edge Studio | `rc_1` |
 | Edge Kit | `1.0.0-rc97`, depends on Edge Engine `1.0.0-rc137` |
 | Edge Halo | `1.0.0-rc22`, depends on Edge Engine `1.0.0-rc137` |
 | Edge Scaffold | Current preview pins Edge Kit `1.0.0-rc97` and Edge Halo `1.0.0-rc22` |
@@ -50,6 +52,7 @@ Generic builds and simulator checks are not enough for runtime claims. Re-run re
 
 The B2/B4/B5/B6/B7 CLI commands listed below are shipped in current preview; the limitations describe their safety boundaries.
 
+- `edge studio` launches the local Studio UI and API server on localhost by default. It is a local developer workbench entrypoint, not a hosted service.
 - `edge doctor` is a read-only environment check. It does not download models, load models, start the backend, or run Neural Imprint workflows.
 - `edge models list`, `edge models where`, and `edge models doctor` are read-only model readiness checks. They do not download models, write receipts, or probe the network.
 - `edge models fetch` is an explicit model preparation command with `--dry-run`, source selection, local receipts, and no silent demo download.
@@ -71,6 +74,16 @@ The B2/B4/B5/B6/B7 CLI commands listed below are shipped in current preview; the
 - EdgeMesh capsule auto-restore SDK orchestration is already shipped through `HaloCapsuleAutoRestoreCoordinator` in Edge Kit `1.0.0-rc94`; it is not a current limitation.
 
 ---
+
+## edge-studio
+
+### rc_1
+
+- Public Python package distribution name: `edge-studio`.
+- Installed command surface is intentionally a single `edge` entry point.
+- `edge studio` launches the local Studio UI/API server at `http://127.0.0.1:18842` by default.
+- `edge demo chat`, `edge demo learn`, model readiness, explicit model fetch, receipt inspection, and source install docs are aligned with the public package path.
+- The repository history was compacted to a single `rc_1` root commit before public release.
 
 ## edge-kit
 

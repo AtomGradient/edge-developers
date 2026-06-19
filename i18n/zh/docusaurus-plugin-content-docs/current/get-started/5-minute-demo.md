@@ -21,27 +21,32 @@ title: CLI 学习演示
 
 Neural Imprint 是本地产物和恢复流程。恢复兼容的本地 Neural Imprint 产物可以在兼容性闸门下改变生成行为，不改模型权重。这个演示验证的是本地产物路径和回执路径；它不声称模型质量整体变好。
 
-## 安装预览版 CLI
+## 安装 CLI
 
-预览阶段，从 `edge-studio` 源码目录安装 `edge` 命令：
+先创建并激活 Python 3.11 环境，再从 Python 软件包安装 Edge Studio：
 
 ```bash
-git clone https://github.com/AtomGradient/edge-studio.git
-cd edge-studio
 python3.11 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
-python -m pip install -e .
+python -m pip install edge-studio
 edge doctor
 ```
 
-正式公开发布时，`python -m pip install edgestudio` 是预期安装命令。当前预览阶段软件包尚未发布到 PyPI，因此上面的源码安装路径才是可运行路径。
+如果你使用 `uv`：
 
-Web UI 设置见 [从源码安装 Edge Studio](/docs/get-started/source-build)。
+```bash
+uv venv --python 3.11 .venv
+source .venv/bin/activate
+uv pip install edge-studio
+edge doctor
+```
+
+源码安装和本地 UI 开发见 [安装 Edge Studio](/docs/get-started/source-build)。
 
 ## 命令
 
-在 `edge-studio` 源码目录里运行：
+`edge doctor` 通过后运行下面的命令：
 
 ### 1. 下载基准模型
 

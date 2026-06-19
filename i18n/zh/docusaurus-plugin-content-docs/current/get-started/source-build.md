@@ -1,15 +1,30 @@
 ---
 sidebar_position: 2
-title: 从源码安装 Edge Studio
+title: 安装 Edge Studio
 ---
 
-# 从源码安装 Edge Studio CLI 和 Web UI
+# 安装 Edge Studio
 
-在开发者预览阶段，可运行的安装路径是从 `edge-studio` 仓库源码安装。正式公开发布时，预期安装命令是 `python -m pip install edgestudio`，但当前软件包尚未发布到 PyPI。
+常规本地开发先创建并激活 Python 3.11 环境，再从 Python 软件包安装 Edge Studio：
 
-:::info 预览访问权限
-在开发者预览仍未公开的阶段，该仓库可能需要 AtomGradient 预览访问权限。请先确认你的 GitHub 账号已经开通访问权限，再运行下面的命令。
-:::
+```bash
+python3.11 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install edge-studio
+edge doctor
+```
+
+如果你使用 `uv`：
+
+```bash
+uv venv --python 3.11 .venv
+source .venv/bin/activate
+uv pip install edge-studio
+edge doctor
+```
+
+参与 Edge Studio 开发或测试本地 checkout 时，再使用源码安装路径。
 
 ## 要求
 
@@ -20,7 +35,7 @@ title: 从源码安装 Edge Studio
 | Python | 推荐 3.11 |
 | Node.js | 只有构建或开发 Web UI 时需要 |
 
-## 安装 CLI
+## 从源码安装
 
 ```bash
 git clone https://github.com/AtomGradient/edge-studio.git
@@ -48,12 +63,10 @@ edge demo chat --model qwen3.5-9b-4bit --interactive
 
 ## 启动 Web UI
 
-Web UI 路径需要先构建一次前端资源，然后启动本地服务：
+安装后的软件包只暴露一个 `edge` 命令。用下面的命令启动本地 Studio UI 和 API server：
 
 ```bash
-npm --prefix frontend ci
-npm --prefix frontend run build
-edgestudio
+edge studio
 ```
 
 打开：
@@ -64,9 +77,17 @@ http://127.0.0.1:18842
 
 服务默认只运行在本机地址。用 `Ctrl+C` 停止。
 
+从源码进行前端开发时，单独运行 Vite，并保持后端服务运行：
+
+```bash
+npm --prefix frontend ci
+npm --prefix frontend run dev
+edge studio
+```
+
 ## 本地构建 wheel
 
-需要验证未来 pip 软件包形态时，运行发布打包脚本：
+需要验证已发布软件包形态时，运行发布打包脚本：
 
 ```bash
 ./scripts/build_wheel.sh

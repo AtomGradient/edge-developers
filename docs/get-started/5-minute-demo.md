@@ -21,27 +21,32 @@ This walkthrough covers the full local learning path:
 
 Neural Imprint is a local artifact and restore flow. Restoring a compatible local Neural Imprint artifact can change generated behavior under compatibility gates without changing model weights. This demo validates the local artifact path and receipt path; it does not claim general model quality improvement.
 
-## Install the preview CLI
+## Install the CLI
 
-During preview, install the `edge` command from an `edge-studio` source checkout:
+Create and activate a Python 3.11 environment, then install Edge Studio:
 
 ```bash
-git clone https://github.com/AtomGradient/edge-studio.git
-cd edge-studio
 python3.11 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
-python -m pip install -e .
+python -m pip install edge-studio
 edge doctor
 ```
 
-For the public release, `python -m pip install edgestudio` is the intended install command. During this preview phase, the package is not yet published to PyPI, so the source checkout path above is the runnable path.
+If you use `uv`:
 
-For Web UI setup, see [Install Edge Studio from source](/docs/get-started/source-build).
+```bash
+uv venv --python 3.11 .venv
+source .venv/bin/activate
+uv pip install edge-studio
+edge doctor
+```
+
+For source install and local UI development, see [Install Edge Studio](/docs/get-started/source-build).
 
 ## Commands
 
-Run these commands from the `edge-studio` checkout:
+Run these commands after `edge doctor` passes:
 
 ### 1. Download the baseline model
 

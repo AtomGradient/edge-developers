@@ -19,8 +19,8 @@ All Edge products are in **Developer Preview**. APIs may change between releases
 | Goal | Guide | Expected result |
 | --- | --- | --- |
 | Download, chat, then run a learning demo | [CLI learning demo](/docs/get-started/minute-demo) | Local chat works, then a synthetic correction generates a Neural Imprint artifact with a hash-only comparison receipt. |
-| Install the preview package | [Install Edge Studio from source](/docs/get-started/source-build) | The `edge` CLI and local Web UI run from the source tree. |
-| Launch the local workbench | [Web UI from source](/docs/get-started/source-build#launch-the-web-ui) | Edge Studio runs at `http://127.0.0.1:18842`. |
+| Install the preview package | [Install Edge Studio](/docs/get-started/source-build) | The `edge` CLI is installed from the `edge-studio` Python package. |
+| Launch the local workbench | [Launch the Web UI](/docs/get-started/source-build#launch-the-web-ui) | `edge studio` runs Edge Studio at `http://127.0.0.1:18842`. |
 | Build an iOS shell | [Minimal iOS app](/docs/get-started/minimal-ios-app) | Edge Scaffold compiles as the smallest iOS reference app. Preview access required. |
 | Integrate the Swift SDK | [Swift SDK setup](/docs/get-started/quickstart) | Edge Kit loads a local model in an Apple-platform app. |
 
@@ -29,6 +29,10 @@ All Edge products are in **Developer Preview**. APIs may change between releases
 Download a model and chat locally:
 
 ```bash
+python3.11 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install edge-studio
 edge models fetch qwen3.5-9b-4bit --source auto
 edge demo chat --model qwen3.5-9b-4bit --interactive
 ```

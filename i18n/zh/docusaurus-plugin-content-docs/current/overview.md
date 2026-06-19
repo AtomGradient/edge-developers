@@ -19,8 +19,8 @@ AtomGradient Edge 是一个本地优先的开发者平台，用来构建运行�
 | 目标 | 指南 | 预期结果 |
 | --- | --- | --- |
 | 下载模型、对话、运行学习演示 | [CLI 学习演示](/docs/get-started/minute-demo) | 本地对话正常运行，然后用合成纠错样本生成 Neural Imprint 产物，并写入仅哈希的对比回执。 |
-| 安装预览软件包 | [从源码安装 Edge Studio](/docs/get-started/source-build) | `edge` CLI 和本地 Web UI 从源码目录运行。 |
-| 启动本地工作台 | [从源码启动 Web UI](/docs/get-started/source-build#启动-web-ui) | Edge Studio 运行在 `http://127.0.0.1:18842`。 |
+| 安装预览软件包 | [安装 Edge Studio](/docs/get-started/source-build) | 从 `edge-studio` Python 软件包安装 `edge` CLI。 |
+| 启动本地工作台 | [启动 Web UI](/docs/get-started/source-build#启动-web-ui) | `edge studio` 在 `http://127.0.0.1:18842` 运行 Edge Studio。 |
 | 构建 iOS shell | [最小 iOS app](/docs/get-started/minimal-ios-app) | Edge Scaffold 作为最小 iOS 参考 app 编译通过。需要预览访问权限。 |
 | 集成 Swift SDK | [Swift SDK 设置](/docs/get-started/quickstart) | Edge Kit 在 Apple 平台 app 中加载本地模型。 |
 
@@ -29,6 +29,10 @@ AtomGradient Edge 是一个本地优先的开发者平台，用来构建运行�
 下载模型并启动本地对话：
 
 ```bash
+python3.11 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install edge-studio
 edge models fetch qwen3.5-9b-4bit --source auto
 edge demo chat --model qwen3.5-9b-4bit --interactive
 ```

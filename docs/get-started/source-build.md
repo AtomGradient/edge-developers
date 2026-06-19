@@ -1,15 +1,31 @@
 ---
 sidebar_position: 2
-title: Install Edge Studio from source
+title: Install Edge Studio
 ---
 
-# Install Edge Studio CLI and Web UI from source
+# Install Edge Studio
 
-During Developer Preview, the runnable package path is a source checkout of the `edge-studio` repository. The intended public release path is `python -m pip install edgestudio`, but the package is not published to PyPI yet.
+Create and activate a Python 3.11 environment, then install Edge Studio from
+the Python package for normal local development:
 
-:::info Preview access
-The repository may require AtomGradient preview access while the Developer Preview remains private. Use the commands below only after your GitHub account has been granted access.
-:::
+```bash
+python3.11 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install edge-studio
+edge doctor
+```
+
+If you use `uv`:
+
+```bash
+uv venv --python 3.11 .venv
+source .venv/bin/activate
+uv pip install edge-studio
+edge doctor
+```
+
+Use the source path when contributing to Edge Studio or testing a local checkout.
 
 ## Requirements
 
@@ -20,7 +36,7 @@ The repository may require AtomGradient preview access while the Developer Previ
 | Python | 3.11 recommended |
 | Node.js | Required only for building or developing the Web UI |
 
-## Install the CLI
+## Install from source
 
 ```bash
 git clone https://github.com/AtomGradient/edge-studio.git
@@ -48,12 +64,11 @@ After the base chat works, continue to the [CLI learning demo](/docs/get-started
 
 ## Launch the Web UI
 
-For the Web UI, build the frontend assets once, then start the local server:
+The installed package exposes a single `edge` command. Start the local Studio UI
+and API server with:
 
 ```bash
-npm --prefix frontend ci
-npm --prefix frontend run build
-edgestudio
+edge studio
 ```
 
 Open:
@@ -64,9 +79,18 @@ http://127.0.0.1:18842
 
 The server runs on localhost by default. Stop it with `Ctrl+C`.
 
+For frontend development from a source checkout, run Vite separately and keep
+the backend server running:
+
+```bash
+npm --prefix frontend ci
+npm --prefix frontend run dev
+edge studio
+```
+
 ## Build a wheel locally
 
-Use the release packaging script when you need the same shape as the future pip package:
+Use the release packaging script when you need the same shape as the published package:
 
 ```bash
 ./scripts/build_wheel.sh

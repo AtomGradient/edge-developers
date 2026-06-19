@@ -24,10 +24,15 @@ Edge Studio is the local workbench. Edge Kit and Edge Halo are the runtime packa
 ## How to launch
 
 ```bash
-./run-web.sh
+python3.11 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install edge-studio
+edge studio
 ```
 
-Opens at `http://localhost:5173`. Backend on port `18842`.
+Open `http://127.0.0.1:18842`. For frontend development with Vite, see
+[Install Edge Studio](/docs/get-started/source-build#launch-the-web-ui).
 
 ## Two modes
 

@@ -13,7 +13,7 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 
 ## 版本策略
 
-开发者预览阶段使用 `1.0.0-rcN` 标签发布。破坏性变更会在这里记录迁移步骤。正式可用后会遵循语义化版本。
+开发者预览阶段，Swift 包使用 `1.0.0-rcN` 标签发布。Edge Studio 的 Python 包当前使用 `rc_1` 发布标签。破坏性变更会在这里记录迁移步骤。正式可用后会遵循语义化版本。
 
 ## 如何升级
 
@@ -31,6 +31,7 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 
 | 产品表面 | 当前访问方式 | 说明 |
 |---|---|---|
+| Edge Studio | Python 软件包 `edge-studio`，GitHub tag `rc_1` | 安装后只暴露一个 `edge` 命令。用 `edge studio` 启动本地 Studio UI。 |
 | Swift SDK 文档 | Edge Kit `1.0.0-rc97` | 文档使用精确固定版本。升级前必须重新验证。 |
 | Edge Engine 依赖 | Edge Engine `1.0.0-rc137` | 当前部分预览仓库或依赖可能需要 AtomGradient 内部预览访问权限或 SSH 访问权限。这里记录公开产品表面，不把它当作当前内部预览阻塞项。 |
 | Edge Halo 依赖 | Edge Halo `1.0.0-rc22` | Edge Halo 依赖 Edge Engine `1.0.0-rc137`；请在自己的环境里验证包解析。 |
@@ -40,6 +41,7 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 
 | 组件 | 兼容预览版本 |
 |---|---|
+| Edge Studio | `rc_1` |
 | Edge Kit | `1.0.0-rc97`，依赖 Edge Engine `1.0.0-rc137` |
 | Edge Halo | `1.0.0-rc22`，依赖 Edge Engine `1.0.0-rc137` |
 | Edge Scaffold | 当前预览版固定依赖 Edge Kit `1.0.0-rc97` 与 Edge Halo `1.0.0-rc22` |
@@ -50,6 +52,7 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 
 下面列出的 B2/B4/B5/B6/B7 CLI 命令已在当前 preview 发布；这些限制描述的是它们的安全边界。
 
+- `edge studio` 默认在 localhost 启动本地 Studio UI 和 API server。它是本地开发工作台入口，不是托管服务。
 - `edge doctor` 是只读环境检查。不下载模型、不加载模型、不启动后端，也不运行 Neural Imprint 工作流。
 - `edge models list`、`edge models where` 与 `edge models doctor` 是只读模型就绪检查。不下载模型、不写回执，也不做网络探测。
 - `edge models fetch` 是显式模型准备命令，支持 `--dry-run`、来源选择、本地回执，不会被演示静默触发。
@@ -71,6 +74,16 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 - EdgeMesh capsule auto-restore SDK 编排已经通过 Edge Kit `1.0.0-rc94` 中的 `HaloCapsuleAutoRestoreCoordinator` 发布；它不是当前限制。
 
 ---
+
+## edge-studio
+
+### rc_1
+
+- 公开 Python 软件包 distribution name：`edge-studio`。
+- 安装后的命令面刻意统一为单一 `edge` 入口。
+- `edge studio` 默认在 `http://127.0.0.1:18842` 启动本地 Studio UI/API server。
+- `edge demo chat`、`edge demo learn`、模型就绪检查、显式模型下载、回执检查和源码安装文档已对齐公开软件包路径。
+- 仓库公开发布前，历史已压缩为单个 `rc_1` root commit。
 
 ## edge-kit
 

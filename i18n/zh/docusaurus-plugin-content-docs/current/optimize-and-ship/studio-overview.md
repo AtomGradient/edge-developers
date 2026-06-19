@@ -24,10 +24,15 @@ Edge Studio 是本地工作台。Edge Kit 和 Edge Halo 是运行时包。它们
 ## 如何启动
 
 ```bash
-./run-web.sh
+python3.11 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install edge-studio
+edge studio
 ```
 
-在 `http://localhost:5173` 打开。Backend 使用端口 `18842`。
+打开 `http://127.0.0.1:18842`。如需用 Vite 做前端开发，见
+[安装 Edge Studio](/docs/get-started/source-build#启动-web-ui)。
 
 ## 两种模式
 

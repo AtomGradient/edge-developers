@@ -4,15 +4,22 @@
 
 ## 快速开始
 
-从源码安装 CLI（PyPI 包尚未公开）：
+先创建并激活 Python 3.11 环境，再安装 Edge Studio：
 
 ```bash
-git clone https://github.com/AtomGradient/edge-studio.git
-cd edge-studio
 python3.11 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
-python -m pip install -e .
+python -m pip install edge-studio
+edge doctor
+```
+
+如果你使用 `uv`：
+
+```bash
+uv venv --python 3.11 .venv
+source .venv/bin/activate
+uv pip install edge-studio
 edge doctor
 ```
 
@@ -23,13 +30,7 @@ edge models fetch qwen3.5-9b-4bit --source auto
 edge demo chat --model qwen3.5-9b-4bit --interactive
 ```
 
-对话跑通后，继续 [CLI 学习演示](docs/get-started/5-minute-demo.md)：生成本地 Neural Imprint 产物，对比 before/after 回答哈希。
-
-正式公开发布时，安装命令为：
-
-```bash
-python -m pip install edgestudio
-```
+对话跑通后，继续 [CLI 学习演示](docs/get-started/5-minute-demo.md)：生成本地 Neural Imprint 产物，对比 before/after 回答哈希。用 `edge studio` 启动本地 Studio UI。
 
 ## 组件
 
@@ -47,6 +48,7 @@ Neural Imprint 是本地产物和恢复流程。兼容的基础模型可以恢�
 
 | 组件 | 版本 |
 |---|---|
+| edge-studio | `rc_1` |
 | edge-kit | `1.0.0-rc97` |
 | edge-halo | `1.0.0-rc22` |
 | edge-engine | `1.0.0-rc137` |

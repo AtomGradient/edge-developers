@@ -4,15 +4,22 @@ Local-first AI platform for Apple devices. Build apps where models run, learn, a
 
 ## Quick Start
 
-Install the CLI from source (PyPI package not yet public):
+Create and activate a Python 3.11 environment, then install Edge Studio:
 
 ```bash
-git clone https://github.com/AtomGradient/edge-studio.git
-cd edge-studio
 python3.11 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
-python -m pip install -e .
+python -m pip install edge-studio
+edge doctor
+```
+
+If you use `uv`:
+
+```bash
+uv venv --python 3.11 .venv
+source .venv/bin/activate
+uv pip install edge-studio
 edge doctor
 ```
 
@@ -23,13 +30,7 @@ edge models fetch qwen3.5-9b-4bit --source auto
 edge demo chat --model qwen3.5-9b-4bit --interactive
 ```
 
-After chatting, run the [CLI learning demo](docs/get-started/5-minute-demo.md) to generate a local Neural Imprint artifact and compare before/after answer hashes.
-
-For the public release, the install command will be:
-
-```bash
-python -m pip install edgestudio
-```
+After chatting, run the [CLI learning demo](docs/get-started/5-minute-demo.md) to generate a local Neural Imprint artifact and compare before/after answer hashes. Launch the local Studio UI with `edge studio`.
 
 ## Components
 
@@ -47,6 +48,7 @@ Neural Imprint is a local artifact and restore flow. A compatible base model can
 
 | Component | Version |
 |---|---|
+| edge-studio | `rc_1` |
 | edge-kit | `1.0.0-rc97` |
 | edge-halo | `1.0.0-rc22` |
 | edge-engine | `1.0.0-rc137` |
