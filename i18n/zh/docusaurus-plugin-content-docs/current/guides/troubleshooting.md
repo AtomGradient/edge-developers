@@ -49,7 +49,7 @@ Edge Kit 的 DSR Attention 会让内存保持有界。如果看到无界增长�
 ### SPM “missing module” 或 “cannot find type”
 
 - 清理 DerivedData：`rm -rf ~/Library/Developer/Xcode/DerivedData`
-- 确保 `Package.swift` 精确固定版本 到已验证的开发者预览 tag：`.package(url: "...", exact: "1.0.0-rc96")`
+- 确保 `Package.swift` 精确固定版本 到已验证的开发者预览 tag：`.package(url: "...", exact: "1.0.0-rc97")`
 - 确认 Xcode 版本为 15 或更高。
 
 ### “Metal library not found” 或 kernel crash

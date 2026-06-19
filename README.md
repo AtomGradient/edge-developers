@@ -47,10 +47,10 @@ Neural Imprint is a local artifact and restore flow. A compatible base model can
 
 | Component | Version |
 |---|---|
-| edge-kit | `1.0.0-rc96` |
-| edge-halo | `1.0.0-rc21` |
+| edge-kit | `1.0.0-rc97` |
+| edge-halo | `1.0.0-rc22` |
 | edge-engine | `1.0.0-rc137` |
-| edge-scaffold | Pins edge-kit `1.0.0-rc96` and edge-halo `1.0.0-rc21` |
+| edge-scaffold | Pins edge-kit `1.0.0-rc97` and edge-halo `1.0.0-rc22` |
 
 ## Documentation
 
@@ -67,7 +67,7 @@ Neural Imprint is a local artifact and restore flow. A compatible base model can
 Install the Swift SDK:
 
 ```swift
-.package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc96")
+.package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc97")
 ```
 
 Some package resolution paths may require AtomGradient preview access or SSH access for transitive dependencies such as Edge Engine.

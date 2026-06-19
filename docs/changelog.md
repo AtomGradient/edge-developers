@@ -31,18 +31,18 @@ Developer Preview is a limited preview channel. The changelog documents what is 
 
 | Surface | Current access | Notes |
 |---|---|---|
-| Swift SDK docs | Edge Kit `1.0.0-rc96` | Docs use an exact version pin. Upgrade only after validation. |
+| Swift SDK docs | Edge Kit `1.0.0-rc97` | Docs use an exact version pin. Upgrade only after validation. |
 | Edge Engine dependency | Edge Engine `1.0.0-rc137` | Some preview repos or dependencies may require AtomGradient internal preview access or SSH access today. This is surfaced here, not treated as a current internal preview blocker. |
-| Edge Halo dependency | Edge Halo `1.0.0-rc21` | Edge Halo depends on Edge Engine `1.0.0-rc137`; validate package resolution in your environment. |
-| Edge Scaffold | Pins Edge Kit `1.0.0-rc96` and Edge Halo `1.0.0-rc21` | Generated apps still require signing, device provisioning, and real-device validation. |
+| Edge Halo dependency | Edge Halo `1.0.0-rc22` | Edge Halo depends on Edge Engine `1.0.0-rc137`; validate package resolution in your environment. |
+| Edge Scaffold | Pins Edge Kit `1.0.0-rc97` and Edge Halo `1.0.0-rc22` | Generated apps still require signing, device provisioning, and real-device validation. |
 
 ### Compatibility matrix
 
 | Component | Compatible preview |
 |---|---|
-| Edge Kit | `1.0.0-rc96`, depends on Edge Engine `1.0.0-rc137` |
-| Edge Halo | `1.0.0-rc21`, depends on Edge Engine `1.0.0-rc137` |
-| Edge Scaffold | Current preview pins Edge Kit `1.0.0-rc96` and Edge Halo `1.0.0-rc21` |
+| Edge Kit | `1.0.0-rc97`, depends on Edge Engine `1.0.0-rc137` |
+| Edge Halo | `1.0.0-rc22`, depends on Edge Engine `1.0.0-rc137` |
+| Edge Scaffold | Current preview pins Edge Kit `1.0.0-rc97` and Edge Halo `1.0.0-rc22` |
 
 Generic builds and simulator checks are not enough for runtime claims. Re-run real-device validation after changing any preview tag.
 
@@ -119,4 +119,4 @@ The B2/B4/B5/B6/B7 CLI commands listed below are shipped in current preview; the
 - iOS app template generation from Edge Studio export.
 - ScaffoldConfig-based customization.
 - Four-tier model delivery (Cache → Bundle → ODR → HuggingFace).
-- Pins Edge Kit `1.0.0-rc96` and Edge Halo `1.0.0-rc21`.
+- Pins Edge Kit `1.0.0-rc97` and Edge Halo `1.0.0-rc22`.

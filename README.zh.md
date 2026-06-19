@@ -47,10 +47,10 @@ Neural Imprint 是本地产物和恢复流程。兼容的基础模型可以恢�
 
 | 组件 | 版本 |
 |---|---|
-| edge-kit | `1.0.0-rc96` |
-| edge-halo | `1.0.0-rc21` |
+| edge-kit | `1.0.0-rc97` |
+| edge-halo | `1.0.0-rc22` |
 | edge-engine | `1.0.0-rc137` |
-| edge-scaffold | 固定依赖 edge-kit `1.0.0-rc96` 和 edge-halo `1.0.0-rc21` |
+| edge-scaffold | 固定依赖 edge-kit `1.0.0-rc97` 和 edge-halo `1.0.0-rc22` |
 
 ## 文档
 
@@ -67,7 +67,7 @@ Neural Imprint 是本地产物和恢复流程。兼容的基础模型可以恢�
 安装 Swift SDK：
 
 ```swift
-.package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc96")
+.package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc97")
 ```
 
 部分 package 解析路径可能因为 Edge Engine 等传递依赖需要 AtomGradient 预览访问权限或 SSH 访问权限。

@@ -7,7 +7,7 @@ title: 语音转文字
 
 Edge Kit 暴露了用于本地转写的开发者预览版语音转文字 API。
 
-使用 `EdgeVoice` 进行麦克风录音。对于包含语音运行时的构建，使用 `EdgeInference` 中的 `STTEngine` 做原生 ASR。`WhisperEngine` 目前只是未来 whisper.cpp integration 的 预览桥接；在 `edge-kit@1.0.0-rc96` 中它仍是 skeleton，不执行真实转写。
+使用 `EdgeVoice` 进行麦克风录音。对于包含语音运行时的构建，使用 `EdgeInference` 中的 `STTEngine` 做原生 ASR。`WhisperEngine` 目前只是未来 whisper.cpp integration 的 预览桥接；在 `edge-kit@1.0.0-rc97` 中它仍是 skeleton，不执行真实转写。
 
 ## 录制音频
 

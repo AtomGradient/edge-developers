@@ -31,18 +31,18 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 
 | 产品表面 | 当前访问方式 | 说明 |
 |---|---|---|
-| Swift SDK 文档 | Edge Kit `1.0.0-rc96` | 文档使用精确固定版本。升级前必须重新验证。 |
+| Swift SDK 文档 | Edge Kit `1.0.0-rc97` | 文档使用精确固定版本。升级前必须重新验证。 |
 | Edge Engine 依赖 | Edge Engine `1.0.0-rc137` | 当前部分预览仓库或依赖可能需要 AtomGradient 内部预览访问权限或 SSH 访问权限。这里记录公开产品表面，不把它当作当前内部预览阻塞项。 |
-| Edge Halo 依赖 | Edge Halo `1.0.0-rc21` | Edge Halo 依赖 Edge Engine `1.0.0-rc137`；请在自己的环境里验证包解析。 |
-| Edge Scaffold | 固定依赖 Edge Kit `1.0.0-rc96` 与 Edge Halo `1.0.0-rc21` | 生成的应用仍需要签名、设备 provisioning 和真机验证。 |
+| Edge Halo 依赖 | Edge Halo `1.0.0-rc22` | Edge Halo 依赖 Edge Engine `1.0.0-rc137`；请在自己的环境里验证包解析。 |
+| Edge Scaffold | 固定依赖 Edge Kit `1.0.0-rc97` 与 Edge Halo `1.0.0-rc22` | 生成的应用仍需要签名、设备 provisioning 和真机验证。 |
 
 ### 兼容矩阵
 
 | 组件 | 兼容预览版本 |
 |---|---|
-| Edge Kit | `1.0.0-rc96`，依赖 Edge Engine `1.0.0-rc137` |
-| Edge Halo | `1.0.0-rc21`，依赖 Edge Engine `1.0.0-rc137` |
-| Edge Scaffold | 当前预览版固定依赖 Edge Kit `1.0.0-rc96` 与 Edge Halo `1.0.0-rc21` |
+| Edge Kit | `1.0.0-rc97`，依赖 Edge Engine `1.0.0-rc137` |
+| Edge Halo | `1.0.0-rc22`，依赖 Edge Engine `1.0.0-rc137` |
+| Edge Scaffold | 当前预览版固定依赖 Edge Kit `1.0.0-rc97` 与 Edge Halo `1.0.0-rc22` |
 
 通用构建和模拟器检查不足以支撑运行时结论。任何预览 tag 变化后，都需要重新完成真机验证。
 
@@ -119,4 +119,4 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 - 从 Edge Studio 导出生成 iOS 应用模板。
 - 基于 ScaffoldConfig 的自定义。
 - 四层模型分发（Cache → Bundle → ODR → HuggingFace）。
-- 固定依赖 Edge Kit `1.0.0-rc96` 与 Edge Halo `1.0.0-rc21`。
+- 固定依赖 Edge Kit `1.0.0-rc97` 与 Edge Halo `1.0.0-rc22`。

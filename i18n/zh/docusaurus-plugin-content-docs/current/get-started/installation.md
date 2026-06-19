@@ -24,7 +24,7 @@ title: 安装
 ```swift
 // Package.swift
 dependencies: [
-    .package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc96")
+    .package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc97")
 ]
 ```
 
