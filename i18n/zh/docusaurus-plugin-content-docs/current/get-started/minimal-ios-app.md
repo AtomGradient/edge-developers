@@ -64,3 +64,7 @@ MODELS_SOURCE_DIR=$HOME/Documents/mlx-community
 - 应用拥有的工具注册和 schema snapshot 模式。
 
 Edge Scaffold 不是 dogfood 业务逻辑。把它视为当前最小参考应用，然后把示例数据、示例工具、文案、签名和模型交付替换成你的应用自己的策略。
+
+## 下一步
+
+应用壳构建通过后，继续看 [构建可学习 iOS App](/docs/examples/build-and-ship)。那篇指南会加入理财场景、Edge Studio 导出流程、模型配置、Neural Imprint 恢复检查和真机验证。

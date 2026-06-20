@@ -1,161 +1,212 @@
 ---
 sidebar_position: 5
-title: 构建并发布 iOS App
+title: 构建可学习 iOS App
 ---
 
-# 示例：构建并发布 iOS app
+# 构建可学习 iOS App
 
-本 walkthrough 将一个模型从 Edge Studio 带到由 Edge Scaffold 生成并签名的 iOS app。
+这篇指南展示公开开发者路径：安装 Edge Studio，用 CLI 证明本地学习，再导出 Edge
+Scaffold 项目，最后在真机上验证。
 
-## 本示例构建什么
+场景是一个私有理财助手。用户说：
 
-你将创建一个私有端侧聊天 app，包含：
-
-- 在 Edge Studio 中优化的模型。
-- 由 Edge Scaffold 生成的 SwiftUI App。
-- 一个用于 app 名称、模型类别和 prompt 的配置文件。
-- 在真实 iPhone 或 iPad 上测试过的 Release 构建。
-
-## 1. 优化模型
-
-打开 Edge Studio 并加载源模型。
-
-对于第一个 app，请使用简单模式：
-
-1. 选择目标设备类别。
-2. 选择模型类别。
-3. 运行推荐优化。
-4. 在目标设备画像上验证短 prompt。
-
-当你需要自定义 benchmark matrix、多个导出目标，或手动比较模型变体时，使用 Pro pipeline。
-
-## 2. 导出 Edge Scaffold app
-
-在 Edge Studio 中选择 **Export**，然后选择 **Edge Scaffold app**。
-
-需要检查的导出设置：
-
-| 设置 | 建议 |
-| --- | --- |
-| App name | 使用你希望在 Xcode 中看到的产品名称。 |
-| Model category | 与导出的模型匹配：LLM、VLM、TTS 或 STT。 |
-| Model delivery | 小模型使用 bundle；较大模型使用 remote 或 on-demand delivery。 |
-| Minimum OS | 与你验证过的设备匹配。 |
-
-Edge Studio 会写入一个 ZIP，其中包含 Edge Kit 所需的 app 模板、配置和模型 元数据。
-
-## 3. 在 Xcode 中打开
-
-解压导出文件，并在 Xcode 中打开生成的项目。
-
-运行前：
-
-1. 选择你的 开发者团队。
-2. 设置唯一 bundle identifier。
-3. 选择真实设备作为 run destination。
-4. 确认 deployment target 是 iOS 17 或更高。
-
-使用 Release 构建 进行性能验证。Debug build 适合编辑 UI，但不代表最终加载时间或吞吐。
-
-## 4. 配置 ScaffoldConfig.swift
-
-`ScaffoldConfig.swift` 控制生成 App 的行为。
-
-```swift
-import EdgeInference
-
-enum ScaffoldConfig {
-    static let appName = "Pocket Research"
-    static let appDescription = "A private on-device research assistant."
-    static let defaultSystemPrompt = """
-    You are a concise research assistant. Answer with citations when context is provided.
-    """
-
-    static let modelCategory: ModelCategory = .llm
-    static let modelID = "qwen3.5-9b-4bit"
-    static let modelDisplayName = "Qwen3.5 9B 4bit"
-    static let modelSizeGB: Double = 5.4
-
-    // Use this when the model is included in the App bundle.
-    static let bundleModelName: String? = "Qwen3.5-9B-4bit"
-
-    // Used only by TTS apps.
-    static let defaultTTSSpeaker: String? = nil
-}
+```text
+我不喜欢高风险推荐，我更关注现金流和稳健收益。
 ```
 
-### ScaffoldConfig 参考
+你的 App 应该把这个偏好留在设备上，把它恢复进兼容的模型 session，并保持基础模型包不变。
 
-| 字段 | 控制内容 |
-| --- | --- |
-| `appName` | app UI 中使用的显示名称。 |
-| `appDescription` | 简短 onboarding 和设置描述。 |
-| `defaultSystemPrompt` | 聊天类 App 的初始 system instruction。 |
-| `modelCategory` | App 使用哪条 UI 和 engine 路径。 |
-| `modelID` | 用于日志、缓存 key 和设置的稳定标识符。 |
-| `modelDisplayName` | 人类可读的模型名称。 |
-| `modelSizeGB` | 设备检查中显示的近似大小。 |
-| `bundleModelName` | 将模型随 app 发布时的 bundle 文件夹名称。 |
-| `defaultTTSSpeaker` | TTS 模型的可选默认说话人。 |
+## 你会构建什么
 
-## 5. 配置权限和 entitlements
+你会创建一个 iOS App，包含：
 
-对于较大模型，请在 iOS target 上启用 Increased Memory Limit entitlement。
+- 通过 Edge Kit 和 Edge Engine 加载的本地 LLM；
+- Edge Scaffold 提供的理财样例数据和只读 demo tools；
+- Edge Halo binary package 集成，用于 Neural Imprint 恢复 hooks；
+- App 自有的学习状态和删除设置界面；
+- 不依赖模拟器运行时的真机构建。
 
-为 app 暴露的能力添加 usage string：
+Edge Scaffold 是模板，不是运行时依赖。Edge Studio 会解析公开
+`edge-scaffold` 模板，把它复制到新的 App 目录，重写 App 名称和模型配置，运行
+XcodeGen，然后给你一个 ZIP。
 
-```xml
-<key>NSMicrophoneUsageDescription</key>
-<string>This app records your voice for private on-device transcription.</string>
+## 1. 安装 Edge Studio
 
-<key>NSPhotoLibraryUsageDescription</key>
-<string>This app lets you choose photos for private on-device analysis.</string>
+创建 Python 3.11 环境并安装公开软件包：
 
-<key>NSLocalNetworkUsageDescription</key>
-<string>This app discovers your nearby devices for private on-device AI.</string>
+```bash
+python3.11 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install --upgrade --pre edge-studio
+edge doctor
 ```
 
-只包含已发布 App 实际使用的权限。
+Edge Studio 仍以 release candidate 发布时，需要保留 `--pre`。如果
+`edge doctor` 报告环境或模型路径问题，请先修复，再导出 App。
 
-## 6. 在设备上测试
+## 2. 下载演示模型
 
-Archive 前运行此检查清单：
+CLI 证明和导出的 App 使用同一个模型：
 
-| 区域 | 验证内容 |
+```bash
+edge models fetch qwen3.5-9b-4bit --source auto
+edge models where qwen3.5-9b-4bit --json
+```
+
+模型约 5 GB。第一次加载模型可能需要几十秒，MLX 会初始化并映射模型文件。
+
+## 3. 先在本地证明学习
+
+构建 iOS App 前，先运行 CLI 学习演示：
+
+```bash
+edge demo learn run \
+  --sample synthetic_profile_correction_v1 \
+  --model qwen3.5-9b-4bit \
+  --include-text
+```
+
+内置样本是合成数据，可以安全查看。它证明的是机制：纠错写入隔离的本地状态，
+生成 Neural Imprint 产物，回执记录学习前/学习后的回答，以及用于恢复的产物路径。
+
+需要比较行为时，直接把回执传给 chat：
+
+```bash
+edge demo chat \
+  --model qwen3.5-9b-4bit \
+  --interactive \
+  --with-imprint "/path/to/learn_receipt.json"
+```
+
+在理财 App 中，同样的生命周期会映射到用户自有的理财偏好和本地分类事实。
+App 决定记录什么、用户如何查看、以及用户如何删除。
+
+## 4. 启动 Edge Studio
+
+启动本地工作台：
+
+```bash
+edge studio
+```
+
+打开：
+
+```text
+http://127.0.0.1:18842
+```
+
+加载你下载的模型，然后打开 **Export**，选择 **Edge iOS App**。App name 可以使用
+`CashFlowCoach`。除非你在测试另一个领域的 model-matched A-library，否则保留默认
+finance direction set。
+
+导出使用公开 Edge Scaffold 模板。如果本机没有 `edge-scaffold` checkout，Edge
+Studio 会下载一个固定的公开模板 archive 并缓存。高级本地测试可以用
+`EDGE_SCAFFOLD_DIR=/path/to/edge-scaffold` 指向本地模板。
+
+## 5. 检查导出的 App
+
+下载并解压 ZIP 后，结构应该类似这样：
+
+```text
+CashFlowCoach/
++-- CashFlowCoach.xcodeproj/
++-- project.yml
++-- CashFlowCoach_model_config
++-- README.md
++-- Resources/
++-- CashFlowCoach/
+    +-- App/
+    |   +-- ScaffoldConfig.swift
+    +-- AI/
+    +-- Chat/
+    +-- Settings/
+    +-- Business/
+```
+
+这里重复出现 App 名称是预期结构。第一个 `CashFlowCoach/` 是 App 项目根目录，
+第二个 `CashFlowCoach/` 是 Xcode target 的 Swift 源码目录。
+
+先读生成的 `README.md`。它是针对这一次导出生成的实例文档，会指向需要修改的具体文件。
+
+## 6. 先构建应用壳
+
+在 Xcode 中打开项目，选择开发者团队，设置唯一 bundle identifier，并选择真实
+iPhone 或 iPad。
+
+不复制模型权重时，可以先运行命令行构建检查：
+
+```bash
+xcodebuild -project CashFlowCoach.xcodeproj \
+  -scheme CashFlowCoach \
+  -configuration Release \
+  -destination 'generic/platform=iOS' \
+  SKIP_MODEL_COPY=1 \
+  build
+```
+
+这会验证签名、Swift Package Manager 解析、XcodeGen 输出和应用壳。它不验证模型加载或学习质量。
+
+如果 Swift Package Manager cache 状态看起来不对，清理本地构建状态后重新 resolve：
+
+```bash
+rm -rf .build
+rm -rf ~/Library/Developer/Xcode/DerivedData
+xcodebuild -resolvePackageDependencies -project CashFlowCoach.xcodeproj
+```
+
+## 7. 加入模型并在真机运行
+
+打开 `CashFlowCoach_model_config`，确认模型文件夹：
+
+```bash
+MODEL_NAME=Qwen3.5-9B-4bit
+MODELS_SOURCE_DIR=$HOME/Documents/mlx-community
+MODEL_COPY="true"
+```
+
+然后去掉 `SKIP_MODEL_COPY=1` 再构建。对于较大模型，请启用 Increased Memory
+Limit entitlement，并在计划支持的最低设备类别上验证 Release 构建。
+
+在设备上验证：
+
+| 区域 | 检查内容 |
 | --- | --- |
-| First launch | App 打开，模型设置出现，没有缺失文件。 |
-| Model load | 在最低支持设备上冷加载成功。 |
-| Generation | 第一条回复流式输出并完成。 |
-| Long session | 多轮使用保持响应。 |
-| Backgrounding | app 处理后台和前台切换。 |
-| Storage | 模型缓存和用户数据可以清理。 |
-| Permissions | 只出现必需的权限提示。 |
+| 首次启动 | App 可以打开，不引用开发者本地路径。 |
+| 模型加载 | 模型能从本地、bundle、ODR 或缓存路径加载。 |
+| 流式输出 | 回复可以流式输出并完成。 |
+| 本地数据 | 理财样例事实和 App 自有工具 schema 能在 App 界面中看到。 |
+| Neural Imprint | metadata 不匹配时，恢复保持 fail-closed。 |
+| 删除能力 | 用户可以清理本地模型缓存和学习状态。 |
 
-对于 VLM、TTS、STT 或 mesh app，在提交前请在设备上端到端运行对应功能路径。
+## 8. 定制理财助手
 
-## 7. Archive 并提交
+从这些文件开始：
 
-在 Xcode 中：
+| 文件 | 用途 |
+| --- | --- |
+| `CashFlowCoach/App/ScaffoldConfig.swift` | App 名称、system prompt、model ID、生成默认值、finance sample domain、Neural Imprint runtime settings。 |
+| `CashFlowCoach/AI/AIManager.swift` | 模型加载、生成和 Edge Kit session 集成。 |
+| `CashFlowCoach/AI/EdgeDataBootstrap.swift` | App 自有 schema、facts 和 tool registration。 |
+| `CashFlowCoach/AI/PersonalizationManager.swift` | 学习状态界面和 Neural Imprint 恢复接线。 |
+| `CashFlowCoach/Chat/DemoChatView+LLM.swift` | 流式聊天行为和用户交互。 |
+| `Resources/SampleData/` | 参考 App 使用的合成理财数据。请替换成你的 App 自有本地事实。 |
 
-1. 选择 **Any iOS Device** 或你的 distribution destination。
-2. 选择 **Product > Archive**。
-3. 打开 Organizer。
-4. 验证 archive。
-5. 上传到 App Store Connect。
+对于理财场景，增加让用户查看或修改偏好的产品界面，例如风险承受度、现金流周期和收益稳定性。
+不要把用户 transcript、账户细节或偏好产物上传到 analytics 或远程支持系统。
 
-在 App Store Connect 中，确保 privacy nutrition labels 与 app 实际行为一致。如果 app 将所有 prompt、音频、图像和模型数据都留在设备上，请在 review notes 和用户可见文案中明确说明。
+## 9. 生产检查清单
 
-## 部署检查清单
-
-- App name、icon、bundle ID 和 signing team 已最终确定。
-- 需要时已启用 Increased Memory Limit entitlement。
-- 模型交付策略已测试：bundled、on-demand 或 remote download。
-- 首次启动不依赖 developer-only 路径。
-- 已使用 Release 构建 在最低支持设备上测试。
-- 设置中包含清理本地模型和个性化数据的方法。
-- App Store 隐私回答与已发布 App 行为一致。
+- 固定 Edge Kit、Edge Engine 和 Edge Halo binary package 版本。
+- 在计划支持的真实设备类别上测试。
+- 模拟器只用于 UI 迭代，不用于 MLX runtime 验证。
+- Neural Imprint 恢复失败时，基础模型路径仍然可用。
+- 学习状态要足够可检查，便于建立用户信任，并可从 App 设置中删除。
+- 用 App 自有的理财 schema 和只读工具策略替换 scaffold 样例工具和数据。
+- App Store 隐私回答必须与 App 实际存储、传输和删除的内容一致。
 
 ## 下一步
 
-- 查看 [Edge Scaffold 配置](/docs/optimize-and-ship/scaffold)。
-- 查看 [平台要求](/docs/guides/platform-requirements)。
+- 如果还没有比较学习前/学习后的回答，先运行 [CLI 学习演示](/docs/get-started/minute-demo)。
+- 阅读 [Edge Scaffold 配置](/docs/optimize-and-ship/scaffold)，了解 Edge Studio 导出时会重写哪些模板字段。
+- 选择本地学习产物还是模型 adapter release 时，阅读 [Neural Imprint vs LoRA](/docs/guides/neural-imprint-vs-lora)。

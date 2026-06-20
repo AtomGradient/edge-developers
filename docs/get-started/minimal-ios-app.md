@@ -64,3 +64,7 @@ Then build without `SKIP_MODEL_COPY=1`. For larger models, enable the Increased 
 - App-owned tool registration and schema snapshot patterns.
 
 Edge Scaffold is not dogfood business logic. Treat it as the smallest current reference app, then replace sample data, sample tools, copy, signing, and model delivery with your app's own policy.
+
+## Next step
+
+After the shell builds, continue to [Build a learnable iOS app](/docs/examples/build-and-ship). That guide adds the finance scenario, Edge Studio export flow, model configuration, Neural Imprint restore checks, and real-device validation.

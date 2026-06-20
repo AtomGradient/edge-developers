@@ -70,7 +70,7 @@ your network.
 
 After `[chat:ready]`, ask a few normal questions and exit with `/exit`. The first 9B model load can take tens of seconds.
 
-After the base chat works, continue to the [CLI learning demo](/docs/get-started/minute-demo) to inspect the synthetic correction sample and see user-specific learning restored without creating a new model release.
+After the base chat works, continue to the [CLI learning demo](/docs/get-started/minute-demo) to inspect the synthetic correction sample and see user-specific learning restored without creating a new model release. Then build the same lifecycle into a [learnable iOS app](/docs/examples/build-and-ship).
 
 ## Launch the Web UI
 

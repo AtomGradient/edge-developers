@@ -9,6 +9,17 @@ Neural Imprint is Edge's on-device learning contract. It lets an app keep a
 stable base model package while restoring user-specific learning state as a
 local, removable artifact.
 
+Use the finance assistant from the quickstart as the concrete case. A user says:
+
+```text
+I avoid high-risk recommendations. I care about cash flow and stable returns.
+```
+
+The product goal is not to publish a new model every time that preference
+changes. The goal is to keep the base model path stable, restore the user's
+local learning state when compatible, and let the app remove that state when the
+user asks.
+
 This matters for real products. User personalization should not turn every
 preference update into a new training run, a model-release event, or a larger
 prompt that repeats private profile text. Neural Imprint keeps the baseline

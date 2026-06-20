@@ -6,75 +6,43 @@ slug: /get-started/minute-demo
 
 # See local learning in 5 minutes
 
-Runnable in current preview.
-
-This guide shows one visible result: you chat with a local model before a
-synthetic learning step, run the learning demo, then chat again with the local
-Neural Imprint artifact loaded.
-
-The demo uses a built-in synthetic sample. It does not use your private data,
-does not change the model weights, and keeps the whole flow on your machine. The
-point of the demo is the Neural Imprint contract: a local model can keep its base
-model package intact while restoring a user-specific learning artifact at
-runtime.
-
-## Where this fits in on-device AI
-
-Neural Imprint is for on-device AI products that run a local model and need
-user-specific behavior without uploading private state, changing the base model
-weights, or replaying private profile text in every prompt.
-
-That is the core advantage for on-device AI. Fine-tuning and LoRA turn
-personalization into a training and model-release problem. Prompt stuffing turns
-personalization into repeated private text inside every request. Neural Imprint
-keeps personalization as local, removable runtime state around a compatible base
-model.
-
-Typical use cases include:
-
-- A local assistant that adapts to a user's answer style, trust boundaries, or
-  workflow preferences.
-- An app-owned copilot that keeps product-specific memory on the device instead
-  of sending it to a remote service.
-- Privacy-sensitive, offline, regulated, or enterprise workflows where user
-  state should stay local and removable.
-- Device or app restore flows where personalization must pass compatibility
-  gates before it becomes active.
-- Local developer evaluation of a learning loop before building product UI,
-  deletion controls, and task-specific quality tests.
-
-This guide uses a synthetic CLI sample to make the behavior visible. Production
-apps still need explicit user permission, app-owned storage policy, deletion UX,
-compatibility checks, and task-specific evaluation.
-
-## What you will see
-
-The built-in sample teaches this preference:
-
-- Prefer concise technical answers.
-- Keep workflow explanations short and direct.
-- Avoid quality claims unless there is specific evidence.
-
-The demo asks:
+Imagine a local finance assistant. A user tells it:
 
 ```text
-How should this assistant respond to technical workflow questions?
+I avoid high-risk recommendations. I care about cash flow and stable returns.
 ```
 
-Before learning, the model may answer with a broad generic framework. After you
-load the synthetic correction, the answer should move toward:
+In a normal app, this quickly becomes awkward. You can paste that preference
+into every prompt, send it to a cloud profile service, or retrain an adapter.
+Edge takes a different path: keep the preference as local learning state, verify
+it before restore, and leave the base model package unchanged.
 
-```text
-Provide short, direct summaries of the workflow steps. Avoid making quality
-claims unless you have specific evidence to support them.
-```
+This guide proves the mechanism with the current CLI demo. The built-in sample
+is synthetic and deliberately simple: it teaches a concise, evidence-bound
+answer style. In the finance assistant story, that is the first behavior you
+would want before touching real financial data: shorter advice, no unsupported
+claims, and local-only proof.
 
-Exact text can vary by model version and sampling, but the terminal flow lets
-you ask the same question before and after learning.
+The local learning artifact Edge generates is called a **Neural Imprint**.
+
+## What you will prove
+
+By the end, you will have:
+
+- installed the public `edge-studio` package,
+- prepared the preview model explicitly,
+- inspected the synthetic learning input before running it,
+- generated a local Neural Imprint artifact,
+- restored it with a receipt,
+- compared before/after answers,
+- kept the base model package intact.
+
+No private data is used. No model weights are modified. The demo runs locally on
+your Mac.
 
 ## 1. Install Edge Studio
 
-Create a Python 3.11 environment and install the developer preview package:
+Create a Python 3.11 environment and install the Developer Preview package:
 
 ```bash
 python3.11 -m venv .venv
@@ -93,16 +61,15 @@ uv pip install --upgrade --pre edge-studio
 edge doctor
 ```
 
-`--pre` installs the current Developer Preview release candidate. Keep it until
-the first stable package is published. `edge doctor` checks the Python
-environment, model paths, and system compatibility; fix any failed checks before
-continuing.
+`--pre` installs the current release candidate. Keep it until the first stable
+package is published. `edge doctor` checks the Python environment, model paths,
+and system compatibility.
 
-For source install and local UI development, see [Install from source](/docs/get-started/source-build).
+For source install and local UI development, see [Install Edge Studio](/docs/get-started/source-build).
 
 ## 2. Prepare the demo model
 
-The preview demo uses `qwen3.5-9b-4bit`.
+The demo uses `qwen3.5-9b-4bit`.
 
 ```bash
 edge models where qwen3.5-9b-4bit
@@ -116,12 +83,10 @@ edge models fetch qwen3.5-9b-4bit --source auto
 
 The demo does not silently download models. If the model is already present, the
 fetch command reuses the local match and reports the cached path.
-The `qwen3.5-9b-4bit` download is approximately 5 GB, and the time depends on
-your network.
 
-## 3. Inspect what the demo will learn
+## 3. Inspect what will be learned
 
-Before running the learning step, inspect the synthetic sample:
+Before you run the learning step, inspect the synthetic sample:
 
 ```bash
 edge demo learn run --dry-run \
@@ -161,18 +126,22 @@ Look for `sample_text` in the output:
 }
 ```
 
-This dry run does not load the model, write demo state, restore an artifact, or
-use the network. It is a preview of the exact synthetic learning data.
+This is not financial advice and does not contain financial data. It is a safe
+stand-in for a finance product preference: "keep the advice short, conservative
+in claims, and prove that private state stayed local."
 
-## 4. Chat before learning
+The dry run does not load the model, write demo state, restore an artifact, or
+use the network.
 
-Start an interactive base-model chat:
+## 4. Ask before learning
+
+Start a base-model chat:
 
 ```bash
 edge demo chat --model qwen3.5-9b-4bit --interactive
 ```
 
-Ask the demo question:
+Ask the same probe used by the demo:
 
 ```text
 [chat:load] loading model=Qwen3.5-9B-4bit (first load can take 30-90s)
@@ -184,12 +153,11 @@ tradeoffs clearly...
 you> /exit
 ```
 
-This is the base model response. It has not loaded the synthetic learning
-artifact yet.
+This is the base model path. It has not loaded the local learning artifact yet.
 
 ## 5. Run the learning demo
 
-Run the local learning flow and ask the CLI to print the before and after text:
+Now run the local learning flow and print the before/after text:
 
 ```bash
 edge demo learn run \
@@ -199,9 +167,9 @@ edge demo learn run \
   --include-text
 ```
 
-`--include-text` is used here because the sample is synthetic. Do not use it with
-private prompts or real user data that you would not want printed in a terminal
-or stored in a local receipt.
+`--include-text` is safe here because the sample is synthetic. Do not use it
+with real user prompts or private financial data that you would not want printed
+in a terminal or stored in a local receipt.
 
 You should see output shaped like this:
 
@@ -226,17 +194,18 @@ Provide short, direct summaries of the workflow steps. Avoid making quality
 claims unless you have specific evidence to support them.
 ```
 
-The important part is not the exact wording. The important part is that the
-after answer reflects the synthetic correction you inspected in step 3.
+The exact wording can vary. What matters is that the after answer reflects the
+preference you inspected: shorter, more direct, and more careful about claims.
+In a finance assistant, that is the same kind of shift you want after a user
+says they prefer cash-flow-aware, low-risk guidance.
 
-The `next:` line is the handoff point for the next command. It passes
-`learn_receipt.json` to `--with-imprint`. You do not need to find or pass the
-lower-level artifact path yourself; the CLI reads the receipt and restores the
-artifact recorded inside it.
+The `next:` line is the handoff. It passes `learn_receipt.json` to
+`--with-imprint`. You do not need to find the lower-level artifact path yourself;
+the CLI reads the receipt and restores the artifact recorded inside it.
 
-## 6. Chat after learning
+## 6. Ask after learning
 
-Copy the `next:` line printed in step 5 and run it. It will look like this:
+Copy the `next:` line printed in step 5 and run it:
 
 ```bash
 edge demo chat --model qwen3.5-9b-4bit --interactive --with-imprint ".../learn_receipt.json"
@@ -258,24 +227,22 @@ The second chat is still local. `--with-imprint` reads the completed learning
 receipt, restores the generated Neural Imprint artifact, and fails closed if the
 receipt or artifact is missing.
 
-## 7. Read the result
+## 7. Read the receipt
 
-The run does four local things:
+The run did four local things:
 
-1. Writes the synthetic records into isolated demo state.
-2. Records the synthetic correction.
-3. Generates and restores a local Neural Imprint artifact.
-4. Compares the answer before and after restore.
+1. Wrote the synthetic records into isolated demo state.
+2. Recorded the synthetic correction.
+3. Generated and restored a local Neural Imprint artifact.
+4. Compared the answer before and after restore.
 
-`answers_differ: true` means the answer changed after restoring the local Neural
-Imprint artifact for this synthetic sample.
+`answers_differ: true` means the answer changed after restoring the local
+artifact for this controlled sample.
 
 By default, receipts are local and hash-only. In this guide, `--include-text`
 prints and stores raw text only because the sample is synthetic and meant to be
-read.
-
-Without `--include-text`, the receipt keeps hashed identifiers and no raw user
-text:
+read. Without `--include-text`, the receipt keeps hashed identifiers and no raw
+user text:
 
 ```json
 {
@@ -288,9 +255,19 @@ text:
 }
 ```
 
-The local-only checks fail closed on missing artifacts or metadata and flag
-non-localhost network access. The result you are looking for is simple:
-behavior changed after restoring local Neural Imprint artifact.
+That is the contract you should carry into an app: prove the change locally,
+keep the learning state removable, and avoid uploading private user data.
+
+## Next: build the app
+
+After the CLI proof works, build the finance assistant shape as an iOS app:
+
+- [Build a learnable iOS app](/docs/examples/build-and-ship)
+- [Minimal iOS app shell](/docs/get-started/minimal-ios-app)
+
+The app path uses public Swift packages, Edge Scaffold, Edge Kit, and the Edge
+Halo binary package. Validate on a real device before treating the integration
+as complete.
 
 ## Common questions
 
@@ -311,19 +288,12 @@ stuffing, see [Neural Imprint vs LoRA](/docs/guides/neural-imprint-vs-lora).
 ### What did the model learn?
 
 In this demo, the only learning input is the synthetic sample you inspected in
-step 3. It teaches a controlled answer-style preference: keep technical workflow
-answers short, direct, and evidence-bound.
+step 3. It teaches a controlled answer-style preference: keep answers short,
+direct, and evidence-bound.
 
-Use the dry run before the real run when you want to see the exact records and
-correction that will be used:
-
-```bash
-edge demo learn run --dry-run \
-  --sample synthetic_profile_correction_v1 \
-  --model qwen3.5-9b-4bit \
-  --include-text \
-  --json
-```
+In a real finance app, that input would come from app-approved local user
+signals such as explicit preferences, settings, or corrections. The app owns
+that policy.
 
 ### Why does `--with-imprint` take a receipt instead of the artifact path?
 
@@ -332,12 +302,9 @@ records the metadata, hashes, schema versions, and local-only status needed to
 restore safely. Passing the receipt lets the CLI validate and fail closed if the
 artifact or metadata is missing.
 
-The printed artifact path is useful for inspection. The command you should run
-next is the printed `next:` line that passes `learn_receipt.json`.
-
 ### Does `answers_differ: true` prove production quality?
 
-It proves that the restored Neural Imprint artifact is active for this
+No. It proves that the restored Neural Imprint artifact is active for this
 controlled synthetic example and that the answer moved after the local learning
 artifact was restored.
 
@@ -357,21 +324,20 @@ state is not pasted back into every prompt.
 
 ### Where is the local state?
 
-The command prints the demo state path, artifact path, metadata path, and receipt
-path. These files live in local Edge Studio application data for this demo run.
-They are not uploaded by the demo.
+The command prints the demo state path, artifact path, metadata path, and
+receipt path. These files stay in local Edge Studio application data for this
+demo run.
 
-## Advanced checks
+## Deeper checks
 
-Inspect a receipt without loading the model again:
+Inspect the receipt without loading the model again:
 
 ```bash
 edge demo receipt --path <receipt_path>
 edge demo local-only --path <receipt_path> --json
 ```
 
-Lower-level Neural Imprint commands are available after you understand the
-first demo:
+For lower-level Neural Imprint smoke tests:
 
 ```bash
 edge demo imprint run --dry-run --sample synthetic_profile_v1 --model qwen3.5-9b-4bit --json
@@ -380,5 +346,4 @@ edge demo imprint compare --path <receipt_path> --json
 edge demo reuse --run <run_id> --json
 ```
 
-These are implementation checks, including the artifact reuse smoke command.
-They are not required for the 5-minute demo.
+These are implementation checks, not required steps for the five-minute path.

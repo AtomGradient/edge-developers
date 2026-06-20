@@ -95,5 +95,5 @@ Do not copy dogfood-specific business logic into a production agent. Keep app po
 
 ## Next steps
 
-- [Build and ship example](/docs/examples/build-and-ship) — End-to-end walkthrough from optimize to App Store.
+- [Build a learnable iOS app](/docs/examples/build-and-ship) — End-to-end walkthrough from Edge Studio export to real-device validation.
 - [Platform requirements](/docs/guides/platform-requirements) — Device and OS constraints.

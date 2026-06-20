@@ -7,6 +7,14 @@ title: Neural Imprint vs LoRA
 
 Neural Imprint 是 Edge 的端侧学习契约。它让 app 保持稳定的基础模型包，同时把用户特定学习状态作为本地 artifact 恢复进运行时，并保持可删除。
 
+沿用快速开始里的理财助手场景。用户说：
+
+```text
+我不喜欢高风险推荐，我更关注现金流和稳健收益。
+```
+
+产品目标不是每次偏好变化都发布一个新模型。目标是保持基础模型路径稳定，在兼容时恢复用户本地学习状态，并允许 App 在用户要求时移除这份状态。
+
 这对真实产品很关键。用户个性化不应该把每一次偏好更新都变成重新训练、模型发布，或者把更多私有 profile 文本塞进 prompt。Neural Imprint 保持基础模型路径稳定，把个性化放进受兼容性闸门保护的本地运行时状态。
 
 ## 简短结论
@@ -17,7 +25,7 @@ Neural Imprint 是 Edge 的端侧学习契约。它让 app 保持稳定的基础
 | **LoRA / SFT** | 训练并发布新的模型或 adapter 权重 | 训练算力、数据整理、发布打包、完整回归评估 |
 | **Prompt stuffing** | 每次请求都插入 profile 文本或 instruction | Prompt budget 压力、私有状态重复暴露、prompt 治理 |
 
-这些方案是 different tradeoffs。选择哪个合适工具，取决于 app 的 deployment boundaries、data ownership 模型，以及 evaluation claims。
+这些方案是不同的工程取舍。选择哪个工具，取决于 App 的部署边界、数据归属模型和评估声明。
 
 ## 为什么 Neural Imprint 更适合端侧 AI
 
@@ -25,11 +33,11 @@ Neural Imprint 是 Edge 的端侧学习契约。它让 app 保持稳定的基础
 
 Neural Imprint 围绕这个契约构建：
 
-- **基础模型包和 base weights 保持不变。** 个性化不会替换已发布模型，也不会修改模型权重，base weights 保持 unchanged。
+- **基础模型包和 base weights 保持不变。** 个性化不会替换已发布模型，也不会修改模型权重，base weights 保持不变。
 - **学习状态是本地用户数据。** 产物可以放在 app 自有存储里，只通过受信任的用户自有通道移动，并由 app 删除。
-- **恢复受兼容性闸门保护。** 这就是 compatibility gates：激活前校验模型 identity、tokenizer/template、runtime version、工具 schema 和 artifact metadata。
-- **失败即关闭且可恢复。** 如果产物不匹配，app 保持基础模型路径 active，并可以重新生成、重新导出或加载匹配模型。
-- **不重放 profile 文本。** 这就是 no profile text replay：用户学习状态不会被粘贴进每一次请求；generation 继续聚焦当前消息和工具上下文。
+- **恢复受兼容性闸门保护。** 激活前校验模型 identity、tokenizer/template、runtime version、工具 schema 和 artifact metadata。
+- **失败即关闭且可恢复。** 如果产物不匹配，App 保持基础模型路径 active，并可以重新生成、重新导出或加载匹配模型。
+- **不重放 profile 文本。** 用户学习状态不会被粘贴进每一次请求；generation 继续聚焦当前消息和工具上下文。
 
 这就是核心优势：产品可以让模型持续学习用户，而不用把个性化变成新的模型发布，也不用把私有状态变成每次请求里的 prompt payload。
 
@@ -91,7 +99,7 @@ Neural Imprint 避免这种形态。用户学习状态作为本地运行时状�
 
 ## 公开边界
 
-本页描述产品和集成契约，包括部署边界、数据归属、deployment boundaries、data ownership 和 evaluation claims。它不描述私有 artifact 构造方法、训练内部机制、runtime 公式或底层实现细节。
+本页描述产品和集成契约，包括部署边界、数据归属和评估声明。它不描述私有 artifact 构造方法、训练内部机制、runtime 公式或底层实现细节。
 
 ## 相关指南
 

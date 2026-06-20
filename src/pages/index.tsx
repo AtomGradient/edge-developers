@@ -31,20 +31,20 @@ const enSteps: Step[] = [
   {
     label: '1',
     title: 'Install Edge Studio',
-    body: 'Create a Python 3.11 environment and install the public edge-studio package from PyPI. Use a source checkout only when contributing to Edge Studio itself.',
+    body: 'Create a Python 3.11 environment, install the public edge-studio package, and run the local doctor check.',
     link: '/docs/get-started/source-build',
   },
   {
     label: '2',
-    title: 'Download and chat',
-    body: 'Fetch the preview baseline model explicitly, then enter an interactive local chat session before any learning demo.',
+    title: 'See local learning',
+    body: 'Run the local learning demo, inspect the synthetic input, then map the same lifecycle to a finance preference.',
     link: '/docs/get-started/minute-demo',
   },
   {
     label: '3',
-    title: 'Run the learning loop',
-    body: 'Inspect the synthetic sample, generate a local Neural Imprint artifact, restore it under compatibility gates, and compare the receipt.',
-    link: '/docs/get-started/minute-demo',
+    title: 'Build the app',
+    body: 'Export an Edge Scaffold project, open it in Xcode, and validate the same learnable behavior on a real device.',
+    link: '/docs/examples/build-and-ship',
   },
 ];
 
@@ -52,62 +52,62 @@ const zhSteps: Step[] = [
   {
     label: '1',
     title: '安装 Edge Studio',
-    body: '创建 Python 3.11 环境，并从 PyPI 安装公开的 edge-studio 包。只有参与 Edge Studio 本身开发时才需要源码安装。',
+    body: '创建 Python 3.11 环境，安装公开的 edge-studio 包，并先运行本地 doctor 检查。',
     link: '/docs/get-started/source-build',
   },
   {
     label: '2',
-    title: '下载模型并对话',
-    body: '显式下载预览基准模型，然后先进入普通本地多轮对话，再看学习 demo。',
+    title: '看见本地学习',
+    body: '运行本地学习 demo，检查合成输入，再把同一套生命周期映射到理财偏好。',
     link: '/docs/get-started/minute-demo',
   },
   {
     label: '3',
-    title: '运行学习闭环',
-    body: '检查合成样本，生成本地 Neural Imprint 产物，在兼容性闸门下恢复，并对比本地回执。',
-    link: '/docs/get-started/minute-demo',
+    title: '构建 App',
+    body: '导出 Edge Scaffold 项目，在 Xcode 中打开，并在真机上验证同一套可学习行为。',
+    link: '/docs/examples/build-and-ship',
   },
 ];
 
 const enPaths: LinkCard[] = [
   {
     eyebrow: 'Python / CLI',
-    title: 'CLI and local model workflow',
-    body: 'Download a model, run a local chat, inspect a synthetic correction sample, generate and restore a Neural Imprint artifact, and compare answer hashes in a local receipt.',
-    primaryLabel: 'Start the CLI path',
-    primaryLink: '/docs/get-started/source-build',
-    secondaryLabel: 'Read the learning demo',
-    secondaryLink: '/docs/get-started/minute-demo',
+    title: 'Prove learning locally',
+    body: 'Before you build UI, inspect a controlled synthetic sample and verify that a local learning artifact changes runtime behavior without replacing the model package.',
+    primaryLabel: 'Run the learning demo',
+    primaryLink: '/docs/get-started/minute-demo',
+    secondaryLabel: 'Install Edge Studio',
+    secondaryLink: '/docs/get-started/source-build',
   },
   {
     eyebrow: 'iOS / Swift',
-    title: 'iOS app integration',
-    body: 'Build the minimal iOS shell, then integrate the public Edge Kit package, Edge Halo binary package, and Edge Scaffold template. Validate on a real device before treating the app path as integrated.',
-    primaryLabel: 'Build the minimal iOS app',
-    primaryLink: '/docs/get-started/minimal-ios-app',
-    secondaryLabel: 'Swift SDK setup',
-    secondaryLink: '/docs/get-started/quickstart',
+    title: 'Build a learnable iOS app',
+    body: 'Export the scaffold, wire the public Edge Kit package and Edge Halo binary package, then validate model load and local learning restore on a real device.',
+    primaryLabel: 'Build the learnable app',
+    primaryLink: '/docs/examples/build-and-ship',
+    secondaryLabel: 'Minimal iOS shell',
+    secondaryLink: '/docs/get-started/minimal-ios-app',
   },
 ];
 
 const zhPaths: LinkCard[] = [
   {
     eyebrow: 'Python / CLI',
-    title: 'CLI 和本地模型工作流',
-    body: '下载模型、运行本地对话、检查合成纠错样本、生成并恢复 Neural Imprint 产物，在本地回执中对比回答哈希。',
-    primaryLabel: '开始 CLI 路径',
-    primaryLink: '/docs/get-started/source-build',
-    secondaryLabel: '阅读学习演示',
-    secondaryLink: '/docs/get-started/minute-demo',
+    title: '先在本地证明学习有效',
+    body: '构建 UI 前，先检查受控合成样本，验证本地学习产物能改变运行时行为，同时不替换模型包。',
+    primaryLabel: '运行学习演示',
+    primaryLink: '/docs/get-started/minute-demo',
+    secondaryLabel: '安装 Edge Studio',
+    secondaryLink: '/docs/get-started/source-build',
   },
   {
     eyebrow: 'iOS / Swift',
-    title: 'iOS 应用集成',
-    body: '构建最小 iOS 应用壳，再接入公开的 Edge Kit package、Edge Halo binary package 和 Edge Scaffold 模板。把应用路径视为已集成前，请先完成真机验证。',
-    primaryLabel: '构建最小 iOS 应用',
-    primaryLink: '/docs/get-started/minimal-ios-app',
-    secondaryLabel: 'Swift SDK 设置',
-    secondaryLink: '/docs/get-started/quickstart',
+    title: '构建可学习的 iOS App',
+    body: '导出 scaffold，接入公开的 Edge Kit package 和 Edge Halo binary package，然后在真机上验证模型加载和本地学习恢复。',
+    primaryLabel: '构建可学习 App',
+    primaryLink: '/docs/examples/build-and-ship',
+    secondaryLabel: '最小 iOS 应用壳',
+    secondaryLink: '/docs/get-started/minimal-ios-app',
   },
 ];
 
@@ -136,7 +136,7 @@ const enCapabilities: LinkCard[] = [
   {
     eyebrow: 'Core concept',
     title: 'Neural Imprint',
-    body: 'A local personalization artifact that restores user-specific runtime state under compatibility gates without changing model weights.',
+    body: 'A removable local learning artifact: user-specific behavior can be restored into a compatible session while the base model package stays unchanged.',
     primaryLabel: 'Model evolution',
     primaryLink: '/docs/build/model-evolution',
   },
@@ -181,7 +181,7 @@ const zhCapabilities: LinkCard[] = [
   {
     eyebrow: '核心概念',
     title: 'Neural Imprint',
-    body: '本地个性化产物，在兼容性闸门下恢复用户相关运行时状态，不改模型权重。',
+    body: '可删除的本地学习产物：用户特定行为可以恢复进兼容 session，同时基础模型包保持不变。',
     primaryLabel: '模型进化',
     primaryLink: '/docs/build/model-evolution',
   },
@@ -201,27 +201,33 @@ const zhCapabilities: LinkCard[] = [
   },
 ];
 
-const EN_CODE = `# install Edge Studio CLI
+const EN_CODE = `# install the Developer Preview package
 python3.11 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install --upgrade --pre edge-studio
 edge doctor
 
-# first local chat
+# run the local learning demo
 edge models fetch qwen3.5-9b-4bit --source auto
-edge demo chat --model qwen3.5-9b-4bit --interactive`;
+edge demo learn run \\
+  --sample synthetic_profile_correction_v1 \\
+  --model qwen3.5-9b-4bit \\
+  --include-text`;
 
-const ZH_CODE = `# 安装 Edge Studio CLI
+const ZH_CODE = `# 安装 Developer Preview 包
 python3.11 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install --upgrade --pre edge-studio
 edge doctor
 
-# 第一次本地多轮对话
+# 运行本地学习演示
 edge models fetch qwen3.5-9b-4bit --source auto
-edge demo chat --model qwen3.5-9b-4bit --interactive`;
+edge demo learn run \\
+  --sample synthetic_profile_correction_v1 \\
+  --model qwen3.5-9b-4bit \\
+  --include-text`;
 
 export default function Home(): React.JSX.Element {
   const {i18n} = useDocusaurusContext();
@@ -241,24 +247,24 @@ export default function Home(): React.JSX.Element {
           <div className={styles.heroCopy}>
             <div className={styles.previewBadge}>{isZh ? '开发者预览' : 'Developer Preview'}</div>
             <h1 className={styles.heroTitle}>
-              {isZh ? '先跑通本地模型，再验证学习闭环' : 'Run a local model, then validate the learning loop'}
+              {isZh ? '让 App 在设备上学会用户偏好' : 'Build apps that learn on the device'}
             </h1>
             <p className={styles.heroSubtitle}>
               {isZh
-                ? 'Edge 的第一条开发者路径很简单：下载预览基准模型，进入本地多轮对话，然后用合成样本生成并恢复 Neural Imprint，用本地回执对比结果。'
-                : 'The first Edge developer path is deliberately small: download the preview baseline model, enter a local multi-turn chat, then use a synthetic sample to generate and restore a Neural Imprint artifact with a local comparison receipt.'}
+                ? '比如一个理财助手：用户说“我不喜欢高风险推荐，我更关注现金流和稳健收益”。Edge 让这个偏好留在设备上，不上传云端，不重新训练模型，也不把一大段 profile 塞进每次 prompt。'
+                : 'Imagine a finance assistant where the user says, “I avoid high-risk recommendations; I care about cash flow and stable returns.” Edge keeps that preference on the device without cloud uploads, retraining, or stuffing a profile into every prompt.'}
             </p>
             <p className={styles.heroNote}>
               {isZh
-                ? '当前文档以 qwen3.5-9b-4bit 为预览基准；首次下载和加载需要时间。'
-                : 'The current docs use qwen3.5-9b-4bit as the preview baseline; first download and first load can take time.'}
+                ? '学习状态是本地、可移除的产物；基础模型包保持不变，恢复前会做兼容性校验，失败则继续走基础模型路径。'
+                : 'The learning state is a local, removable artifact. The base model package stays unchanged, and restore is compatibility-checked before it becomes active.'}
             </p>
             <div className={styles.buttons}>
               <Link to="/docs/get-started/source-build" className={styles.primaryButton}>
-                {isZh ? '开始 CLI 路径' : 'Start the CLI path'}
+                {isZh ? '安装 Edge Studio' : 'Install Edge Studio'}
               </Link>
               <Link to="/docs/get-started/minute-demo" className={styles.secondaryButton}>
-                {isZh ? '查看学习演示' : 'View the learning demo'}
+                {isZh ? '运行学习演示' : 'Run the learning demo'}
               </Link>
             </div>
           </div>
@@ -274,11 +280,11 @@ export default function Home(): React.JSX.Element {
         <section className={styles.section}>
           <div className={styles.sectionHeader}>
             <div className={styles.sectionLabel}>{isZh ? '快速开始' : 'Quick start'}</div>
-            <h2>{isZh ? '三步完成：下载、对话、学习' : 'Three steps: download, chat, learn'}</h2>
+            <h2>{isZh ? '三步看到端侧学习' : 'Three steps to see on-device learning'}</h2>
             <p>
               {isZh
-                ? '从本地模型对话开始，然后用合成样本验证学习闭环。'
-                : 'Start with a local model chat, then validate the learning loop with a synthetic sample.'}
+                ? '先用 CLI 证明偏好可以在本地恢复，再把同一条路径带进 iOS app。'
+                : 'Prove the preference restore locally first, then carry the same path into an iOS app.'}
             </p>
           </div>
           <div className={styles.stepsGrid}>
@@ -298,8 +304,8 @@ export default function Home(): React.JSX.Element {
             <h2>{isZh ? '选择你的集成路径' : 'Choose your integration path'}</h2>
             <p>
               {isZh
-                ? 'CLI 是最快的体验路径。iOS/Swift 是应用集成路径，使用公开包解析，并且必须完成真机验证。'
-                : 'The CLI path is the fastest way to try Edge. The iOS/Swift path is for app integration with public packages and must be validated on real devices.'}
+                ? 'CLI 用来快速看见学习效果；iOS/Swift 路径用公开包构建真实 app，并在真机上验证。'
+                : 'Use the CLI to see the learning effect quickly. Use the iOS/Swift path to build the real app with public packages and device validation.'}
             </p>
           </div>
           <div className={styles.pathGrid}>

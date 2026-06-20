@@ -1,169 +1,235 @@
 ---
 sidebar_position: 5
-title: Build & Ship iOS App
+title: Build a learnable iOS app
 ---
 
-# Example: Build and ship an iOS app
+# Build a learnable iOS app
 
-This walkthrough takes a model from Edge Studio to a signed iOS app generated
-with Edge Scaffold.
+This guide shows the public developer path from Edge Studio to a real iOS app:
+install the package, prove local learning in the CLI, export an Edge Scaffold
+project, then validate the app on a physical device.
 
-## What this example builds
+The scenario is a private finance assistant. The user says:
 
-You will create a private on-device chat app with:
-
-- A model optimized in Edge Studio.
-- A generated SwiftUI app from Edge Scaffold.
-- One configuration file for the app name, model category, and prompt.
-- A release build tested on a real iPhone or iPad.
-
-## 1. Optimize the model
-
-Open Edge Studio and load the source model.
-
-For a first app, use Simple mode:
-
-1. Choose the target device class.
-2. Select the model category.
-3. Run the recommended optimization.
-4. Validate a short prompt on the target device profile.
-
-Use the Pro pipeline when you need a custom benchmark matrix, multiple export
-targets, or manual comparison across model variants.
-
-## 2. Export an Edge Scaffold app
-
-In Edge Studio, choose **Export** and select **Edge Scaffold app**.
-
-Export settings to check:
-
-| Setting | Recommendation |
-| --- | --- |
-| App name | Use the product name you want to see in Xcode. |
-| Model category | Match the exported model: LLM, VLM, TTS, or STT. |
-| Model delivery | Bundle for small models; remote or on-demand delivery for larger ones. |
-| Minimum OS | Match the devices you validated. |
-
-Edge Studio writes a ZIP containing the app template, configuration, and model
-metadata needed by Edge Kit.
-
-## 3. Open in Xcode
-
-Unzip the export and open the generated project in Xcode.
-
-Before running:
-
-1. Select your development team.
-2. Set a unique bundle identifier.
-3. Choose a real device as the run destination.
-4. Confirm the deployment target is iOS 17 or later.
-
-Use a Release build for performance validation. Debug builds are useful while
-editing UI, but they do not represent final load time or throughput.
-
-## 4. Configure ScaffoldConfig.swift
-
-`ScaffoldConfig.swift` controls the generated app behavior.
-
-```swift
-import EdgeInference
-
-enum ScaffoldConfig {
-    static let appName = "Pocket Research"
-    static let appDescription = "A private on-device research assistant."
-    static let defaultSystemPrompt = """
-    You are a concise research assistant. Answer with citations when context is provided.
-    """
-
-    static let modelCategory: ModelCategory = .llm
-    static let modelID = "qwen3.5-9b-4bit"
-    static let modelDisplayName = "Qwen3.5 9B 4bit"
-    static let modelSizeGB: Double = 5.4
-
-    // Use this when the model is included in the app bundle.
-    static let bundleModelName: String? = "Qwen3.5-9B-4bit"
-
-    // Used only by TTS apps.
-    static let defaultTTSSpeaker: String? = nil
-}
+```text
+I avoid high-risk recommendations. I care about cash flow and stable returns.
 ```
 
-### ScaffoldConfig reference
+Your app should keep that preference on the device, restore it into a
+compatible model session, and keep the base model package unchanged.
 
-| Field | Controls |
-| --- | --- |
-| `appName` | Display name used in the app UI. |
-| `appDescription` | Short onboarding and settings description. |
-| `defaultSystemPrompt` | Initial system instruction for chat-style apps. |
-| `modelCategory` | Which UI and engine path the app uses. |
-| `modelID` | Stable identifier for logs, cache keys, and settings. |
-| `modelDisplayName` | Human-readable model name. |
-| `modelSizeGB` | Approximate size shown in device checks. |
-| `bundleModelName` | Bundle folder name when shipping the model inside the app. |
-| `defaultTTSSpeaker` | Optional default speaker for TTS models. |
+## What you will build
 
-## 5. Configure permissions and entitlements
+You will create an iOS app with:
 
-For larger models, enable the Increased Memory Limit entitlement on the iOS
-target.
+- a local LLM loaded through Edge Kit and Edge Engine,
+- finance sample data and read-only demo tools from Edge Scaffold,
+- Edge Halo binary integration for Neural Imprint restore hooks,
+- an app-owned settings surface for learning state and deletion,
+- a real-device build that does not depend on a simulator runtime.
 
-Add usage strings for the capabilities your agent exposes:
+Edge Scaffold is a template, not a runtime dependency. Edge Studio resolves the
+public `edge-scaffold` template, copies it into a new app folder, rewrites the
+app name and model configuration, runs XcodeGen, and gives you a ZIP.
 
-```xml
-<key>NSMicrophoneUsageDescription</key>
-<string>This app records your voice for private on-device transcription.</string>
+## 1. Install Edge Studio
 
-<key>NSPhotoLibraryUsageDescription</key>
-<string>This app lets you choose photos for private on-device analysis.</string>
+Create a Python 3.11 environment and install the public package:
 
-<key>NSLocalNetworkUsageDescription</key>
-<string>This app discovers your nearby devices for private on-device AI.</string>
+```bash
+python3.11 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install --upgrade --pre edge-studio
+edge doctor
 ```
 
-Only include permissions that the shipped app actually uses.
+`--pre` is required while Edge Studio is published as release candidates. If
+`edge doctor` reports an environment or model-path issue, fix that before
+exporting an app.
 
-## 6. Test on device
+## 2. Fetch the demo model
 
-Run this checklist before archiving:
+Use the same model for the CLI proof and the exported app:
 
-| Area | What to verify |
+```bash
+edge models fetch qwen3.5-9b-4bit --source auto
+edge models where qwen3.5-9b-4bit --json
+```
+
+The model is roughly 5 GB. The first model load can take tens of seconds while
+MLX initializes and maps the model files.
+
+## 3. Prove learning locally
+
+Before building the iOS app, run the CLI learning demo:
+
+```bash
+edge demo learn run \
+  --sample synthetic_profile_correction_v1 \
+  --model qwen3.5-9b-4bit \
+  --include-text
+```
+
+The built-in sample is synthetic and safe to inspect. It proves the mechanics:
+a correction is written into isolated local state, a Neural Imprint artifact is
+generated, and the receipt records the before/after answers plus the restore
+artifact path.
+
+Use the receipt directly when you want to compare behavior:
+
+```bash
+edge demo chat \
+  --model qwen3.5-9b-4bit \
+  --interactive \
+  --with-imprint "/path/to/learn_receipt.json"
+```
+
+In a finance app, the same lifecycle maps to user-owned finance preferences and
+classified local facts. The app decides what it records, how users review it,
+and how users delete it.
+
+## 4. Launch Edge Studio
+
+Start the local workbench:
+
+```bash
+edge studio
+```
+
+Open:
+
+```text
+http://127.0.0.1:18842
+```
+
+Load the model you fetched, then open **Export** and choose **Edge iOS App**.
+Use an app name such as `CashFlowCoach` and keep the default finance direction
+set unless you are testing a model-matched A-library produced for another
+domain.
+
+The export uses the public Edge Scaffold template. If you have no local
+`edge-scaffold` checkout, Edge Studio downloads a fixed public template archive
+and caches it. Advanced local testing can override the template with
+`EDGE_SCAFFOLD_DIR=/path/to/edge-scaffold`.
+
+## 5. Inspect the exported app
+
+After downloading and unzipping the ZIP, the structure should look like this:
+
+```text
+CashFlowCoach/
++-- CashFlowCoach.xcodeproj/
++-- project.yml
++-- CashFlowCoach_model_config
++-- README.md
++-- Resources/
++-- CashFlowCoach/
+    +-- App/
+    |   +-- ScaffoldConfig.swift
+    +-- AI/
+    +-- Chat/
+    +-- Settings/
+    +-- Business/
+```
+
+The repeated app name is expected. The first `CashFlowCoach/` is the app
+project root. The second `CashFlowCoach/` is the Swift source directory for the
+Xcode target.
+
+Read the generated `README.md` first. It is instance-specific and points to the
+exact files to edit.
+
+## 6. Build the shell first
+
+Open the project in Xcode, select your development team, set a unique bundle
+identifier, and choose a physical iPhone or iPad.
+
+For a command-line build check without copying model weights:
+
+```bash
+xcodebuild -project CashFlowCoach.xcodeproj \
+  -scheme CashFlowCoach \
+  -configuration Release \
+  -destination 'generic/platform=iOS' \
+  SKIP_MODEL_COPY=1 \
+  build
+```
+
+This verifies signing, Swift Package Manager resolution, XcodeGen output, and
+the app shell. It does not validate model load or learning quality.
+
+If Swift Package Manager cache state looks stale, clear local build state and
+resolve again:
+
+```bash
+rm -rf .build
+rm -rf ~/Library/Developer/Xcode/DerivedData
+xcodebuild -resolvePackageDependencies -project CashFlowCoach.xcodeproj
+```
+
+## 7. Add the model and run on device
+
+Open `CashFlowCoach_model_config` and confirm the model folder:
+
+```bash
+MODEL_NAME=Qwen3.5-9B-4bit
+MODELS_SOURCE_DIR=$HOME/Documents/mlx-community
+MODEL_COPY="true"
+```
+
+Then build without `SKIP_MODEL_COPY=1`. For larger models, enable the Increased
+Memory Limit entitlement and validate a Release build on the oldest device
+class you plan to support.
+
+On the device, verify:
+
+| Area | What to check |
 | --- | --- |
-| First launch | App opens, model setup appears, no missing files. |
-| Model load | Cold load succeeds on the minimum supported device. |
-| Generation | First reply streams and completes. |
-| Long session | Multi-turn use stays responsive. |
-| Backgrounding | App handles background and foreground transitions. |
-| Storage | Model cache and user data can be cleared. |
-| Permissions | Only required prompts appear. |
+| First launch | The app opens and does not reference developer-only paths. |
+| Model load | The model loads from the configured local, bundled, ODR, or cache path. |
+| Streaming | A reply streams and completes. |
+| Local data | Finance sample facts and app-owned tool schemas are visible in the app surfaces. |
+| Neural Imprint | Restore stays fail-closed when metadata does not match. |
+| Deletion | Users can clear local model cache and learning state. |
 
-For VLM, TTS, STT, or mesh apps, run the feature-specific path end to end on
-device before submission.
+## 8. Customize the finance assistant
 
-## 7. Archive and submit
+Start with these files:
 
-In Xcode:
+| File | Use it for |
+| --- | --- |
+| `CashFlowCoach/App/ScaffoldConfig.swift` | App name, system prompt, model ID, generation defaults, finance sample domain, Neural Imprint runtime settings. |
+| `CashFlowCoach/AI/AIManager.swift` | Model loading, generation, and Edge Kit session integration. |
+| `CashFlowCoach/AI/EdgeDataBootstrap.swift` | App-owned schemas, facts, and tool registration. |
+| `CashFlowCoach/AI/PersonalizationManager.swift` | Learning-state surfaces and Neural Imprint restore wiring. |
+| `CashFlowCoach/Chat/DemoChatView+LLM.swift` | Streaming chat behavior and user-facing interaction. |
+| `Resources/SampleData/` | Synthetic finance data used by the reference app. Replace it with your app's own local facts. |
 
-1. Select **Any iOS Device** or your distribution destination.
-2. Choose **Product > Archive**.
-3. Open Organizer.
-4. Validate the archive.
-5. Upload to App Store Connect.
+For the finance scenario, add product UI that lets the user review or change
+preferences like risk tolerance, cash-flow horizon, and return stability. Do
+not upload user transcripts, account details, or preference artifacts to
+analytics or remote support systems.
 
-In App Store Connect, make sure the privacy nutrition labels match the app's
-actual behavior. If the app keeps all prompts, audio, images, and model data on
-device, say that clearly in the review notes and in user-facing copy.
+## 9. Production checklist
 
-## Deployment checklist
-
-- App name, icon, bundle ID, and signing team are final.
-- Increased Memory Limit entitlement is enabled when needed.
-- Model delivery strategy is tested: bundled, on-demand, or remote download.
-- First launch works without developer-only paths.
-- Minimum supported device has been tested with a Release build.
-- Settings include a way to clear local model and personalization data.
-- App Store privacy answers match the shipped app behavior.
+- Pin Edge Kit, Edge Engine, and Edge Halo binary package versions.
+- Test on the exact physical device classes you support.
+- Keep simulator builds for UI iteration only; do not use them for MLX runtime
+  validation.
+- Keep the base model path working when Neural Imprint restore fails.
+- Make learning state inspectable enough for user trust and removable from app
+  settings.
+- Replace scaffold sample tools and data with app-owned finance schemas and
+  read-only tool policies.
+- Keep App Store privacy answers aligned with what the app actually stores,
+  transfers, and deletes.
 
 ## Next steps
 
-- See [Edge Scaffold configuration](/docs/optimize-and-ship/scaffold).
-- Review [Platform requirements](/docs/guides/platform-requirements).
+- Run the [CLI learning demo](/docs/get-started/minute-demo) if you have not
+  already compared before/after answers.
+- Read [Edge Scaffold configuration](/docs/optimize-and-ship/scaffold) for the
+  template fields Edge Studio rewrites during export.
+- Review [Neural Imprint vs LoRA](/docs/guides/neural-imprint-vs-lora) when
+  choosing between local learning artifacts and model-adapter releases.

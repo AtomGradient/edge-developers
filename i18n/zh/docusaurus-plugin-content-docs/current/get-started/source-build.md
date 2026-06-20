@@ -64,7 +64,7 @@ edge demo chat --model qwen3.5-9b-4bit --interactive
 
 看到 `[chat:ready]` 后，可以连续问几个普通问题，并用 `/exit` 退出。第一次加载 9B 模型可能需要几十秒。
 
-基础对话跑通后，继续看 [CLI 学习演示](/docs/get-started/minute-demo)，检查合成纠错样本，并看到用户特定学习在不创建新模型 release 的情况下被恢复。
+基础对话跑通后，继续看 [CLI 学习演示](/docs/get-started/minute-demo)，检查合成纠错样本，并看到用户特定学习在不创建新模型 release 的情况下被恢复。然后把同一套生命周期构建进一个 [可学习 iOS App](/docs/examples/build-and-ship)。
 
 ## 启动 Web UI
 
