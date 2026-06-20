@@ -7,6 +7,11 @@ title: Start Here
 
 AtomGradient Edge is a local-first developer platform for building private AI agents that run, learn, and coordinate on user-owned devices.
 
+Neural Imprint is the on-device learning primitive in that stack: user-specific
+state becomes a local, removable artifact that can be restored into a compatible
+base model without replacing the base model package or replaying private profile
+text in every prompt.
+
 The Developer Preview ships on Apple platforms first. Android, Linux, HarmonyOS, Windows, robots, vehicles, and industrial devices share the same long-term technical core: local models, local learning artifacts, app-owned tools, and explicit compatibility gates.
 
 :::info Developer Preview
@@ -17,7 +22,7 @@ All Edge products are in **Developer Preview**. APIs may change between releases
 
 | Goal | Guide | Expected result |
 | --- | --- | --- |
-| Download, chat, then run a learning demo | [CLI learning demo](/docs/get-started/minute-demo) | Local chat works, then a synthetic correction generates a Neural Imprint artifact with a hash-only comparison receipt. |
+| Download, chat, then run a learning demo | [CLI learning demo](/docs/get-started/minute-demo) | Local chat works, then a synthetic correction generates a Neural Imprint artifact that can change runtime behavior while the base model package stays intact. |
 | Install the preview package | [Install Edge Studio](/docs/get-started/source-build) | The `edge` CLI is installed from the `edge-studio` Python package. |
 | Launch the local workbench | [Launch the Web UI](/docs/get-started/source-build#launch-the-web-ui) | `edge studio` runs Edge Studio at `http://127.0.0.1:18842`. |
 | Build an iOS shell | [Minimal iOS app](/docs/get-started/minimal-ios-app) | Edge Scaffold compiles as the smallest iOS reference app. Preview access required. |
@@ -36,7 +41,7 @@ edge models fetch qwen3.5-9b-4bit --source auto
 edge demo chat --model qwen3.5-9b-4bit --interactive
 ```
 
-After the base chat works, continue to the [CLI learning demo](/docs/get-started/minute-demo) to inspect a synthetic correction sample, generate a local Neural Imprint artifact, and compare before/after answer hashes.
+After the base chat works, continue to the [CLI learning demo](/docs/get-started/minute-demo) to inspect a synthetic correction sample, generate a local Neural Imprint artifact, and see user-specific learning restored without creating a new model release.
 
 ## Product stack
 
@@ -64,7 +69,7 @@ Do not upload user transcripts, corrections, or profile artifacts to analytics, 
 | Concept | Developer-facing meaning |
 | --- | --- |
 | **Local-first inference** | Models, prompts, user data, and personalization artifacts stay on user-owned devices unless the user explicitly enables local mesh transfer. |
-| **Neural Imprint** | A local personalization artifact that lets a compatible base model restore a user-specific state without changing model weights. |
+| **Neural Imprint** | The on-device learning artifact for user-specific state: local, removable, compatibility-gated, and restored without replacing the base model package. |
 | **App-owned tools** | Apps define their own tool schemas and action surfaces. Edge infrastructure should not embed app business rules. |
 | **EdgeMesh** | Local-network trust, discovery, and device-to-device transfer for user-owned devices. |
 | **Fail-closed compatibility** | Personalization and model artifacts must match model identity, tokenizer/template identity, runtime version, and tool schema before restore. |

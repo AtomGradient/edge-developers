@@ -3,95 +3,123 @@ sidebar_position: 7
 title: Neural Imprint vs LoRA
 ---
 
-# Why Neural Imprint is an artifact, not LoRA or prompt stuffing
+# Neural Imprint vs LoRA, SFT, and prompt stuffing
 
-Neural Imprint is a local artifact and restore flow. It is designed for apps that need user-specific state while keeping the base model weights unchanged, removable, and guarded by runtime compatibility checks.
+Neural Imprint is Edge's on-device learning contract. It lets an app keep a
+stable base model package while restoring user-specific learning state as a
+local, removable artifact.
 
-This page compares three valid personalization patterns at a public product level:
+This matters for real products. User personalization should not turn every
+preference update into a retraining job, a model-release event, or a larger
+prompt that repeats private profile text. Neural Imprint keeps the baseline
+model path intact and moves personalization into compatibility-gated runtime
+state.
 
-- Neural Imprint artifact restore
-- LoRA or SFT weight adaptation
-- Prompt stuffing
+## The short version
 
-These are different tradeoffs for different deployment contracts. Neural Imprint, LoRA, and SFT serve different use cases.
+| Pattern | Product contract | What developers carry |
+|---|---|---|
+| **Neural Imprint** | Restore a local learning artifact into a compatible base model session | Local artifact lifecycle, compatibility gates, deletion UX |
+| **LoRA / SFT** | Train and ship new model or adapter weights | Training compute, data curation, release packaging, full regression evaluation |
+| **Prompt stuffing** | Insert profile text or instructions into every request | Prompt budget pressure, repeated private-state exposure, prompt governance |
 
-## Summary
+## Why Neural Imprint is the right primitive for on-device AI
 
-| Pattern | What changes | When it happens | Privacy and update contract |
-|---|---|---|---|
-| Neural Imprint artifact restore | A local runtime artifact is restored into a compatible base model session | Runtime, after compatibility gates pass | Base weights stay unchanged; artifact is local, removable user data |
-| LoRA / SFT | Model weights or adapter weights are trained and shipped | Training or fine-tuning time | Produces a new model or adapter release that must be distributed and validated |
-| Prompt stuffing | Extra profile or instruction text is inserted into each request | Request time | Repeats private profile text in the prompt context and consumes context budget |
+On-device AI has a different constraint set from centralized model releases.
+The app needs to learn from a user's local state, preserve privacy boundaries,
+stay removable, survive app updates, and avoid destabilizing the base model
+release path.
 
-## Neural Imprint artifact restore
+Neural Imprint is built around that contract:
 
-Neural Imprint keeps the base model intact. Your app or local workflow creates a Neural Imprint artifact, stores it as local user data, and restores it only when compatibility gates pass.
+- **The base model package stays intact.** Personalization does not replace the
+  shipped model or mutate its weights.
+- **The learning state is local user data.** The artifact can live in app-owned
+  storage, move only through trusted user-owned channels, and be removed by the
+  app.
+- **Restore is compatibility-gated.** Model identity, tokenizer/template,
+  runtime version, tool schema, and artifact metadata are checked before
+  activation.
+- **Failure is closed and recoverable.** If the artifact does not match, the app
+  keeps the base model path active and can regenerate, re-export, or load the
+  matching model.
+- **No prompt replay.** The user's learned state is not pasted into every
+  request; generation stays focused on the current message and tool context.
 
-The important properties are:
+That is the core advantage: the product can let the model keep learning about
+the user without converting personalization into a new model release or a
+request-time prompt payload.
 
-- **Base weights unchanged.** The base model package remains the same.
-- **Local artifact.** The personalization state is stored as a local artifact and can be removed.
-- **Compatibility gates.** Restore must validate model identity, runtime version, tokenizer identity, tool schema hash, and artifact metadata before activation.
-- **No profile text replay.** Chat should run through the same generation path after restore; the app should not paste profile text into every system prompt.
-- **Fail closed.** If validation fails, keep the base model active and offer a recovery path such as regenerate, re-export, or load the matching model.
+## The problem with LoRA and SFT for per-user learning
 
-This explanation intentionally stays at the public API and workflow level. It does not describe private artifact construction, model-personalization algorithms, training internals, runtime internals, or implementation formulas.
+LoRA and SFT are useful when the desired output is a trained model or adapter
+release. They are not the right default for per-user, on-device learning loops.
 
-## LoRA and SFT weight adaptation
+For a developer shipping personalization, they introduce a heavy contract:
 
-LoRA and SFT are legitimate techniques for training-time adaptation. They are useful when you want to train a model or adapter and ship that adapted artifact as a new release.
+- Training needs enough compute, curated data, and repeatable infrastructure.
+- The adapted model or adapter becomes a versioned release artifact.
+- Every release needs compatibility handling, rollback, and regression
+  evaluation.
+- Weight adaptation can shift behavior outside the target preference or task, so
+  the base-model baseline must be revalidated.
+- Per-user adapters multiply storage, lifecycle, and support complexity.
 
-They have valid use cases when the deployment contract is a trained model or adapter release.
+LoRA and SFT remain good tools for centralized domain adaptation or curated
+model releases. Neural Imprint is stronger when the product goal is continuous,
+user-specific learning on the device while the base model package remains
+stable.
 
-Their deployment contract is different:
+## The problem with prompt stuffing
 
-- The adapted model or adapter becomes a versioned artifact to distribute.
-- The release must be validated like any other model update.
-- Rollback and removability are model or adapter management concerns.
-- The adaptation is not simply a per-user local runtime restore.
+Prompt stuffing is easy to prototype: put a profile summary, memory list, or
+behavior instruction into each request. It breaks down when personalization
+becomes real product state.
 
-For products that want centralized model releases, curated domain behavior, or offline batch training, LoRA or SFT can be the right tool. Neural Imprint targets a different contract: local, user-specific runtime state around an unchanged compatible base model.
+The issues are direct:
 
-## Prompt stuffing
+- Private profile text is replayed in prompt context.
+- Context budget is spent on state replay instead of the current task.
+- Longer prompts are harder to govern, inspect, and keep stable.
+- Prompt text is not a removable, compatibility-gated artifact lifecycle.
+- The app must constantly decide which private facts are safe to paste into a
+  request.
 
-Prompt stuffing means inserting profile text, summaries, or long instructions into every request. It can be useful for simple prototypes, but it has a different privacy and runtime shape:
-
-- Profile text repeats in request context.
-- Context budget is spent on replaying state.
-- The app must decide what private text is safe to include in every prompt.
-- Prompt content can drift from the local artifact lifecycle and compatibility gates.
-
-Neural Imprint avoids request-time profile replay. The restored artifact changes runtime state under compatibility gates, while the prompt remains focused on the current user request and tool context.
+Neural Imprint avoids that shape. The user's learned state is restored as local
+runtime state under explicit compatibility gates; the prompt can stay focused on
+the current request.
 
 ## Choosing the pattern
 
-Use Neural Imprint artifact restore when you need:
+Use **Neural Imprint** when you need:
 
-- local user-specific state,
-- unchanged base weights,
-- fail-closed compatibility validation,
-- user-removable personalization data,
-- no request-time profile text replay.
+- on-device user-specific learning,
+- a stable base model package,
+- local and removable personalization state,
+- compatibility-gated restore,
+- failure that keeps the base model path active,
+- no request-time private profile replay.
 
-Use LoRA or SFT when you need:
+Use **LoRA or SFT** when you intentionally want:
 
 - a trained model or adapter release,
 - centralized evaluation and distribution,
 - a domain adaptation that is not per-user local state,
-- a model update lifecycle independent of user-owned artifacts.
+- a model update lifecycle independent of user-owned artifacts,
+- the budget to run full training and regression evaluation.
 
-Use prompt stuffing when you need:
+Use **prompt stuffing** only when you intentionally want:
 
-- a lightweight prototype,
+- a lightweight prototype or short-lived instruction layer,
 - explicit request-time instructions,
 - no artifact lifecycle,
-- brief non-private context that can safely repeat in prompts.
+- brief non-private context that can safely repeat in every prompt.
 
-## Non-claims
+## Public boundary
 
-This page does not rank Neural Imprint, LoRA, SFT, or prompt stuffing. It does not make evaluation claims. It describes deployment boundaries and data ownership.
-
-It also does not describe private implementation details such as artifact construction, training methods, runtime formulas, or resource planning internals.
+This page describes the product and integration contract. It does not publish
+private artifact construction methods, training internals, runtime formulas, or
+kernel implementation details.
 
 ## Related guides
 

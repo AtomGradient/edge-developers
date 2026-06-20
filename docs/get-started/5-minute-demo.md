@@ -10,15 +10,22 @@ synthetic learning step, run the learning demo, then chat again with the local
 Neural Imprint artifact loaded.
 
 The demo uses a built-in synthetic sample. It does not use your private data,
-does not change the model weights, and does not claim the model became better in
-general. It only shows that a local learning artifact can change behavior for a
-controlled example.
+does not change the model weights, and keeps the whole flow on your machine. The
+point of the demo is the Neural Imprint contract: a local model can keep its base
+model package intact while restoring a user-specific learning artifact at
+runtime.
 
 ## Where this fits in on-device AI
 
 Neural Imprint is for on-device AI products that run a local model and need
 user-specific behavior without uploading private state, changing the base model
 weights, or replaying private profile text in every prompt.
+
+That is the core advantage for on-device AI. Fine-tuning and LoRA turn
+personalization into a training and model-release problem. Prompt stuffing turns
+personalization into repeated private text inside every request. Neural Imprint
+keeps personalization as local, removable runtime state around a compatible base
+model.
 
 Typical use cases include:
 
@@ -271,10 +278,14 @@ read.
 
 ### Is this fine-tuning?
 
-No. This demo does not train the base model weights, publish an adapter, or
-create a new model release. It writes synthetic records into isolated local demo
-state, regenerates a Neural Imprint artifact, and restores that artifact into a
-compatible local runtime session.
+No. Fine-tuning and LoRA create new weights or adapter artifacts. That requires
+training infrastructure, enough compute, release packaging, rollback planning,
+and a regression suite because the adapted model can shift baseline behavior.
+
+Neural Imprint uses a different contract. The base model package stays intact.
+User-specific learning is restored as a local artifact only when compatibility
+checks pass, so the product can keep a stable base model path while allowing
+user-owned learning state to evolve on device.
 
 For the deployment differences between Neural Imprint, LoRA/SFT, and prompt
 stuffing, see [Neural Imprint vs LoRA](/docs/guides/neural-imprint-vs-lora).
@@ -308,18 +319,23 @@ next is the printed `next:` line that passes `learn_receipt.json`.
 
 ### Does `answers_differ: true` prove the model improved?
 
-No. It proves only that the restored Neural Imprint artifact changed the answer
-for this controlled synthetic example. It is not a general quality claim and it
-is not a benchmark result.
+It proves that the restored Neural Imprint artifact is active for this
+controlled synthetic example and that the answer moved after the local learning
+artifact was restored.
 
-Use task-specific evaluation before making claims about quality, accuracy, or
-production readiness.
+For production quality claims, use task-specific evaluation. The important
+product contract is already visible here: personalization can be activated
+locally without replacing the base model release.
 
 ### Is this prompt stuffing?
 
-No. The after-learning chat does not paste the synthetic profile text into every
-prompt. It restores a local artifact and then uses the normal generation path for
-the current user message.
+No. Prompt stuffing repeats profile summaries or instructions inside every
+request. That consumes context budget, replays private state, and gets harder to
+govern as the user history grows.
+
+The after-learning chat restores a local Neural Imprint artifact and then uses
+the normal generation path for the current user message. The private learning
+state is not pasted back into every prompt.
 
 ### Where is the local state?
 

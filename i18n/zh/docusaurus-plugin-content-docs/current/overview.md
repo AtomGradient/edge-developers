@@ -7,6 +7,8 @@ title: 从这里开始
 
 AtomGradient Edge 是一个本地优先的开发者平台，用来构建运行在用户自有设备上的私有 AI 代理，让模型在端侧运行、学习并跨设备协同。
 
+Neural Imprint 是这个技术栈里的端侧学习原语：用户特定状态会成为本地、可删除的产物，并在兼容的基础模型中恢复；它不需要替换基础模型包，也不需要把私有 profile 文本塞进每一次 prompt。
+
 开发者预览版先面向 Apple 平台发布。Android、Linux、HarmonyOS、Windows、机器人、汽车与工业设备共享同一个长期技术内核：本地模型、本地学习产物、应用自有工具，以及显式兼容性闸门。
 
 :::info 开发者预览
@@ -17,7 +19,7 @@ AtomGradient Edge 是一个本地优先的开发者平台，用来构建运行�
 
 | 目标 | 指南 | 预期结果 |
 | --- | --- | --- |
-| 下载模型、对话、运行学习演示 | [CLI 学习演示](/docs/get-started/minute-demo) | 本地对话正常运行，然后用合成纠错样本生成 Neural Imprint 产物，并写入仅哈希的对比回执。 |
+| 下载模型、对话、运行学习演示 | [CLI 学习演示](/docs/get-started/minute-demo) | 本地对话正常运行，然后用合成纠错样本生成 Neural Imprint 产物；基础模型包保持不变，运行时行为可以被本地学习产物改变。 |
 | 安装预览软件包 | [安装 Edge Studio](/docs/get-started/source-build) | 从 `edge-studio` Python 软件包安装 `edge` CLI。 |
 | 启动本地工作台 | [启动 Web UI](/docs/get-started/source-build#启动-web-ui) | `edge studio` 在 `http://127.0.0.1:18842` 运行 Edge Studio。 |
 | 构建 iOS shell | [最小 iOS app](/docs/get-started/minimal-ios-app) | Edge Scaffold 作为最小 iOS 参考 app 编译通过。需要预览访问权限。 |
@@ -36,7 +38,7 @@ edge models fetch qwen3.5-9b-4bit --source auto
 edge demo chat --model qwen3.5-9b-4bit --interactive
 ```
 
-基础对话跑通后，继续看 [CLI 学习演示](/docs/get-started/minute-demo)：检查合成纠错样本，生成本地 Neural Imprint 产物，并对比恢复前后的回答哈希。
+基础对话跑通后，继续看 [CLI 学习演示](/docs/get-started/minute-demo)：检查合成纠错样本，生成本地 Neural Imprint 产物，并看到用户特定学习在不创建新模型 release 的情况下被恢复。
 
 ## 产品栈
 
@@ -64,7 +66,7 @@ Edge 围绕用户自有计算设计：
 | 概念 | 面向开发者的含义 |
 | --- | --- |
 | **本地优先推理** | 模型、prompt、用户数据和个性化产物默认留在用户自有设备上。 |
-| **Neural Imprint** | 本地个性化产物，让兼容的基础模型恢复用户相关状态，而不改模型权重。 |
+| **Neural Imprint** | 面向用户特定状态的端侧学习产物：本地、可删除、受兼容性闸门保护，并且恢复时不替换基础模型包。 |
 | **App 自有工具** | App 定义自己的工具 schema 和动作空间。Edge 基础设施不应内嵌 app 业务规则。 |
 | **EdgeMesh** | 面向用户自有设备的本地网络信任、发现与设备间传输。 |
 | **Fail-closed 兼容性** | 个性化和模型产物必须匹配模型、tokenizer/template、runtime 和工具 schema 后才能恢复。 |
