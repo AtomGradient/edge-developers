@@ -30,8 +30,8 @@ type Step = {
 const enSteps: Step[] = [
   {
     label: '1',
-    title: 'Install the preview CLI',
-    body: 'Use a source checkout during preview. The public pip package is the intended release path, but it is not published yet.',
+    title: 'Install Edge Studio',
+    body: 'Create a Python 3.11 environment and install the public edge-studio package from PyPI. Use a source checkout only when contributing to Edge Studio itself.',
     link: '/docs/get-started/source-build',
   },
   {
@@ -51,8 +51,8 @@ const enSteps: Step[] = [
 const zhSteps: Step[] = [
   {
     label: '1',
-    title: '安装预览版 CLI',
-    body: '预览阶段先使用源码安装。公开 pip 包是目标发布路径，但现在还没有发布到 PyPI。',
+    title: '安装 Edge Studio',
+    body: '创建 Python 3.11 环境，并从 PyPI 安装公开的 edge-studio 包。只有参与 Edge Studio 本身开发时才需要源码安装。',
     link: '/docs/get-started/source-build',
   },
   {
@@ -82,7 +82,7 @@ const enPaths: LinkCard[] = [
   {
     eyebrow: 'iOS / Swift',
     title: 'iOS app integration',
-    body: 'Build the minimal iOS shell, then integrate Edge Kit, Edge Halo, and Edge Scaffold. Requires preview access and real-device validation.',
+    body: 'Build the minimal iOS shell, then integrate the public Edge Kit package, Edge Halo binary package, and Edge Scaffold template. Validate on a real device before treating the app path as integrated.',
     primaryLabel: 'Build the minimal iOS app',
     primaryLink: '/docs/get-started/minimal-ios-app',
     secondaryLabel: 'Swift SDK setup',
@@ -103,7 +103,7 @@ const zhPaths: LinkCard[] = [
   {
     eyebrow: 'iOS / Swift',
     title: 'iOS 应用集成',
-    body: '构建最小 iOS 应用壳，再接入 Edge Kit、Edge Halo 和 Edge Scaffold。需要预览访问权限和真机验证。',
+    body: '构建最小 iOS 应用壳，再接入公开的 Edge Kit package、Edge Halo binary package 和 Edge Scaffold 模板。把应用路径视为已集成前，请先完成真机验证。',
     primaryLabel: '构建最小 iOS 应用',
     primaryLink: '/docs/get-started/minimal-ios-app',
     secondaryLabel: 'Swift SDK 设置',
@@ -201,23 +201,23 @@ const zhCapabilities: LinkCard[] = [
   },
 ];
 
-const EN_CODE = `# install once during Developer Preview
-git clone https://github.com/AtomGradient/edge-studio.git
-cd edge-studio
+const EN_CODE = `# install Edge Studio CLI
 python3.11 -m venv .venv
 source .venv/bin/activate
-python -m pip install -e .
+python -m pip install --upgrade pip
+python -m pip install --upgrade --pre edge-studio
+edge doctor
 
 # first local chat
 edge models fetch qwen3.5-9b-4bit --source auto
 edge demo chat --model qwen3.5-9b-4bit --interactive`;
 
-const ZH_CODE = `# 预览阶段安装一次
-git clone https://github.com/AtomGradient/edge-studio.git
-cd edge-studio
+const ZH_CODE = `# 安装 Edge Studio CLI
 python3.11 -m venv .venv
 source .venv/bin/activate
-python -m pip install -e .
+python -m pip install --upgrade pip
+python -m pip install --upgrade --pre edge-studio
+edge doctor
 
 # 第一次本地多轮对话
 edge models fetch qwen3.5-9b-4bit --source auto
@@ -298,8 +298,8 @@ export default function Home(): React.JSX.Element {
             <h2>{isZh ? '选择你的集成路径' : 'Choose your integration path'}</h2>
             <p>
               {isZh
-                ? 'CLI 是最快的体验路径。iOS/Swift 是应用集成路径，需要预览访问权限和真机验证。'
-                : 'The CLI path is the fastest way to try Edge. The iOS/Swift path is for app integration and requires preview access plus device validation.'}
+                ? 'CLI 是最快的体验路径。iOS/Swift 是应用集成路径，使用公开包解析，并且必须完成真机验证。'
+                : 'The CLI path is the fastest way to try Edge. The iOS/Swift path is for app integration with public packages and must be validated on real devices.'}
             </p>
           </div>
           <div className={styles.pathGrid}>

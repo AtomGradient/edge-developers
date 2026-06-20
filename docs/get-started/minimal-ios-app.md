@@ -7,8 +7,8 @@ title: Minimal iOS app
 
 The fastest iOS path in the current preview is Edge Scaffold in a no-model build. It verifies the app shell, signing, Swift package wiring, and real-device build path before you add a model.
 
-:::info Preview access
-Current Edge Scaffold and Edge Kit access can still be gated during Developer Preview. Edge Halo is resolved through the public `edge-halo-binary` package, not the private source repository. If Swift Package Manager cannot resolve the packages, finish preview onboarding before treating the app path as integrated.
+:::info Public packages
+Edge Scaffold, Edge Kit, Edge Engine, and the Edge Halo binary package resolve from public GitHub and Swift Package Manager URLs. Edge Halo source remains private. The app path still requires Xcode signing, device provisioning, exact version pins, and real-device validation.
 :::
 
 ## Build the minimal app shell

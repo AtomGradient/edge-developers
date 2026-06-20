@@ -15,7 +15,7 @@ text in every prompt.
 The Developer Preview ships on Apple platforms first. Android, Linux, HarmonyOS, Windows, robots, vehicles, and industrial devices share the same long-term technical core: local models, local learning artifacts, app-owned tools, and explicit compatibility gates.
 
 :::info Developer Preview
-All Edge products are in **Developer Preview**. APIs may change between releases. Edge Studio and the Edge Halo binary package are public; some Swift repositories remain preview-gated until their public release switches are flipped. Pin package versions and validate on real devices after each upgrade.
+All Edge products are in **Developer Preview**. APIs may change between releases. Edge Studio, Edge Kit, Edge Engine, Edge Scaffold, and the Edge Halo binary package are public release surfaces; Edge Halo source remains private. Pin package versions and validate on real devices after each upgrade.
 :::
 
 ## Getting started
@@ -23,9 +23,9 @@ All Edge products are in **Developer Preview**. APIs may change between releases
 | Goal | Guide | Expected result |
 | --- | --- | --- |
 | Download, chat, then run a learning demo | [CLI learning demo](/docs/get-started/minute-demo) | Local chat works, then a synthetic correction generates a Neural Imprint artifact that can change runtime behavior while the base model package stays intact. |
-| Install the preview package | [Install Edge Studio](/docs/get-started/source-build) | The `edge` CLI is installed from the `edge-studio` Python package. |
+| Install Edge Studio | [Install Edge Studio](/docs/get-started/source-build) | The `edge` CLI is installed from the public `edge-studio` Python package. |
 | Launch the local workbench | [Launch the Web UI](/docs/get-started/source-build#launch-the-web-ui) | `edge studio` runs Edge Studio at `http://127.0.0.1:18842`. |
-| Build an iOS shell | [Minimal iOS app](/docs/get-started/minimal-ios-app) | Edge Scaffold compiles as the smallest iOS reference app when your preview access includes Edge Kit and Edge Scaffold. |
+| Build an iOS shell | [Minimal iOS app](/docs/get-started/minimal-ios-app) | Edge Scaffold compiles as the smallest iOS reference app with public Swift package dependencies and local signing. |
 | Integrate the Swift SDK | [Swift SDK setup](/docs/get-started/quickstart) | Edge Kit loads a local model in an Apple-platform app. |
 
 ## First commands

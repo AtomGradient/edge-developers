@@ -12,7 +12,7 @@ Neural Imprint 是这个技术栈里的端侧学习原语：用户特定状态�
 开发者预览版先面向 Apple 平台发布。Android、Linux、HarmonyOS、Windows、机器人、汽车与工业设备共享同一个长期技术内核：本地模型、本地学习产物、应用自有工具，以及显式兼容性闸门。
 
 :::info 开发者预览
-所有 Edge 产品都处于**开发者预览**阶段。API 可能在版本间变化。Edge Studio 和 Edge Halo binary package 已公开；部分 Swift 仓库在正式公开前仍需要预览访问权限。请固定包版本，并在每次升级后用真机重新验证。
+所有 Edge 产品都处于**开发者预览**阶段。API 可能在版本间变化。Edge Studio、Edge Kit、Edge Engine、Edge Scaffold 和 Edge Halo binary package 都是公开发布面；Edge Halo 源码保持私有。请固定包版本，并在每次升级后用真机重新验证。
 :::
 
 ## 入门
@@ -20,9 +20,9 @@ Neural Imprint 是这个技术栈里的端侧学习原语：用户特定状态�
 | 目标 | 指南 | 预期结果 |
 | --- | --- | --- |
 | 下载模型、对话、运行学习演示 | [CLI 学习演示](/docs/get-started/minute-demo) | 本地对话正常运行，然后用合成纠错样本生成 Neural Imprint 产物；基础模型包保持不变，运行时行为可以被本地学习产物改变。 |
-| 安装预览软件包 | [安装 Edge Studio](/docs/get-started/source-build) | 从 `edge-studio` Python 软件包安装 `edge` CLI。 |
+| 安装 Edge Studio | [安装 Edge Studio](/docs/get-started/source-build) | 从公开的 `edge-studio` Python 软件包安装 `edge` CLI。 |
 | 启动本地工作台 | [启动 Web UI](/docs/get-started/source-build#启动-web-ui) | `edge studio` 在 `http://127.0.0.1:18842` 运行 Edge Studio。 |
-| 构建 iOS shell | [最小 iOS app](/docs/get-started/minimal-ios-app) | 当预览权限包含 Edge Kit 和 Edge Scaffold 时，Edge Scaffold 作为最小 iOS 参考 app 编译通过。 |
+| 构建 iOS shell | [最小 iOS app](/docs/get-started/minimal-ios-app) | Edge Scaffold 使用公开 Swift package 依赖和本地签名，作为最小 iOS 参考 app 编译通过。 |
 | 集成 Swift SDK | [Swift SDK 设置](/docs/get-started/quickstart) | Edge Kit 在 Apple 平台 app 中加载本地模型。 |
 
 ## 第一组命令
