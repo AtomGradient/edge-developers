@@ -13,7 +13,7 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 
 ## 版本策略
 
-开发者预览阶段，Swift 包使用 `1.0.0-rcN` 标签发布。Edge Studio 的 Python 包当前使用 PyPI 版本 `0.0.1rc8` 和 GitHub tag `v0.0.1rc8`。破坏性变更会在这里记录迁移步骤。正式可用后会遵循语义化版本。
+开发者预览阶段，Swift 包使用 `1.0.0-rcN` 标签发布。Edge Studio 的 Python 包当前使用 PyPI 版本 `0.0.1rc9` 和 GitHub tag `v0.0.1rc9`。破坏性变更会在这里记录迁移步骤。正式可用后会遵循语义化版本。
 
 ## 如何升级
 
@@ -31,7 +31,7 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 
 | 产品表面 | 当前访问方式 | 说明 |
 |---|---|---|
-| Edge Studio | Python 软件包 `edge-studio==0.0.1rc8`，GitHub tag `v0.0.1rc8` | 安装后只暴露一个 `edge` 命令。用 `edge studio` 启动本地 Studio UI。 |
+| Edge Studio | Python 软件包 `edge-studio==0.0.1rc9`，GitHub tag `v0.0.1rc9` | 安装后只暴露一个 `edge` 命令。用 `edge studio` 启动本地 Studio UI。 |
 | Swift SDK 文档 | Edge Kit `1.0.0-rc98` | 文档使用精确固定版本。升级前必须重新验证。 |
 | Edge Engine 依赖 | Edge Engine `1.0.0-rc138` | 公开 GitHub 仓库位于 `AtomGradient/edge-engine`；包解析不应再需要 SSH 访问权限。 |
 | Edge Halo binary 依赖 | Edge Halo binary `1.0.0-rc24` | 公开二进制 SwiftPM 包位于 `AtomGradient/edge-halo-binary`；源码仍保持私有。 |
@@ -41,7 +41,7 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 
 | 组件 | 兼容预览版本 |
 |---|---|
-| Edge Studio | `v0.0.1rc8` |
+| Edge Studio | `v0.0.1rc9` |
 | Edge Kit | `1.0.0-rc98`，依赖 Edge Engine `1.0.0-rc138` |
 | Edge Halo binary | `1.0.0-rc24` |
 | Edge Scaffold | 当前预览版固定依赖 Edge Kit `1.0.0-rc98` 与 Edge Halo binary `1.0.0-rc24` |
@@ -76,6 +76,12 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 ---
 
 ## edge-studio
+
+### v0.0.1rc9
+
+- PyPI release candidate 版本：`0.0.1rc9`。确定性安装：`python -m pip install edge-studio==0.0.1rc9`。
+- 在理财学习 demo 的 dry-run、receipt 和 text preview 中加入 `expected_tool_policy`。这个字段是确定性预览，不是实时 tool-call trace。
+- 将开发者首跑路径更新为一页式设备 Agent 流程：偏好学习、工具策略检查，以及 Edge Studio 载体导出。
 
 ### v0.0.1rc8
 
