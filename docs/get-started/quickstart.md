@@ -37,8 +37,8 @@ dependencies: [
 
 Pin preview releases exactly. Re-validate on real devices before moving to a newer `1.0.0-rcN` tag.
 
-:::info Preview access
-Some package resolution paths may require AtomGradient preview access while Edge Kit and Edge Engine remain gated. Run `swift package resolve` in your development and CI environment to verify.
+:::info Public packages
+Edge Kit and Edge Engine are public GitHub repositories. Run `swift package resolve` in your development and CI environment to verify the exact tags before treating the SDK as integrated.
 :::
 
 Then add the product you need:

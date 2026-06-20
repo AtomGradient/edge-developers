@@ -72,7 +72,7 @@ Install the Swift SDK:
 .package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc98")
 ```
 
-Some Swift package paths are still preview-gated until the corresponding repositories are made public. Edge Halo is consumed through the public `edge-halo-binary` package, not the private source repository.
+Edge Kit, Edge Engine, Edge Scaffold, and the Edge Halo binary package are public GitHub repositories. Edge Halo source remains private; apps consume it through the public `edge-halo-binary` package.
 
 ## CLI Reference
 

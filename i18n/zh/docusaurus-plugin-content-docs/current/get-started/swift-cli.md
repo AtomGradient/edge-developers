@@ -39,7 +39,7 @@ dependencies: [
 )
 ```
 
-当前预览版中，Edge Kit `1.0.0-rc98` 使用 Edge Engine `1.0.0-rc138`。Edge Halo 通过公开二进制包 `edge-halo-binary` `1.0.0-rc24` 分发。Edge Kit 和 Edge Engine 在正式公开前仍可能需要 AtomGradient 预览访问权限。
+当前预览版中，Edge Kit `1.0.0-rc98` 使用 Edge Engine `1.0.0-rc138`。Edge Halo 通过公开二进制包 `edge-halo-binary` `1.0.0-rc24` 分发。Edge Kit、Edge Engine、Edge Scaffold 和 Edge Halo 二进制包都从公开 GitHub 仓库解析。
 
 ## 运行 EdgeStudio 验证 CLI
 
@@ -112,7 +112,7 @@ swift run edge-swift smoke tts /path/to/tts-model --output ./tts-output
 
 ## CI 示例
 
-这个示例只作为 C3 文档片段。请按你的预览访问权限环境调整路径和 token。
+这个示例只作为 C3 文档片段。请按你的 CI 环境调整路径和签名设置。
 
 ```yaml
 name: Edge Swift CLI smoke

@@ -25,7 +25,7 @@ During Developer Preview, Swift package releases follow `1.0.0-rcN` tags. Edge S
 
 ## Developer Preview boundaries
 
-Developer Preview is a limited preview channel. The changelog documents what is shipped, what requires preview access, and what is deliberately not enabled yet.
+Developer Preview is a limited preview channel. The changelog documents what is shipped, what is public, and what is deliberately not enabled yet.
 
 ### Access matrix
 
@@ -33,9 +33,9 @@ Developer Preview is a limited preview channel. The changelog documents what is 
 |---|---|---|
 | Edge Studio | Python package `edge-studio==0.0.1rc5`, GitHub tag `v0.0.1rc5` | Installs the single `edge` command. Launch the local Studio UI with `edge studio`. |
 | Swift SDK docs | Edge Kit `1.0.0-rc98` | Docs use an exact version pin. Upgrade only after validation. |
-| Edge Engine dependency | Edge Engine `1.0.0-rc138` | Still preview-gated until the repository visibility is changed. This is surfaced here so package-resolution failures are not mistaken for app integration bugs. |
+| Edge Engine dependency | Edge Engine `1.0.0-rc138` | Public GitHub repository at `AtomGradient/edge-engine`; package resolution should not require SSH access. |
 | Edge Halo binary dependency | Edge Halo binary `1.0.0-rc24` | Public binary SwiftPM package at `AtomGradient/edge-halo-binary`; source remains private. |
-| Edge Scaffold | Pins Edge Kit `1.0.0-rc98` and Edge Halo binary `1.0.0-rc24` | Generated apps still require signing, device provisioning, preview access where required, and real-device validation. |
+| Edge Scaffold | Pins Edge Kit `1.0.0-rc98` and Edge Halo binary `1.0.0-rc24` | Generated apps still require signing, device provisioning, and real-device validation. |
 
 ### Compatibility matrix
 

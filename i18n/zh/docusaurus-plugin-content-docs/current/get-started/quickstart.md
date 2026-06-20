@@ -38,8 +38,8 @@ dependencies: [
 
 预览版本应精确固定。升级到新的 `1.0.0-rcN` tag 前，请重新真机验证。
 
-:::info 预览访问权限
-当 Edge Kit 和 Edge Engine 仍处于预览权限阶段时，部分包解析路径可能需要 AtomGradient 预览访问权限。请在开发和 CI 环境中运行 `swift package resolve` 验证。
+:::info 公开包
+Edge Kit 和 Edge Engine 都是公开 GitHub 仓库。请在开发和 CI 环境中运行 `swift package resolve`，确认固定 tag 可以解析后再视为 SDK 已完成接入。
 :::
 
 然后添加你需要的 product：

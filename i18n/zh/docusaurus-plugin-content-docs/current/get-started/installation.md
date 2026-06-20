@@ -30,8 +30,8 @@ dependencies: [
 
 开发者预览版本应精确固定版本。升级到新的 `1.0.0-rcN` tag 前，请重新完成真机验证。
 
-:::info 预览访问权限
-公开文档中的 Swift package URL 使用 HTTPS。当前预览版中，Edge Kit 及其 Edge Engine 依赖在正式公开前仍可能需要 AtomGradient 预览访问权限。请先确认包解析，再把某个 tag 当作已完成集成。
+:::info 公开包
+Swift package URL 使用 HTTPS，并从公开 GitHub 仓库解析。请先确认包解析，再把某个 tag 当作已完成集成；每次升级预览版本后都要重新完成真机验证。
 :::
 
 ## 添加总入口 product

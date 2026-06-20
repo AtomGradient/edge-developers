@@ -25,7 +25,7 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 
 ## 开发者预览边界
 
-开发者预览是受限预览通道。更新日志会明确哪些能力已经发布、哪些依赖需要预览访问权限、哪些能力当前刻意不启用。
+开发者预览是受限预览通道。更新日志会明确哪些能力已经发布、哪些仓库已经公开、哪些能力当前刻意不启用。
 
 ### 访问矩阵
 
@@ -33,9 +33,9 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 |---|---|---|
 | Edge Studio | Python 软件包 `edge-studio==0.0.1rc5`，GitHub tag `v0.0.1rc5` | 安装后只暴露一个 `edge` 命令。用 `edge studio` 启动本地 Studio UI。 |
 | Swift SDK 文档 | Edge Kit `1.0.0-rc98` | 文档使用精确固定版本。升级前必须重新验证。 |
-| Edge Engine 依赖 | Edge Engine `1.0.0-rc138` | 仓库可见性切换前仍处于预览访问权限阶段。这里明确写出，避免把包解析失败误判成 app 集成问题。 |
+| Edge Engine 依赖 | Edge Engine `1.0.0-rc138` | 公开 GitHub 仓库位于 `AtomGradient/edge-engine`；包解析不应再需要 SSH 访问权限。 |
 | Edge Halo binary 依赖 | Edge Halo binary `1.0.0-rc24` | 公开二进制 SwiftPM 包位于 `AtomGradient/edge-halo-binary`；源码仍保持私有。 |
-| Edge Scaffold | 固定依赖 Edge Kit `1.0.0-rc98` 与 Edge Halo binary `1.0.0-rc24` | 生成的应用仍需要签名、设备 provisioning、必要的预览权限和真机验证。 |
+| Edge Scaffold | 固定依赖 Edge Kit `1.0.0-rc98` 与 Edge Halo binary `1.0.0-rc24` | 生成的应用仍需要签名、设备 provisioning 和真机验证。 |
 
 ### 兼容矩阵
 

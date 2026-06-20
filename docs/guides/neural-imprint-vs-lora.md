@@ -10,7 +10,7 @@ stable base model package while restoring user-specific learning state as a
 local, removable artifact.
 
 This matters for real products. User personalization should not turn every
-preference update into a retraining job, a model-release event, or a larger
+preference update into a new training run, a model-release event, or a larger
 prompt that repeats private profile text. Neural Imprint keeps the baseline
 model path intact and moves personalization into compatibility-gated runtime
 state.
@@ -23,6 +23,9 @@ state.
 | **LoRA / SFT** | Train and ship new model or adapter weights | Training compute, data curation, release packaging, full regression evaluation |
 | **Prompt stuffing** | Insert profile text or instructions into every request | Prompt budget pressure, repeated private-state exposure, prompt governance |
 
+These patterns have different tradeoffs. Choosing the right one depends on the
+app's deployment boundaries, data ownership model, and evaluation claims.
+
 ## Why Neural Imprint is the right primitive for on-device AI
 
 On-device AI has a different constraint set from centralized model releases.
@@ -32,8 +35,9 @@ release path.
 
 Neural Imprint is built around that contract:
 
-- **The base model package stays intact.** Personalization does not replace the
-  shipped model or mutate its weights.
+- **The base model package and base weights stay intact.** Personalization does
+  not replace the shipped model or mutate its weights; the base weights remain
+  unchanged.
 - **The learning state is local user data.** The artifact can live in app-owned
   storage, move only through trusted user-owned channels, and be removed by the
   app.
@@ -43,7 +47,7 @@ Neural Imprint is built around that contract:
 - **Failure is closed and recoverable.** If the artifact does not match, the app
   keeps the base model path active and can regenerate, re-export, or load the
   matching model.
-- **No prompt replay.** The user's learned state is not pasted into every
+- **No profile text replay.** The user's learned state is not pasted into every
   request; generation stays focused on the current message and tool context.
 
 That is the core advantage: the product can let the model keep learning about
@@ -100,6 +104,9 @@ Use **Neural Imprint** when you need:
 - failure that keeps the base model path active,
 - no request-time private profile replay.
 
+These are valid use cases for Neural Imprint; they are not blanket evaluation
+claims about every model, task, or deployment.
+
 Use **LoRA or SFT** when you intentionally want:
 
 - a trained model or adapter release,
@@ -117,9 +124,10 @@ Use **prompt stuffing** only when you intentionally want:
 
 ## Public boundary
 
-This page describes the product and integration contract. It does not publish
-private artifact construction methods, training internals, runtime formulas, or
-kernel implementation details.
+This page describes the product and integration contract, including deployment
+boundaries, data ownership, and evaluation claims. It does not describe private
+artifact construction methods, training internals, runtime formulas, or
+low-level implementation details.
 
 ## Related guides
 

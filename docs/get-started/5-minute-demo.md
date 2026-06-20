@@ -6,6 +6,8 @@ slug: /get-started/minute-demo
 
 # See local learning in 5 minutes
 
+Runnable in current preview.
+
 This guide shows one visible result: you chat with a local model before a
 synthetic learning step, run the learning demo, then chat again with the local
 Neural Imprint artifact loaded.
@@ -272,6 +274,24 @@ By default, receipts are local and hash-only. In this guide, `--include-text`
 prints and stores raw text only because the sample is synthetic and meant to be
 read.
 
+Without `--include-text`, the receipt keeps hashed identifiers and no raw user
+text:
+
+```json
+{
+  "raw_text_included": false,
+  "network_used_during_demo": false,
+  "network_used_during_model_prepare": false,
+  "question_sha256": "sha256:...",
+  "before_answer_sha256": "sha256:...",
+  "after_answer_sha256": "sha256:..."
+}
+```
+
+The local-only checks fail closed on missing artifacts or metadata and flag
+non-localhost network access. The result you are looking for is simple:
+behavior changed after restoring local Neural Imprint artifact.
+
 ## Common questions
 
 ### Is this fine-tuning?
@@ -315,7 +335,7 @@ artifact or metadata is missing.
 The printed artifact path is useful for inspection. The command you should run
 next is the printed `next:` line that passes `learn_receipt.json`.
 
-### Does `answers_differ: true` prove the model improved?
+### Does `answers_differ: true` prove production quality?
 
 It proves that the restored Neural Imprint artifact is active for this
 controlled synthetic example and that the answer moved after the local learning
@@ -360,4 +380,5 @@ edge demo imprint compare --path <receipt_path> --json
 edge demo reuse --run <run_id> --json
 ```
 
-These are implementation checks. They are not required for the 5-minute demo.
+These are implementation checks, including the artifact reuse smoke command.
+They are not required for the 5-minute demo.

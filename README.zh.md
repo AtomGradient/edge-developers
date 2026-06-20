@@ -72,7 +72,7 @@ Neural Imprint 是本地产物和恢复流程。兼容的基础模型可以恢�
 .package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc98")
 ```
 
-部分 Swift package 路径在对应仓库正式公开前仍可能需要 AtomGradient 预览访问权限。Edge Halo 通过公开的 `edge-halo-binary` 包接入，不通过私有源码仓库接入。
+Edge Kit、Edge Engine、Edge Scaffold 和 Edge Halo 二进制包都是公开 GitHub 仓库。Edge Halo 源码保持私有；App 通过公开的 `edge-halo-binary` 包接入。
 
 ## CLI 参考
 

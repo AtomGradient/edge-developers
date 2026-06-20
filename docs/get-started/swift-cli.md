@@ -39,7 +39,7 @@ Then add the products you need:
 )
 ```
 
-Edge Kit `1.0.0-rc98` uses Edge Engine `1.0.0-rc138` in this preview. Edge Halo is distributed as the public binary package `edge-halo-binary` `1.0.0-rc24`. Some Edge Kit and Edge Engine package resolution paths may still require AtomGradient preview access until those repositories are opened.
+Edge Kit `1.0.0-rc98` uses Edge Engine `1.0.0-rc138` in this preview. Edge Halo is distributed as the public binary package `edge-halo-binary` `1.0.0-rc24`. Edge Kit, Edge Engine, Edge Scaffold, and the Edge Halo binary package resolve from public GitHub repositories.
 
 ## Run the EdgeStudio validation CLI
 
@@ -112,7 +112,7 @@ These commands load the model path you pass explicitly. They do not silently fet
 
 ## CI sample
 
-This sample keeps C3 as documentation only. Adapt paths and access tokens to your preview environment.
+This sample keeps C3 as documentation only. Adapt paths and signing settings to your CI environment.
 
 ```yaml
 name: Edge Swift CLI smoke

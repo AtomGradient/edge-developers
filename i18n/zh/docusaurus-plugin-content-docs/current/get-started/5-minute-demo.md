@@ -6,6 +6,8 @@ slug: /get-started/minute-demo
 
 # 5 分钟看懂本地学习
 
+当前预览版可运行。
+
 这个教程只看一个可见结果：你先和本地模型对话，运行一次合成学习步骤，然后加载本地 Neural Imprint 产物，再和模型对话一次。
 
 这个演示使用内置合成样本。它不会使用你的私人数据，不会修改模型权重，整个流程都在本机完成。这个演示要展示的是 Neural Imprint 的核心契约：本地模型可以保持基础模型包不变，同时在运行时恢复用户特定的学习产物。
@@ -234,6 +236,21 @@ you> /exit
 
 默认情况下，回执是本地的，并且只记录哈希。本教程使用 `--include-text`，只是因为样本是合成的，本来就用于阅读和演示。
 
+不使用 `--include-text` 时，回执保留的是哈希标识符，不保存原始用户文本：
+
+```json
+{
+  "raw_text_included": false,
+  "network_used_during_demo": false,
+  "network_used_during_model_prepare": false,
+  "question_sha256": "sha256:...",
+  "before_answer_sha256": "sha256:...",
+  "after_answer_sha256": "sha256:..."
+}
+```
+
+local-only 检查会在产物或 metadata 缺失时失败即关闭，并检查非本机地址网络访问。你要观察的结果很直接：恢复本地 Neural Imprint 产物后行为发生变化。
+
 ## 常见问题
 
 ### 这是 fine-tuning 吗？
@@ -264,7 +281,7 @@ receipt 是交接对象。它指向生成出来的 artifact，同时记录恢复
 
 打印出来的 artifact 路径适合检查。真正建议执行的下一步，是输出里的 `next:` 那一行，也就是把 `learn_receipt.json` 传给 `--with-imprint`。
 
-### `answers_differ: true` 能证明模型变好了吗？
+### `answers_differ: true` 能证明生产质量吗？
 
 它证明：在这个受控合成样本里，恢复后的 Neural Imprint 产物已经生效，并且回答在本地学习产物恢复后发生了移动。
 
@@ -298,4 +315,4 @@ edge demo imprint compare --path <receipt_path> --json
 edge demo reuse --run <run_id> --json
 ```
 
-这些是实现层检查，不是 5 分钟演示必须执行的步骤。
+这些是实现层检查，其中包括产物复用冒烟命令，不是 5 分钟演示必须执行的步骤。
