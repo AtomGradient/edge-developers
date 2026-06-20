@@ -9,6 +9,20 @@ title: 5 分钟看懂本地学习
 
 这个演示使用内置合成样本。它不会使用你的私人数据，不会修改模型权重，也不声称模型整体变聪明。它只说明：在一个受控样本里，本地学习产物可以改变模型行为。
 
+## 它适合哪些端侧 AI 场景
+
+Neural Imprint 面向的是端侧 AI 产品：模型在本地运行，但产品又需要用户特定行为，同时不上传私人状态、不修改基础模型权重，也不把私有 profile 文本塞进每一次 prompt。
+
+典型场景包括：
+
+- 本地助手适应用户的回答风格、信任边界或工作流偏好。
+- app 自有 copilot 把产品内记忆留在设备上，而不是发送到远端服务。
+- 隐私敏感、离线、合规或企业场景中，用户状态需要保持本地并可删除。
+- 设备或 app 恢复个性化状态时，必须先通过 compatibility gates，才能激活。
+- 开发者在构建产品 UI、删除控制和任务级质量评估前，先在本地验证学习闭环。
+
+这个教程使用合成 CLI 样本，是为了让行为可见。生产 app 仍然需要明确的用户授权、app 自有存储策略、删除 UX、兼容性检查和针对具体任务的评估。
+
 ## 你会看到什么
 
 内置样本要教给模型的是：
@@ -230,6 +244,48 @@ you> /exit
 - 生产级学习流水线已经开启。
 
 默认情况下，回执是本地的，并且只记录哈希。本教程使用 `--include-text`，只是因为样本是合成的，本来就用于阅读和演示。
+
+## 常见问题
+
+### 这是 fine-tuning 吗？
+
+不是。这个演示不会训练基础模型权重，不会发布 adapter，也不会创建一个新的模型版本。它做的是：把合成记录写入隔离的本地演示状态，重新生成 Neural Imprint 产物，然后把这个产物恢复进兼容的本地运行时会话。
+
+如果想了解 Neural Imprint、LoRA/SFT 和 prompt stuffing 的部署差异，请看 [Neural Imprint vs LoRA](/docs/guides/neural-imprint-vs-lora)。
+
+### 模型到底学习了什么？
+
+在这个演示里，唯一的学习输入就是第 3 步你已经检查过的合成样本。它教的是一个受控的回答风格偏好：技术工作流回答要短、直接，并且避免没有证据的质量声明。
+
+如果你想在真正运行前看到将被使用的完整记录和纠错，可以先跑 dry run：
+
+```bash
+edge demo learn run --dry-run \
+  --sample synthetic_profile_correction_v1 \
+  --model qwen3.5-9b-4bit \
+  --include-text \
+  --json
+```
+
+### 为什么 `--with-imprint` 接收 receipt，而不是 artifact 路径？
+
+receipt 是交接对象。它指向生成出来的 artifact，同时记录恢复所需的 metadata、hash、schema version 和 local-only 状态。把 receipt 传给 CLI，可以让 CLI 做校验，并在 artifact 或 metadata 缺失时直接失败。
+
+打印出来的 artifact 路径适合检查。真正建议执行的下一步，是输出里的 `next:` 那一行，也就是把 `learn_receipt.json` 传给 `--with-imprint`。
+
+### `answers_differ: true` 能证明模型变好了吗？
+
+不能。它只证明：在这个受控合成样本里，恢复 Neural Imprint 产物后，回答发生了变化。它不是通用质量声明，也不是 benchmark 结果。
+
+如果要声明质量、准确率或生产可用性，需要针对具体任务做评估。
+
+### 这是 prompt stuffing 吗？
+
+不是。学习后的聊天不会把合成 profile 文本粘贴进每一次 prompt。它恢复的是一个本地产物，然后继续用正常的 generation path 处理当前用户消息。
+
+### 本地状态在哪里？
+
+命令会打印 demo state 路径、artifact 路径、metadata 路径和 receipt 路径。这些文件都在本机 Edge Studio application data 里，属于这次 demo run。这个演示不会上传它们。
 
 ## 进阶检查
 

@@ -14,6 +14,29 @@ does not change the model weights, and does not claim the model became better in
 general. It only shows that a local learning artifact can change behavior for a
 controlled example.
 
+## Where this fits in on-device AI
+
+Neural Imprint is for on-device AI products that run a local model and need
+user-specific behavior without uploading private state, changing the base model
+weights, or replaying private profile text in every prompt.
+
+Typical use cases include:
+
+- A local assistant that adapts to a user's answer style, trust boundaries, or
+  workflow preferences.
+- An app-owned copilot that keeps product-specific memory on the device instead
+  of sending it to a remote service.
+- Privacy-sensitive, offline, regulated, or enterprise workflows where user
+  state should stay local and removable.
+- Device or app restore flows where personalization must pass compatibility
+  gates before it becomes active.
+- Local developer evaluation of a learning loop before building product UI,
+  deletion controls, and task-specific quality tests.
+
+This guide uses a synthetic CLI sample to make the behavior visible. Production
+apps still need explicit user permission, app-owned storage policy, deletion UX,
+compatibility checks, and task-specific evaluation.
+
 ## What you will see
 
 The built-in sample teaches this preference:
@@ -250,6 +273,66 @@ It does not mean:
 By default, receipts are local and hash-only. In this guide, `--include-text`
 prints and stores raw text only because the sample is synthetic and meant to be
 read.
+
+## Common questions
+
+### Is this fine-tuning?
+
+No. This demo does not train the base model weights, publish an adapter, or
+create a new model release. It writes synthetic records into isolated local demo
+state, regenerates a Neural Imprint artifact, and restores that artifact into a
+compatible local runtime session.
+
+For the deployment differences between Neural Imprint, LoRA/SFT, and prompt
+stuffing, see [Neural Imprint vs LoRA](/docs/guides/neural-imprint-vs-lora).
+
+### What did the model learn?
+
+In this demo, the only learning input is the synthetic sample you inspected in
+step 3. It teaches a controlled answer-style preference: keep technical workflow
+answers short, direct, and evidence-bound.
+
+Use the dry run before the real run when you want to see the exact records and
+correction that will be used:
+
+```bash
+edge demo learn run --dry-run \
+  --sample synthetic_profile_correction_v1 \
+  --model qwen3.5-9b-4bit \
+  --include-text \
+  --json
+```
+
+### Why does `--with-imprint` take a receipt instead of the artifact path?
+
+The receipt is the handoff object. It points to the generated artifact and also
+records the metadata, hashes, schema versions, and local-only status needed to
+restore safely. Passing the receipt lets the CLI validate and fail closed if the
+artifact or metadata is missing.
+
+The printed artifact path is useful for inspection. The command you should run
+next is the printed `next:` line that passes `learn_receipt.json`.
+
+### Does `answers_differ: true` prove the model improved?
+
+No. It proves only that the restored Neural Imprint artifact changed the answer
+for this controlled synthetic example. It is not a general quality claim and it
+is not a benchmark result.
+
+Use task-specific evaluation before making claims about quality, accuracy, or
+production readiness.
+
+### Is this prompt stuffing?
+
+No. The after-learning chat does not paste the synthetic profile text into every
+prompt. It restores a local artifact and then uses the normal generation path for
+the current user message.
+
+### Where is the local state?
+
+The command prints the demo state path, artifact path, metadata path, and receipt
+path. These files live in local Edge Studio application data for this demo run.
+They are not uploaded by the demo.
 
 ## Advanced checks
 
