@@ -158,8 +158,11 @@ Edge demo learn (edge.demo.learn.run.v1)
 status: completed
 model: qwen3.5-9b-4bit
 sample: synthetic_profile_correction_v1
+artifact: .../neural_imprint_full_cache.safetensors
+metadata: .../neural_imprint_metadata.json
 answers_differ: true
 receipt: .../learn_receipt.json
+next: edge demo chat --model qwen3.5-9b-4bit --interactive --with-imprint ".../learn_receipt.json"
 raw_text_in_receipt: true
 
 [Before]
@@ -173,7 +176,11 @@ claims unless you have specific evidence to support them.
 
 重点不是每个字完全一致。重点是：学习后的回答反映了第 3 步里你亲眼看到的合成纠错内容。
 
-复制 `receipt:` 后面的路径，下一步会用到：
+`receipt:` 这一行就是下一步命令的交接点。`--with-imprint` 接收的就是这个
+`learn_receipt.json` 路径。你不需要自己去找或传底层 artifact 文件；CLI 会读取
+这个回执，并恢复回执里记录的 Neural Imprint 产物。
+
+复制 `receipt:` 后面的路径：
 
 ```bash
 LEARN_RECEIPT="<path printed after receipt:>"
@@ -181,7 +188,7 @@ LEARN_RECEIPT="<path printed after receipt:>"
 
 ## 6. 学习后再聊天
 
-再次启动交互式聊天，这次从学习回执加载本地 Neural Imprint 产物：
+再次启动交互式聊天，这次把学习回执传给 `--with-imprint`：
 
 ```bash
 edge demo chat \

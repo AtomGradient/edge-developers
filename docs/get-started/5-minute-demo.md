@@ -170,8 +170,11 @@ Edge demo learn (edge.demo.learn.run.v1)
 status: completed
 model: qwen3.5-9b-4bit
 sample: synthetic_profile_correction_v1
+artifact: .../neural_imprint_full_cache.safetensors
+metadata: .../neural_imprint_metadata.json
 answers_differ: true
 receipt: .../learn_receipt.json
+next: edge demo chat --model qwen3.5-9b-4bit --interactive --with-imprint ".../learn_receipt.json"
 raw_text_in_receipt: true
 
 [Before]
@@ -186,7 +189,12 @@ claims unless you have specific evidence to support them.
 The important part is not the exact wording. The important part is that the
 after answer reflects the synthetic correction you inspected in step 3.
 
-Copy the path printed after `receipt:`. You will use it in the next step:
+The `receipt:` line is the handoff point for the next command. `--with-imprint`
+accepts this `learn_receipt.json` path. You do not need to find or pass the
+lower-level artifact path yourself; the CLI reads the receipt and restores the
+artifact recorded inside it.
+
+Copy the path printed after `receipt:`:
 
 ```bash
 LEARN_RECEIPT="<path printed after receipt:>"
@@ -194,8 +202,8 @@ LEARN_RECEIPT="<path printed after receipt:>"
 
 ## 6. Chat after learning
 
-Start interactive chat again, this time loading the local Neural Imprint
-artifact from the learning receipt:
+Start interactive chat again, this time passing the learning receipt to
+`--with-imprint`:
 
 ```bash
 edge demo chat \
