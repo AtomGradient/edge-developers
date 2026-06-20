@@ -95,5 +95,5 @@ Edge Scaffold 包含开发者可见的设置页，用于展示完整本地个性
 
 ## 下一步
 
-- [构建可学习 iOS App](/docs/examples/build-and-ship) — 从 Edge Studio 导出到真机验证的端到端 walkthrough。
+- [构建 Agent 载体](/docs/examples/build-and-ship) — 从 Edge Studio 导出到真机验证的端到端 walkthrough。
 - [平台要求](/docs/guides/platform-requirements) — 设备和 OS 约束。

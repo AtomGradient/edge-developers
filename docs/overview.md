@@ -5,57 +5,64 @@ title: Start Here
 
 # Start Here
 
-You want your app to understand each user better over time.
+In Edge, the device is the Agent. The app is the carrier.
 
-That usually becomes painful fast. LoRA and SFT turn every important preference
-change into training, packaging, rollout, and regression work. Prompt stuffing
-puts private profile text back into every request. Cloud personalization sends
-the most sensitive user state away from the device.
+The app still matters: it owns the UI, permissions, local product policy,
+settings, user controls, and App Store boundary. But the long-lived intelligence
+is not a cloud profile and not an app-specific model fork. It is a local Agent
+runtime on the user's device: local inference, app-approved local signals, RPP
+self-learning, Neural Imprint restore, and user-controlled deletion.
 
-Edge is built for the on-device version of that problem. A finance assistant can
-learn a user's sentence:
+Use a finance assistant as the first concrete case. A user says:
 
 ```text
 I avoid high-risk recommendations. I care about cash flow and stable returns.
 ```
 
-After learning, the assistant should answer with that preference in mind. The
-preference stays local, can be removed by the app, and can be restored later
-into a compatible model session. The base model package is not replaced or
-retrained.
+Later the same user asks:
 
-Edge calls that local learning artifact a **Neural Imprint**. You do not need to
-understand the full lifecycle before trying it. Start with the CLI demo, then
-carry the same idea into a generated iOS app.
+```text
+I have $800 left after bills this month. What should I do with it?
+```
+
+The base model can answer generically. The device Agent should answer with the
+local preference in mind: protect cash flow first, explain conservative options
+before upside, and avoid unsupported return claims. That is the product shift
+Edge is built for: each user's device can keep learning the user while the base
+model package stays stable.
+
+Edge calls the local learning artifact a **Neural Imprint**. It is restored only
+when compatibility checks pass, it is removable local data, and it does not
+require putting private profile text into every prompt.
 
 :::info Developer Preview
-All Edge products are in **Developer Preview**. APIs may change between
-releases. Edge Studio, Edge Kit, Edge Engine, Edge Scaffold, and the Edge Halo
-binary package are public release surfaces; Edge Halo source remains private.
-Pin package versions and validate on real devices after each upgrade.
+Runnable in current preview. Edge Studio, Edge Kit, Edge Engine, Edge Scaffold,
+and the Edge Halo binary package are public release surfaces. Edge Halo source
+remains private. APIs may change between release candidates, so pin versions
+and validate on real devices after each upgrade.
 :::
 
-## What Edge gives you
+## What Edge Gives You
 
 | Developer problem | Edge approach |
 | --- | --- |
-| Per-user learning should not require a model release | Keep the base model package stable and restore local learning artifacts at runtime. |
-| Private preferences should not be pasted into every prompt | Store learning state as app-managed local data, not repeated request text. |
-| Learning must be reversible | Let the app remove the local artifact and continue on the base model path. |
-| Restore must be safe | Check model identity, tokenizer/template, runtime version, and tool schema before activation. |
-| The app owns product policy | Keep user data, tools, deletion UX, and evaluation rules in the app layer. |
+| A user-specific preference should not become a model-release project | Keep the base model package stable and restore local learning artifacts at runtime. |
+| Sensitive local state should not be replayed into every request | Store learned state as app-managed local data, not repeated prompt text. |
+| The user must be able to remove learned state | Let the carrier app delete the local artifact and keep the base model path active. |
+| Restore must be safe | Check model identity, tokenizer/template, runtime version, tool schema, and artifact metadata before activation. |
+| Product policy belongs to the app | Keep user data, tools, permissions, deletion UX, and evaluation rules in the carrier layer. |
 
-## First path
+## First Path
 
 | Goal | Guide | Expected result |
 | --- | --- | --- |
 | Install Edge Studio | [Install Edge Studio](/docs/get-started/source-build) | The `edge` CLI is installed from the public `edge-studio` Python package. |
-| See local learning | [CLI learning demo](/docs/get-started/minute-demo) | A synthetic correction changes runtime behavior; the guide maps the same lifecycle to finance preferences. |
-| Build a learnable iOS app | [Build a learnable iOS app](/docs/examples/build-and-ship) | Edge Studio exports an Edge Scaffold project that you validate on a real device. |
+| Build the first device Agent | [Device Agent demo](/docs/get-started/minute-demo) | A synthetic finance signal becomes a local Neural Imprint; the same base model answers differently after restore. |
+| Export the carrier | [Build the Agent carrier](/docs/examples/build-and-ship) | Edge Studio exports an Edge Scaffold project that you validate on a real iPhone or iPad. |
 | Launch the local workbench | [Launch the Web UI](/docs/get-started/source-build#launch-the-web-ui) | `edge studio` runs Edge Studio at `http://127.0.0.1:18842`. |
 | Build only the iOS shell | [Minimal iOS app](/docs/get-started/minimal-ios-app) | Edge Scaffold compiles with public Swift package dependencies and local signing. |
 
-## First commands
+## First Commands
 
 Create an environment, install Edge Studio, and run the local doctor check:
 
@@ -67,21 +74,22 @@ python -m pip install --upgrade --pre edge-studio
 edge doctor
 ```
 
-Then prepare the demo model and run the learning demo:
+Then prepare the demo model and run the finance learning path:
 
 ```bash
 edge models fetch qwen3.5-9b-4bit --source auto
 edge demo learn run \
-  --sample synthetic_profile_correction_v1 \
+  --sample finance_conservative_cashflow_v1 \
   --model qwen3.5-9b-4bit \
+  --max-tokens 160 \
   --include-text
 ```
 
-The demo uses synthetic data so you can inspect the text safely. It writes a
-local receipt that shows the before/after answers and the local artifact used
-for restore. After that, continue to [Build a learnable iOS app](/docs/examples/build-and-ship).
+The sample is synthetic so you can inspect the learning signal safely. The run
+writes a local receipt with the generated Neural Imprint artifact path and a
+ready-to-copy `edge demo chat --with-imprint ".../learn_receipt.json"` command.
 
-## Product stack
+## Product Stack
 
 | Product | What developers use it for |
 | --- | --- |
@@ -89,9 +97,9 @@ for restore. After that, continue to [Build a learnable iOS app](/docs/examples/
 | **Edge Kit** | Swift SDK for LLM, VLM, speech, model management, EdgeData, EdgeMesh, EdgeDataMeshBridge, EdgeSession, and EdgeUI. |
 | **Edge Engine** | Native on-device inference runtime. Packaged under Edge Kit; most apps do not import it directly. |
 | **Edge Halo** | Personalization lifecycle layer: profile jobs, Neural Imprint capsule validation, restore orchestration, and compatibility checks. Apps consume the public binary package. |
-| **Edge Scaffold** | Reference app and export template showing the recommended iOS integration pattern. |
+| **Edge Scaffold** | Reference carrier template exported by Edge Studio for iOS integration. |
 
-## Privacy model
+## Privacy Model
 
 Edge is designed around user-owned compute:
 
@@ -103,12 +111,13 @@ Edge is designed around user-owned compute:
 Do not upload user transcripts, corrections, financial details, or profile
 artifacts to analytics, crash logs, or remote support systems.
 
-## Core concepts
+## Core Concepts
 
 | Concept | Developer-facing meaning |
 | --- | --- |
-| **Local-first inference** | Models, prompts, user data, and personalization artifacts stay on user-owned devices unless the user explicitly enables a trusted transfer. |
-| **Neural Imprint** | Edge's name for the local learning artifact: removable, compatibility-checked, and restored without replacing the base model package. |
-| **App-owned tools** | Apps define their own tool schemas and action surfaces. Edge infrastructure should not embed app business rules. |
+| **Device Agent** | The private on-device runtime that owns local inference, app-approved learning signals, Neural Imprint restore, and deletion. |
+| **Carrier app** | The app surface that owns UI, permissions, tools, settings, local policy, and user controls. |
+| **Neural Imprint** | Edge's local learning artifact: removable, compatibility-checked, and restored without replacing the base model package. |
+| **App-owned tools** | Apps define their own tool schemas and action surfaces. Edge infrastructure does not embed app business rules. |
 | **EdgeMesh** | Local-network trust, discovery, and device-to-device transfer for user-owned devices. |
-| **Fail-closed compatibility** | If the artifact does not match the model, tokenizer/template, runtime, or tool schema, the app keeps the base model path active. |
+| **Fail-closed compatibility** | If the artifact does not match the model, tokenizer/template, runtime, or tool schema, the carrier keeps the base model path active. |

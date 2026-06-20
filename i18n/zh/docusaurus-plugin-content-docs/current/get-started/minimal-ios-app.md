@@ -67,4 +67,4 @@ Edge Scaffold 不是 dogfood 业务逻辑。把它视为当前最小参考应用
 
 ## 下一步
 
-应用壳构建通过后，继续看 [构建可学习 iOS App](/docs/examples/build-and-ship)。那篇指南会加入理财场景、Edge Studio 导出流程、模型配置、Neural Imprint 恢复检查和真机验证。
+应用壳构建通过后，继续看 [构建 Agent 载体](/docs/examples/build-and-ship)。那篇指南会加入理财场景、Edge Studio 导出流程、模型配置、Neural Imprint 恢复检查和真机验证。

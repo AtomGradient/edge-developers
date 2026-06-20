@@ -1,13 +1,13 @@
 ---
 sidebar_position: 5
-title: Build a learnable iOS app
+title: Build the Agent carrier
 ---
 
-# Build a learnable iOS app
+# Build the Agent carrier
 
-This guide shows the public developer path from Edge Studio to a real iOS app:
-install the package, prove local learning in the CLI, export an Edge Scaffold
-project, then validate the app on a physical device.
+This guide shows the public developer path from Edge Studio to a real iOS
+carrier: install the package, prove the device Agent in the CLI, export an Edge
+Scaffold project, then validate the carrier on a physical device.
 
 The scenario is a private finance assistant. The user says:
 
@@ -15,17 +15,18 @@ The scenario is a private finance assistant. The user says:
 I avoid high-risk recommendations. I care about cash flow and stable returns.
 ```
 
-Your app should keep that preference on the device, restore it into a
-compatible model session, and keep the base model package unchanged.
+The carrier app should keep that preference on the device, restore it into a
+compatible model session, and keep the base model package unchanged. The app is
+the surface; the device Agent owns the local learning state.
 
 ## What you will build
 
-You will create an iOS app with:
+You will create an iOS carrier with:
 
 - a local LLM loaded through Edge Kit and Edge Engine,
 - finance sample data and read-only demo tools from Edge Scaffold,
 - Edge Halo binary integration for Neural Imprint restore hooks,
-- an app-owned settings surface for learning state and deletion,
+- a carrier-owned settings surface for learning state and deletion,
 - a real-device build that does not depend on a simulator runtime.
 
 Edge Scaffold is a template, not a runtime dependency. Edge Studio resolves the
@@ -62,19 +63,21 @@ MLX initializes and maps the model files.
 
 ## 3. Prove learning locally
 
-Before building the iOS app, run the CLI learning demo:
+Before building the iOS carrier, run the CLI learning demo:
 
 ```bash
 edge demo learn run \
-  --sample synthetic_profile_correction_v1 \
+  --sample finance_conservative_cashflow_v1 \
   --model qwen3.5-9b-4bit \
+  --max-tokens 160 \
   --include-text
 ```
 
 The built-in sample is synthetic and safe to inspect. It proves the mechanics:
 a correction is written into isolated local state, a Neural Imprint artifact is
 generated, and the receipt records the before/after answers plus the restore
-artifact path.
+artifact path. This is the same finance signal used in
+[Build your first device Agent](/docs/get-started/minute-demo).
 
 Use the receipt directly when you want to compare behavior:
 
@@ -85,9 +88,9 @@ edge demo chat \
   --with-imprint "/path/to/learn_receipt.json"
 ```
 
-In a finance app, the same lifecycle maps to user-owned finance preferences and
-classified local facts. The app decides what it records, how users review it,
-and how users delete it.
+In a finance carrier, the same lifecycle maps to user-owned finance preferences
+and classified local facts. The app decides what it records, how users review
+it, and how users delete it.
 
 ## 4. Launch Edge Studio
 
@@ -189,7 +192,7 @@ On the device, verify:
 | First launch | The app opens and does not reference developer-only paths. |
 | Model load | The model loads from the configured local, bundled, ODR, or cache path. |
 | Streaming | A reply streams and completes. |
-| Local data | Finance sample facts and app-owned tool schemas are visible in the app surfaces. |
+| Local data | Finance sample facts and carrier-owned tool schemas are visible in the app surfaces. |
 | Neural Imprint | Restore stays fail-closed when metadata does not match. |
 | Deletion | Users can clear local model cache and learning state. |
 
@@ -227,7 +230,7 @@ analytics or remote support systems.
 
 ## Next steps
 
-- Run the [CLI learning demo](/docs/get-started/minute-demo) if you have not
+- Run the [device Agent demo](/docs/get-started/minute-demo) if you have not
   already compared before/after answers.
 - Read [Edge Scaffold configuration](/docs/optimize-and-ship/scaffold) for the
   template fields Edge Studio rewrites during export.

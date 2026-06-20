@@ -67,4 +67,4 @@ Edge Scaffold is not dogfood business logic. Treat it as the smallest current re
 
 ## Next step
 
-After the shell builds, continue to [Build a learnable iOS app](/docs/examples/build-and-ship). That guide adds the finance scenario, Edge Studio export flow, model configuration, Neural Imprint restore checks, and real-device validation.
+After the shell builds, continue to [Build the Agent carrier](/docs/examples/build-and-ship). That guide adds the finance scenario, Edge Studio export flow, model configuration, Neural Imprint restore checks, and real-device validation.

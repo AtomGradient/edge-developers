@@ -1,12 +1,12 @@
 ---
 sidebar_position: 5
-title: 构建可学习 iOS App
+title: 构建 Agent 载体
 ---
 
-# 构建可学习 iOS App
+# 构建 Agent 载体
 
-这篇指南展示公开开发者路径：安装 Edge Studio，用 CLI 证明本地学习，再导出 Edge
-Scaffold 项目，最后在真机上验证。
+这篇指南展示公开开发者路径：安装 Edge Studio，用 CLI 证明设备 Agent，再导出 Edge
+Scaffold 项目，最后在真机上验证载体。
 
 场景是一个私有理财助手。用户说：
 
@@ -14,16 +14,16 @@ Scaffold 项目，最后在真机上验证。
 我不喜欢高风险推荐，我更关注现金流和稳健收益。
 ```
 
-你的 App 应该把这个偏好留在设备上，把它恢复进兼容的模型 session，并保持基础模型包不变。
+载体 App 应该把这个偏好留在设备上，把它恢复进兼容的模型 session，并保持基础模型包不变。App 是表面，设备 Agent 拥有本地学习状态。
 
 ## 你会构建什么
 
-你会创建一个 iOS App，包含：
+你会创建一个 iOS 载体，包含：
 
 - 通过 Edge Kit 和 Edge Engine 加载的本地 LLM；
 - Edge Scaffold 提供的理财样例数据和只读 demo tools；
 - Edge Halo binary package 集成，用于 Neural Imprint 恢复 hooks；
-- App 自有的学习状态和删除设置界面；
+- 载体自有的学习状态和删除设置界面；
 - 不依赖模拟器运行时的真机构建。
 
 Edge Scaffold 是模板，不是运行时依赖。Edge Studio 会解析公开
@@ -58,17 +58,19 @@ edge models where qwen3.5-9b-4bit --json
 
 ## 3. 先在本地证明学习
 
-构建 iOS App 前，先运行 CLI 学习演示：
+构建 iOS 载体前，先运行 CLI 学习演示：
 
 ```bash
 edge demo learn run \
-  --sample synthetic_profile_correction_v1 \
+  --sample finance_conservative_cashflow_v1 \
   --model qwen3.5-9b-4bit \
+  --max-tokens 160 \
   --include-text
 ```
 
 内置样本是合成数据，可以安全查看。它证明的是机制：纠错写入隔离的本地状态，
 生成 Neural Imprint 产物，回执记录学习前/学习后的回答，以及用于恢复的产物路径。
+这是 [构建第一个设备 Agent](/docs/get-started/minute-demo) 使用的同一条理财信号。
 
 需要比较行为时，直接把回执传给 chat：
 
@@ -79,7 +81,7 @@ edge demo chat \
   --with-imprint "/path/to/learn_receipt.json"
 ```
 
-在理财 App 中，同样的生命周期会映射到用户自有的理财偏好和本地分类事实。
+在理财载体中，同样的生命周期会映射到用户自有的理财偏好和本地分类事实。
 App 决定记录什么、用户如何查看、以及用户如何删除。
 
 ## 4. 启动 Edge Studio
@@ -175,7 +177,7 @@ Limit entitlement，并在计划支持的最低设备类别上验证 Release 构
 | 首次启动 | App 可以打开，不引用开发者本地路径。 |
 | 模型加载 | 模型能从本地、bundle、ODR 或缓存路径加载。 |
 | 流式输出 | 回复可以流式输出并完成。 |
-| 本地数据 | 理财样例事实和 App 自有工具 schema 能在 App 界面中看到。 |
+| 本地数据 | 理财样例事实和载体自有工具 schema 能在 App 界面中看到。 |
 | Neural Imprint | metadata 不匹配时，恢复保持 fail-closed。 |
 | 删除能力 | 用户可以清理本地模型缓存和学习状态。 |
 
@@ -207,6 +209,6 @@ Limit entitlement，并在计划支持的最低设备类别上验证 Release 构
 
 ## 下一步
 
-- 如果还没有比较学习前/学习后的回答，先运行 [CLI 学习演示](/docs/get-started/minute-demo)。
+- 如果还没有比较学习前/学习后的回答，先运行 [设备 Agent 演示](/docs/get-started/minute-demo)。
 - 阅读 [Edge Scaffold 配置](/docs/optimize-and-ship/scaffold)，了解 Edge Studio 导出时会重写哪些模板字段。
 - 选择本地学习产物还是模型 adapter release 时，阅读 [Neural Imprint vs LoRA](/docs/guides/neural-imprint-vs-lora)。

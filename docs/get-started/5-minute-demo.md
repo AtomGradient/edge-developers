@@ -1,44 +1,49 @@
 ---
 sidebar_position: 1
-title: See local learning in 5 minutes
+title: Build your first device Agent
 slug: /get-started/minute-demo
 ---
 
-# See local learning in 5 minutes
+# Build your first device Agent
 
-Imagine a local finance assistant. A user tells it:
+Runnable in current preview.
+
+In Edge, the device is the Agent. The app is the carrier.
+
+This tutorial starts with a real product shape instead of a toy answer-style
+sample: a private finance assistant. The user has a simple local preference:
 
 ```text
 I avoid high-risk recommendations. I care about cash flow and stable returns.
 ```
 
-In a normal app, this quickly becomes awkward. You can paste that preference
-into every prompt, send it to a cloud profile service, or retrain an adapter.
-Edge takes a different path: keep the preference as local learning state, verify
-it before restore, and leave the base model package unchanged.
+Later the user asks:
 
-This guide proves the mechanism with the current CLI demo. The built-in sample
-is synthetic and deliberately simple: it teaches a concise, evidence-bound
-answer style. In the finance assistant story, that is the first behavior you
-would want before touching real financial data: shorter advice, no unsupported
-claims, and local-only proof.
+```text
+I have $800 left after bills this month. What should I do with it?
+```
 
-The local learning artifact Edge generates is called a **Neural Imprint**.
+This is not financial advice. The sample is synthetic, inspectable, and built
+to show the Edge learning contract: local signal, RPP self-learning, a local
+Neural Imprint artifact, and the same base model answering with restored local
+learning state.
 
-## What you will prove
+## What You Will Prove
 
-By the end, you will have:
+You will run the full Agent path:
 
-- installed the public `edge-studio` package,
-- prepared the preview model explicitly,
-- inspected the synthetic learning input before running it,
-- generated a local Neural Imprint artifact,
-- restored it with a receipt,
-- compared before/after answers,
-- kept the base model package intact.
+1. Install the public `edge-studio` package.
+2. Prepare the local preview model.
+3. Inspect the raw local learning signal.
+4. Compare common personalization approaches.
+5. Ask the base model first.
+6. Run RPP self-learning and generate a Neural Imprint.
+7. Ask again with base model + Neural Imprint.
+8. Inspect the receipt and local-only contract.
+9. Export the first Agent carrier from Edge Studio.
 
-No private data is used. No model weights are modified. The demo runs locally on
-your Mac.
+No private data is used. The base model package stays intact. The learning
+artifact is local, removable, and restored only when compatibility checks pass.
 
 ## 1. Install Edge Studio
 
@@ -67,7 +72,7 @@ and system compatibility.
 
 For source install and local UI development, see [Install Edge Studio](/docs/get-started/source-build).
 
-## 2. Prepare the demo model
+## 2. Prepare The Demo Model
 
 The demo uses `qwen3.5-9b-4bit`.
 
@@ -81,95 +86,112 @@ If the model is missing, download it explicitly:
 edge models fetch qwen3.5-9b-4bit --source auto
 ```
 
-The demo does not silently download models. If the model is already present, the
-fetch command reuses the local match and reports the cached path.
+The demo does not silently download models. The fetch command is explicit and
+writes a model receipt. If the model is already present, Edge reuses the local
+match and reports the cached path.
 
-## 3. Inspect what will be learned
+## 3. Inspect The Local Learning Signal
 
-Before you run the learning step, inspect the synthetic sample:
+Before any model load, inspect exactly what the Agent will learn:
 
 ```bash
 edge demo learn run --dry-run \
-  --sample synthetic_profile_correction_v1 \
+  --sample finance_conservative_cashflow_v1 \
   --model qwen3.5-9b-4bit \
   --include-text \
   --json
 ```
 
-Look for `sample_text` in the output:
+Look for the sample block:
 
 ```json
 {
-  "question": "How should this assistant respond to technical workflow questions?",
-  "records": [
-    {
-      "kind": "preference",
-      "text": "The synthetic user prefers concise technical answers."
-    },
-    {
-      "kind": "trust_boundary",
-      "text": "The synthetic user asks for local-only receipts before trusting a workflow."
-    }
-  ],
-  "corrections": [
-    {
-      "correction_type": "profile_correction",
-      "target": {"profile_field": "answer_style"},
-      "correction": {
-        "profile_overlay": {
-          "style": "short direct summaries",
-          "boundary": "avoid quality claims without evidence"
-        }
+  "sample_id": "finance_conservative_cashflow_v1",
+  "question": "I have $800 left after bills this month. What should I do with it?",
+  "sample_text": {
+    "records": [
+      {
+        "kind": "explicit_preference",
+        "text": "The synthetic user avoids high-risk recommendations and prefers stable, cash-flow-aware guidance."
+      },
+      {
+        "kind": "cashflow_context",
+        "text": "The synthetic user's rent and fixed subscriptions are already covered; they have $800 left after bills this month."
+      },
+      {
+        "kind": "trust_boundary",
+        "text": "The synthetic user wants cash-flow impact explained before any recommendation and does not want unsupported return claims."
       }
-    }
-  ]
+    ],
+    "corrections": [
+      {
+        "correction_type": "profile_correction",
+        "target": {"profile_field": "financial_guidance_style"}
+      }
+    ]
+  }
 }
 ```
 
-This is not financial advice and does not contain financial data. It is a safe
-stand-in for a finance product preference: "keep the advice short, conservative
-in claims, and prove that private state stayed local."
-
 The dry run does not load the model, write demo state, restore an artifact, or
-use the network.
+use the network. It shows the local learning signal first, so you can reason
+about what the device Agent is allowed to learn before any generation happens.
 
-## 4. Ask before learning
+## 4. Compare Common Approaches
+
+For this finance preference, common personalization patterns carry different
+costs:
+
+| Approach | What it would do here | Why Edge uses a different primitive |
+| --- | --- | --- |
+| LoRA / SFT | Train an adapter or model around the user's preference | Needs compute, curated data, packaging, rollout, rollback, and regression work for a per-user state change. |
+| Prompt stuffing | Paste "low risk, cash-flow first" into every request | Replays private profile text, burns context budget, and becomes hard to inspect as history grows. |
+| Cloud personalization | Upload the finance preference to a server profile | Moves sensitive local state off device and adds trust, latency, connectivity, and compliance burden. |
+| Edge RPP + Neural Imprint | Convert local signals into a removable artifact restored into a compatible session | The base model package stays stable; learned state remains local; restore is compatibility-gated and removable. |
+
+Neural Imprint is not a universal replacement for model training. It is the
+right contract when the product needs continuous, user-specific learning on a
+device while preserving a stable base model path.
+
+## 5. Ask The Base Model First
 
 Start a base-model chat:
 
 ```bash
-edge demo chat --model qwen3.5-9b-4bit --interactive
+edge demo chat --model qwen3.5-9b-4bit --interactive --max-tokens 160
 ```
 
-Ask the same probe used by the demo:
+Ask:
 
 ```text
-[chat:load] loading model=Qwen3.5-9B-4bit (first load can take 30-90s)
-[chat:ready] type a message, /exit to quit
-you> How should this assistant respond to technical workflow questions?
-assistant> A good assistant should first understand the user's goal, identify
-the relevant workflow constraints, break the problem into steps, and explain
-tradeoffs clearly...
+you> I have $800 left after bills this month. What should I do with it?
+```
+
+A base-model answer is usually helpful but generic. It may mention savings,
+debt, investing, or planning based on your goals and risk tolerance. That is the
+before state: the model has not restored the user's local finance preference.
+
+Exit with:
+
+```text
 you> /exit
 ```
 
-This is the base model path. It has not loaded the local learning artifact yet.
+## 6. Run RPP Self-Learning And Generate Neural Imprint
 
-## 5. Run the learning demo
-
-Now run the local learning flow and print the before/after text:
+Now run the local learning flow:
 
 ```bash
 edge demo learn run \
-  --sample synthetic_profile_correction_v1 \
+  --sample finance_conservative_cashflow_v1 \
   --model qwen3.5-9b-4bit \
-  --max-tokens 64 \
+  --max-tokens 160 \
   --include-text
 ```
 
 `--include-text` is safe here because the sample is synthetic. Do not use it
-with real user prompts or private financial data that you would not want printed
-in a terminal or stored in a local receipt.
+with real user prompts or private financial records that you would not want
+printed in a terminal or stored in a local receipt.
 
 You should see output shaped like this:
 
@@ -177,67 +199,79 @@ You should see output shaped like this:
 Edge demo learn (edge.demo.learn.run.v1)
 status: completed
 model: qwen3.5-9b-4bit
-sample: synthetic_profile_correction_v1
-artifact: .../neural_imprint_full_cache.safetensors
+model_prepare: skipped_existing
+sample: finance_conservative_cashflow_v1
+state: .../demo_runs/edge-learn-.../learn_state
+generation_job: neural_imprint_gen_...
+artifact: .../neural_imprint.safetensors
 metadata: .../neural_imprint_metadata.json
-answers_differ: true
+answers_differ: True
 receipt: .../learn_receipt.json
 next: edge demo chat --model qwen3.5-9b-4bit --interactive --with-imprint ".../learn_receipt.json"
 raw_text_in_receipt: true
-
-[Before]
-To respond effectively to technical workflow questions, an assistant should
-adopt a structured, user-centric, and context-aware approach...
-
-[After]
-Provide short, direct summaries of the workflow steps. Avoid making quality
-claims unless you have specific evidence to support them.
 ```
 
-The exact wording can vary. What matters is that the after answer reflects the
-preference you inspected: shorter, more direct, and more careful about claims.
-In a finance assistant, that is the same kind of shift you want after a user
-says they prefer cash-flow-aware, low-risk guidance.
+The `receipt` path is the handoff object. You do not need to pass the raw
+artifact path yourself. `--with-imprint` accepts `learn_receipt.json`, reads the
+artifact and metadata recorded inside it, validates them, and fails closed if
+they do not match.
 
-The `next:` line is the handoff. It passes `learn_receipt.json` to
-`--with-imprint`. You do not need to find the lower-level artifact path yourself;
-the CLI reads the receipt and restores the artifact recorded inside it.
+For this sample, the after answer moves toward cash-flow stability:
 
-## 6. Ask after learning
+```text
+Based on your current cash flow and preference for stability, the best move is
+to cover your upcoming rent or fixed subscriptions first. Since you mentioned
+those are already covered, prioritize an emergency fund, high-interest debt,
+and conservative savings before considering upside.
+```
 
-Copy the `next:` line printed in step 5 and run it:
+Exact wording can vary by model build and generation settings. The important
+contract is that behavior changed after restoring local Neural Imprint artifact
+for the inspected synthetic signal.
+
+## 7. Ask Again With Base Model + Neural Imprint
+
+Copy the `next:` command from the learn output:
 
 ```bash
-edge demo chat --model qwen3.5-9b-4bit --interactive --with-imprint ".../learn_receipt.json"
+edge demo chat \
+  --model qwen3.5-9b-4bit \
+  --interactive \
+  --max-tokens 160 \
+  --with-imprint ".../learn_receipt.json"
 ```
 
 Ask the same question:
 
 ```text
-[chat:load] loading model=Qwen3.5-9B-4bit (first load can take 30-90s)
-[chat:imprint] restoring artifact=.../neural_imprint_full_cache.safetensors
-[chat:ready] type a message, /exit to quit
-you> How should this assistant respond to technical workflow questions?
-assistant> Provide short, direct summaries of the workflow steps. Avoid making
-quality claims unless you have specific evidence to support them.
-you> /exit
+you> I have $800 left after bills this month. What should I do with it?
 ```
 
-The second chat is still local. `--with-imprint` reads the completed learning
-receipt, restores the generated Neural Imprint artifact, and fails closed if the
-receipt or artifact is missing.
+You should now see a conservative, cash-flow-first answer. In a verified local
+run, the restored session produced:
 
-## 7. Read the receipt
+```text
+Based on your current cash flow of $800 and your preference for stability, here
+is the best way to handle that money:
 
-The run did four local things:
+Priority 1: Preserve Your Cash Flow Stability
+...
+Emergency Fund Top-up
+...
+Pay Down High-Interest Debt
+```
+
+This is the "base model + Neural Imprint" moment. Same base model package, same
+question, local learning state restored from the receipt.
+
+## 8. Inspect The Receipt And Local-Only Contract
+
+The learning run did four local things:
 
 1. Wrote the synthetic records into isolated demo state.
 2. Recorded the synthetic correction.
 3. Generated and restored a local Neural Imprint artifact.
 4. Compared the answer before and after restore.
-
-`answers_differ: true` means the answer changed after restoring the local
-artifact for this controlled sample.
 
 By default, receipts are local and hash-only. In this guide, `--include-text`
 prints and stores raw text only because the sample is synthetic and meant to be
@@ -255,87 +289,17 @@ user text:
 }
 ```
 
-That is the contract you should carry into an app: prove the change locally,
-keep the learning state removable, and avoid uploading private user data.
-
-## Next: build the app
-
-After the CLI proof works, build the finance assistant shape as an iOS app:
-
-- [Build a learnable iOS app](/docs/examples/build-and-ship)
-- [Minimal iOS app shell](/docs/get-started/minimal-ios-app)
-
-The app path uses public Swift packages, Edge Scaffold, Edge Kit, and the Edge
-Halo binary package. Validate on a real device before treating the integration
-as complete.
-
-## Common questions
-
-### Is this fine-tuning?
-
-No. Fine-tuning and LoRA create new weights or adapter artifacts. That requires
-training infrastructure, enough compute, release packaging, rollback planning,
-and a regression suite because the adapted model can shift baseline behavior.
-
-Neural Imprint uses a different contract. The base model package stays intact.
-User-specific learning is restored as a local artifact only when compatibility
-checks pass, so the product can keep a stable base model path while allowing
-user-owned learning state to evolve on device.
-
-For the deployment differences between Neural Imprint, LoRA/SFT, and prompt
-stuffing, see [Neural Imprint vs LoRA](/docs/guides/neural-imprint-vs-lora).
-
-### What did the model learn?
-
-In this demo, the only learning input is the synthetic sample you inspected in
-step 3. It teaches a controlled answer-style preference: keep answers short,
-direct, and evidence-bound.
-
-In a real finance app, that input would come from app-approved local user
-signals such as explicit preferences, settings, or corrections. The app owns
-that policy.
-
-### Why does `--with-imprint` take a receipt instead of the artifact path?
-
-The receipt is the handoff object. It points to the generated artifact and also
-records the metadata, hashes, schema versions, and local-only status needed to
-restore safely. Passing the receipt lets the CLI validate and fail closed if the
-artifact or metadata is missing.
-
-### Does `answers_differ: true` prove production quality?
-
-No. It proves that the restored Neural Imprint artifact is active for this
-controlled synthetic example and that the answer moved after the local learning
-artifact was restored.
-
-For production quality claims, use task-specific evaluation. The important
-product contract is already visible here: personalization can be activated
-locally without replacing the base model release.
-
-### Is this prompt stuffing?
-
-No. Prompt stuffing repeats profile summaries or instructions inside every
-request. That consumes context budget, replays private state, and gets harder to
-govern as the user history grows.
-
-The after-learning chat restores a local Neural Imprint artifact and then uses
-the normal generation path for the current user message. The private learning
-state is not pasted back into every prompt.
-
-### Where is the local state?
-
-The command prints the demo state path, artifact path, metadata path, and
-receipt path. These files stay in local Edge Studio application data for this
-demo run.
-
-## Deeper checks
-
-Inspect the receipt without loading the model again:
+Inspect a receipt without loading the model again:
 
 ```bash
 edge demo receipt --path <receipt_path>
 edge demo local-only --path <receipt_path> --json
 ```
+
+The local-only check is where you verify non-localhost network access did not
+occur during the demo. Carry the same principle into your app: keep private
+signals local by default, keep learning state removable, and keep restore
+fail-closed.
 
 For lower-level Neural Imprint smoke tests:
 
@@ -346,4 +310,57 @@ edge demo imprint compare --path <receipt_path> --json
 edge demo reuse --run <run_id> --json
 ```
 
-These are implementation checks, not required steps for the five-minute path.
+These commands are useful for artifact reuse and implementation checks. They
+are not required for the 5-minute demo.
+
+## 9. Export The First Agent Carrier
+
+After the CLI proof works, open the local workbench:
+
+```bash
+edge studio
+```
+
+Then:
+
+1. Open `http://127.0.0.1:18842`.
+2. Load the same model.
+3. Export an Edge Scaffold carrier.
+4. Open the generated Xcode project.
+5. Validate on a physical iPhone or iPad.
+
+Edge Studio is the workbench. Edge Scaffold is the carrier template. The iOS
+app is the user surface for the device Agent, not the learning primitive itself.
+
+Continue with [Build the Agent carrier](/docs/examples/build-and-ship).
+
+## Common Questions
+
+### Is this LoRA or SFT?
+
+No. LoRA and SFT are useful when you intentionally want a trained model or
+adapter release. That requires compute, data curation, release packaging,
+rollback, and regression evaluation. Neural Imprint is a different contract for
+per-user device learning: the base model package stays stable, and local
+learning state is restored only when compatibility checks pass.
+
+### Is this prompt stuffing?
+
+No. Prompt stuffing repeats profile text or instructions inside every request.
+That consumes context budget and replays private state. The after-learning chat
+restores local runtime state from a Neural Imprint receipt, then handles the
+current message through the normal generation path.
+
+### What did the Agent learn?
+
+Only the synthetic signal you inspected in step 3: risk boundary, cash-flow
+context, and trust boundary. In a real finance product, those signals would come
+from app-approved local settings, explicit user preferences, and user-visible
+corrections. The carrier app owns that policy.
+
+### Does `answers_differ: True` prove production readiness?
+
+No. It proves that the restored Neural Imprint artifact is active for this
+controlled synthetic example and that the answer moved after restore. Production
+readiness still needs task-specific evaluation, UI controls, deletion UX, and
+real-device validation.

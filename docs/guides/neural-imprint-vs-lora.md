@@ -5,9 +5,10 @@ title: Neural Imprint vs LoRA
 
 # Neural Imprint vs LoRA, SFT, and prompt stuffing
 
-Neural Imprint is Edge's on-device learning contract. It lets an app keep a
-stable base model package while restoring user-specific learning state as a
-local, removable artifact.
+Neural Imprint is Edge's on-device learning contract. It lets the device Agent
+keep learning from user-approved local signals while the carrier app keeps a
+stable base model package. The learned state is restored as a local, removable
+artifact.
 
 Use the finance assistant from the quickstart as the concrete case. A user says:
 
@@ -15,16 +16,16 @@ Use the finance assistant from the quickstart as the concrete case. A user says:
 I avoid high-risk recommendations. I care about cash flow and stable returns.
 ```
 
-The product goal is not to publish a new model every time that preference
-changes. The goal is to keep the base model path stable, restore the user's
-local learning state when compatible, and let the app remove that state when the
-user asks.
+Later, the user asks what to do with `$800` left after bills. The product goal
+is not to publish a new model every time that preference changes. The goal is to
+keep the base model path stable, restore the user's local learning state when
+compatible, and let the carrier remove that state when the user asks.
 
 This matters for real products. User personalization should not turn every
 preference update into a new training run, a model-release event, or a larger
 prompt that repeats private profile text. Neural Imprint keeps the baseline
-model path intact and moves personalization into compatibility-gated runtime
-state.
+model path intact and moves personalization into compatibility-gated local
+runtime state on the device.
 
 ## The short version
 
@@ -40,30 +41,30 @@ app's deployment boundaries, data ownership model, and evaluation claims.
 ## Why Neural Imprint is the right primitive for on-device AI
 
 On-device AI has a different constraint set from centralized model releases.
-The app needs to learn from a user's local state, preserve privacy boundaries,
-stay removable, survive app updates, and avoid destabilizing the base model
-release path.
+The device Agent needs to learn from a user's local state, preserve privacy
+boundaries, stay removable, survive app updates, and avoid destabilizing the
+base model release path.
 
 Neural Imprint is built around that contract:
 
 - **The base model package and base weights stay intact.** Personalization does
   not replace the shipped model or mutate its weights; the base weights remain
   unchanged.
-- **The learning state is local user data.** The artifact can live in app-owned
-  storage, move only through trusted user-owned channels, and be removed by the
-  app.
+- **The learning state is local user data.** The artifact can live in
+  carrier-owned storage, move only through trusted user-owned channels, and be
+  removed by the carrier.
 - **Restore is compatibility-gated.** Model identity, tokenizer/template,
   runtime version, tool schema, and artifact metadata are checked before
   activation.
-- **Failure is closed and recoverable.** If the artifact does not match, the app
-  keeps the base model path active and can regenerate, re-export, or load the
-  matching model.
+- **Failure is closed and recoverable.** If the artifact does not match, the
+  carrier keeps the base model path active and can regenerate, re-export, or
+  load the matching model.
 - **No profile text replay.** The user's learned state is not pasted into every
   request; generation stays focused on the current message and tool context.
 
-That is the core advantage: the product can let the model keep learning about
-the user without converting personalization into a new model release or a
-request-time prompt payload.
+That is the core advantage: the device Agent can keep learning the user without
+converting personalization into a new model release or a request-time prompt
+payload.
 
 ## The problem with LoRA and SFT for per-user learning
 
@@ -81,9 +82,9 @@ For a developer shipping personalization, they introduce a heavy contract:
 - Per-user adapters multiply storage, lifecycle, and support complexity.
 
 LoRA and SFT remain good tools for centralized domain adaptation or curated
-model releases. Neural Imprint is stronger when the product goal is continuous,
-user-specific learning on the device while the base model package remains
-stable.
+model releases. Neural Imprint is the stronger fit when the product goal is
+continuous, user-specific learning on the device while the base model package
+remains stable.
 
 ## The problem with prompt stuffing
 
@@ -97,8 +98,8 @@ The issues are direct:
 - Context budget is spent on state replay instead of the current task.
 - Longer prompts are harder to govern, inspect, and keep stable.
 - Prompt text is not a removable, compatibility-gated artifact lifecycle.
-- The app must constantly decide which private facts are safe to paste into a
-  request.
+- The carrier must constantly decide which private facts are safe to paste into
+  a request.
 
 Neural Imprint avoids that shape. The user's learned state is restored as local
 runtime state under explicit compatibility gates; the prompt can stay focused on

@@ -36,14 +36,14 @@ const enSteps: Step[] = [
   },
   {
     label: '2',
-    title: 'See local learning',
-    body: 'Run the local learning demo, inspect the synthetic input, then map the same lifecycle to a finance preference.',
+    title: 'Build the first device Agent',
+    body: 'Inspect a synthetic finance signal, compare base-model behavior, generate a Neural Imprint, and restore it into the same model session.',
     link: '/docs/get-started/minute-demo',
   },
   {
     label: '3',
-    title: 'Build the app',
-    body: 'Export an Edge Scaffold project, open it in Xcode, and validate the same learnable behavior on a real device.',
+    title: 'Export the carrier',
+    body: 'Use Edge Studio to export an Edge Scaffold carrier, open it in Xcode, and validate the Agent path on a physical device.',
     link: '/docs/examples/build-and-ship',
   },
 ];
@@ -57,14 +57,14 @@ const zhSteps: Step[] = [
   },
   {
     label: '2',
-    title: '看见本地学习',
-    body: '运行本地学习 demo，检查合成输入，再把同一套生命周期映射到理财偏好。',
+    title: '构建第一个设备 Agent',
+    body: '检查合成理财信号，对比基础模型行为，生成 Neural Imprint，并恢复进同一个模型 session。',
     link: '/docs/get-started/minute-demo',
   },
   {
     label: '3',
-    title: '构建 App',
-    body: '导出 Edge Scaffold 项目，在 Xcode 中打开，并在真机上验证同一套可学习行为。',
+    title: '导出载体',
+    body: '用 Edge Studio 导出 Edge Scaffold 载体，在 Xcode 中打开，并在真机上验证 Agent 路径。',
     link: '/docs/examples/build-and-ship',
   },
 ];
@@ -72,18 +72,18 @@ const zhSteps: Step[] = [
 const enPaths: LinkCard[] = [
   {
     eyebrow: 'Python / CLI',
-    title: 'Prove learning locally',
-    body: 'Before you build UI, inspect a controlled synthetic sample and verify that a local learning artifact changes runtime behavior without replacing the model package.',
-    primaryLabel: 'Run the learning demo',
+    title: 'Prove the device Agent locally',
+    body: 'Before UI work, inspect the finance signal and verify that a local Neural Imprint changes runtime behavior without replacing the model package.',
+    primaryLabel: 'Build the first Agent',
     primaryLink: '/docs/get-started/minute-demo',
     secondaryLabel: 'Install Edge Studio',
     secondaryLink: '/docs/get-started/source-build',
   },
   {
     eyebrow: 'iOS / Swift',
-    title: 'Build a learnable iOS app',
+    title: 'Ship the Agent carrier',
     body: 'Export the scaffold, wire the public Edge Kit package and Edge Halo binary package, then validate model load and local learning restore on a real device.',
-    primaryLabel: 'Build the learnable app',
+    primaryLabel: 'Build the carrier',
     primaryLink: '/docs/examples/build-and-ship',
     secondaryLabel: 'Minimal iOS shell',
     secondaryLink: '/docs/get-started/minimal-ios-app',
@@ -93,18 +93,18 @@ const enPaths: LinkCard[] = [
 const zhPaths: LinkCard[] = [
   {
     eyebrow: 'Python / CLI',
-    title: '先在本地证明学习有效',
-    body: '构建 UI 前，先检查受控合成样本，验证本地学习产物能改变运行时行为，同时不替换模型包。',
-    primaryLabel: '运行学习演示',
+    title: '先在本地证明设备 Agent 有效',
+    body: '构建 UI 前，先检查理财信号，验证本地 Neural Imprint 能改变运行时行为，同时不替换模型包。',
+    primaryLabel: '构建第一个 Agent',
     primaryLink: '/docs/get-started/minute-demo',
     secondaryLabel: '安装 Edge Studio',
     secondaryLink: '/docs/get-started/source-build',
   },
   {
     eyebrow: 'iOS / Swift',
-    title: '构建可学习的 iOS App',
+    title: '交付 Agent 载体',
     body: '导出 scaffold，接入公开的 Edge Kit package 和 Edge Halo binary package，然后在真机上验证模型加载和本地学习恢复。',
-    primaryLabel: '构建可学习 App',
+    primaryLabel: '构建载体',
     primaryLink: '/docs/examples/build-and-ship',
     secondaryLabel: '最小 iOS 应用壳',
     secondaryLink: '/docs/get-started/minimal-ios-app',
@@ -136,7 +136,7 @@ const enCapabilities: LinkCard[] = [
   {
     eyebrow: 'Core concept',
     title: 'Neural Imprint',
-    body: 'A removable local learning artifact: user-specific behavior can be restored into a compatible session while the base model package stays unchanged.',
+    body: 'A removable local learning artifact for device Agents: user-specific behavior can be restored into a compatible session while the base model package stays unchanged.',
     primaryLabel: 'Model evolution',
     primaryLink: '/docs/build/model-evolution',
   },
@@ -181,7 +181,7 @@ const zhCapabilities: LinkCard[] = [
   {
     eyebrow: '核心概念',
     title: 'Neural Imprint',
-    body: '可删除的本地学习产物：用户特定行为可以恢复进兼容 session，同时基础模型包保持不变。',
+    body: '面向设备 Agent 的可删除本地学习产物：用户特定行为可以恢复进兼容 session，同时基础模型包保持不变。',
     primaryLabel: '模型进化',
     primaryLink: '/docs/build/model-evolution',
   },
@@ -211,8 +211,9 @@ edge doctor
 # run the local learning demo
 edge models fetch qwen3.5-9b-4bit --source auto
 edge demo learn run \\
-  --sample synthetic_profile_correction_v1 \\
+  --sample finance_conservative_cashflow_v1 \\
   --model qwen3.5-9b-4bit \\
+  --max-tokens 160 \\
   --include-text`;
 
 const ZH_CODE = `# 安装 Developer Preview 包
@@ -225,8 +226,9 @@ edge doctor
 # 运行本地学习演示
 edge models fetch qwen3.5-9b-4bit --source auto
 edge demo learn run \\
-  --sample synthetic_profile_correction_v1 \\
+  --sample finance_conservative_cashflow_v1 \\
   --model qwen3.5-9b-4bit \\
+  --max-tokens 160 \\
   --include-text`;
 
 export default function Home(): React.JSX.Element {
@@ -247,24 +249,24 @@ export default function Home(): React.JSX.Element {
           <div className={styles.heroCopy}>
             <div className={styles.previewBadge}>{isZh ? '开发者预览' : 'Developer Preview'}</div>
             <h1 className={styles.heroTitle}>
-              {isZh ? '让 App 在设备上学会用户偏好' : 'Build apps that learn on the device'}
+              {isZh ? '构建在设备上持续学习的 Agent' : 'Build device Agents that learn locally'}
             </h1>
             <p className={styles.heroSubtitle}>
               {isZh
-                ? '比如一个理财助手：用户说“我不喜欢高风险推荐，我更关注现金流和稳健收益”。Edge 让这个偏好留在设备上，不上传云端，不重新训练模型，也不把一大段 profile 塞进每次 prompt。'
-                : 'Imagine a finance assistant where the user says, “I avoid high-risk recommendations; I care about cash flow and stable returns.” Edge keeps that preference on the device without cloud uploads, retraining, or stuffing a profile into every prompt.'}
+                ? '在 Edge 里，设备就是 Agent，App 是载体。比如理财助手：用户说“我不喜欢高风险推荐，我更关注现金流和稳健收益”。Edge 让这个偏好留在设备上，不上传云端，不重新训练模型，也不把一大段 profile 塞进每次 prompt。'
+                : 'In Edge, the device is the Agent and the app is the carrier. Imagine a finance assistant where the user says, “I avoid high-risk recommendations; I care about cash flow and stable returns.” Edge keeps that preference on the device without cloud uploads, retraining, or stuffing a profile into every prompt.'}
             </p>
             <p className={styles.heroNote}>
               {isZh
-                ? '学习状态是本地、可移除的产物；基础模型包保持不变，恢复前会做兼容性校验，失败则继续走基础模型路径。'
-                : 'The learning state is a local, removable artifact. The base model package stays unchanged, and restore is compatibility-checked before it becomes active.'}
+                ? '学习状态是本地、可移除的 Neural Imprint；基础模型包保持不变，恢复前会做兼容性校验，失败则继续走基础模型路径。'
+                : 'The learning state is a local, removable Neural Imprint. The base model package stays unchanged, and restore is compatibility-checked before it becomes active.'}
             </p>
             <div className={styles.buttons}>
               <Link to="/docs/get-started/source-build" className={styles.primaryButton}>
                 {isZh ? '安装 Edge Studio' : 'Install Edge Studio'}
               </Link>
               <Link to="/docs/get-started/minute-demo" className={styles.secondaryButton}>
-                {isZh ? '运行学习演示' : 'Run the learning demo'}
+                {isZh ? '构建第一个 Agent' : 'Build the first Agent'}
               </Link>
             </div>
           </div>
@@ -283,8 +285,8 @@ export default function Home(): React.JSX.Element {
             <h2>{isZh ? '三步看到端侧学习' : 'Three steps to see on-device learning'}</h2>
             <p>
               {isZh
-                ? '先用 CLI 证明偏好可以在本地恢复，再把同一条路径带进 iOS app。'
-                : 'Prove the preference restore locally first, then carry the same path into an iOS app.'}
+                ? '先用 CLI 证明设备 Agent 可以从本地信号学习，再把同一条路径带进 iOS 载体。'
+                : 'Prove that the device Agent can learn from a local signal, then carry the same path into an iOS carrier.'}
             </p>
           </div>
           <div className={styles.stepsGrid}>
@@ -304,8 +306,8 @@ export default function Home(): React.JSX.Element {
             <h2>{isZh ? '选择你的集成路径' : 'Choose your integration path'}</h2>
             <p>
               {isZh
-                ? 'CLI 用来快速看见学习效果；iOS/Swift 路径用公开包构建真实 app，并在真机上验证。'
-                : 'Use the CLI to see the learning effect quickly. Use the iOS/Swift path to build the real app with public packages and device validation.'}
+                ? 'CLI 用来快速看见 Agent 学习效果；iOS/Swift 路径用公开包构建真实载体，并在真机上验证。'
+                : 'Use the CLI to see the Agent learning effect quickly. Use the iOS/Swift path to build the real carrier with public packages and device validation.'}
             </p>
           </div>
           <div className={styles.pathGrid}>
