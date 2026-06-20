@@ -263,13 +263,6 @@ The run does four local things:
 `answers_differ: true` means the answer changed after restoring the local Neural
 Imprint artifact for this synthetic sample.
 
-It does not mean:
-
-- The base model weights changed.
-- The model became generally smarter.
-- Your private data was used.
-- A production learning pipeline was enabled.
-
 By default, receipts are local and hash-only. In this guide, `--include-text`
 prints and stores raw text only because the sample is synthetic and meant to be
 read.
