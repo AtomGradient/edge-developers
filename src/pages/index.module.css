@@ -20,8 +20,18 @@
   max-width: 1180px;
 }
 
+.heroSingle {
+  grid-template-columns: minmax(0, 760px);
+  justify-content: center;
+  text-align: center;
+}
+
 .heroCopy {
   max-width: 600px;
+}
+
+.heroSingle .heroCopy {
+  max-width: 760px;
 }
 
 .previewBadge {
@@ -65,6 +75,10 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.8rem;
+}
+
+.heroSingle .buttons {
+  justify-content: center;
 }
 
 .primaryButton,

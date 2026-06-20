@@ -6,246 +6,20 @@
 import React from 'react';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
-import CodeBlock from '@theme/CodeBlock';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './index.module.css';
-
-type LinkCard = {
-  eyebrow: string;
-  title: string;
-  body: string;
-  primaryLabel: string;
-  primaryLink: string;
-  secondaryLabel?: string;
-  secondaryLink?: string;
-};
-
-type Step = {
-  label: string;
-  title: string;
-  body: string;
-  link?: string;
-};
-
-const enSteps: Step[] = [
-  {
-    label: '1',
-    title: 'Install Edge Studio',
-    body: 'Create a Python 3.11 environment, install the public edge-studio package, and run the local doctor check.',
-    link: '/docs/get-started/source-build',
-  },
-  {
-    label: '2',
-    title: 'Build the first device Agent',
-    body: 'Inspect a synthetic finance signal, compare base-model behavior, generate a Neural Imprint, and restore it into the same model session.',
-    link: '/docs/get-started/minute-demo',
-  },
-  {
-    label: '3',
-    title: 'Export the carrier',
-    body: 'Use Edge Studio to export an Edge Scaffold carrier, open it in Xcode, and validate the Agent path on a physical device.',
-    link: '/docs/examples/build-and-ship',
-  },
-];
-
-const zhSteps: Step[] = [
-  {
-    label: '1',
-    title: '安装 Edge Studio',
-    body: '创建 Python 3.11 环境，安装公开的 edge-studio 包，并先运行本地 doctor 检查。',
-    link: '/docs/get-started/source-build',
-  },
-  {
-    label: '2',
-    title: '构建第一个设备 Agent',
-    body: '检查合成理财信号，对比基础模型行为，生成 Neural Imprint，并恢复进同一个模型 session。',
-    link: '/docs/get-started/minute-demo',
-  },
-  {
-    label: '3',
-    title: '导出载体',
-    body: '用 Edge Studio 导出 Edge Scaffold 载体，在 Xcode 中打开，并在真机上验证 Agent 路径。',
-    link: '/docs/examples/build-and-ship',
-  },
-];
-
-const enPaths: LinkCard[] = [
-  {
-    eyebrow: 'Python / CLI',
-    title: 'Prove the device Agent locally',
-    body: 'Before UI work, inspect the finance signal and verify that a local Neural Imprint changes runtime behavior without replacing the model package.',
-    primaryLabel: 'Build the first Agent',
-    primaryLink: '/docs/get-started/minute-demo',
-    secondaryLabel: 'Install Edge Studio',
-    secondaryLink: '/docs/get-started/source-build',
-  },
-  {
-    eyebrow: 'iOS / Swift',
-    title: 'Ship the Agent carrier',
-    body: 'Export the scaffold, wire the public Edge Kit package and Edge Halo binary package, then validate model load and local learning restore on a real device.',
-    primaryLabel: 'Build the carrier',
-    primaryLink: '/docs/examples/build-and-ship',
-    secondaryLabel: 'Minimal iOS shell',
-    secondaryLink: '/docs/get-started/minimal-ios-app',
-  },
-];
-
-const zhPaths: LinkCard[] = [
-  {
-    eyebrow: 'Python / CLI',
-    title: '先在本地证明设备 Agent 有效',
-    body: '构建 UI 前，先检查理财信号，验证本地 Neural Imprint 能改变运行时行为，同时不替换模型包。',
-    primaryLabel: '构建第一个 Agent',
-    primaryLink: '/docs/get-started/minute-demo',
-    secondaryLabel: '安装 Edge Studio',
-    secondaryLink: '/docs/get-started/source-build',
-  },
-  {
-    eyebrow: 'iOS / Swift',
-    title: '交付 Agent 载体',
-    body: '导出 scaffold，接入公开的 Edge Kit package 和 Edge Halo binary package，然后在真机上验证模型加载和本地学习恢复。',
-    primaryLabel: '构建载体',
-    primaryLink: '/docs/examples/build-and-ship',
-    secondaryLabel: '最小 iOS 应用壳',
-    secondaryLink: '/docs/get-started/minimal-ios-app',
-  },
-];
-
-const enCapabilities: LinkCard[] = [
-  {
-    eyebrow: 'Inference',
-    title: 'Text generation',
-    body: 'Stream local LLM responses with multi-turn session state.',
-    primaryLabel: 'Text generation guide',
-    primaryLink: '/docs/build/text-generation',
-  },
-  {
-    eyebrow: 'Multimodal',
-    title: 'Vision',
-    body: 'Use vision-language models for image understanding on device.',
-    primaryLabel: 'Vision guide',
-    primaryLink: '/docs/build/vision',
-  },
-  {
-    eyebrow: 'Voice',
-    title: 'Speech and voice',
-    body: 'Build local speech-to-text and text-to-speech loops.',
-    primaryLabel: 'Speech guide',
-    primaryLink: '/docs/build/speech-to-text',
-  },
-  {
-    eyebrow: 'Core concept',
-    title: 'Neural Imprint',
-    body: 'A removable local learning artifact for device Agents: user-specific behavior can be restored into a compatible session while the base model package stays unchanged.',
-    primaryLabel: 'Model evolution',
-    primaryLink: '/docs/build/model-evolution',
-  },
-  {
-    eyebrow: 'SDK',
-    title: 'Edge Kit',
-    body: 'Swift APIs for local inference, model management, EdgeData, EdgeMesh, EdgeSession, EdgeUI, speech, and vision.',
-    primaryLabel: 'Edge Inference API',
-    primaryLink: '/docs/api-reference/edge-inference',
-  },
-  {
-    eyebrow: 'Local mesh',
-    title: 'Device Mesh',
-    body: 'Route and transfer artifacts between trusted user-owned Apple devices.',
-    primaryLabel: 'Device Mesh guide',
-    primaryLink: '/docs/build/device-mesh',
-  },
-];
-
-const zhCapabilities: LinkCard[] = [
-  {
-    eyebrow: '推理',
-    title: '文本生成',
-    body: '用多轮 session state 流式生成本地 LLM 回答。',
-    primaryLabel: '文本生成指南',
-    primaryLink: '/docs/build/text-generation',
-  },
-  {
-    eyebrow: '多模态',
-    title: '视觉理解',
-    body: '在端侧使用视觉语言模型理解图像。',
-    primaryLabel: '视觉指南',
-    primaryLink: '/docs/build/vision',
-  },
-  {
-    eyebrow: '语音',
-    title: '语音与声音',
-    body: '构建本地 speech-to-text 和 text-to-speech 闭环。',
-    primaryLabel: '语音指南',
-    primaryLink: '/docs/build/speech-to-text',
-  },
-  {
-    eyebrow: '核心概念',
-    title: 'Neural Imprint',
-    body: '面向设备 Agent 的可删除本地学习产物：用户特定行为可以恢复进兼容 session，同时基础模型包保持不变。',
-    primaryLabel: '模型进化',
-    primaryLink: '/docs/build/model-evolution',
-  },
-  {
-    eyebrow: 'SDK',
-    title: 'Edge Kit',
-    body: '面向本地推理、模型管理、EdgeData、EdgeMesh、EdgeSession、EdgeUI、语音和视觉的 Swift API。',
-    primaryLabel: 'Edge Inference API',
-    primaryLink: '/docs/api-reference/edge-inference',
-  },
-  {
-    eyebrow: '本地设备网格',
-    title: 'Device Mesh',
-    body: '在用户可信自有 Apple 设备之间路由和传输产物。',
-    primaryLabel: 'Device Mesh 指南',
-    primaryLink: '/docs/build/device-mesh',
-  },
-];
-
-const EN_CODE = `# install the Developer Preview package
-python3.11 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-python -m pip install --upgrade --pre edge-studio
-edge doctor
-
-# run the local learning demo
-edge models fetch qwen3.5-9b-4bit --source auto
-edge demo learn run \\
-  --sample finance_conservative_cashflow_v1 \\
-  --model qwen3.5-9b-4bit \\
-  --max-tokens 160 \\
-  --include-text`;
-
-const ZH_CODE = `# 安装 Developer Preview 包
-python3.11 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-python -m pip install --upgrade --pre edge-studio
-edge doctor
-
-# 运行本地学习演示
-edge models fetch qwen3.5-9b-4bit --source auto
-edge demo learn run \\
-  --sample finance_conservative_cashflow_v1 \\
-  --model qwen3.5-9b-4bit \\
-  --max-tokens 160 \\
-  --include-text`;
 
 export default function Home(): React.JSX.Element {
   const {i18n} = useDocusaurusContext();
   const isZh = i18n.currentLocale === 'zh';
-  const steps = isZh ? zhSteps : enSteps;
-  const paths = isZh ? zhPaths : enPaths;
-  const capabilities = isZh ? zhCapabilities : enCapabilities;
-  const code = isZh ? ZH_CODE : EN_CODE;
 
   return (
     <Layout
       title="AtomGradient Edge"
-      description={isZh ? '让 AI 在每台设备上生长' : 'Make AI grow on every device'}
+      description={isZh ? '构建在设备上持续学习的 Agent' : 'Build device Agents that learn locally'}
     >
       <header className={styles.heroBanner}>
-        <div className={styles.heroLayout}>
+        <div className={`${styles.heroLayout} ${styles.heroSingle}`}>
           <div className={styles.heroCopy}>
             <div className={styles.previewBadge}>{isZh ? '开发者预览' : 'Developer Preview'}</div>
             <h1 className={styles.heroTitle}>
@@ -253,103 +27,22 @@ export default function Home(): React.JSX.Element {
             </h1>
             <p className={styles.heroSubtitle}>
               {isZh
-                ? '在 Edge 里，设备就是 Agent，App 是载体。比如理财助手：用户说“我不喜欢高风险推荐，我更关注现金流和稳健收益”。Edge 让这个偏好留在设备上，不上传云端，不重新训练模型，也不把一大段 profile 塞进每次 prompt。'
-                : 'In Edge, the device is the Agent and the app is the carrier. Imagine a finance assistant where the user says, “I avoid high-risk recommendations; I care about cash flow and stable returns.” Edge keeps that preference on the device without cloud uploads, retraining, or stuffing a profile into every prompt.'}
+                ? '设备就是 Agent，App 是载体。Edge 让模型在用户设备上学习偏好、学习使用本地工具，并把学习状态恢复进兼容 session。数据不离端，基础模型包不被替换。'
+                : 'The device is the Agent. The app is the carrier. Edge lets models learn user preferences, learn local tool policy, and restore that learning state into a compatible session without moving private data off device or replacing the base model package.'}
             </p>
             <p className={styles.heroNote}>
               {isZh
-                ? '学习状态是本地、可移除的 Neural Imprint；基础模型包保持不变，恢复前会做兼容性校验，失败则继续走基础模型路径。'
-                : 'The learning state is a local, removable Neural Imprint. The base model package stays unchanged, and restore is compatibility-checked before it becomes active.'}
+                ? '从一个页面开始：安装 Edge Studio，运行理财场景 demo，看到偏好学习、工具策略和 iPhone 载体导出。'
+                : 'Start with one page: install Edge Studio, run the finance demo, see preference learning, inspect tool policy, and export the iPhone carrier.'}
             </p>
             <div className={styles.buttons}>
-              <Link to="/docs/get-started/source-build" className={styles.primaryButton}>
-                {isZh ? '安装 Edge Studio' : 'Install Edge Studio'}
-              </Link>
-              <Link to="/docs/get-started/minute-demo" className={styles.secondaryButton}>
-                {isZh ? '构建第一个 Agent' : 'Build the first Agent'}
+              <Link to="/docs/get-started/minute-demo" className={styles.primaryButton}>
+                {isZh ? '开始构建第一个 Agent' : 'Build your first Agent'}
               </Link>
             </div>
           </div>
-          <div className={styles.heroCode}>
-            <CodeBlock language="bash" title={isZh ? '最快验证路径' : 'Fastest validation path'}>
-{code}
-            </CodeBlock>
-          </div>
         </div>
       </header>
-
-      <main>
-        <section className={styles.section}>
-          <div className={styles.sectionHeader}>
-            <div className={styles.sectionLabel}>{isZh ? '快速开始' : 'Quick start'}</div>
-            <h2>{isZh ? '三步看到端侧学习' : 'Three steps to see on-device learning'}</h2>
-            <p>
-              {isZh
-                ? '先用 CLI 证明设备 Agent 可以从本地信号学习，再把同一条路径带进 iOS 载体。'
-                : 'Prove that the device Agent can learn from a local signal, then carry the same path into an iOS carrier.'}
-            </p>
-          </div>
-          <div className={styles.stepsGrid}>
-            {steps.map((step) => (
-              <Link key={step.title} to={step.link ?? '/docs'} className={styles.stepCard}>
-                <span className={styles.stepNumber}>{step.label}</span>
-                <h3>{step.title}</h3>
-                <p>{step.body}</p>
-              </Link>
-            ))}
-          </div>
-        </section>
-
-        <section className={styles.section}>
-          <div className={styles.sectionHeader}>
-            <div className={styles.sectionLabel}>{isZh ? '集成路径' : 'Integration'}</div>
-            <h2>{isZh ? '选择你的集成路径' : 'Choose your integration path'}</h2>
-            <p>
-              {isZh
-                ? 'CLI 用来快速看见 Agent 学习效果；iOS/Swift 路径用公开包构建真实载体，并在真机上验证。'
-                : 'Use the CLI to see the Agent learning effect quickly. Use the iOS/Swift path to build the real carrier with public packages and device validation.'}
-            </p>
-          </div>
-          <div className={styles.pathGrid}>
-            {paths.map((path) => (
-              <article className={styles.pathCard} key={path.title}>
-                <div className={styles.cardEyebrow}>{path.eyebrow}</div>
-                <h3>{path.title}</h3>
-                <p>{path.body}</p>
-                <div className={styles.cardLinks}>
-                  <Link to={path.primaryLink} className={styles.cardPrimaryLink}>
-                    {path.primaryLabel}
-                  </Link>
-                  {path.secondaryLink && path.secondaryLabel ? (
-                    <Link to={path.secondaryLink} className={styles.cardSecondaryLink}>
-                      {path.secondaryLabel}
-                    </Link>
-                  ) : null}
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className={styles.section}>
-          <div className={styles.sectionHeader}>
-            <div className={styles.sectionLabel}>{isZh ? '构建' : 'Build'}</div>
-            <h2>{isZh ? '核心能力' : 'Core capabilities'}</h2>
-          </div>
-          <div className={styles.capabilitiesGrid}>
-            {capabilities.map((item) => (
-              <article className={styles.productCard} key={item.title}>
-                <div className={styles.cardEyebrow}>{item.eyebrow}</div>
-                <h3>{item.title}</h3>
-                <p>{item.body}</p>
-                <Link to={item.primaryLink} className={styles.productLink}>
-                  {item.primaryLabel}
-                </Link>
-              </article>
-            ))}
-          </div>
-        </section>
-      </main>
     </Layout>
   );
 }

@@ -10,39 +10,33 @@ slug: /get-started/minute-demo
 
 在 Edge 里，设备就是 Agent。App 是载体。
 
-这个教程不再从玩具式回答风格样本开始，而是从真实产品形态开始：一个私有理财助手。用户有一条简单的本地偏好：
+这页是 Developer Preview 最短的完整路径：安装 Edge Studio，检查本地理财信号，对比基础模型，生成 Neural Imprint，检查学到的工具策略，然后把同一条 Agent 路径导出到 iPhone 载体。
 
-```text
-我不喜欢高风险推荐，我更关注现金流和稳健收益。
-```
+你会看到三个时刻：
 
-之后用户问：
+| 时刻 | 你会证明什么 |
+| --- | --- |
+| Aha #1 | 同一个基础模型在恢复本地 Neural Imprint 后，回答发生变化。 |
+| Aha #2 | Agent 学会了有哪些本地工具、什么时候使用、什么时候不该使用。 |
+| Aha #3 | 你在 Mac 上证明过的路径，可以被带进 iPhone App 表面。 |
 
-```text
-这个月扣掉账单后我还剩 800 美元，应该怎么处理？
-```
+理财样本是合成的、可检查的。它不是理财建议。
 
-这不是理财建议。样本是合成的、可检查的，用来展示 Edge 的学习契约：本地信号、RPP 自学习、本地 Neural Imprint 产物，以及同一个基础模型在恢复本地学习状态后的回答变化。
+## 1. 为什么需要这条路
 
-## 你会证明什么
+个性化通常很重：
 
-你会跑完整的 Agent 路径：
+| 方案 | 真实产品里会发生什么 |
+| --- | --- |
+| LoRA / 微调 | 一条用户偏好变成训练、打包、发布、回滚和回归测试。 |
+| Prompt 填充 | 私有 profile 文本被重复塞进每次请求，并消耗上下文。 |
+| 云端个性化 | 敏感本地状态离开设备，并带来信任、延迟、联网和合规负担。 |
 
-1. 安装公开的 `edge-studio` 包。
-2. 准备本地预览模型。
-3. 检查原始本地学习信号。
-4. 对比常见个性化方案。
-5. 先问基础模型。
-6. 运行 RPP 自学习并生成 Neural Imprint。
-7. 用 base model + Neural Imprint 再问一次。
-8. 检查 receipt 和 local-only 契约。
-9. 从 Edge Studio 导出第一个 Agent 载体。
+Edge 走另一条路。本地信号会变成可移除的运行时学习状态。基础模型包保持稳定。恢复前会做兼容性检查，失败则回到基础模型路径。
 
-不会使用私人数据。基础模型包保持不变。学习产物留在本地、可移除，并且只在兼容性检查通过后恢复。
+## 2. 安装 Edge Studio
 
-## 1. 安装 Edge Studio
-
-创建 Python 3.11 环境，并安装 Developer Preview 包：
+创建 Python 3.11 环境，并安装公开包：
 
 ```bash
 python3.11 -m venv .venv
@@ -52,7 +46,10 @@ python -m pip install --upgrade --pre edge-studio
 edge doctor
 ```
 
-如果你使用 `uv`：
+`--pre` 会安装当前 release candidate。在第一个 stable package 发布前请保留它。
+
+<details>
+<summary>使用 uv</summary>
 
 ```bash
 uv venv --python 3.11 .venv
@@ -61,11 +58,27 @@ uv pip install --upgrade --pre edge-studio
 edge doctor
 ```
 
-`--pre` 会安装当前 release candidate。在第一个 stable package 发布前请保留它。`edge doctor` 会检查 Python 环境、模型路径和系统兼容性。
+</details>
 
-源码安装和本地 UI 开发见 [安装 Edge Studio](/docs/get-started/source-build)。
+`edge doctor` 会检查 Python 环境、模型路径和系统兼容性。源码安装见 [安装 Edge Studio](/docs/get-started/source-build)，但这条路径不需要源码安装。
 
-## 2. 准备演示模型
+## 3. 场景
+
+想象一个私有理财助手。用户说：
+
+```text
+I avoid high-risk recommendations. I care about cash flow and stable returns.
+```
+
+之后用户问：
+
+```text
+I have $800 left after bills this month. What should I do with it?
+```
+
+Agent 不应该变成荐股工具。它应该尊重用户的本地风险边界，先解释现金流影响，只使用载体暴露的本地工具，并避免没有依据的收益承诺。
+
+## 4. 准备模型
 
 demo 使用 `qwen3.5-9b-4bit`。
 
@@ -79,9 +92,9 @@ edge models where qwen3.5-9b-4bit
 edge models fetch qwen3.5-9b-4bit --source auto
 ```
 
-demo 不会静默下载模型。下载命令是显式行为，并会写入模型 receipt。如果模型已经存在，Edge 会复用本地匹配项并报告缓存路径。
+demo 不会静默下载模型。如果模型已经存在，Edge 会复用本地匹配项并报告缓存路径。
 
-## 3. 检查本地学习信号
+## 5. 检查本地学习信号
 
 在任何模型加载之前，先检查 Agent 到底会学习什么：
 
@@ -93,7 +106,7 @@ edge demo learn run --dry-run \
   --json
 ```
 
-在输出里找到 sample block：
+在输出里找到 records 和 correction：
 
 ```json
 {
@@ -124,22 +137,9 @@ edge demo learn run --dry-run \
 }
 ```
 
-这个 dry run 不加载模型、不写 demo state、不恢复产物，也不联网。它先展示本地学习信号，让你在任何生成发生之前，就能判断设备 Agent 被允许学习什么。
+这个 dry run 不加载模型、不写 demo state、不恢复产物，也不联网。它先让你审查本地学习信号。
 
-## 4. 对比常见方案
-
-对于这条理财偏好，常见个性化方案的代价不同：
-
-| 方案 | 在这里会怎么做 | 为什么 Edge 使用不同基础设施 |
-| --- | --- | --- |
-| LoRA / SFT | 围绕用户偏好训练 adapter 或模型 | 一次用户级状态变化就需要算力、数据整理、打包、发布、回滚和回归。 |
-| Prompt stuffing | 把“低风险、现金流优先”塞进每一次请求 | 重放私有 profile 文本，占用 context budget，并且随着历史增长越来越难检查。 |
-| 云端个性化 | 把理财偏好上传到服务端 profile | 把敏感本地状态送离设备，并增加信任、延迟、联网和合规负担。 |
-| Edge RPP + Neural Imprint | 把本地信号转换成可移除产物，并恢复进兼容 session | 基础模型包保持稳定；学习状态留在本地；恢复受兼容性闸门保护且可删除。 |
-
-Neural Imprint 不是所有模型训练的通用替代品。它适合的产品契约是：用户级状态在设备上持续学习，同时基础模型路径保持稳定。
-
-## 5. 先问基础模型
+## 6. 先问基础模型
 
 启动基础模型聊天：
 
@@ -153,7 +153,7 @@ edge demo chat --model qwen3.5-9b-4bit --interactive --max-tokens 160
 you> I have $800 left after bills this month. What should I do with it?
 ```
 
-基础模型通常能给出有用但比较通用的回答，可能会提到储蓄、还债、投资或根据目标和风险承受度规划。这就是学习前状态：模型还没有恢复用户本地理财偏好。
+回答通常有用但比较通用：储蓄、还债、投资，以及根据目标和风险承受度规划。这就是学习前状态：模型还没有恢复用户本地理财偏好。
 
 退出：
 
@@ -161,9 +161,9 @@ you> I have $800 left after bills this month. What should I do with it?
 you> /exit
 ```
 
-## 6. 运行 RPP 自学习并生成 Neural Imprint
+## 7. 运行 RPP 自学习
 
-现在运行本地学习流程：
+运行本地学习流程：
 
 ```bash
 edge demo learn run \
@@ -195,18 +195,7 @@ raw_text_in_receipt: true
 
 `receipt` 路径就是交接对象。你不需要自己传底层 artifact 路径。`--with-imprint` 可以接收 `learn_receipt.json`，读取里面记录的 artifact 和 metadata，完成校验，并在不匹配时失败即关闭。
 
-对于这个样本，学习后的回答会转向现金流稳定：
-
-```text
-Based on your current cash flow and preference for stability, the best move is
-to cover your upcoming rent or fixed subscriptions first. Since you mentioned
-those are already covered, prioritize an emergency fund, high-interest debt,
-and conservative savings before considering upside.
-```
-
-具体文字会随模型构建和生成设置变化。重要契约是：恢复本地 Neural Imprint 产物后行为发生变化，并且这个变化对应第 3 步你检查过的合成信号。
-
-## 7. 用 base model + Neural Imprint 再问一次
+## 8. 用 Neural Imprint 再问一次
 
 复制 learn 输出里的 `next:` 命令：
 
@@ -224,7 +213,7 @@ edge demo chat \
 you> I have $800 left after bills this month. What should I do with it?
 ```
 
-此时你应该看到保守、现金流优先的回答。在一次本地验证中，恢复后的 session 输出过：
+回答应该转向保守、现金流优先。在一次本地验证中，恢复后的 session 输出过这种行为形态：
 
 ```text
 Based on your current cash flow of $800 and your preference for stability, here
@@ -237,9 +226,48 @@ Emergency Fund Top-up
 Pay Down High-Interest Debt
 ```
 
-这就是 “base model + Neural Imprint” 的时刻。同一个基础模型包，同一个问题，本地学习状态从 receipt 恢复。
+**Aha #1：**同一个基础模型包，同一个问题，本地学习状态从 receipt 恢复。
 
-## 8. 检查 receipt 和 local-only 契约
+具体文字会随模型构建和生成设置变化。重要契约是：恢复本地 Neural Imprint 产物后行为发生变化，并且这个变化对应你检查过的合成信号。
+
+## 9. 检查工具策略
+
+同一个 dry-run JSON 现在包含 `expected_tool_policy`：
+
+```json
+{
+  "tool_learning": {
+    "policy_kind": "deterministic_preview",
+    "actual_tool_calls": false,
+    "expected_tool_policy": {
+      "description": "Deterministic tool-use policy learned from this sample",
+      "tools_available": [
+        {
+          "name": "sample_finance_facts_lookup",
+          "when": "User asks about specific financial preferences or risk boundaries",
+          "args_constraint": "topic must be one of: risk_boundary, cashflow, trust_boundary"
+        },
+        {
+          "name": "sample_finance_cashflow_summary",
+          "when": "User asks about current cash flow, bills, or available balance",
+          "args_constraint": "scope must be a recognized finance scope"
+        }
+      ],
+      "negative_policy": [
+        "Do not call external market data tools",
+        "Do not call tools that require network access",
+        "Do not invent financial return numbers without user-provided facts"
+      ]
+    }
+  }
+}
+```
+
+**Aha #2：**Agent 不只是学习“用户是谁”。它也在学习载体暴露了哪些本地工具、什么时候适合用、哪些工具或说法越界。
+
+这是确定性预览，不是实时 tool-call trace。这些工具是合成只读工具，不是真实金融服务。当 live tool runner 进入这条路径时，会使用独立的 trace 字段。
+
+## 10. 检查 receipt 和 local-only 契约
 
 这次学习运行在本地做了四件事：
 
@@ -257,7 +285,8 @@ Pay Down High-Interest Debt
   "network_used_during_model_prepare": false,
   "question_sha256": "sha256:...",
   "before_answer_sha256": "sha256:...",
-  "after_answer_sha256": "sha256:..."
+  "after_answer_sha256": "sha256:...",
+  "expected_tool_policy_sha256": "sha256:..."
 }
 ```
 
@@ -268,9 +297,9 @@ edge demo receipt --path <receipt_path>
 edge demo local-only --path <receipt_path> --json
 ```
 
-local-only 检查用于确认 demo 期间没有发生非本机地址网络访问。把同样原则带进你的 App：私有信号默认留在本地，学习状态可移除，恢复失败即关闭。
+local-only 检查用于确认 demo 期间没有发生非本机地址网络访问。把同样原则带进你的载体：私有信号默认留在本地，学习状态可移除，恢复失败即关闭。
 
-更底层的 Neural Imprint 冒烟检查：
+可选的底层 Neural Imprint 冒烟检查：
 
 ```bash
 edge demo imprint run --dry-run --sample synthetic_profile_v1 --model qwen3.5-9b-4bit --json
@@ -281,27 +310,60 @@ edge demo reuse --run <run_id> --json
 
 这些命令用于产物复用和实现层检查，不是 5 分钟演示必须执行的步骤。
 
-## 9. 导出第一个 Agent 载体
+## 11. 把 Agent 载体导出到 iPhone
 
-CLI 证明跑通后，打开本地工作台：
+打开本地工作台：
 
 ```bash
 edge studio
 ```
 
-然后：
+打开 `http://127.0.0.1:18842`。
 
-1. 打开 `http://127.0.0.1:18842`。
-2. 加载同一个模型。
-3. 导出 Edge Scaffold 载体。
-4. 打开生成的 Xcode 项目。
-5. 在真实 iPhone 或 iPad 上验证。
+在 Edge Studio 里：
 
-Edge Studio 是工作台。Edge Scaffold 是载体模板。iOS App 是设备 Agent 的用户表面，不是学习原语本身。
+1. 加载同一个模型。
+2. 打开 **Export**。
+3. 选择 **Edge Scaffold**。
+4. 导出 Agent 载体并下载项目。
 
-继续阅读 [构建 Agent 载体](/docs/examples/build-and-ship)。
+打开生成的项目：
 
-## 常见问题
+```bash
+cd FinanceAgent/FinanceAgent
+xcodegen generate
+open FinanceAgent.xcodeproj
+```
+
+然后选择 signing team，选择真实 iPhone 或 iPad，build。不要用 Simulator 验证这条路径。
+
+在设备上问同一个问题：
+
+```text
+I have $800 left after bills this month. What should I do with it?
+```
+
+在写进产品 claim 前，先验证设备路径：
+
+- model/session 状态是本地的。
+- Neural Imprint 状态已恢复。
+- 回答反映了你检查过的低风险、现金流优先偏好。
+- 开启飞行模式后，App 仍然走预期路径。
+
+**Aha #3：**你在 Mac 上证明过的 Agent 路径，现在被 iPhone App 表面承载。App 是载体，设备是 Agent。
+
+## 12. 刚才发生了什么
+
+- Agent 从本地合成理财信号学习。
+- RPP 自学习产生本地学习表征。
+- Neural Imprint 把学习状态恢复进兼容模型 session。
+- 恢复经过模型、tokenizer、runtime 和 tool schema 兼容性检查。
+- 工具策略展示了哪些本地工具适合使用，哪些动作越界。
+- 如果兼容性失败，产品保留基础模型路径。
+
+这不是 LoRA、SFT、prompt stuffing，也不是云端个性化。
+
+## 13. 常见问题
 
 ### 这是 LoRA 或 SFT 吗？
 
@@ -313,8 +375,14 @@ Edge Studio 是工作台。Edge Scaffold 是载体模板。iOS App 是设备 Age
 
 ### Agent 到底学习了什么？
 
-只学习第 3 步你检查过的合成信号：风险边界、现金流上下文和信任边界。在真实理财产品里，这些信号会来自 App 批准的本地设置、明确用户偏好和用户可见纠错。载体 App 拥有这套策略。
+只学习你检查过的合成信号：风险边界、现金流上下文、信任边界，以及预期本地工具策略。在真实理财产品里，这些信号会来自 App 批准的本地设置、明确用户偏好和用户可见纠错。载体 App 拥有这套策略。
 
 ### `answers_differ: True` 能证明生产就绪吗？
 
 不能。它证明的是：在这个受控合成样本里，恢复后的 Neural Imprint 产物已经生效，并且回答在恢复后发生了变化。生产就绪仍然需要任务级评估、UI 控制、删除 UX 和真机验证。
+
+## 14. 继续深入
+
+- 开发者文档：[atomgradient.github.io/edge-developers](https://atomgradient.github.io/edge-developers/)
+- GitHub：[github.com/AtomGradient](https://github.com/AtomGradient)
+- 源码安装参考：[安装 Edge Studio](/docs/get-started/source-build)

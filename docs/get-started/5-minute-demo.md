@@ -10,8 +10,70 @@ Runnable in current preview.
 
 In Edge, the device is the Agent. The app is the carrier.
 
-This tutorial starts with a real product shape instead of a toy answer-style
-sample: a private finance assistant. The user has a simple local preference:
+This page is the shortest complete path through the Developer Preview: install
+Edge Studio, inspect a local finance signal, compare the base model, generate a
+Neural Imprint, inspect the learned tool policy, then export the same Agent path
+to an iPhone carrier.
+
+You will see three moments:
+
+| Moment | What you prove |
+| --- | --- |
+| Aha #1 | The same base model answers differently after local Neural Imprint restore. |
+| Aha #2 | The Agent learns which local tools are available, when to use them, and when not to use them. |
+| Aha #3 | The path you proved on the Mac can be carried into an iPhone app surface. |
+
+The finance sample is synthetic and inspectable. It is not financial advice.
+
+## 1. Why This Exists
+
+Personalization is usually heavy:
+
+| Approach | What happens in a real product |
+| --- | --- |
+| LoRA / fine-tuning | A user preference becomes training, packaging, rollout, rollback, and regression work. |
+| Prompt stuffing | Private profile text is repeated in every request and consumes context. |
+| Cloud personalization | Sensitive local state leaves the device and adds trust, latency, connectivity, and compliance burden. |
+
+Edge takes a different path. Local signals become removable runtime learning
+state. The base model package stays stable. Restore is compatibility-checked
+and can fail closed back to the base model.
+
+## 2. Install Edge Studio
+
+Create a Python 3.11 environment and install the public package:
+
+```bash
+python3.11 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install --upgrade --pre edge-studio
+edge doctor
+```
+
+`--pre` installs the current release candidate. Keep it until the first stable
+package is published.
+
+<details>
+<summary>Use uv instead</summary>
+
+```bash
+uv venv --python 3.11 .venv
+source .venv/bin/activate
+uv pip install --upgrade --pre edge-studio
+edge doctor
+```
+
+</details>
+
+`edge doctor` checks the Python environment, model paths, and system
+compatibility. Source install instructions are available in
+[Install Edge Studio](/docs/get-started/source-build), but they are not required
+for this path.
+
+## 3. The Scenario
+
+Imagine a private finance assistant. The user says:
 
 ```text
 I avoid high-risk recommendations. I care about cash flow and stable returns.
@@ -23,56 +85,11 @@ Later the user asks:
 I have $800 left after bills this month. What should I do with it?
 ```
 
-This is not financial advice. The sample is synthetic, inspectable, and built
-to show the Edge learning contract: local signal, RPP self-learning, a local
-Neural Imprint artifact, and the same base model answering with restored local
-learning state.
+The Agent should not become a stock picker. It should respect the user's local
+risk boundary, explain cash-flow impact first, use only the local tools exposed
+by the carrier, and avoid unsupported return claims.
 
-## What You Will Prove
-
-You will run the full Agent path:
-
-1. Install the public `edge-studio` package.
-2. Prepare the local preview model.
-3. Inspect the raw local learning signal.
-4. Compare common personalization approaches.
-5. Ask the base model first.
-6. Run RPP self-learning and generate a Neural Imprint.
-7. Ask again with base model + Neural Imprint.
-8. Inspect the receipt and local-only contract.
-9. Export the first Agent carrier from Edge Studio.
-
-No private data is used. The base model package stays intact. The learning
-artifact is local, removable, and restored only when compatibility checks pass.
-
-## 1. Install Edge Studio
-
-Create a Python 3.11 environment and install the Developer Preview package:
-
-```bash
-python3.11 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-python -m pip install --upgrade --pre edge-studio
-edge doctor
-```
-
-If you use `uv`:
-
-```bash
-uv venv --python 3.11 .venv
-source .venv/bin/activate
-uv pip install --upgrade --pre edge-studio
-edge doctor
-```
-
-`--pre` installs the current release candidate. Keep it until the first stable
-package is published. `edge doctor` checks the Python environment, model paths,
-and system compatibility.
-
-For source install and local UI development, see [Install Edge Studio](/docs/get-started/source-build).
-
-## 2. Prepare The Demo Model
+## 4. Prepare The Model
 
 The demo uses `qwen3.5-9b-4bit`.
 
@@ -80,17 +97,16 @@ The demo uses `qwen3.5-9b-4bit`.
 edge models where qwen3.5-9b-4bit
 ```
 
-If the model is missing, download it explicitly:
+If the model is missing, fetch it explicitly:
 
 ```bash
 edge models fetch qwen3.5-9b-4bit --source auto
 ```
 
-The demo does not silently download models. The fetch command is explicit and
-writes a model receipt. If the model is already present, Edge reuses the local
-match and reports the cached path.
+The demo does not silently download models. If the model is already present,
+Edge reuses the local match and reports the cached path.
 
-## 3. Inspect The Local Learning Signal
+## 5. Inspect The Local Learning Signal
 
 Before any model load, inspect exactly what the Agent will learn:
 
@@ -102,7 +118,7 @@ edge demo learn run --dry-run \
   --json
 ```
 
-Look for the sample block:
+Look for the records and correction:
 
 ```json
 {
@@ -134,26 +150,9 @@ Look for the sample block:
 ```
 
 The dry run does not load the model, write demo state, restore an artifact, or
-use the network. It shows the local learning signal first, so you can reason
-about what the device Agent is allowed to learn before any generation happens.
+use the network. It lets you audit the local learning signal first.
 
-## 4. Compare Common Approaches
-
-For this finance preference, common personalization patterns carry different
-costs:
-
-| Approach | What it would do here | Why Edge uses a different primitive |
-| --- | --- | --- |
-| LoRA / SFT | Train an adapter or model around the user's preference | Needs compute, curated data, packaging, rollout, rollback, and regression work for a per-user state change. |
-| Prompt stuffing | Paste "low risk, cash-flow first" into every request | Replays private profile text, burns context budget, and becomes hard to inspect as history grows. |
-| Cloud personalization | Upload the finance preference to a server profile | Moves sensitive local state off device and adds trust, latency, connectivity, and compliance burden. |
-| Edge RPP + Neural Imprint | Convert local signals into a removable artifact restored into a compatible session | The base model package stays stable; learned state remains local; restore is compatibility-gated and removable. |
-
-Neural Imprint is not a universal replacement for model training. It is the
-right contract when the product needs continuous, user-specific learning on a
-device while preserving a stable base model path.
-
-## 5. Ask The Base Model First
+## 6. Ask The Base Model
 
 Start a base-model chat:
 
@@ -167,9 +166,9 @@ Ask:
 you> I have $800 left after bills this month. What should I do with it?
 ```
 
-A base-model answer is usually helpful but generic. It may mention savings,
-debt, investing, or planning based on your goals and risk tolerance. That is the
-before state: the model has not restored the user's local finance preference.
+The answer is usually useful but generic: savings, debt, investing, and planning
+based on goals and risk tolerance. That is the before state. The model has not
+restored the user's local finance preference.
 
 Exit with:
 
@@ -177,9 +176,9 @@ Exit with:
 you> /exit
 ```
 
-## 6. Run RPP Self-Learning And Generate Neural Imprint
+## 7. Run RPP Self-Learning
 
-Now run the local learning flow:
+Run the local learning flow:
 
 ```bash
 edge demo learn run \
@@ -216,20 +215,7 @@ artifact path yourself. `--with-imprint` accepts `learn_receipt.json`, reads the
 artifact and metadata recorded inside it, validates them, and fails closed if
 they do not match.
 
-For this sample, the after answer moves toward cash-flow stability:
-
-```text
-Based on your current cash flow and preference for stability, the best move is
-to cover your upcoming rent or fixed subscriptions first. Since you mentioned
-those are already covered, prioritize an emergency fund, high-interest debt,
-and conservative savings before considering upside.
-```
-
-Exact wording can vary by model build and generation settings. The important
-contract is that behavior changed after restoring local Neural Imprint artifact
-for the inspected synthetic signal.
-
-## 7. Ask Again With Base Model + Neural Imprint
+## 8. Ask Again With Neural Imprint
 
 Copy the `next:` command from the learn output:
 
@@ -247,8 +233,8 @@ Ask the same question:
 you> I have $800 left after bills this month. What should I do with it?
 ```
 
-You should now see a conservative, cash-flow-first answer. In a verified local
-run, the restored session produced:
+The answer should move toward conservative, cash-flow-first guidance. In a
+verified local run, the restored session produced this behavior shape:
 
 ```text
 Based on your current cash flow of $800 and your preference for stability, here
@@ -261,10 +247,55 @@ Emergency Fund Top-up
 Pay Down High-Interest Debt
 ```
 
-This is the "base model + Neural Imprint" moment. Same base model package, same
-question, local learning state restored from the receipt.
+**Aha #1:** same base model package, same question, local learning state
+restored from the receipt.
 
-## 8. Inspect The Receipt And Local-Only Contract
+Exact wording can vary by model build and generation settings. The contract is
+that behavior changed after restoring local Neural Imprint artifact for the
+inspected synthetic signal.
+
+## 9. Inspect The Tool Policy
+
+The same dry-run JSON now includes `expected_tool_policy`:
+
+```json
+{
+  "tool_learning": {
+    "policy_kind": "deterministic_preview",
+    "actual_tool_calls": false,
+    "expected_tool_policy": {
+      "description": "Deterministic tool-use policy learned from this sample",
+      "tools_available": [
+        {
+          "name": "sample_finance_facts_lookup",
+          "when": "User asks about specific financial preferences or risk boundaries",
+          "args_constraint": "topic must be one of: risk_boundary, cashflow, trust_boundary"
+        },
+        {
+          "name": "sample_finance_cashflow_summary",
+          "when": "User asks about current cash flow, bills, or available balance",
+          "args_constraint": "scope must be a recognized finance scope"
+        }
+      ],
+      "negative_policy": [
+        "Do not call external market data tools",
+        "Do not call tools that require network access",
+        "Do not invent financial return numbers without user-provided facts"
+      ]
+    }
+  }
+}
+```
+
+**Aha #2:** the Agent is not only learning who the user is. It is also learning
+which local tools the carrier exposes, when they are appropriate, and which
+tools or claims are out of bounds.
+
+This is a deterministic preview, not a live tool-call trace. The tools are
+synthetic read-only tools, not financial services. When the live tool runner is
+exposed in this path, the trace field will be named separately.
+
+## 10. Inspect The Receipt And Local-Only Contract
 
 The learning run did four local things:
 
@@ -285,7 +316,8 @@ user text:
   "network_used_during_model_prepare": false,
   "question_sha256": "sha256:...",
   "before_answer_sha256": "sha256:...",
-  "after_answer_sha256": "sha256:..."
+  "after_answer_sha256": "sha256:...",
+  "expected_tool_policy_sha256": "sha256:..."
 }
 ```
 
@@ -296,12 +328,12 @@ edge demo receipt --path <receipt_path>
 edge demo local-only --path <receipt_path> --json
 ```
 
-The local-only check is where you verify non-localhost network access did not
-occur during the demo. Carry the same principle into your app: keep private
+The local-only check verifies that non-localhost network access did not occur
+during the demo. Carry the same principle into your carrier: keep private
 signals local by default, keep learning state removable, and keep restore
 fail-closed.
 
-For lower-level Neural Imprint smoke tests:
+Optional lower-level Neural Imprint smoke checks:
 
 ```bash
 edge demo imprint run --dry-run --sample synthetic_profile_v1 --model qwen3.5-9b-4bit --json
@@ -313,28 +345,64 @@ edge demo reuse --run <run_id> --json
 These commands are useful for artifact reuse and implementation checks. They
 are not required for the 5-minute demo.
 
-## 9. Export The First Agent Carrier
+## 11. Export The Agent Carrier To iPhone
 
-After the CLI proof works, open the local workbench:
+Open the local workbench:
 
 ```bash
 edge studio
 ```
 
-Then:
+Open `http://127.0.0.1:18842`.
 
-1. Open `http://127.0.0.1:18842`.
-2. Load the same model.
-3. Export an Edge Scaffold carrier.
-4. Open the generated Xcode project.
-5. Validate on a physical iPhone or iPad.
+In Edge Studio:
 
-Edge Studio is the workbench. Edge Scaffold is the carrier template. The iOS
-app is the user surface for the device Agent, not the learning primitive itself.
+1. Load the same model.
+2. Open **Export**.
+3. Choose **Edge Scaffold**.
+4. Export the Agent carrier and download the project.
 
-Continue with [Build the Agent carrier](/docs/examples/build-and-ship).
+Open the generated project:
 
-## Common Questions
+```bash
+cd FinanceAgent/FinanceAgent
+xcodegen generate
+open FinanceAgent.xcodeproj
+```
+
+Then select a signing team, choose a physical iPhone or iPad, and build. Do not
+use Simulator for this validation path.
+
+On the device, ask the same question:
+
+```text
+I have $800 left after bills this month. What should I do with it?
+```
+
+Validate the device path before making product claims:
+
+- Model/session status is local.
+- Neural Imprint state is restored.
+- The answer reflects the inspected low-risk, cash-flow-first preference.
+- The app still runs the intended path with Airplane Mode enabled.
+
+**Aha #3:** the Agent path you proved on the Mac is now carried by an iPhone app
+surface. The app is the carrier; the device is the Agent.
+
+## 12. What Just Happened
+
+- The Agent learned from a local synthetic finance signal.
+- RPP self-learning produced a local learning representation.
+- Neural Imprint restored that state into a compatible model session.
+- Restore passed through model, tokenizer, runtime, and tool-schema
+  compatibility checks.
+- The tool policy showed which local tools are appropriate and which actions
+  are out of bounds.
+- If compatibility fails, the product keeps the base-model path.
+
+This is not LoRA, SFT, prompt stuffing, or cloud personalization.
+
+## 13. Common Questions
 
 ### Is this LoRA or SFT?
 
@@ -353,10 +421,10 @@ current message through the normal generation path.
 
 ### What did the Agent learn?
 
-Only the synthetic signal you inspected in step 3: risk boundary, cash-flow
-context, and trust boundary. In a real finance product, those signals would come
-from app-approved local settings, explicit user preferences, and user-visible
-corrections. The carrier app owns that policy.
+Only the synthetic signal you inspected: risk boundary, cash-flow context,
+trust boundary, and expected local tool policy. In a real finance product, those
+signals would come from app-approved local settings, explicit user preferences,
+and user-visible corrections. The carrier app owns that policy.
 
 ### Does `answers_differ: True` prove production readiness?
 
@@ -364,3 +432,9 @@ No. It proves that the restored Neural Imprint artifact is active for this
 controlled synthetic example and that the answer moved after restore. Production
 readiness still needs task-specific evaluation, UI controls, deletion UX, and
 real-device validation.
+
+## 14. Continue
+
+- Developer docs: [atomgradient.github.io/edge-developers](https://atomgradient.github.io/edge-developers/)
+- GitHub: [github.com/AtomGradient](https://github.com/AtomGradient)
+- Source install reference: [Install Edge Studio](/docs/get-started/source-build)
