@@ -90,6 +90,11 @@ uv pip install --upgrade --pre edge-studio
 edge doctor
 ```
 
+`--pre` installs the current Developer Preview release candidate. Keep it until
+the first stable package is published. `edge doctor` checks the Python
+environment, model paths, and system compatibility; fix any failed checks before
+continuing.
+
 For source install and local UI development, see [Install from source](/docs/get-started/source-build).
 
 ## 2. Prepare the demo model
@@ -108,6 +113,8 @@ edge models fetch qwen3.5-9b-4bit --source auto
 
 The demo does not silently download models. If the model is already present, the
 fetch command reuses the local match and reports the cached path.
+The `qwen3.5-9b-4bit` download is approximately 5 GB, and the time depends on
+your network.
 
 ## 3. Inspect what the demo will learn
 
@@ -219,27 +226,17 @@ claims unless you have specific evidence to support them.
 The important part is not the exact wording. The important part is that the
 after answer reflects the synthetic correction you inspected in step 3.
 
-The `receipt:` line is the handoff point for the next command. `--with-imprint`
-accepts this `learn_receipt.json` path. You do not need to find or pass the
+The `next:` line is the handoff point for the next command. It passes
+`learn_receipt.json` to `--with-imprint`. You do not need to find or pass the
 lower-level artifact path yourself; the CLI reads the receipt and restores the
 artifact recorded inside it.
 
-Copy the path printed after `receipt:`:
-
-```bash
-LEARN_RECEIPT="<path printed after receipt:>"
-```
-
 ## 6. Chat after learning
 
-Start interactive chat again, this time passing the learning receipt to
-`--with-imprint`:
+Copy the `next:` line printed in step 5 and run it. It will look like this:
 
 ```bash
-edge demo chat \
-  --model qwen3.5-9b-4bit \
-  --interactive \
-  --with-imprint "$LEARN_RECEIPT"
+edge demo chat --model qwen3.5-9b-4bit --interactive --with-imprint ".../learn_receipt.json"
 ```
 
 Ask the same question:

@@ -12,7 +12,7 @@ the Python package for normal local development:
 python3.11 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
-python -m pip install edge-studio
+python -m pip install --upgrade --pre edge-studio
 edge doctor
 ```
 
@@ -21,9 +21,14 @@ If you use `uv`:
 ```bash
 uv venv --python 3.11 .venv
 source .venv/bin/activate
-uv pip install edge-studio
+uv pip install --upgrade --pre edge-studio
 edge doctor
 ```
+
+`--pre` installs the current Developer Preview release candidate. Keep it until
+the first stable package is published. `edge doctor` checks the Python
+environment, model paths, and system compatibility; fix any failed checks before
+continuing.
 
 Use the source path when contributing to Edge Studio or testing a local checkout.
 
@@ -48,6 +53,9 @@ python -m pip install -e .
 edge doctor
 ```
 
+For source installs, `edge doctor` should pass before you run model or learning
+demos.
+
 Use `edge` for model readiness checks, model fetch receipts, and local learning demos:
 
 ```bash
@@ -57,10 +65,12 @@ edge demo chat --model qwen3.5-9b-4bit --interactive
 ```
 
 `edge models fetch --source auto` can select the best available preview download path from ModelScope, Hugging Face, or an HF mirror. The download is explicit and writes a receipt.
+The `qwen3.5-9b-4bit` download is approximately 5 GB, and the time depends on
+your network.
 
 After `[chat:ready]`, ask a few normal questions and exit with `/exit`. The first 9B model load can take tens of seconds.
 
-After the base chat works, continue to the [CLI learning demo](/docs/get-started/minute-demo) to inspect the synthetic correction sample and compare base vs Neural Imprint restored answer hashes.
+After the base chat works, continue to the [CLI learning demo](/docs/get-started/minute-demo) to inspect the synthetic correction sample and see user-specific learning restored without creating a new model release.
 
 ## Launch the Web UI
 

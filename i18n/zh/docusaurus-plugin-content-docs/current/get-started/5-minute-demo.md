@@ -69,6 +69,8 @@ uv pip install --upgrade --pre edge-studio
 edge doctor
 ```
 
+`--pre` 会安装当前开发者预览版 release candidate。在第一个 stable package 发布前，请保留这个参数。`edge doctor` 会检查 Python 环境、模型路径和系统兼容性；继续之前请先修复失败项。
+
 源码安装和本地 UI 开发见 [源码安装](/docs/get-started/source-build)。
 
 ## 2. 准备演示模型
@@ -86,6 +88,7 @@ edge models fetch qwen3.5-9b-4bit --source auto
 ```
 
 演示不会静默下载模型。如果模型已经存在，下载命令会复用本地匹配项，并报告缓存路径。
+`qwen3.5-9b-4bit` 下载大小约 5 GB，耗时取决于你的网络。
 
 ## 3. 查看模型会学习什么
 
@@ -192,25 +195,15 @@ claims unless you have specific evidence to support them.
 
 重点不是每个字完全一致。重点是：学习后的回答反映了第 3 步里你亲眼看到的合成纠错内容。
 
-`receipt:` 这一行就是下一步命令的交接点。`--with-imprint` 接收的就是这个
-`learn_receipt.json` 路径。你不需要自己去找或传底层 artifact 文件；CLI 会读取
-这个回执，并恢复回执里记录的 Neural Imprint 产物。
-
-复制 `receipt:` 后面的路径：
-
-```bash
-LEARN_RECEIPT="<path printed after receipt:>"
-```
+`next:` 这一行就是下一步命令的交接点。它会把 `learn_receipt.json` 传给
+`--with-imprint`。你不需要自己去找或传底层 artifact 文件；CLI 会读取这个回执，并恢复回执里记录的 Neural Imprint 产物。
 
 ## 6. 学习后再聊天
 
-再次启动交互式聊天，这次把学习回执传给 `--with-imprint`：
+复制第 5 步输出里的 `next:` 整行并运行。它看起来像这样：
 
 ```bash
-edge demo chat \
-  --model qwen3.5-9b-4bit \
-  --interactive \
-  --with-imprint "$LEARN_RECEIPT"
+edge demo chat --model qwen3.5-9b-4bit --interactive --with-imprint ".../learn_receipt.json"
 ```
 
 继续问同一个问题：
