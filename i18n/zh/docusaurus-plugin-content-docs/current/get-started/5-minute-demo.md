@@ -18,7 +18,7 @@ slug: /get-started/minute-demo
 | --- | --- |
 | Aha #1 | 同一个基础模型在恢复本地 Neural Imprint 后，回答发生变化。 |
 | Aha #2 | Agent 学会了有哪些本地工具、什么时候使用、什么时候不该使用。 |
-| Aha #3 | 你在 Mac 上证明过的路径，可以被带进 iPhone App 表面。 |
+| Aha #3 | Mac 上证明过的机制，进入具备端侧学习挂钩的载体 App。 |
 
 理财样本是合成的、可检查的。它不是理财建议。
 
@@ -226,7 +226,7 @@ Emergency Fund Top-up
 Pay Down High-Interest Debt
 ```
 
-**Aha #1：**同一个基础模型包，同一个问题，本地学习状态从 receipt 恢复。
+**Aha #1：** 同一个基础模型包，同一个问题，本地学习状态从 receipt 恢复。
 
 具体文字会随模型构建和生成设置变化。重要契约是：恢复本地 Neural Imprint 产物后行为发生变化，并且这个变化对应你检查过的合成信号。
 
@@ -263,7 +263,7 @@ Pay Down High-Interest Debt
 }
 ```
 
-**Aha #2：**Agent 不只是学习“用户是谁”。它也在学习载体暴露了哪些本地工具、什么时候适合用、哪些工具或说法越界。
+**Aha #2：** Agent 不只是学习“用户是谁”。它也在学习载体暴露了哪些本地工具、什么时候适合用、哪些工具或说法越界。
 
 这是确定性预览，不是实时 tool-call trace。这些工具是合成只读工具，不是真实金融服务。当 live tool runner 进入这条路径时，会使用独立的 trace 字段。
 
@@ -327,6 +327,20 @@ edge studio
 3. 选择 **Edge Scaffold**。
 4. 导出 Agent 载体并下载项目。
 
+导出的 App 不是静态壳，但它也不是已经预先学会了 Mac demo 的 App。当前预览版不会把第 7 步的 `learn_receipt.json` 自动塞进 ZIP。Mac 上的 receipt 用来证明学习机制，并让你检查本地产物。导出的载体给 iPhone App 带去端侧学习所需的运行时接线。
+
+ZIP 里包含：
+
+| 部分 | 作用 |
+| --- | --- |
+| App 源码和 `ScaffoldConfig.swift` | 载体表面、模型设置、样本领域和运行时开关。 |
+| Edge Kit / Edge Engine 依赖 | 端侧模型加载、流式生成和 hidden-state capture 支持。 |
+| Edge Halo binary 依赖 | Neural Imprint 生命周期：profile job、产物 capture、兼容性校验和 restore。 |
+| `Resources/SampleData/` | 首次 smoke check 用的合成 facts 和 sample domains。 |
+| `Resources/RPP/` | 可选的模型匹配 RPP A-library 资源。如果为空，RPP 行为会 fail closed，而不是假装已经学习。 |
+
+RPP A-library 不是学到的用户状态。它是和模型、层、领域匹配的基准方向资源，让 Edge Halo 可以在本地 records 上运行 profile analysis。Neural Imprint 产物是在之后由设备上的本地 facts、corrections、tool schema 和模型 session 生成的。
+
 打开生成的项目：
 
 ```bash
@@ -337,20 +351,29 @@ open FinanceAgent.xcodeproj
 
 然后选择 signing team，选择真实 iPhone 或 iPad，build。不要用 Simulator 验证这条路径。
 
-在设备上问同一个问题：
+在设备上分开验证两件事。
+
+先验证载体：
 
 ```text
 I have $800 left after bills this month. What should I do with it?
 ```
 
-在写进产品 claim 前，先验证设备路径：
-
 - model/session 状态是本地的。
-- Neural Imprint 状态已恢复。
-- 回答反映了你检查过的低风险、现金流优先偏好。
+- App 加载了预期模型和聊天路径。
 - 开启飞行模式后，App 仍然走预期路径。
 
-**Aha #3：**你在 Mac 上证明过的 Agent 路径，现在被 iPhone App 表面承载。App 是载体，设备是 Agent。
+然后，在导出包包含所需 RPP 资源、并且你启用了 App 侧触发入口时，验证设备端学习：
+
+1. App 通过自己的数据层记录本地、经 App 批准的信号：设置、facts、明确纠错和本地 tool schema。
+2. 模型加载完成并且 eligible facts 足够后，由 App 代码或用户可见控件启动 Edge Halo profile job。它不应该是用户无感知的隐藏后台动作。
+3. Edge Halo 在设备上使用 `Resources/RPP/` 里的 A-library 运行 RPP profile analysis，capture Neural Imprint 产物，并写入本地 capsule。
+4. capsule 只有在模型、tokenizer/runtime、cache backend 和 tool schema 兼容性检查通过后才会 restore。
+5. 手机上的新偏好，比如 “I want to be more aggressive now”，会成为新的本地 correction。载体可以触发之后的新一轮 profile job，并且只有通过同样的校验闸门后才替换 active capsule。
+
+当前预览版边界：上面的 CLI 路径是学习和 restore 的确定性证明。导出的 scaffold 提供端侧运行时接线、fail-closed 的 RPP 行为和 smoke surfaces。产品级触发策略、用户同意 UI、删除 UX 和任务评估仍然是 App 侧工作，完成前不要写进生产 claim。
+
+**Aha #3：** Mac demo 证明机制；载体 App 才是同一条学习循环在设备上落地的位置。App 是载体，设备是 Agent。
 
 ## 12. 刚才发生了什么
 
@@ -359,6 +382,7 @@ I have $800 left after bills this month. What should I do with it?
 - Neural Imprint 把学习状态恢复进兼容模型 session。
 - 恢复经过模型、tokenizer、runtime 和 tool schema 兼容性检查。
 - 工具策略展示了哪些本地工具适合使用，哪些动作越界。
+- 导出的载体把 Mac proof artifact 和设备端学习循环分开。
 - 如果兼容性失败，产品保留基础模型路径。
 
 这不是 LoRA、SFT、prompt stuffing，也不是云端个性化。
@@ -376,6 +400,14 @@ I have $800 left after bills this month. What should I do with it?
 ### Agent 到底学习了什么？
 
 只学习你检查过的合成信号：风险边界、现金流上下文、信任边界，以及预期本地工具策略。在真实理财产品里，这些信号会来自 App 批准的本地设置、明确用户偏好和用户可见纠错。载体 App 拥有这套策略。
+
+### 导出的 App 已经包含 Mac 上学到的结果吗？
+
+默认不包含。当前 export 不会自动把第 7 步的 `learn_receipt.json` 或 Neural Imprint 产物打包进 App。这是刻意的：用户学习状态应该属于设备和载体的生命周期，而不是被静默烘焙进一个模板 ZIP。Mac demo 用来检查和证明机制；导出的 App 用来在真机上接入同一套生命周期。
+
+### 手机上的新偏好如何触发学习？
+
+载体先在本地记录经用户批准的信号，例如设置、纠错或 classified fact。当 App 判断这个信号符合学习条件时，它启动设备端 Edge Halo job。这个 job 使用本地模型 session、本地 tool schema 和打包的 RPP A-library 生成新的 Neural Imprint capsule。restore 会经过兼容性检查，并且 fail closed。手机不需要为了每个新偏好回到 Mac，也不需要重新导出 App。
 
 ### `answers_differ: True` 能证明生产就绪吗？
 

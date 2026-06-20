@@ -21,7 +21,7 @@ You will see three moments:
 | --- | --- |
 | Aha #1 | The same base model answers differently after local Neural Imprint restore. |
 | Aha #2 | The Agent learns which local tools are available, when to use them, and when not to use them. |
-| Aha #3 | The path you proved on the Mac can be carried into an iPhone app surface. |
+| Aha #3 | The Mac proof becomes a carrier app with the hooks required for device-side learning. |
 
 The finance sample is synthetic and inspectable. It is not financial advice.
 
@@ -362,6 +362,28 @@ In Edge Studio:
 3. Choose **Edge Scaffold**.
 4. Export the Agent carrier and download the project.
 
+The exported app is not just a static shell, but it is also not a pre-learned
+copy of the Mac demo. In the current preview, Edge Studio does not automatically
+embed the `learn_receipt.json` from Step 7 into the ZIP. The Mac receipt proves
+the learning mechanism and gives you a local artifact to inspect. The exported
+carrier gives the iPhone app the runtime wiring needed to learn from device
+signals.
+
+The ZIP contains:
+
+| Part | Role |
+| --- | --- |
+| App source and `ScaffoldConfig.swift` | The carrier surface, model settings, sample domain, and runtime knobs. |
+| Edge Kit / Edge Engine dependencies | On-device model loading, streaming generation, and hidden-state capture support. |
+| Edge Halo binary dependency | Neural Imprint lifecycle: profile work, artifact capture, compatibility validation, and restore. |
+| `Resources/SampleData/` | Synthetic facts and sample domains for first-run smoke checks. |
+| `Resources/RPP/` | Optional model-matched RPP A-library assets. If empty, RPP behavior fails closed instead of pretending to learn. |
+
+The RPP A-library is not the learned user state. It is a model/layer/domain
+matched basis that lets Edge Halo run profile analysis on local records. A
+Neural Imprint artifact is generated later from the device's local facts,
+corrections, tool schema, and model session.
+
 Open the generated project:
 
 ```bash
@@ -373,21 +395,44 @@ open FinanceAgent.xcodeproj
 Then select a signing team, choose a physical iPhone or iPad, and build. Do not
 use Simulator for this validation path.
 
-On the device, ask the same question:
+On the device, validate two things separately.
+
+First, validate the carrier:
 
 ```text
 I have $800 left after bills this month. What should I do with it?
 ```
 
-Validate the device path before making product claims:
-
 - Model/session status is local.
-- Neural Imprint state is restored.
-- The answer reflects the inspected low-risk, cash-flow-first preference.
+- The app loads the intended model and chat path.
 - The app still runs the intended path with Airplane Mode enabled.
 
-**Aha #3:** the Agent path you proved on the Mac is now carried by an iPhone app
-surface. The app is the carrier; the device is the Agent.
+Second, validate device-side learning when your export includes the required
+RPP assets and you have enabled an app trigger:
+
+1. The app records local, app-approved signals through its data layer: settings,
+   facts, explicit corrections, and the local tool schema.
+2. App code or a user-visible control starts the Edge Halo profile job after
+   the model is loaded and enough eligible facts exist. It should not be a
+   hidden background surprise.
+3. Edge Halo runs RPP profile analysis on the device using the bundled
+   `Resources/RPP/` A-library, captures a Neural Imprint artifact, and writes a
+   local capsule.
+4. The capsule is restored only after compatibility checks for the model,
+   tokenizer/runtime, cache backend, and tool schema pass.
+5. A new phone-side preference, for example "I want to be more aggressive now,"
+   becomes a new local correction. The carrier can trigger a later profile job
+   and replace the active capsule only after the same validation gates pass.
+
+Current preview boundary: the CLI path above is the deterministic proof of
+learning and restore. The exported scaffold exposes the device-side runtime
+wiring, fail-closed RPP behavior, and smoke surfaces. Product-specific trigger
+policy, consent UI, deletion UX, and task evaluation remain app work before you
+make production claims.
+
+**Aha #3:** the Mac demo proves the mechanism; the carrier app is where the
+same learning loop belongs on the device. The app is the carrier; the device is
+the Agent.
 
 ## 12. What Just Happened
 
@@ -398,6 +443,8 @@ surface. The app is the carrier; the device is the Agent.
   compatibility checks.
 - The tool policy showed which local tools are appropriate and which actions
   are out of bounds.
+- The exported carrier separates the Mac proof artifact from the device-side
+  learning loop.
 - If compatibility fails, the product keeps the base-model path.
 
 This is not LoRA, SFT, prompt stuffing, or cloud personalization.
@@ -425,6 +472,24 @@ Only the synthetic signal you inspected: risk boundary, cash-flow context,
 trust boundary, and expected local tool policy. In a real finance product, those
 signals would come from app-approved local settings, explicit user preferences,
 and user-visible corrections. The carrier app owns that policy.
+
+### Does the exported app already contain the Mac learning result?
+
+Not by default. The current export does not automatically package the Step 7
+`learn_receipt.json` or its Neural Imprint artifact into the app. That is
+deliberate: a user's learned state should be owned by the device/carrier
+lifecycle, not silently baked into a template ZIP. Use the Mac demo to inspect
+and prove the mechanism; use the exported app to wire the same lifecycle on a
+real device.
+
+### How does the phone learn a new preference?
+
+The carrier records a user-approved signal locally, such as a setting,
+correction, or classified fact. When the app decides the signal is eligible, it
+starts a device-side Edge Halo job. That job uses the local model session,
+local tool schema, and bundled RPP A-library to build a new Neural Imprint
+capsule. Restore is compatibility-checked and fail-closed. The phone does not
+need to return to the Mac or re-export the app for every new preference.
 
 ### Does `answers_differ: True` prove production readiness?
 
