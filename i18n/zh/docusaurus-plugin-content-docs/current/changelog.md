@@ -13,7 +13,7 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 
 ## 版本策略
 
-开发者预览阶段，Swift 包使用 `1.0.0-rcN` 标签发布。Edge Studio 的 Python 包当前使用 PyPI 版本 `0.0.1rc1` 和 GitHub tag `v0.0.1rc1`。破坏性变更会在这里记录迁移步骤。正式可用后会遵循语义化版本。
+开发者预览阶段，Swift 包使用 `1.0.0-rcN` 标签发布。Edge Studio 的 Python 包当前使用 PyPI 版本 `0.0.1rc5` 和 GitHub tag `v0.0.1rc5`。破坏性变更会在这里记录迁移步骤。正式可用后会遵循语义化版本。
 
 ## 如何升级
 
@@ -31,20 +31,20 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 
 | 产品表面 | 当前访问方式 | 说明 |
 |---|---|---|
-| Edge Studio | Python 软件包 `edge-studio==0.0.1rc1`，GitHub tag `v0.0.1rc1` | 安装后只暴露一个 `edge` 命令。用 `edge studio` 启动本地 Studio UI。 |
-| Swift SDK 文档 | Edge Kit `1.0.0-rc97` | 文档使用精确固定版本。升级前必须重新验证。 |
-| Edge Engine 依赖 | Edge Engine `1.0.0-rc137` | 当前部分预览仓库或依赖可能需要 AtomGradient 内部预览访问权限或 SSH 访问权限。这里记录公开产品表面，不把它当作当前内部预览阻塞项。 |
-| Edge Halo 依赖 | Edge Halo `1.0.0-rc22` | Edge Halo 依赖 Edge Engine `1.0.0-rc137`；请在自己的环境里验证包解析。 |
-| Edge Scaffold | 固定依赖 Edge Kit `1.0.0-rc97` 与 Edge Halo `1.0.0-rc22` | 生成的应用仍需要签名、设备 provisioning 和真机验证。 |
+| Edge Studio | Python 软件包 `edge-studio==0.0.1rc5`，GitHub tag `v0.0.1rc5` | 安装后只暴露一个 `edge` 命令。用 `edge studio` 启动本地 Studio UI。 |
+| Swift SDK 文档 | Edge Kit `1.0.0-rc98` | 文档使用精确固定版本。升级前必须重新验证。 |
+| Edge Engine 依赖 | Edge Engine `1.0.0-rc138` | 仓库可见性切换前仍处于预览访问权限阶段。这里明确写出，避免把包解析失败误判成 app 集成问题。 |
+| Edge Halo binary 依赖 | Edge Halo binary `1.0.0-rc24` | 公开二进制 SwiftPM 包位于 `AtomGradient/edge-halo-binary`；源码仍保持私有。 |
+| Edge Scaffold | 固定依赖 Edge Kit `1.0.0-rc98` 与 Edge Halo binary `1.0.0-rc24` | 生成的应用仍需要签名、设备 provisioning、必要的预览权限和真机验证。 |
 
 ### 兼容矩阵
 
 | 组件 | 兼容预览版本 |
 |---|---|
-| Edge Studio | `v0.0.1rc1` |
-| Edge Kit | `1.0.0-rc97`，依赖 Edge Engine `1.0.0-rc137` |
-| Edge Halo | `1.0.0-rc22`，依赖 Edge Engine `1.0.0-rc137` |
-| Edge Scaffold | 当前预览版固定依赖 Edge Kit `1.0.0-rc97` 与 Edge Halo `1.0.0-rc22` |
+| Edge Studio | `v0.0.1rc5` |
+| Edge Kit | `1.0.0-rc98`，依赖 Edge Engine `1.0.0-rc138` |
+| Edge Halo binary | `1.0.0-rc24` |
+| Edge Scaffold | 当前预览版固定依赖 Edge Kit `1.0.0-rc98` 与 Edge Halo binary `1.0.0-rc24` |
 
 通用构建和模拟器检查不足以支撑运行时结论。任何预览 tag 变化后，都需要重新完成真机验证。
 
@@ -77,6 +77,14 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 
 ## edge-studio
 
+### v0.0.1rc5
+
+- 当前公开 Python 软件包 distribution name：`edge-studio`。
+- PyPI release candidate 版本：`0.0.1rc5`。确定性安装：`python -m pip install edge-studio==0.0.1rc5`。
+- `edge demo chat` 在 interactive 模式下流式输出 token，并支持通过 `--with-imprint <learn_receipt.json>` 恢复 Neural Imprint。
+- `edge demo learn run --include-text` 会打印完成的学习回执，并输出可直接执行的 `next:` 命令用于学习后的对话。
+- `edge studio` 遇到已经运行的 EdgeMesh 服务时，会给出可行动的 warning，同时保持 Studio UI 可用。
+
 ### v0.0.1rc1
 
 - 公开 Python 软件包 distribution name：`edge-studio`。
@@ -97,7 +105,13 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 - 自动 KV cache 内存策略。
 - Neural Imprint 运行时恢复 primitives 与 EdgeMesh capsule auto-restore coordinator APIs。
 - 生产应用构建可以嵌入通用 `EdgeBuildCommit` 元数据，用于 snapshot traceability。
-- 依赖 Edge Engine `1.0.0-rc137`。
+- 依赖 Edge Engine `1.0.0-rc138`。
+
+### 1.0.0-rc98
+
+- 当前 SDK release gate。
+- package、测试和公开元数据对齐 Edge Engine `1.0.0-rc138`。
+- RPP 编排和 activation steering 实现不进入公开 SDK 源码；这些内部能力由 Edge Halo 承载。
 
 ### 1.0.0-rc94
 
@@ -112,9 +126,10 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 - Edge Halo lifecycle：本地 profile jobs 与 Neural Imprint capsule compatibility。
 - 面向模型、tokenizer、运行时和工具 schema identity 的失败即关闭验证。
 - `HaloTextGenerator` 和 `HaloEngineSession` 协议。
+- `EdgeHaloRuntime` public actor。
 - RPP A-library provenance 验证与 profile 产物生命周期 helpers。
 - 依赖版本元数据已对齐当前预览 tag。
-- 依赖 Edge Engine `1.0.0-rc137`。
+- 公开 app 通过二进制 package `edge-halo-binary` `1.0.0-rc24` 接入；源码仓库保持私有。
 
 ## edge-engine
 
@@ -124,6 +139,7 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 - 原生 Metal 推理运行时。
 - DSR Attention 实现。
 - `main` 上未发布的 commit 不属于当前 开发者预览 tag；发布新的 `1.0.0-rcN` 后再进入文档口径。
+- 当前依赖 tag：`1.0.0-rc138`。
 
 ## edge-scaffold
 
@@ -133,4 +149,4 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 - 从 Edge Studio 导出生成 iOS 应用模板。
 - 基于 ScaffoldConfig 的自定义。
 - 四层模型分发（Cache → Bundle → ODR → HuggingFace）。
-- 固定依赖 Edge Kit `1.0.0-rc97` 与 Edge Halo `1.0.0-rc22`。
+- 固定依赖 Edge Kit `1.0.0-rc98` 与 Edge Halo binary `1.0.0-rc24`。

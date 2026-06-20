@@ -5,23 +5,46 @@ title: EdgeHalo
 
 # EdgeHalo API reference
 
-`EdgeHalo` manages the local personalization lifecycle: profile jobs, Neural Imprint capsule compatibility, and restore orchestration.
+The `EdgeHalo` module manages the local personalization lifecycle: profile jobs, Neural Imprint capsule compatibility, and restore orchestration.
 
 :::info Developer Preview
-Some profile-analysis and capsule APIs are intentionally low-level in the current preview. Prefer the Edge Scaffold reference flow when starting a new integration.
+Edge Halo is distributed to apps through the public `edge-halo-binary` Swift package. The source repository remains private; the binary package exposes the documented API surface without exposing the implementation.
 :::
 
-## EdgeHalo
+## Install
 
 ```swift
-public actor EdgeHalo
+dependencies: [
+    .package(url: "https://github.com/AtomGradient/edge-halo-binary", exact: "1.0.0-rc24")
+]
+```
+
+```swift
+.target(
+    name: "MyApp",
+    dependencies: [
+        .product(name: "EdgeHalo", package: "edge-halo-binary")
+    ]
+)
+```
+
+Then import the module:
+
+```swift
+import EdgeHalo
+```
+
+## EdgeHaloRuntime
+
+```swift
+public actor EdgeHaloRuntime
 ```
 
 Main entry point.
 
 | Property or method | Description |
 | --- | --- |
-| `init(engine:generator:dataStream:)` | Creates an `EdgeHalo` actor with app-provided runtime bridges. |
+| `init(engine:generator:dataStream:)` | Creates an `EdgeHaloRuntime` actor with app-provided runtime bridges. |
 | `evolutionState` | High-level model evolution state for product UI. |
 | `currentProfile` | Most recent local profile result, if available. |
 | `haloState` | Capsule validation and restore state. |

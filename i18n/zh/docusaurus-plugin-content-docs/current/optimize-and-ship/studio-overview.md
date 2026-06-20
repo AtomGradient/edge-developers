@@ -19,7 +19,7 @@ Source model → Edge Studio → Optimized bundle → Edge Kit (inference) → Y
                              Edge Scaffold project → Xcode → Your agent
 ```
 
-Edge Studio 是本地工作台。Edge Kit 和 Edge Halo 是运行时包。它们相互独立，你发布的 agent 不依赖 Edge Studio。
+Edge Studio 是本地工作台。Edge Kit 和二进制 Edge Halo package 是运行时包。它们相互独立，你发布的 agent 不依赖 Edge Studio。
 
 ## 如何启动
 

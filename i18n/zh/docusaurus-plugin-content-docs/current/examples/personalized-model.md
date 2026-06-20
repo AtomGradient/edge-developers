@@ -80,7 +80,7 @@ final class PersonalizationViewModel: ObservableObject {
     @Published var status = ""
     @Published var profile: UserProfile?
 
-    private let halo: EdgeHalo
+    private let halo: EdgeHaloRuntime
     private let events: AsyncStream<HaloDataEvent>.Continuation
     private let capsuleStore = LocalCapsuleStore()
 
@@ -88,7 +88,7 @@ final class PersonalizationViewModel: ObservableObject {
         let stream = AsyncStream.makeStream(of: HaloDataEvent.self)
         events = stream.continuation
 
-        halo = EdgeHalo(
+        halo = EdgeHaloRuntime(
             engine: AppEngineSession(),
             generator: AppTextGenerator(),
             dataStream: stream.stream

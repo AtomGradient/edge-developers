@@ -22,7 +22,7 @@ At the developer API level, model evolution is a private lifecycle around a base
 
 1. Your agent collects eligible local events and facts.
 2. Your agent prepares profile inputs from local data.
-3. Edge Halo runs the profile job with resources exported by Edge Studio or bundled by Edge Scaffold.
+3. `EdgeHaloRuntime` runs the profile job with resources exported by Edge Studio or bundled by Edge Scaffold.
 4. Edge Studio or your local runtime generates a Neural Imprint artifact.
 5. Edge Halo validates the artifact against the current model and runtime.
 6. The runtime restores the artifact or fails closed and keeps the base model active.
@@ -138,7 +138,7 @@ Use [Edge Scaffold](/docs/optimize-and-ship/scaffold) as the reference implement
 
 | Method or type | What it does |
 | --- | --- |
-| `EdgeHalo(engine:generator:dataStream:)` | Create the lifecycle actor with app-provided bridges. |
+| `EdgeHaloRuntime(engine:generator:dataStream:)` | Create the lifecycle actor with app-provided bridges. |
 | `runProfileAnalysis(...)` | Run a local profile job from prepared inputs and exported resources. |
 | `currentProfile` | Most recent local profile result. |
 | `validateCapsule(_:currentRequirements:)` | Check whether a Neural Imprint capsule matches the loaded runtime. |

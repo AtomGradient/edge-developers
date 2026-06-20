@@ -19,7 +19,7 @@ Source model → Edge Studio → Optimized bundle → Edge Kit (inference) → Y
                              Edge Scaffold project → Xcode → Your agent
 ```
 
-Edge Studio is the local workbench. Edge Kit and Edge Halo are the runtime packages. They are separate — your shipping agent does not depend on Edge Studio.
+Edge Studio is the local workbench. Edge Kit and the binary Edge Halo package are the runtime packages. They are separate — your shipping agent does not depend on Edge Studio.
 
 ## How to launch
 

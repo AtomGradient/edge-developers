@@ -24,14 +24,14 @@ For iOS apps that run larger models, enable the Increased Memory Limit entitleme
 ```swift
 // Package.swift
 dependencies: [
-    .package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc97")
+    .package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc98")
 ]
 ```
 
 Developer Preview releases should be pinned exactly. Re-run your real-device validation before moving to a newer `1.0.0-rcN` tag.
 
 :::info Preview access
-The Swift package URL is HTTPS for public docs. Some current preview dependency paths can still require AtomGradient preview access or SSH access, especially while Edge Engine remains a pinned transitive dependency. Confirm package resolution before treating a tag as integrated.
+The Swift package URL is HTTPS for public docs. Some current preview dependency paths can still require AtomGradient preview access, especially while Edge Kit and its Edge Engine dependency remain gated. Confirm package resolution before treating a tag as integrated.
 :::
 
 ## Add the umbrella product

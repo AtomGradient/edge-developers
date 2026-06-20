@@ -40,7 +40,7 @@ After chatting, run the [CLI learning demo](docs/get-started/5-minute-demo.md) t
 | Edge Kit | Swift SDK for loading optimized models, EdgeMesh transport, EdgeData, and app runtime integration. |
 | Edge Halo | Personalization lifecycle: local profile jobs, Neural Imprint capsule compatibility, restore orchestration, and fail-closed gates. |
 | Edge Engine | Native on-device inference runtime, packaged under Edge Kit. |
-| Edge Scaffold | Reference iOS app template showing the recommended Edge Kit + Edge Halo integration. |
+| Edge Scaffold | Reference iOS app template showing the recommended Edge Kit + binary Edge Halo integration. |
 
 Neural Imprint is a local artifact and restore flow. A compatible base model can restore a Neural Imprint artifact and change behavior under compatibility gates without changing model weights.
 
@@ -48,11 +48,11 @@ Neural Imprint is a local artifact and restore flow. A compatible base model can
 
 | Component | Version |
 |---|---|
-| edge-studio | `v0.0.1rc1` |
-| edge-kit | `1.0.0-rc97` |
-| edge-halo | `1.0.0-rc22` |
-| edge-engine | `1.0.0-rc137` |
-| edge-scaffold | Pins edge-kit `1.0.0-rc97` and edge-halo `1.0.0-rc22` |
+| edge-studio | `v0.0.1rc5` |
+| edge-kit | `1.0.0-rc98` |
+| edge-halo-binary | `1.0.0-rc24` |
+| edge-engine | `1.0.0-rc138` |
+| edge-scaffold | Pins edge-kit `1.0.0-rc98` and edge-halo-binary `1.0.0-rc24` |
 
 ## Documentation
 
@@ -69,10 +69,10 @@ Neural Imprint is a local artifact and restore flow. A compatible base model can
 Install the Swift SDK:
 
 ```swift
-.package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc97")
+.package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc98")
 ```
 
-Some package resolution paths may require AtomGradient preview access or SSH access for transitive dependencies such as Edge Engine.
+Some Swift package paths are still preview-gated until the corresponding repositories are made public. Edge Halo is consumed through the public `edge-halo-binary` package, not the private source repository.
 
 ## CLI Reference
 

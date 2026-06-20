@@ -7,7 +7,7 @@ title: Speech to Text
 
 Edge Kit exposes Developer Preview speech-to-text APIs for local transcription.
 
-Use `EdgeVoice` for microphone recording. Use `STTEngine` from `EdgeInference` for native ASR in builds that include the speech runtime. `WhisperEngine` is currently a preview bridge for future whisper.cpp integration; in `edge-kit@1.0.0-rc97` it is a skeleton and does not perform real transcription.
+Use `EdgeVoice` for microphone recording. Use `STTEngine` from `EdgeInference` for native ASR in builds that include the speech runtime. `WhisperEngine` is currently a preview bridge for future whisper.cpp integration; in `edge-kit@1.0.0-rc98` it is a skeleton and does not perform real transcription.
 
 ## Record audio
 

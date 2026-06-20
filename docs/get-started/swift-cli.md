@@ -21,8 +21,8 @@ Pin Developer Preview packages exactly:
 ```swift
 // Package.swift
 dependencies: [
-    .package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc97"),
-    .package(url: "https://github.com/AtomGradient/edge-halo.git", exact: "1.0.0-rc22")
+    .package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc98"),
+    .package(url: "https://github.com/AtomGradient/edge-halo-binary", exact: "1.0.0-rc24")
 ]
 ```
 
@@ -34,12 +34,12 @@ Then add the products you need:
     dependencies: [
         .product(name: "EdgeInference", package: "edge-kit"),
         .product(name: "EdgeMesh", package: "edge-kit"),
-        .product(name: "EdgeHalo", package: "edge-halo")
+        .product(name: "EdgeHalo", package: "edge-halo-binary")
     ]
 )
 ```
 
-Edge Kit `1.0.0-rc97` and Edge Halo `1.0.0-rc22` both use Edge Engine `1.0.0-rc137` in this preview. Some preview package resolution paths may require AtomGradient preview access or SSH access.
+Edge Kit `1.0.0-rc98` uses Edge Engine `1.0.0-rc138` in this preview. Edge Halo is distributed as the public binary package `edge-halo-binary` `1.0.0-rc24`. Some Edge Kit and Edge Engine package resolution paths may still require AtomGradient preview access until those repositories are opened.
 
 ## Run the EdgeStudio validation CLI
 
@@ -50,10 +50,7 @@ git clone https://github.com/AtomGradient/EdgeStudio.git
 cd EdgeStudio
 
 git clone https://github.com/AtomGradient/edge-kit.git edge-kit
-git -C edge-kit checkout 1.0.0-rc97
-
-git clone https://github.com/AtomGradient/edge-halo.git edge-halo
-git -C edge-halo checkout 1.0.0-rc22
+git -C edge-kit checkout 1.0.0-rc98
 ```
 
 Run commands from the smoke package directory:
@@ -138,15 +135,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: AtomGradient/edge-kit
-          ref: 1.0.0-rc97
+          ref: 1.0.0-rc98
           path: EdgeStudio/edge-kit
-
-      - name: Checkout Edge Halo
-        uses: actions/checkout@v4
-        with:
-          repository: AtomGradient/edge-halo
-          ref: 1.0.0-rc22
-          path: EdgeStudio/edge-halo
 
       - name: Run zero-model Swift CLI checks
         run: |

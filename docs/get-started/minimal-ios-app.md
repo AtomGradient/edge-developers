@@ -1,14 +1,14 @@
 ---
 sidebar_position: 3
-title: Minimal iOS app (Preview Access Required)
+title: Minimal iOS app
 ---
 
-# Minimal iOS app (Preview Access Required)
+# Minimal iOS app
 
 The fastest iOS path in the current preview is Edge Scaffold in a no-model build. It verifies the app shell, signing, Swift package wiring, and real-device build path before you add a model.
 
 :::info Preview access
-Current preview package resolution can require AtomGradient preview access. If Swift Package Manager cannot resolve `edge-kit`, `edge-halo`, or the transitive Edge Engine dependency, finish preview onboarding before treating the app path as integrated.
+Current Edge Scaffold and Edge Kit access can still be gated during Developer Preview. Edge Halo is resolved through the public `edge-halo-binary` package, not the private source repository. If Swift Package Manager cannot resolve the packages, finish preview onboarding before treating the app path as integrated.
 :::
 
 ## Build the minimal app shell
@@ -58,7 +58,7 @@ Then build without `SKIP_MODEL_COPY=1`. For larger models, enable the Increased 
 
 ## What this app demonstrates
 
-- A SwiftUI reference app using Edge Kit and Edge Halo.
+- A SwiftUI reference app using Edge Kit and the binary Edge Halo package.
 - Model loading surfaces for local, cached, bundled, ODR, and remote delivery.
 - Neural Imprint restore and correction-learning reference screens.
 - App-owned tool registration and schema snapshot patterns.

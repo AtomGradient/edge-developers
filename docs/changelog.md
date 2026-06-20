@@ -13,7 +13,7 @@ Edge products are in **Developer Preview**. Expect breaking changes between rele
 
 ## Versioning policy
 
-During Developer Preview, Swift package releases follow `1.0.0-rcN` tags. Edge Studio's Python package currently uses PyPI version `0.0.1rc1` and GitHub tag `v0.0.1rc1`. Breaking changes are documented here with migration steps. After general availability, we will follow semantic versioning.
+During Developer Preview, Swift package releases follow `1.0.0-rcN` tags. Edge Studio's Python package currently uses PyPI version `0.0.1rc5` and GitHub tag `v0.0.1rc5`. Breaking changes are documented here with migration steps. After general availability, we will follow semantic versioning.
 
 ## How to upgrade
 
@@ -31,20 +31,20 @@ Developer Preview is a limited preview channel. The changelog documents what is 
 
 | Surface | Current access | Notes |
 |---|---|---|
-| Edge Studio | Python package `edge-studio==0.0.1rc1`, GitHub tag `v0.0.1rc1` | Installs the single `edge` command. Launch the local Studio UI with `edge studio`. |
-| Swift SDK docs | Edge Kit `1.0.0-rc97` | Docs use an exact version pin. Upgrade only after validation. |
-| Edge Engine dependency | Edge Engine `1.0.0-rc137` | Some preview repos or dependencies may require AtomGradient internal preview access or SSH access today. This is surfaced here, not treated as a current internal preview blocker. |
-| Edge Halo dependency | Edge Halo `1.0.0-rc22` | Edge Halo depends on Edge Engine `1.0.0-rc137`; validate package resolution in your environment. |
-| Edge Scaffold | Pins Edge Kit `1.0.0-rc97` and Edge Halo `1.0.0-rc22` | Generated apps still require signing, device provisioning, and real-device validation. |
+| Edge Studio | Python package `edge-studio==0.0.1rc5`, GitHub tag `v0.0.1rc5` | Installs the single `edge` command. Launch the local Studio UI with `edge studio`. |
+| Swift SDK docs | Edge Kit `1.0.0-rc98` | Docs use an exact version pin. Upgrade only after validation. |
+| Edge Engine dependency | Edge Engine `1.0.0-rc138` | Still preview-gated until the repository visibility is changed. This is surfaced here so package-resolution failures are not mistaken for app integration bugs. |
+| Edge Halo binary dependency | Edge Halo binary `1.0.0-rc24` | Public binary SwiftPM package at `AtomGradient/edge-halo-binary`; source remains private. |
+| Edge Scaffold | Pins Edge Kit `1.0.0-rc98` and Edge Halo binary `1.0.0-rc24` | Generated apps still require signing, device provisioning, preview access where required, and real-device validation. |
 
 ### Compatibility matrix
 
 | Component | Compatible preview |
 |---|---|
-| Edge Studio | `v0.0.1rc1` |
-| Edge Kit | `1.0.0-rc97`, depends on Edge Engine `1.0.0-rc137` |
-| Edge Halo | `1.0.0-rc22`, depends on Edge Engine `1.0.0-rc137` |
-| Edge Scaffold | Current preview pins Edge Kit `1.0.0-rc97` and Edge Halo `1.0.0-rc22` |
+| Edge Studio | `v0.0.1rc5` |
+| Edge Kit | `1.0.0-rc98`, depends on Edge Engine `1.0.0-rc138` |
+| Edge Halo binary | `1.0.0-rc24` |
+| Edge Scaffold | Current preview pins Edge Kit `1.0.0-rc98` and Edge Halo binary `1.0.0-rc24` |
 
 Generic builds and simulator checks are not enough for runtime claims. Re-run real-device validation after changing any preview tag.
 
@@ -77,6 +77,14 @@ The B2/B4/B5/B6/B7 CLI commands listed below are shipped in current preview; the
 
 ## edge-studio
 
+### v0.0.1rc5
+
+- Current public Python package distribution name: `edge-studio`.
+- PyPI release candidate version: `0.0.1rc5`. Deterministic install: `python -m pip install edge-studio==0.0.1rc5`.
+- `edge demo chat` streams tokens in interactive mode and supports Neural Imprint restore through `--with-imprint <learn_receipt.json>`.
+- `edge demo learn run --include-text` prints the completed learning receipt and a ready-to-run `next:` command for after-learning chat.
+- `edge studio` now reports an already-running EdgeMesh service as an actionable warning while keeping the Studio UI available.
+
 ### v0.0.1rc1
 
 - Public Python package distribution name: `edge-studio`.
@@ -97,7 +105,13 @@ The B2/B4/B5/B6/B7 CLI commands listed below are shipped in current preview; the
 - Automatic KV cache memory policy.
 - Neural Imprint runtime restore primitives and EdgeMesh capsule auto-restore coordinator APIs.
 - Production app builds can embed generic `EdgeBuildCommit` metadata for snapshot traceability.
-- Depends on Edge Engine `1.0.0-rc137`.
+- Depends on Edge Engine `1.0.0-rc138`.
+
+### 1.0.0-rc98
+
+- Current SDK release gate.
+- Aligns package, tests, and public metadata to Edge Engine `1.0.0-rc138`.
+- Keeps RPP orchestration and activation steering implementation out of the public SDK source; those internals live behind Edge Halo.
 
 ### 1.0.0-rc94
 
@@ -112,9 +126,10 @@ The B2/B4/B5/B6/B7 CLI commands listed below are shipped in current preview; the
 - Edge Halo lifecycle for local profile jobs and Neural Imprint capsule compatibility.
 - Fail-closed validation for model, tokenizer, runtime, and tool-schema identity.
 - `HaloTextGenerator` and `HaloEngineSession` protocols.
+- `EdgeHaloRuntime` public actor.
 - RPP A-library provenance validation and profile artifact lifecycle helpers.
 - Dependency version metadata aligned with the current preview tag.
-- Depends on Edge Engine `1.0.0-rc137`.
+- Public apps consume the binary package `edge-halo-binary` `1.0.0-rc24`; the source repository remains private.
 
 ## edge-engine
 
@@ -124,6 +139,7 @@ The B2/B4/B5/B6/B7 CLI commands listed below are shipped in current preview; the
 - Native Metal inference runtime.
 - DSR Attention implementation.
 - Unreleased commits on `main` are not part of this Developer Preview tag until a new `1.0.0-rcN` release is published.
+- Current dependency tag: `1.0.0-rc138`.
 
 ## edge-scaffold
 
@@ -133,4 +149,4 @@ The B2/B4/B5/B6/B7 CLI commands listed below are shipped in current preview; the
 - iOS app template generation from Edge Studio export.
 - ScaffoldConfig-based customization.
 - Four-tier model delivery (Cache → Bundle → ODR → HuggingFace).
-- Pins Edge Kit `1.0.0-rc97` and Edge Halo `1.0.0-rc22`.
+- Pins Edge Kit `1.0.0-rc98` and Edge Halo binary `1.0.0-rc24`.

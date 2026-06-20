@@ -24,14 +24,14 @@ title: 安装
 ```swift
 // Package.swift
 dependencies: [
-    .package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc97")
+    .package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc98")
 ]
 ```
 
 开发者预览版本应精确固定版本。升级到新的 `1.0.0-rcN` tag 前，请重新完成真机验证。
 
 :::info 预览访问权限
-公开文档中的 Swift package URL 使用 HTTPS。当前预览版中，部分传递依赖路径仍可能需要 AtomGradient 预览访问权限或 SSH 访问权限，尤其是 Edge Engine 仍作为固定依赖时。请先确认包解析，再把某个 tag 当作已完成集成。
+公开文档中的 Swift package URL 使用 HTTPS。当前预览版中，Edge Kit 及其 Edge Engine 依赖在正式公开前仍可能需要 AtomGradient 预览访问权限。请先确认包解析，再把某个 tag 当作已完成集成。
 :::
 
 ## 添加总入口 product

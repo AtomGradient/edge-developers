@@ -40,7 +40,7 @@ edge demo chat --model qwen3.5-9b-4bit --interactive
 | Edge Kit | Swift SDK，负责加载优化后的模型、EdgeMesh transport、EdgeData 和 app runtime 接入。 |
 | Edge Halo | 个性化生命周期层：本地 profile jobs、Neural Imprint capsule 兼容性校验、restore 编排和 fail-closed 闸门。 |
 | Edge Engine | 原生端侧推理运行时，由 Edge Kit 打包使用。 |
-| Edge Scaffold | 参考 iOS app 模板，展示推荐的 Edge Kit + Edge Halo 接入方式。 |
+| Edge Scaffold | 参考 iOS app 模板，展示推荐的 Edge Kit + 二进制 Edge Halo 接入方式。 |
 
 Neural Imprint 是本地产物和恢复流程。兼容的基础模型可以恢复 Neural Imprint 产物，并在兼容性闸门下改变行为，不改模型权重。
 
@@ -48,11 +48,11 @@ Neural Imprint 是本地产物和恢复流程。兼容的基础模型可以恢�
 
 | 组件 | 版本 |
 |---|---|
-| edge-studio | `v0.0.1rc1` |
-| edge-kit | `1.0.0-rc97` |
-| edge-halo | `1.0.0-rc22` |
-| edge-engine | `1.0.0-rc137` |
-| edge-scaffold | 固定依赖 edge-kit `1.0.0-rc97` 和 edge-halo `1.0.0-rc22` |
+| edge-studio | `v0.0.1rc5` |
+| edge-kit | `1.0.0-rc98` |
+| edge-halo-binary | `1.0.0-rc24` |
+| edge-engine | `1.0.0-rc138` |
+| edge-scaffold | 固定依赖 edge-kit `1.0.0-rc98` 和 edge-halo-binary `1.0.0-rc24` |
 
 ## 文档
 
@@ -69,10 +69,10 @@ Neural Imprint 是本地产物和恢复流程。兼容的基础模型可以恢�
 安装 Swift SDK：
 
 ```swift
-.package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc97")
+.package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc98")
 ```
 
-部分 package 解析路径可能因为 Edge Engine 等传递依赖需要 AtomGradient 预览访问权限或 SSH 访问权限。
+部分 Swift package 路径在对应仓库正式公开前仍可能需要 AtomGradient 预览访问权限。Edge Halo 通过公开的 `edge-halo-binary` 包接入，不通过私有源码仓库接入。
 
 ## CLI 参考
 

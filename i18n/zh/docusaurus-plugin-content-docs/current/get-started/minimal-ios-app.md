@@ -1,14 +1,14 @@
 ---
 sidebar_position: 3
-title: 最小 iOS 应用（需要预览访问权限）
+title: 最小 iOS 应用
 ---
 
-# 最小 iOS 应用（需要预览访问权限）
+# 最小 iOS 应用
 
 当前预览版中最快的 iOS 路径，是用 Edge Scaffold 做无模型构建。它先验证应用壳、签名、Swift 包接线和真机构建路径，然后再加入模型。
 
 :::info 预览访问权限
-当前预览版的包解析可能需要 AtomGradient 预览访问权限。如果 Swift Package Manager 无法解析 `edge-kit`、`edge-halo` 或传递依赖 Edge Engine，请先完成预览接入，再把应用路径视为已集成。
+开发者预览期间，Edge Scaffold 和 Edge Kit 仍可能需要预览访问权限。Edge Halo 通过公开的 `edge-halo-binary` 包解析，不通过私有源码仓库解析。如果 Swift Package Manager 无法解析相关包，请先完成预览接入，再把应用路径视为已集成。
 :::
 
 ## 构建最小应用壳
@@ -58,7 +58,7 @@ MODELS_SOURCE_DIR=$HOME/Documents/mlx-community
 
 ## 这个应用展示什么
 
-- 使用 Edge Kit 和 Edge Halo 的 SwiftUI 参考应用。
+- 使用 Edge Kit 和二进制 Edge Halo package 的 SwiftUI 参考应用。
 - 本地、缓存、bundle、ODR、远程等模型加载路径。
 - Neural Imprint 恢复与纠错学习参考界面。
 - 应用拥有的工具注册和 schema snapshot 模式。

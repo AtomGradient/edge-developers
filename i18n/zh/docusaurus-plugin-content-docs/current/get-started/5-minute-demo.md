@@ -1,6 +1,7 @@
 ---
 sidebar_position: 1
 title: 5 分钟看懂本地学习
+slug: /get-started/minute-demo
 ---
 
 # 5 分钟看懂本地学习

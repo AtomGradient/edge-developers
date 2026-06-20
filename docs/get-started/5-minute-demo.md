@@ -1,6 +1,7 @@
 ---
 sidebar_position: 1
 title: See local learning in 5 minutes
+slug: /get-started/minute-demo
 ---
 
 # See local learning in 5 minutes

@@ -32,14 +32,14 @@ Edge Kit 面向 Apple 平台发布。Android、Linux、HarmonyOS 和 Windows 支
 ```swift
 // Package.swift
 dependencies: [
-    .package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc97")
+    .package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc98")
 ]
 ```
 
 预览版本应精确固定。升级到新的 `1.0.0-rcN` tag 前，请重新真机验证。
 
 :::info 预览访问权限
-部分包解析路径可能因为 Edge Engine 等传递依赖需要 AtomGradient 预览访问权限或 SSH 访问权限。请在开发和 CI 环境中运行 `swift package resolve` 验证。
+当 Edge Kit 和 Edge Engine 仍处于预览权限阶段时，部分包解析路径可能需要 AtomGradient 预览访问权限。请在开发和 CI 环境中运行 `swift package resolve` 验证。
 :::
 
 然后添加你需要的 product：

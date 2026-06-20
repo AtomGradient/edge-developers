@@ -138,7 +138,7 @@ base model active。
 
 | 方法或类型 | 作用 |
 | --- | --- |
-| `EdgeHalo(engine:generator:dataStream:)` | 使用 App 提供 bridges 创建 lifecycle actor。 |
+| `EdgeHaloRuntime(engine:generator:dataStream:)` | 使用 App 提供 bridges 创建 lifecycle actor。 |
 | `runProfileAnalysis(...)` | 从 prepared inputs 和导出资源运行本地 profile job。 |
 | `currentProfile` | 最近一次本地 profile result。 |
 | `validateCapsule(_:currentRequirements:)` | 检查 Neural Imprint capsule 是否匹配已加载 runtime。 |

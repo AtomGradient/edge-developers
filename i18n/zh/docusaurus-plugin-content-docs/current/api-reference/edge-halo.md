@@ -5,23 +5,46 @@ title: EdgeHalo
 
 # EdgeHalo API 参考
 
-`EdgeHalo` 管理本地个性化生命周期：profile jobs、Neural Imprint capsule compatibility 和 restore orchestration。
+`EdgeHalo` 模块管理本地个性化生命周期：profile jobs、Neural Imprint capsule compatibility 和 restore orchestration。
 
 :::info 开发者预览
-当前预览版 中部分 profile-analysis 与 capsule API 仍偏底层。新集成建议先参考 Edge Scaffold 流程。
+Edge Halo 通过公开的 `edge-halo-binary` Swift package 分发给 app。源码仓库保持私有；二进制包暴露文档化 API，不暴露实现。
 :::
 
-## EdgeHalo
+## 安装
 
 ```swift
-public actor EdgeHalo
+dependencies: [
+    .package(url: "https://github.com/AtomGradient/edge-halo-binary", exact: "1.0.0-rc24")
+]
+```
+
+```swift
+.target(
+    name: "MyApp",
+    dependencies: [
+        .product(name: "EdgeHalo", package: "edge-halo-binary")
+    ]
+)
+```
+
+然后导入模块：
+
+```swift
+import EdgeHalo
+```
+
+## EdgeHaloRuntime
+
+```swift
+public actor EdgeHaloRuntime
 ```
 
 主入口。
 
 | 属性或方法 | 说明 |
 | --- | --- |
-| `init(engine:generator:dataStream:)` | 使用 App 提供 运行时 bridges 创建 `EdgeHalo` actor。 |
+| `init(engine:generator:dataStream:)` | 使用 App 提供的运行时 bridges 创建 `EdgeHaloRuntime` actor。 |
 | `evolutionState` | 面向产品 UI 的高层模型进化状态。 |
 | `currentProfile` | 最近一次本地 profile result。 |
 | `haloState` | Capsule validation 和 restore 状态。 |

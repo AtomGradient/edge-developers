@@ -31,14 +31,14 @@ Add Edge Kit to your package:
 ```swift
 // Package.swift
 dependencies: [
-    .package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc97")
+    .package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc98")
 ]
 ```
 
 Pin preview releases exactly. Re-validate on real devices before moving to a newer `1.0.0-rcN` tag.
 
 :::info Preview access
-Some package resolution paths may require AtomGradient preview access or SSH access for transitive dependencies such as Edge Engine. Run `swift package resolve` in your development and CI environment to verify.
+Some package resolution paths may require AtomGradient preview access while Edge Kit and Edge Engine remain gated. Run `swift package resolve` in your development and CI environment to verify.
 :::
 
 Then add the product you need:
