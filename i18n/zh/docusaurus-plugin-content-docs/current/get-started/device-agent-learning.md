@@ -60,7 +60,7 @@ cd FinanceAgent          # 工程根目录 — project.yml + FinanceAgent.xcodep
 open FinanceAgent.xcodeproj
 ```
 
-`.xcodeproj` 已由导出生成；App 源码在嵌套的 `FinanceAgent/` 子目录。（之后若改了 `project.yml`，用 `xcodegen generate` 重新生成。）在 Xcode 中：
+`.xcodeproj` 已由导出生成；App 源码在嵌套的 `FinanceAgent/` 子目录。（**不要**对它跑 `xcodegen generate` —— 模型的按需资源 (ODR) 接线在后处理过的 `.xcodeproj` 里、不在 `project.yml`，重新生成会丢掉它；需要改 `project.yml` 就从 Edge Studio 重新导出。）在 Xcode 中：
 
 1. 选择你的 Development Team（Signing & Capabilities）
 2. **选择真机**（iPhone 或 iPad）— 不要选 Simulator
