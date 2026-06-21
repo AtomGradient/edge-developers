@@ -277,6 +277,8 @@ xcrun devicectl device process launch --device <DEVICE_ID> com.example.financeag
 
 **Xcode path (GUI)** — open the project, pick your Development Team under Signing & Capabilities, select the real device (not Simulator), Build & Run.
 
+> **Build Release, not Debug — on-device token generation is 2–10× slower in Debug.** The CLI path above already passes `-configuration Release`. In Xcode the **Run** action defaults to Debug, so switch it: **Product → Scheme → Edit Scheme → Run → Build Configuration → Release**, then Build & Run. (Debug uses `-Onone`; MLX/Metal inference needs the optimized Release build to hit real token speeds.)
+
 > **First build fetches Swift packages from GitHub** (edge-kit, edge-engine, edge-halo-binary, …), so it needs network access. Behind a restricted network, configure an HTTPS proxy before building.
 
 ### 8d. Experience on iPhone

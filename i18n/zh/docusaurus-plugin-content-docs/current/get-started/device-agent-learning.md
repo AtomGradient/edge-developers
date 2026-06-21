@@ -64,7 +64,7 @@ open FinanceAgent.xcodeproj
 
 1. 选择你的 Development Team（Signing & Capabilities）
 2. **选择真机**（iPhone 或 iPad）— 不要选 Simulator
-3. Build & Run
+3. Build & Run —— 用 **Release** 配置（Debug 下端侧推理慢 2–10×；改：**Product → Scheme → Edit Scheme → Run → Build Configuration → Release**）
 
 :::warning 必须真机
 Simulator 无法验证 Metal 推理、内存行为和 NI restore。Edge 的端侧体验只有在真机上才是真实的。

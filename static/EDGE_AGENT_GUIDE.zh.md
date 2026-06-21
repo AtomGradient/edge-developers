@@ -280,6 +280,8 @@ xcrun devicectl device process launch --device <DEVICE_ID> com.example.financeag
 
 **Xcode 路径（GUI）** —— 打开工程，在 Signing & Capabilities 选 Development Team，选真机（不要 Simulator），Build & Run。
 
+> **用 Release 构建，别用 Debug —— Debug 下端侧 token 生成慢 2–10×。** 上面的 CLI 序列已带 `-configuration Release`。Xcode 的 **Run** 默认是 Debug，需手动切：**Product → Scheme → Edit Scheme → Run → Build Configuration → Release**，再 Build & Run。（Debug 是 `-Onone`；MLX/Metal 推理必须用优化过的 Release 才能跑出真实 token 速度。）
+
 > **首次构建会从 GitHub 拉 Swift 包**（edge-kit、edge-engine、edge-halo-binary……），需要联网。受限网络下，先配 HTTPS 代理再构建。
 
 ### 8d. 在 iPhone 上体验
