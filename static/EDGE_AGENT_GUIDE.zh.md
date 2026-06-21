@@ -208,9 +208,9 @@ I have $800 left after bills this month. What should I do with it?
 
 ## Task 8: 导出到 iPhone
 
-> **前置：** XcodeGen（`brew install xcodegen`）和 Xcode。真机构建还需要 Apple Developer Team ID 和有效签名身份。
+> **前置：** XcodeGen（`brew install xcodegen`）和 Xcode。真机 **签名** 构建还需要：签名身份、属于该 Team 的 Xcode 账户、有效的描述文件——见 8c 的"真机签名前置清单"。
 >
-> **获取 Team ID（Code Agent 请读这段）：** 跑 `security find-identity -v -p codesigning`——你的 *Apple Development* 身份括号里那 10 字符就是 Team ID。若返回 `0 valid identities found`（没配 Apple 账号，或你是无钥匙串访问的沙箱 agent），**向开发者索要 Team ID**，并让他先在 Xcode → Settings → Accounts 登录。目标 iPhone/iPad 还需开启 Developer Mode 并在本机信任。
+> **获取 Team ID（Code Agent 请读这段）：** 跑 `security find-identity -v -p codesigning`——你的 *Apple Development* 身份括号里那 10 字符就是 Team ID。若返回 `0 valid identities found`（没配 Apple 账号，或你是 `$HOME` 被重定向、无钥匙串访问的沙箱 agent），**不要在沙箱里尝试签名**——光有 Team ID 签不了名，签名需要宿主 login keychain 里的私钥。把签名构建交给宿主环境或开发者，或 **向开发者索要 Team ID** 并让他先在 Xcode → Settings → Accounts 登录。目标 iPhone/iPad 还需开启 Developer Mode 并在本机信任。
 
 ### 8a. 导出 Agent app（一条命令）
 
@@ -239,10 +239,44 @@ open FinanceAgent.xcodeproj
 
 ### 8c. 构建到真机
 
-在 Xcode 中：
-1. 在 Signing & Capabilities 选你的 Development Team
-2. **选真机 iPhone/iPad — 不要选 Simulator。** Edge 跑端侧 Metal 推理和 Neural Imprint restore，只在真机有效。Simulator 构建会报一个看不懂的 xcframework 切片错误，因为 EdgeHalo 只发真机切片——这是设计如此，不是 bug。
-3. Build & Run
+> **不要用 Simulator。** Edge 跑端侧 Metal 推理和 Neural Imprint restore，只在真机有效。Simulator 构建会报一个看不懂的 xcframework 切片错误，因为 EdgeHalo 只发真机切片——这是设计如此，不是 bug。
+
+> **⚠️ 先完成 Xcode 签名设置 —— 这是硬前置，不是事后排查。** 除非下面几项都在 **宿主 Mac**（不是沙箱 agent）上做好，否则签名构建在产出 `.app` **之前** 就会失败：
+> 1. **Xcode → Settings → Accounts：** 登录拥有该 Team 的 Apple Developer 账户。
+> 2. **签名身份** 存在于宿主 login keychain —— 光有 Team ID 签不了名。缺失 → `No Account for Team "<TEAM_ID>"`。
+> 3. **有效、未过期的 *iOS App Development* 描述文件** 对应你的 bundle id —— 或在账户已登录时让 `-allowProvisioningUpdates` 自动生成。缺失/过期 → `No matching iOS App Development provisioning profile`。
+> 4. **设备：** 目标 iPhone/iPad 已插上、解锁、在本机信任、并开启 Developer Mode。
+>
+> **预检（命令前必须通过）：**
+> ```bash
+> security find-identity -v -p codesigning   # → 至少 1 个 "Apple Development" 身份
+> xcrun xctrace list devices                 # → 出现你的真机 UDID
+> ```
+> 如果你是沙箱 agent，宿主有身份但你这里报 `0 valid identities found`，说明你被重定向的 `$HOME` 钥匙串是空的 —— **请在宿主环境跑签名构建**，或交给开发者。
+
+**Code Agent 路径（CLI）** —— 预检通过后，找到设备，再 构建 → 安装 → 启动：
+
+```bash
+# 1. 列出已连接、已信任的设备；复制你 iPhone/iPad 的 UUID
+xcrun devicectl list devices
+
+# 2. 对该设备做签名构建。替换 <DEVICE_ID> 和 <TEAM_ID>。
+cd ./exports/FinanceAgent
+xcodebuild -project FinanceAgent.xcodeproj -scheme FinanceAgent \
+  -configuration Release \
+  -destination 'platform=iOS,id=<DEVICE_ID>' \
+  -derivedDataPath ./build \
+  -allowProvisioningUpdates \
+  DEVELOPMENT_TEAM=<TEAM_ID> CODE_SIGN_STYLE=Automatic \
+  build
+
+# 3. 安装 + 启动构建出的 .app（bundle id 须与 8a 的 --bundle-id 一致）
+xcrun devicectl device install app --device <DEVICE_ID> \
+  ./build/Build/Products/Release-iphoneos/FinanceAgent.app
+xcrun devicectl device process launch --device <DEVICE_ID> com.example.financeagent
+```
+
+**Xcode 路径（GUI）** —— 打开工程，在 Signing & Capabilities 选 Development Team，选真机（不要 Simulator），Build & Run。
 
 > **首次构建会从 GitHub 拉 Swift 包**（edge-kit、edge-engine、edge-halo-binary……），需要联网。受限网络下，先配 HTTPS 代理再构建。
 
