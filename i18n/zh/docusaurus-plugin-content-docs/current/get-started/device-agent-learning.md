@@ -52,15 +52,15 @@ Edge Studio Web UI 导出界面
 
 ## 2. 在 Xcode 中打开并部署到真机
 
-解压 ZIP，生成 Xcode 项目：
+解压并打开导出生成的工程：
 
 ```bash
-cd FinanceAgent/FinanceAgent
-xcodegen generate
+unzip FinanceAgent.zip
+cd FinanceAgent          # 工程根目录 — project.yml + FinanceAgent.xcodeproj 在这
 open FinanceAgent.xcodeproj
 ```
 
-在 Xcode 中：
+`.xcodeproj` 已由导出生成；App 源码在嵌套的 `FinanceAgent/` 子目录。（之后若改了 `project.yml`，用 `xcodegen generate` 重新生成。）在 Xcode 中：
 
 1. 选择你的 Development Team（Signing & Capabilities）
 2. **选择真机**（iPhone 或 iPad）— 不要选 Simulator
