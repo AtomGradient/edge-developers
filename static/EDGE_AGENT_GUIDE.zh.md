@@ -237,7 +237,7 @@ open FinanceAgent.xcodeproj
 
 `.xcodeproj` 已由导出生成。App 源码在嵌套的 `FinanceAgent/` 子目录；`project.yml`、`Resources/`、`.xcodeproj` 在工程根目录。
 
-> **⚠️ 不要对导出的工程跑 `xcodegen generate`。** 导出会通过后处理 `project.pbxproj` 把模型接成按需资源 (ODR)，这套接线**不在** `project.yml` 里，所以 `xcodegen generate` 会重新生成工程并静默丢掉它。需要改 `project.yml` 就从 Edge Studio 重新导出，保证模型资源仍接好。
+> **之后要改 `project.yml`？** 导出已生成 `.xcodeproj`，通常你无需再跑 `xcodegen generate`。在 **rc15+** 上重新生成是安全的 —— 导出会把模型的按需资源 (ODR) 接线（`KnownAssetTags` + 模型 source 的 `resourceTags`）写进 `project.yml`，所以 `xcodegen generate` 会保留它。（rc14 及更早版本 ODR 只在生成的 `.xcodeproj` 里，重新生成会静默丢掉，请用 rc15+。）
 
 ### 8c. 构建到真机
 
