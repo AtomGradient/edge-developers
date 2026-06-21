@@ -14,6 +14,7 @@ const sidebars: SidebarsConfig = {
       collapsed: false,
       items: [
         'get-started/minute-demo',
+        'get-started/device-agent-learning',
         'get-started/source-build',
         'get-started/minimal-ios-app',
         'get-started/installation',

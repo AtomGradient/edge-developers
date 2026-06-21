@@ -62,7 +62,8 @@ const config: Config = {
     image: 'img/social-card.png',
     colorMode: {
       defaultMode: 'light',
-      respectPrefersColorScheme: true,
+      disableSwitch: false,
+      respectPrefersColorScheme: false,
     },
     navbar: {
       title: 'AtomGradient Edge',

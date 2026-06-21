@@ -498,7 +498,13 @@ controlled synthetic example and that the answer moved after restore. Production
 readiness still needs task-specific evaluation, UI controls, deletion UX, and
 real-device validation.
 
-## 14. Continue
+## 14. Next: Experience It on iPhone
+
+You just proved learning works on the Mac. Now see the same thing happen on a real device.
+
+**→ [Device Agent Learning](/docs/get-started/device-agent-learning)** — export the carrier, deploy to iPhone, pick a domain, trigger on-device learning, see the behavior change, verify offline, and remove the learned state.
+
+---
 
 - Developer docs: [atomgradient.github.io/edge-developers](https://atomgradient.github.io/edge-developers/)
 - GitHub: [github.com/AtomGradient](https://github.com/AtomGradient)
