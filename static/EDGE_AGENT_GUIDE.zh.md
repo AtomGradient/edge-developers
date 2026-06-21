@@ -262,8 +262,8 @@ open FinanceAgent.xcodeproj
 # 1. 列出已连接、已信任的设备；复制你 iPhone/iPad 的 UUID
 xcrun devicectl list devices
 
-# 2. 对该设备做签名构建。替换 <DEVICE_ID> 和 <TEAM_ID>。
-cd ./exports/FinanceAgent
+# 2. 对该设备做签名构建（在 project root 跑 —— 8b 里打开的 FinanceAgent/ 目录）。
+#    替换 <DEVICE_ID> 和 <TEAM_ID>。
 xcodebuild -project FinanceAgent.xcodeproj -scheme FinanceAgent \
   -configuration Release \
   -destination 'platform=iOS,id=<DEVICE_ID>' \
