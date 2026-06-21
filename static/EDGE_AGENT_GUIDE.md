@@ -42,7 +42,7 @@ edge doctor
 
 ```bash
 edge --version
-# Expected: edge-studio 0.0.1rc14 or higher (--pre always installs the latest preview)
+# Expected: edge-studio 0.0.1rc15 or higher (--pre always installs the latest preview)
 edge doctor
 # Expect everything OK except two benign warnings at this stage:
 #   - model.cache    → no model downloaded yet (you fetch one in Task 2)
@@ -373,7 +373,7 @@ Development tools:
 
 | Package | Validated version | Install |
 |---------|----------------|---------|
-| edge-studio | 0.0.1rc14 | `pip install --pre edge-studio` |
+| edge-studio | 0.0.1rc15 | `pip install --pre edge-studio` |
 | edge-kit | 1.0.0-rc98 | SPM: `github.com/AtomGradient/edge-kit` |
 | edge-engine | 1.0.0-rc138 | SPM: `github.com/AtomGradient/edge-engine` |
 | edge-halo-binary | 1.0.0-rc24 | SPM: `github.com/AtomGradient/edge-halo-binary` |
