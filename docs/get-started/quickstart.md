@@ -1,9 +1,10 @@
 ---
 sidebar_position: 1
-title: Quickstart
+title: Your First LLM (Swift)
+sidebar_label: Your First LLM (Swift)
 ---
 
-# Getting started
+# Your first LLM with Edge Kit
 
 Install Edge Kit, load a local model, and stream tokens from an on-device LLM.
 

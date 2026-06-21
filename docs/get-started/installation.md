@@ -1,6 +1,7 @@
 ---
 sidebar_position: 2
-title: Installation
+title: Install Edge Kit
+sidebar_label: Install Edge Kit
 ---
 
 # Install Edge Kit

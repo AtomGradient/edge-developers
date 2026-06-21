@@ -9,16 +9,15 @@ const sidebars: SidebarsConfig = {
   docsSidebar: [
     'overview',
     {
+      // Journey A — the device-Agent personalization path (North Star).
+      // Linear, numbered: install -> CLI proof -> same loop on a real iPhone.
       type: 'category',
       label: 'Quickstart',
       collapsed: false,
       items: [
+        'get-started/source-build',
         'get-started/minute-demo',
         'get-started/device-agent-learning',
-        'get-started/source-build',
-        'get-started/minimal-ios-app',
-        'get-started/installation',
-        'get-started/swift-cli',
       ],
     },
     {
@@ -28,20 +27,25 @@ const sidebars: SidebarsConfig = {
       items: [
         'build/model-evolution',
         'guides/neural-imprint-vs-lora',
-        'guides/model-management',
         'guides/architecture',
       ],
     },
     {
+      // Journey B — the Edge Kit Swift SDK path. Install -> first model ->
+      // each modality -> validation -> minimal iOS shell, in build order.
       type: 'category',
       label: 'Build with Edge Kit',
       collapsed: true,
       items: [
+        'get-started/installation',
+        'get-started/quickstart',
         'build/text-generation',
         'build/vision',
         'build/speech-to-text',
         'build/text-to-speech',
         'build/device-mesh',
+        'get-started/swift-cli',
+        'get-started/minimal-ios-app',
       ],
     },
     {
@@ -59,19 +63,6 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
-      label: 'Reference',
-      collapsed: true,
-      items: [
-        'guides/supported-models',
-        'guides/memory-management',
-        'guides/performance-tuning',
-        'guides/platform-requirements',
-        'guides/troubleshooting',
-        'get-started/quickstart',
-      ],
-    },
-    {
-      type: 'category',
       label: 'Optimize & Ship',
       collapsed: true,
       items: [
@@ -80,6 +71,19 @@ const sidebars: SidebarsConfig = {
         'optimize-and-ship/export',
         'optimize-and-ship/scaffold',
         'optimize-and-ship/studio-ui-reference',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Reference',
+      collapsed: true,
+      items: [
+        'guides/supported-models',
+        'guides/model-management',
+        'guides/memory-management',
+        'guides/performance-tuning',
+        'guides/platform-requirements',
+        'guides/troubleshooting',
       ],
     },
     'changelog',

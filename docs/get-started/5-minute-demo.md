@@ -1,6 +1,7 @@
 ---
 sidebar_position: 1
 title: Build your first device Agent
+sidebar_label: 2. First Device Agent (CLI)
 slug: /get-started/minute-demo
 ---
 

@@ -1,6 +1,7 @@
 ---
 sidebar_position: 2
 title: 安装 Edge Studio
+sidebar_label: 1. 安装 Edge Studio
 ---
 
 # 安装 Edge Studio

@@ -1,6 +1,7 @@
 ---
 sidebar_position: 2
 title: Install Edge Studio
+sidebar_label: 1. Install Edge Studio
 ---
 
 # Install Edge Studio

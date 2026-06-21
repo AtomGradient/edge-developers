@@ -1,6 +1,7 @@
 ---
 sidebar_position: 1
 title: 构建第一个设备 Agent
+sidebar_label: 2. 首个设备 Agent (CLI)
 slug: /get-started/minute-demo
 ---
 

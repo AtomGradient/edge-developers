@@ -1,9 +1,10 @@
 ---
 sidebar_position: 1
-title: 快速开始
+title: 第一个 LLM (Swift)
+sidebar_label: 第一个 LLM (Swift)
 ---
 
-# 开始使用
+# 用 Edge Kit 跑你的第一个 LLM
 
 安装 Edge Kit，加载本地模型，并从端侧 LLM 流式输出 token。
 

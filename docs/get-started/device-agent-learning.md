@@ -1,6 +1,7 @@
 ---
 sidebar_position: 4
 title: Device Agent Learning
+sidebar_label: 3. Device Learning (iPhone)
 slug: /get-started/device-agent-learning
 ---
 

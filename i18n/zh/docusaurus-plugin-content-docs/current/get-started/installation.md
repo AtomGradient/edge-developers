@@ -1,6 +1,7 @@
 ---
 sidebar_position: 2
-title: 安装
+title: 安装 Edge Kit
+sidebar_label: 安装 Edge Kit
 ---
 
 # 安装 Edge Kit

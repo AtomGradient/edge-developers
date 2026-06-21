@@ -1,6 +1,7 @@
 ---
 sidebar_position: 4
 title: 设备端 Agent 学习
+sidebar_label: 3. 设备端学习 (iPhone)
 slug: /get-started/device-agent-learning
 ---
 
