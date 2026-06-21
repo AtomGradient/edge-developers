@@ -45,7 +45,7 @@ edge doctor
 
 ```bash
 edge --version
-# 期望输出: edge-studio 0.0.1rc15 或更高 (--pre 总是装最新 preview)
+# 期望输出: edge-studio 0.0.1rc16 或更高 (--pre 总是装最新 preview)
 edge doctor
 # 此阶段除两个良性 warning 外都应 OK：
 #   - model.cache    → 还没下载模型（Task 2 会下）
@@ -237,7 +237,7 @@ open FinanceAgent.xcodeproj
 
 `.xcodeproj` 已由导出生成。App 源码在嵌套的 `FinanceAgent/` 子目录；`project.yml`、`Resources/`、`.xcodeproj` 在工程根目录。
 
-> **之后要改 `project.yml`？** 导出已生成 `.xcodeproj`，通常你无需再跑 `xcodegen generate`。在 **rc15+** 上重新生成是安全的 —— 导出会把模型的按需资源 (ODR) 接线（`KnownAssetTags` + 模型 source 的 `resourceTags`）写进 `project.yml`，所以 `xcodegen generate` 会保留它。（rc14 及更早版本 ODR 只在生成的 `.xcodeproj` 里，重新生成会静默丢掉，请用 rc15+。）
+> **之后要改 `project.yml`？** 导出已生成 `.xcodeproj`，通常你无需再跑 `xcodegen generate`。在 **rc16+** 上重新生成是安全的 —— 导出会把模型的按需资源 (ODR) 接线（`KnownAssetTags` + 模型 source 的 `resourceTags`）**和一个共享 app scheme** 一起写进 `project.yml`，所以 `xcodegen generate` 会保留它们。（rc15 保留了 ODR 但没保留 scheme，重新生成后 `xcodebuild -scheme <App>` 可能失败；rc14 及更早还会丢 ODR，请用 rc16+。）
 
 ### 8c. 构建到真机
 
@@ -283,6 +283,51 @@ xcrun devicectl device process launch --device <DEVICE_ID> com.example.financeag
 > **用 Release 构建，别用 Debug —— Debug 下端侧 token 生成慢 2–10×。** 上面的 CLI 序列已带 `-configuration Release`。Xcode 的 **Run** 默认是 Debug，需手动切：**Product → Scheme → Edit Scheme → Run → Build Configuration → Release**，再 Build & Run。（Debug 是 `-Onone`；MLX/Metal 推理必须用优化过的 Release 才能跑出真实 token 速度。）
 
 > **首次构建会从 GitHub 拉 Swift 包**（edge-kit、edge-engine、edge-halo-binary……），需要联网。受限网络下，先配 HTTPS 代理再构建。
+
+### 8c.1 让 Release 构建保持快速（模型交付）
+
+默认导出会把模型打进 app（`<App>_model_config` 里 `MODEL_COPY="true"`）。这会让每次 Release 构建都很慢——要拷贝整个模型（数 GB），`.app` 也很大。它**不影响推理速度**：交付位置只影响构建时间和 app 体积，绝不影响 tokens/秒。模型进内存后，bundle、Documents、ODR 三条路径推理速度完全一样。
+
+要在真机上快速迭代，跳过 bundle 拷贝，把模型推进 app 的 `Documents/` 容器。App 的 loader 先查 `Documents/<modelID>`，所以会从那里加载。文件夹名必须与 app 的 model id 一致（这里是 `Qwen3.5-9B-4bit`）：
+
+```bash
+DEVICE_ID=...        # xcrun devicectl list devices
+BUNDLE_ID=...        # project.yml → PRODUCT_BUNDLE_IDENTIFIER
+MODEL_DIR=~/Documents/mlx-community/Qwen3.5-9B-4bit
+MODEL_NAME=Qwen3.5-9B-4bit
+
+# 1. 不打包模型的 Release 构建（快、app 小）
+xcodebuild -project FinanceAgent.xcodeproj -scheme FinanceAgent -configuration Release \
+  -destination "platform=iOS,id=$DEVICE_ID" -derivedDataPath ./build \
+  -allowProvisioningUpdates SKIP_MODEL_COPY=1 \
+  DEVELOPMENT_TEAM=<TEAM_ID> CODE_SIGN_STYLE=Automatic build
+
+# 2. 安装
+xcrun devicectl device install app --device "$DEVICE_ID" \
+  ./build/Build/Products/Release-iphoneos/FinanceAgent.app
+
+# 3. 把模型推进 app 的 Documents 容器
+for f in "$MODEL_DIR"/*.json "$MODEL_DIR"/*.txt "$MODEL_DIR"/*.jinja "$MODEL_DIR"/*.safetensors; do
+  [ -f "$f" ] && xcrun devicectl device copy to --device "$DEVICE_ID" \
+    --source "$f" --destination "Documents/$MODEL_NAME/$(basename "$f")" \
+    --domain-type appDataContainer --domain-identifier "$BUNDLE_ID"
+done
+
+# 4. 启动 —— app 从 Documents 加载模型
+xcrun devicectl device process launch --device "$DEVICE_ID" "$BUNDLE_ID"
+```
+
+模型会在 `Documents/` 里跨 app 重建保留，所以后续迭代只重建小 app、跳过数 GB 的推送。（这正是 Edge Studio 自己 `tests/device_test` 真机 Release 跑测用的模式。）
+
+**三种交付模式** —— 推理速度相同；只在构建时间、app 体积、模型如何到达设备上不同：
+
+| 模式 | 用途 | 取舍 |
+|------|------|------|
+| Documents-push（上面）| 快速开发迭代 | 构建快、app 小；用 `devicectl` 推一次模型 |
+| Bundle（`MODEL_COPY="true"`）| 离线 / 独立 | 构建慢、app 大；模型在 `.app` 内 |
+| ODR | App Store 分发 | 从 Apple CDN 按需下载；App-thinning |
+
+在 **rc100+** 脚手架上，**Settings** 显示模型实际从哪加载（`Source: Bundle` / `Source: Documents` / `Source: ODR`），且仅在真正加载失败（或模型文件被误放到 Documents 根目录）时才提示 `Documents` 安装路径问题。更早的脚手架即使 bundle/ODR 成功加载也会显示 “Local model not found in Documents/&lt;model&gt;”——那是诊断残留，不是错误。
 
 ### 8d. 在 iPhone 上体验
 
@@ -378,12 +423,14 @@ App 启动后：
 
 | 包 | 已验证版本 | 安装 |
 |----|---------|------|
-| edge-studio | 0.0.1rc15 | `pip install --pre edge-studio` |
-| edge-kit | 1.0.0-rc98 | SPM: `github.com/AtomGradient/edge-kit` |
-| edge-engine | 1.0.0-rc138 | SPM: `github.com/AtomGradient/edge-engine` |
+| edge-studio | 0.0.1rc16 | `pip install --pre edge-studio` |
+| edge-kit | 1.0.0-rc100 | SPM: `github.com/AtomGradient/edge-kit` |
+| edge-engine | 1.0.0-rc141 | SPM: `github.com/AtomGradient/edge-engine` |
 | edge-halo-binary | 1.0.0-rc24 | SPM: `github.com/AtomGradient/edge-halo-binary` |
 
 > 这是本次 guide 修订所验证的版本。`--pre`（pip）和 SPM 解析可能拉到更新的兼容 preview —— 取最新版并在升级后在真机上重新验证。
+
+> **VLM 文本速度（edge-kit rc100+）。** 如果你的模型是视觉语言模型（如 Qwen3.5），纯文本聊天现在默认满速运行——和纯文本 LLM 走同一条 Metal 采样解码路径。你**无需**为了文本速度把模型类别切成 `.llm`。（更早的构建在 VLM 模型上对采样文本会跌回慢的参考解码器；edge-kit rc100 修复了。iPhone Air + `Qwen3.5-9B-4bit` 实测：0.5 → 11.2 tok/s，默认温度。）
 
 ## 详细文档
 
