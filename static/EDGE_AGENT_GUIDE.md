@@ -205,7 +205,9 @@ I have $800 left after bills this month. What should I do with it?
 
 ## Task 8: Export to iPhone
 
-> **Prerequisites:** XcodeGen (`brew install xcodegen`) and Xcode. A real-device build also needs an Apple Developer Team ID for code signing.
+> **Prerequisites:** XcodeGen (`brew install xcodegen`) and Xcode. A real-device build also needs an Apple Developer Team ID and a valid signing identity.
+>
+> **Getting the Team ID (Code Agents, read this):** run `security find-identity -v -p codesigning` — the 10-character string in parentheses after your *Apple Development* identity is the Team ID. If it returns `0 valid identities found` (no Apple account configured, or you are a sandboxed agent without keychain access), **ask the developer for their Team ID** and have them sign in under Xcode → Settings → Accounts first. The target iPhone/iPad must also be in Developer Mode and trusted on this Mac.
 
 ### 8a. Export the Agent app (one command)
 

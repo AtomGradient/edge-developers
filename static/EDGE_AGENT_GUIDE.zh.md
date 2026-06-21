@@ -208,7 +208,9 @@ I have $800 left after bills this month. What should I do with it?
 
 ## Task 8: 导出到 iPhone
 
-> **前置：** XcodeGen（`brew install xcodegen`）和 Xcode。真机构建还需要 Apple Developer Team ID 做代码签名。
+> **前置：** XcodeGen（`brew install xcodegen`）和 Xcode。真机构建还需要 Apple Developer Team ID 和有效签名身份。
+>
+> **获取 Team ID（Code Agent 请读这段）：** 跑 `security find-identity -v -p codesigning`——你的 *Apple Development* 身份括号里那 10 字符就是 Team ID。若返回 `0 valid identities found`（没配 Apple 账号，或你是无钥匙串访问的沙箱 agent），**向开发者索要 Team ID**，并让他先在 Xcode → Settings → Accounts 登录。目标 iPhone/iPad 还需开启 Developer Mode 并在本机信任。
 
 ### 8a. 导出 Agent app（一条命令）
 
