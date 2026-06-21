@@ -208,41 +208,41 @@ I have $800 left after bills this month. What should I do with it?
 
 ## Task 8: 导出到 iPhone
 
-### 8a. 启动 Edge Studio
+> **前置：** XcodeGen（`brew install xcodegen`）和 Xcode。真机构建还需要 Apple Developer Team ID 做代码签名。
+
+### 8a. 导出 Agent app（一条命令）
 
 ```bash
-edge studio
+edge export scaffold \
+  --model qwen3.5-9b-4bit \
+  --app-name FinanceAgent \
+  --output ./exports
 ```
 
-`edge studio` 在前台运行并占住当前终端（按 Ctrl+C 停止）。**请新开一个终端窗口**执行后续命令。
+直接导出——不用 server、不用浏览器。它生成 `./exports/FinanceAgent.zip`（完整 Xcode 工程）并打印路径；加 `--json` 出机器可读输出（`zip_path`、`next_steps`）。模型还没下载时它会 fail-closed 并提示先跑 `edge models fetch`——绝不悄悄下几 GB 的大模型。
 
-打开浏览器：`http://127.0.0.1:18842`
+想一键真机运行，再带签名：`--bundle-id com.example.financeagent --team-id <你的 TEAM_ID>`。
 
-**端口：** `edge studio` 在 `18842`（HTTP）提供 UI/API，并在 `18843`（mTLS）启动 EdgeMesh 节点 + 局域网 mDNS 发现——这是设备间互相发现的方式。若防火墙提示，请放行。
+> **想用 GUI？** `edge studio` 会在 `http://127.0.0.1:18842` 打开本地 Web UI，同样的导出在 Export → Edge Scaffold。它也会启动 EdgeMesh 节点（HTTP `18842` + mTLS `18843` + mDNS），让设备互相发现——若防火墙提示请放行。上面的 CLI 是给 Code Agent 的推荐路径。
 
-### 8b. 导出 Agent 载体
-
-在 Web UI 中：
-1. 加载模型 `qwen3.5-9b-4bit`
-2. 点击 Export → Edge Scaffold
-3. 输入 App 名称（如 `FinanceAgent`）
-4. 下载 ZIP
-
-### 8c. 部署到真机
-
-解压下载的 ZIP，然后生成并打开 Xcode 工程。`project.yml` 和 `.xcodeproj` 在工程根目录（App 源码在嵌套的 `FinanceAgent/` 子目录里）：
+### 8b. 打开工程
 
 ```bash
-unzip ~/Downloads/FinanceAgent.zip   # 按 ZIP 实际下载位置调整
-cd FinanceAgent                      # 工程根目录 — project.yml 所在处
-xcodegen generate                    # 需要 XcodeGen：brew install xcodegen
+unzip ./exports/FinanceAgent.zip -d ./exports
+cd ./exports/FinanceAgent          # 工程根目录 — project.yml + FinanceAgent.xcodeproj 在这
 open FinanceAgent.xcodeproj
 ```
 
+`.xcodeproj` 已由导出生成。App 源码在嵌套的 `FinanceAgent/` 子目录；`project.yml`、`Resources/`、`.xcodeproj` 在工程根目录。之后若改了 `project.yml`，用 `xcodegen generate` 重新生成。
+
+### 8c. 构建到真机
+
 在 Xcode 中：
-1. 选 Development Team
-2. **选真机（iPhone/iPad）— 不要选 Simulator**
+1. 在 Signing & Capabilities 选你的 Development Team
+2. **选真机 iPhone/iPad — 不要选 Simulator。** Edge 跑端侧 Metal 推理和 Neural Imprint restore，只在真机有效。Simulator 构建会报一个看不懂的 xcframework 切片错误，因为 EdgeHalo 只发真机切片——这是设计如此，不是 bug。
 3. Build & Run
+
+> **首次构建会从 GitHub 拉 Swift 包**（edge-kit、edge-engine、edge-halo-binary……），需要联网。受限网络下，先配 HTTPS 代理再构建。
 
 ### 8d. 在 iPhone 上体验
 
@@ -272,6 +272,8 @@ App 启动后：
 每个 domain 有独立的合成数据集，学习循环相同。
 
 ## Task 9: 定制你的 Agent
+
+导出的项目有两层：**工程根目录**（`FinanceAgent/`）放 `project.yml`、`Resources/`、`.xcodeproj`；**App 源码**在嵌套的 `FinanceAgent/FinanceAgent/` 子目录（`App/`、`AI/`、`Chat/` 等）。下表路径相对于各文件所在的那一层——Swift 源码在源码子目录，`Resources/` 和 `project.yml` 在根目录。（`DemoChatView*.swift` 是主视图 + 各模态扩展：`+LLM`/`+VLM`/`+TTS`/`+STT`。）
 
 导出的项目中，关键文件：
 
