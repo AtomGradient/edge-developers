@@ -42,7 +42,7 @@ edge doctor
 
 ```bash
 edge --version
-# Expected: edge-studio 0.0.1rc11 or higher
+# Expected: edge-studio 0.0.1rc14 or higher (--pre always installs the latest preview)
 edge doctor
 # Expect everything OK except two benign warnings at this stage:
 #   - model.cache    → no model downloaded yet (you fetch one in Task 2)
@@ -369,12 +369,14 @@ Development tools:
 
 ## Dependency versions
 
-| Package | Current version | Install |
+| Package | Validated version | Install |
 |---------|----------------|---------|
-| edge-studio | 0.0.1rc11 | `pip install --pre edge-studio` |
+| edge-studio | 0.0.1rc14 | `pip install --pre edge-studio` |
 | edge-kit | 1.0.0-rc98 | SPM: `github.com/AtomGradient/edge-kit` |
 | edge-engine | 1.0.0-rc138 | SPM: `github.com/AtomGradient/edge-engine` |
 | edge-halo-binary | 1.0.0-rc24 | SPM: `github.com/AtomGradient/edge-halo-binary` |
+
+> These are the versions validated for this guide revision. `--pre` (pip) and SPM resolution may pull a newer compatible preview — take the latest and re-validate on a real device after upgrading.
 
 ## Detailed documentation
 

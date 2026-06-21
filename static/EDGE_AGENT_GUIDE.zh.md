@@ -45,7 +45,7 @@ edge doctor
 
 ```bash
 edge --version
-# 期望输出: edge-studio 0.0.1rc11 或更高
+# 期望输出: edge-studio 0.0.1rc14 或更高 (--pre 总是装最新 preview)
 edge doctor
 # 此阶段除两个良性 warning 外都应 OK：
 #   - model.cache    → 还没下载模型（Task 2 会下）
@@ -372,12 +372,14 @@ App 启动后：
 
 ## 依赖版本
 
-| 包 | 当前版本 | 安装 |
+| 包 | 已验证版本 | 安装 |
 |----|---------|------|
-| edge-studio | 0.0.1rc11 | `pip install --pre edge-studio` |
+| edge-studio | 0.0.1rc14 | `pip install --pre edge-studio` |
 | edge-kit | 1.0.0-rc98 | SPM: `github.com/AtomGradient/edge-kit` |
 | edge-engine | 1.0.0-rc138 | SPM: `github.com/AtomGradient/edge-engine` |
 | edge-halo-binary | 1.0.0-rc24 | SPM: `github.com/AtomGradient/edge-halo-binary` |
+
+> 这是本次 guide 修订所验证的版本。`--pre`（pip）和 SPM 解析可能拉到更新的兼容 preview —— 取最新版并在升级后在真机上重新验证。
 
 ## 详细文档
 
