@@ -42,15 +42,19 @@ edge doctor
 
 ```bash
 edge --version
-# Expected: edge-studio 0.0.1rc9 or higher
+# Expected: edge-studio 0.0.1rc11 or higher
 edge doctor
-# All checks should PASS
+# Expect everything OK except two benign warnings at this stage:
+#   - model.cache    → no model downloaded yet (you fetch one in Task 2)
+#   - backend.health → server not running yet (you start it in Task 8)
+# Nothing should say `fail`.
 ```
 
 ### If it fails
 
+- `python3.11: command not found` → install it first (`brew install python@3.11`, or your preferred 3.11), then redo the venv step
 - `edge: command not found` → confirm venv is active: `which python` should point to `.venv/bin/python`
-- `edge doctor` errors → follow the prompts, usually Python version or missing dependency
+- `edge doctor` shows a `fail` (not just a `warn`) → follow the remediation text it prints; usually Python version or a missing dependency
 
 ## Task 2: Download the model
 
@@ -62,10 +66,13 @@ edge models fetch qwen3.5-9b-4bit --source auto
 
 ```bash
 edge models where qwen3.5-9b-4bit
-# Should show local path, status: complete
+# Shows the local cache path and status: complete
+# The printed path is where the model lives — use it to inspect or clean a download.
 ```
 
 First download is ~5GB and requires network. After that, no network needed.
+
+If a download is interrupted, `edge models where` reports `incomplete` (not a false `complete`), and `edge models fetch` prints a `--retry` command — rerun that to resume with a clean slate.
 
 ## Task 3: Try base model chat
 
@@ -94,7 +101,9 @@ edge demo learn run --dry-run \
   --include-text --json
 ```
 
-### You will see
+### You will see (key fields below — your real output is longer)
+
+The actual `--json` output is 500+ lines: it also includes `schema_version`, `run_id`, `audit`, `preflight`, model-resolution and per-`sha256` fields (for auditing). That is expected — focus on the key fields shown here:
 
 ```json
 {
@@ -202,7 +211,11 @@ I have $800 left after bills this month. What should I do with it?
 edge studio
 ```
 
+`edge studio` runs in the foreground and keeps this terminal busy (press Ctrl+C to stop). **Open a new terminal window** for any further commands.
+
 Open browser: `http://127.0.0.1:18842`
+
+**Ports:** `edge studio` serves the UI/API on `18842` (HTTP) and starts an EdgeMesh node on `18843` (mTLS) with mDNS discovery on your local network — this is how your devices find each other. Allow these if your firewall prompts.
 
 ### 8b. Export Agent carrier
 
@@ -214,9 +227,12 @@ In the Web UI:
 
 ### 8c. Deploy to real device
 
+Unzip the downloaded ZIP, then generate and open the Xcode project. `project.yml` and the `.xcodeproj` live at the project root (the app source sits in the nested `FinanceAgent/` subfolder):
+
 ```bash
-cd FinanceAgent/FinanceAgent
-xcodegen generate
+unzip ~/Downloads/FinanceAgent.zip   # adjust to wherever the ZIP downloaded
+cd FinanceAgent                      # project root — where project.yml lives
+xcodegen generate                    # requires XcodeGen: brew install xcodegen
 open FinanceAgent.xcodeproj
 ```
 
@@ -317,7 +333,7 @@ Development tools:
 
 | Package | Current version | Install |
 |---------|----------------|---------|
-| edge-studio | 0.0.1rc9 | `pip install --pre edge-studio` |
+| edge-studio | 0.0.1rc11 | `pip install --pre edge-studio` |
 | edge-kit | 1.0.0-rc98 | SPM: `github.com/AtomGradient/edge-kit` |
 | edge-engine | 1.0.0-rc138 | SPM: `github.com/AtomGradient/edge-engine` |
 | edge-halo-binary | 1.0.0-rc24 | SPM: `github.com/AtomGradient/edge-halo-binary` |

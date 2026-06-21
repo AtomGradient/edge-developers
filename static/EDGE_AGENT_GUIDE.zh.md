@@ -45,15 +45,19 @@ edge doctor
 
 ```bash
 edge --version
-# 期望输出: edge-studio 0.0.1rc9 或更高
+# 期望输出: edge-studio 0.0.1rc11 或更高
 edge doctor
-# 所有检查应该 PASS
+# 此阶段除两个良性 warning 外都应 OK：
+#   - model.cache    → 还没下载模型（Task 2 会下）
+#   - backend.health → 服务还没启动（Task 8 会启）
+# 不应出现任何 `fail`。
 ```
 
 ### 如果失败
 
+- `python3.11: command not found` → 先装它（`brew install python@3.11`，或你惯用的 3.11），再重做 venv 步骤
 - `edge: command not found` → 确认 venv 已激活：`which python` 应该指向 `.venv/bin/python`
-- `edge doctor` 报错 → 按提示修复，通常是 Python 版本或缺少依赖
+- `edge doctor` 出现 `fail`（不只是 `warn`）→ 按它打印的修复提示操作，通常是 Python 版本或缺少依赖
 
 ## Task 2: 下载模型
 
@@ -65,10 +69,13 @@ edge models fetch qwen3.5-9b-4bit --source auto
 
 ```bash
 edge models where qwen3.5-9b-4bit
-# 应该显示本地路径，status: complete
+# 显示本地缓存路径和 status: complete
+# 打印的路径就是模型所在位置——可用它检查或清理下载。
 ```
 
 首次下载约 5GB，需要网络。下载完成后后续操作不再需要网络。
+
+若下载中断，`edge models where` 会报 `incomplete`（而非假的 `complete`），且 `edge models fetch` 会打印一条 `--retry` 命令——重跑它即可清空重下。
 
 ## Task 3: 体验 Base Model 对话
 
@@ -97,7 +104,9 @@ edge demo learn run --dry-run \
   --include-text --json
 ```
 
-### 你会看到
+### 你会看到（这里只列关键字段，你的实际输出更长）
+
+实际 `--json` 输出有 500+ 行：还包含 `schema_version`、`run_id`、`audit`、`preflight`、模型解析和各 `sha256` 字段（用于审计）。这是正常的——看下面这几个关键字段即可：
 
 ```json
 {
@@ -205,7 +214,11 @@ I have $800 left after bills this month. What should I do with it?
 edge studio
 ```
 
+`edge studio` 在前台运行并占住当前终端（按 Ctrl+C 停止）。**请新开一个终端窗口**执行后续命令。
+
 打开浏览器：`http://127.0.0.1:18842`
+
+**端口：** `edge studio` 在 `18842`（HTTP）提供 UI/API，并在 `18843`（mTLS）启动 EdgeMesh 节点 + 局域网 mDNS 发现——这是设备间互相发现的方式。若防火墙提示，请放行。
 
 ### 8b. 导出 Agent 载体
 
@@ -217,9 +230,12 @@ edge studio
 
 ### 8c. 部署到真机
 
+解压下载的 ZIP，然后生成并打开 Xcode 工程。`project.yml` 和 `.xcodeproj` 在工程根目录（App 源码在嵌套的 `FinanceAgent/` 子目录里）：
+
 ```bash
-cd FinanceAgent/FinanceAgent
-xcodegen generate
+unzip ~/Downloads/FinanceAgent.zip   # 按 ZIP 实际下载位置调整
+cd FinanceAgent                      # 工程根目录 — project.yml 所在处
+xcodegen generate                    # 需要 XcodeGen：brew install xcodegen
 open FinanceAgent.xcodeproj
 ```
 
@@ -320,7 +336,7 @@ App 启动后：
 
 | 包 | 当前版本 | 安装 |
 |----|---------|------|
-| edge-studio | 0.0.1rc9 | `pip install --pre edge-studio` |
+| edge-studio | 0.0.1rc11 | `pip install --pre edge-studio` |
 | edge-kit | 1.0.0-rc98 | SPM: `github.com/AtomGradient/edge-kit` |
 | edge-engine | 1.0.0-rc138 | SPM: `github.com/AtomGradient/edge-engine` |
 | edge-halo-binary | 1.0.0-rc24 | SPM: `github.com/AtomGradient/edge-halo-binary` |
