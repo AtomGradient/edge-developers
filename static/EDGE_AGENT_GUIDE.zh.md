@@ -284,6 +284,14 @@ xcrun devicectl device process launch --device <DEVICE_ID> com.example.financeag
 
 > **首次构建会从 GitHub 拉 Swift 包**（edge-kit、edge-engine、edge-halo-binary……），需要联网。受限网络下，先配 HTTPS 代理再构建。
 
+> **构建报的 API 错误和 SPM 刚解析出的版本对不上？** 当你 bump 了 `edge-kit` / `edge-engine` 的 rc tag 后，Xcode 可能在缓存里留着上一个 rc 编译好的 module，于是编译器报「找不到类型」或「方法签名不对」，即使 `Package.resolved` 已经显示了新 tag。这是缓存陈旧，不是真的依赖断裂。清掉缓存重新解析：
+> ```bash
+> rm -rf ./build ~/Library/Developer/Xcode/DerivedData
+> rm -rf ~/Library/Caches/org.swift.swiftpm
+> xcodebuild -resolvePackageDependencies -project FinanceAgent.xcodeproj
+> ```
+> 然后重新构建。要做到完全不复用全局缓存，可加 `-clonedSourcePackagesDirPath ./build/spm`，让 SPM checkout 和 DerivedData 放一起、一起被清掉。
+
 ### 8c.1 让 Release 构建保持快速（模型交付）
 
 默认导出会把模型打进 app（`<App>_model_config` 里 `MODEL_COPY="true"`）。这会让每次 Release 构建都很慢——要拷贝整个模型（数 GB），`.app` 也很大。它**不影响推理速度**：交付位置只影响构建时间和 app 体积，绝不影响 tokens/秒。模型进内存后，bundle、Documents、ODR 三条路径推理速度完全一样。

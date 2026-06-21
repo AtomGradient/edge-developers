@@ -281,6 +281,14 @@ xcrun devicectl device process launch --device <DEVICE_ID> com.example.financeag
 
 > **First build fetches Swift packages from GitHub** (edge-kit, edge-engine, edge-halo-binary, …), so it needs network access. Behind a restricted network, configure an HTTPS proxy before building.
 
+> **Build fails with API errors that contradict the package version SPM just resolved?** After you bump an `edge-kit` / `edge-engine` rc tag, Xcode can keep a previous rc's compiled module in its caches, so the compiler reports missing types or method signatures that no longer match — even though `Package.resolved` already shows the new tag. That is a stale cache, not a real dependency break. Reset and re-resolve:
+> ```bash
+> rm -rf ./build ~/Library/Developer/Xcode/DerivedData
+> rm -rf ~/Library/Caches/org.swift.swiftpm
+> xcodebuild -resolvePackageDependencies -project FinanceAgent.xcodeproj
+> ```
+> Then rebuild. For a hermetic build that never reuses a global cache, add `-clonedSourcePackagesDirPath ./build/spm` so the SPM checkout lives beside DerivedData and is cleared together.
+
 ### 8c.1 Keep the Release build fast (model delivery)
 
 By default the export bundles the model into the app (`MODEL_COPY="true"` in `<App>_model_config`). That makes every Release build slow — it copies the whole model, several GB — and the `.app` large. It does **not** change inference speed: delivery location only affects build time and app size, never tokens/sec. Once the model is in memory, the bundle, Documents, and ODR paths all infer at the same speed.
