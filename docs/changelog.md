@@ -114,7 +114,7 @@ The B2/B4/B5/B6/B7 CLI commands listed below are shipped in current preview; the
 - PyPI release candidate version: `0.0.1rc1`. Deterministic install: `python -m pip install edge-studio==0.0.1rc1`.
 - Installed command surface is intentionally a single `edge` entry point.
 - `edge studio` launches the local Studio UI/API server at `http://127.0.0.1:18842` by default.
-- `edge demo chat`, `edge demo learn`, model readiness, explicit model fetch, receipt inspection, and source install docs are aligned with the public package path.
+- `edge demo chat`, `edge demo learn`, model readiness, explicit model fetch, receipt inspection, and install docs are aligned with the public package path.
 - The repository history was compacted to a single root commit before public release and tagged `v0.0.1rc1`.
 
 ## edge-kit

@@ -27,8 +27,6 @@ edge doctor
 
 `--pre` 会安装当前开发者预览版 release candidate。在第一个 stable package 发布前，请保留这个参数。`edge doctor` 会检查 Python 环境、模型路径和系统兼容性；继续之前请先修复失败项。
 
-参与 Edge Studio 开发或测试本地 checkout 时，再使用源码安装路径。
-
 ## 要求
 
 | 要求 | 版本 |
@@ -36,21 +34,7 @@ edge doctor
 | macOS | 14 或更高 |
 | 硬件 | Apple Silicon |
 | Python | 推荐 3.11 |
-| Node.js | 只有构建或开发 Web UI 时需要 |
-
-## 从源码安装
-
-```bash
-git clone https://github.com/AtomGradient/edge-studio.git
-cd edge-studio
-python3.11 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-python -m pip install -e .
-edge doctor
-```
-
-源码安装后，也应先让 `edge doctor` 通过，再运行模型或学习演示。
+| Node.js | 安装后的 Studio UI 不需要 |
 
 使用 `edge` 检查模型就绪状态、写入模型下载回执，并运行本地学习演示：
 
@@ -82,21 +66,3 @@ http://127.0.0.1:18842
 ```
 
 服务默认只运行在本机地址。用 `Ctrl+C` 停止。
-
-从源码进行前端开发时，单独运行 Vite，并保持后端服务运行：
-
-```bash
-npm --prefix frontend ci
-npm --prefix frontend run dev
-edge studio
-```
-
-## 本地构建 wheel
-
-需要验证已发布软件包形态时，运行发布打包脚本：
-
-```bash
-./scripts/build_wheel.sh
-```
-
-该脚本会构建前端、打包后端资源，并把 wheel 写入 `dist/`。

@@ -31,8 +31,6 @@ the first stable package is published. `edge doctor` checks the Python
 environment, model paths, and system compatibility; fix any failed checks before
 continuing.
 
-Use the source path when contributing to Edge Studio or testing a local checkout.
-
 ## Requirements
 
 | Requirement | Version |
@@ -40,22 +38,7 @@ Use the source path when contributing to Edge Studio or testing a local checkout
 | macOS | 14 or later |
 | Hardware | Apple Silicon |
 | Python | 3.11 recommended |
-| Node.js | Required only for building or developing the Web UI |
-
-## Install from source
-
-```bash
-git clone https://github.com/AtomGradient/edge-studio.git
-cd edge-studio
-python3.11 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-python -m pip install -e .
-edge doctor
-```
-
-For source installs, `edge doctor` should pass before you run model or learning
-demos.
+| Node.js | Not required for the packaged Studio UI |
 
 Use `edge` for model readiness checks, model fetch receipts, and local learning demos:
 
@@ -89,22 +72,3 @@ http://127.0.0.1:18842
 ```
 
 The server runs on localhost by default. Stop it with `Ctrl+C`.
-
-For frontend development from a source checkout, run Vite separately and keep
-the backend server running:
-
-```bash
-npm --prefix frontend ci
-npm --prefix frontend run dev
-edge studio
-```
-
-## Build a wheel locally
-
-Use the release packaging script when you need the same shape as the published package:
-
-```bash
-./scripts/build_wheel.sh
-```
-
-The script builds the frontend, packages the backend resources, and writes the wheel under `dist/`.

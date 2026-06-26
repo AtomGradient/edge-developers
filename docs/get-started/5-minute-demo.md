@@ -68,9 +68,8 @@ edge doctor
 </details>
 
 `edge doctor` checks the Python environment, model paths, and system
-compatibility. Source install instructions are available in
-[Install Edge Studio](/docs/get-started/source-build), but they are not required
-for this path.
+compatibility. The install reference is available in
+[Install Edge Studio](/docs/get-started/source-build).
 
 ## 3. The Scenario
 
@@ -509,4 +508,4 @@ You just proved learning works on the Mac. Now see the same thing happen on a re
 
 - Developer docs: [atomgradient.github.io/edge-developers](https://atomgradient.github.io/edge-developers/)
 - GitHub: [github.com/AtomGradient](https://github.com/AtomGradient)
-- Source install reference: [Install Edge Studio](/docs/get-started/source-build)
+- Install reference: [Install Edge Studio](/docs/get-started/source-build)
