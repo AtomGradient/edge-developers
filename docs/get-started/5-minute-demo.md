@@ -164,6 +164,14 @@ The Mac CLI learning path does not consume the `Resources/RPP/` A-library. Any
 domain-shaped local sample can use `--sample-file`; the A-library is required
 later by the on-device Edge Halo profile analysis path.
 
+Choose the sample path by what the data should do:
+
+| Data you have | Use this path | Output artifact |
+|---|---|---|
+| Behavior style, boundaries, or preferences, with explicit corrections | Learn | `edge.demo.learn.sample.v1` |
+| Behavior style, boundaries, or preferences, without corrections | Imprint | `edge.demo.imprint.sample.v1` |
+| Facts the assistant should look up or refresh over time | Local facts | `edge.demo.facts.v1` import skeleton |
+
 Start from a validated template:
 
 ```bash
@@ -171,9 +179,31 @@ edge demo learn sample init --output ./my-budget-sample.json
 edge demo learn sample validate ./my-budget-sample.json
 ```
 
-`validate` reuses the same loader as `--sample-file`. By default it prints only
-hashes and counts; add `--json` for a machine-readable report. The template
-looks like this:
+You can also use the minimal guided flow:
+
+```bash
+edge demo learn sample init --interactive --output ./my-sample.json
+```
+
+The interactive command asks whether your data teaches "how to respond" or
+"factual answers". Response data then asks whether you have corrections. Factual
+answer data emits a facts import skeleton instead of a profile sample.
+
+Use the generated artifact with the matching command:
+
+| Artifact | Validate or consume it with |
+|---|---|
+| `edge.demo.learn.sample.v1` | `edge demo learn sample validate ./sample.json`, then `edge demo learn run --sample-file ./sample.json ...` |
+| `edge.demo.imprint.sample.v1` | `edge demo imprint run --dry-run --sample-file ./sample.json --model qwen3.5-9b-4bit --json` |
+| `edge.demo.facts.v1` | `edge demo facts import ./facts.json --store <name>` (Phase 2) |
+
+`sample validate` currently validates learn samples only. For imprint samples,
+use `imprint run --dry-run` as the validation step. Facts import is the Phase 2
+path.
+
+`validate` reuses the same learn-sample loader as `--sample-file`. By default it
+prints only hashes and counts; add `--json` for a machine-readable report. The
+non-interactive learn template looks like this:
 
 ```json
 {
@@ -274,6 +304,18 @@ Fact corrections need at least two independent supporting corrections before
 they enter the compiled overlay. A single fact correction is treated as
 unstable and skipped, so use `profile_correction` for one-shot style or
 guardrail changes.
+
+#### Keep factual knowledge out of the profile body
+
+Use `records` for response posture: preferences, style, boundaries, and compact
+context that should become the Neural Imprint profile. Do not use profile
+records as a knowledge base for large or frequently changing facts. The facts
+path produces `edge.demo.facts.v1`, which is meant for a local lookup store and
+does not feed `profile_body`.
+
+This split is intentional: changing the local facts file should not require
+rebuilding the model or regenerating a Neural Imprint artifact. Change the
+profile only when the assistant's behavior or boundary changes.
 
 Then inspect or run it:
 

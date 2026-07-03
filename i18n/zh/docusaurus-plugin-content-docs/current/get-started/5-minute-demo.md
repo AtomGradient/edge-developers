@@ -152,6 +152,14 @@ Mac CLI 学习链路不消费 `Resources/RPP/` A-library。任意领域形态的
 通过 `--sample-file` 运行；A-library 是后续设备端 Edge Halo profile analysis
 路径才需要的输入。
 
+按数据用途选择样本路径：
+
+| 你手里的数据 | 使用路径 | 输出 artifact |
+|---|---|---|
+| 行为风格、边界或偏好，并且有明确 corrections | Learn | `edge.demo.learn.sample.v1` |
+| 行为风格、边界或偏好，但没有 corrections | Imprint | `edge.demo.imprint.sample.v1` |
+| 需要查询或后续刷新的一组事实 | Local facts | `edge.demo.facts.v1` 导入骨架 |
+
 先从已校验的模板开始：
 
 ```bash
@@ -159,8 +167,29 @@ edge demo learn sample init --output ./my-budget-sample.json
 edge demo learn sample validate ./my-budget-sample.json
 ```
 
-`validate` 复用 `--sample-file` 同一个 loader。默认输出只包含哈希和计数；
-加 `--json` 可以得到机器可读报告。模板形态如下：
+也可以使用最小交互向导：
+
+```bash
+edge demo learn sample init --interactive --output ./my-sample.json
+```
+
+交互命令会先问你的数据是在教"如何回应"，还是在提供"事实答案"。回应类数据
+会继续询问是否有 corrections；事实答案类数据会生成 facts 导入骨架，而不是
+profile 样本。
+
+生成后的 artifact 用对应命令消费：
+
+| Artifact | 校验或消费命令 |
+|---|---|
+| `edge.demo.learn.sample.v1` | `edge demo learn sample validate ./sample.json`，然后 `edge demo learn run --sample-file ./sample.json ...` |
+| `edge.demo.imprint.sample.v1` | `edge demo imprint run --dry-run --sample-file ./sample.json --model qwen3.5-9b-4bit --json` |
+| `edge.demo.facts.v1` | `edge demo facts import ./facts.json --store <name>`（Phase 2） |
+
+`sample validate` 目前只校验 learn 样本。imprint 样本请用
+`imprint run --dry-run` 作为校验步骤；facts import 是 Phase 2 路径。
+
+`validate` 复用 learn sample 的 `--sample-file` loader。默认输出只包含哈希和计数；
+加 `--json` 可以得到机器可读报告。非交互 learn 模板形态如下：
 
 ```json
 {
@@ -257,6 +286,16 @@ Edge Studio 接受上面的 canonical sample 字段；遇到未知顶层字段�
 
 fact 类纠正需要至少两次独立支持才会进入编译后的 overlay。单次 fact 纠正会被视为不稳定并跳过；
 一次性的风格或边界变化应使用 `profile_correction`。
+
+#### 不要把事实知识塞进 profile body
+
+`records` 用来表达回应姿态：偏好、风格、边界，以及应该进入 Neural Imprint
+profile 的紧凑上下文。不要把 profile records 当作大型或频繁更新的知识库。
+事实路径会生成 `edge.demo.facts.v1`，目标是本地 lookup store，不会进入
+`profile_body`。
+
+这个拆分是刻意设计：更新本地 facts 文件不应该要求重建模型或重新生成 Neural
+Imprint artifact。只有当助手的行为风格或边界发生变化时，才应该修改 profile。
 
 然后检查或运行这个样本：
 
