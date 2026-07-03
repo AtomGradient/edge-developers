@@ -67,8 +67,6 @@ PyPI 保留说明：Edge Studio 的 `0.0.1rc19` 之前预览 wheel 已从 PyPI �
 - 不带 `--dry-run` 的 `edge demo learn run` 是纠错学习演示。在演示运行状态下写合成 Persona/RPP 输入与纠错 ledger，触发纠错重新生成，恢复重新生成的本地 Neural Imprint 产物，对比恢复前后的回答哈希，并写入 `edge.demo.learn.receipt.v1`。
 - `edge demo learn run --prepare-model` 在一条命令中同时完成模型准备和学习演示。可能先显式准备兼容本地模型，然后把模型准备阶段的网络使用以 `network_used_during_model_prepare` 与本地学习演示分开记录。
 - `edge demo facts import-url` 是有界单 URL 材料导入路径。它只接受 HTTP(S) 文本内容，记录 `network_used=true`，默认写仅哈希回执，不会爬取链接页面。
-- `edge demo facts import-url --extractor host-model` 是显式本地模型抽取路径。Edge 会先按 `edge.demo.facts.v1` 校验模型输出，通过后才写入，并在回执里记录非确定性 extractor 哈希。
-- `edge demo facts crawl-url` 是显式有界的静态 HTTP(S) 爬取命令。它只允许同源，要求 URL/depth/byte 上限，不执行 JavaScript，并写入 hash-first crawl 回执。
 - `edge demo tools validate` 当前预览版只接受本地只读 facts lookup manifest。不执行进程、不联网、不写 demo state。
 - `edge tools validate` / `edge tools inspect <tools.py>`（rc21 起）会在隔离的 Edge 自有 runner 子进程内导入工具文件——顶层代码会执行。它不在 Edge CLI 进程内运行，也不是针对不可信文件的静态安全扫描。
 - `edge demo chat --tools <tools.py>`（rc21 起）启用 Edge 托管的自定义 Python 工具；与 `--tools-manifest`、`--facts-store` 两两互斥。工具代码只在 runner 子进程执行，模型只能发出 JSON 调用。
@@ -95,8 +93,6 @@ PyPI 保留说明：Edge Studio 的 `0.0.1rc19` 之前预览 wheel 已从 PyPI �
 - Python 工具运行的回执为 hash 优先且带 runner 信息：`tools_file_sha256`、`active_set_sha256`、`schema_generator_version`，以及每次调用的 `args_sha256`、`result_sha256`、`tool_schema_sha256`、`runner_secret_verified`、`tools_file_sha256_verified` 与 `network_used_by_edge: false`。
 - 新增 `edge demo learn run --tools <tools.py>`：把 Python 工具契约烘焙进 Neural Imprint，恢复后的 Agent 天然携带工具 schema。`edge demo chat --with-imprint --tools` 的恢复门控是 schema 级：只改实现不影响 artifact 有效性；schema 或活跃集变更 fail-closed 并要求重学（`imprint_requires_tools`、`imprint_tool_active_set_mismatch`、`imprint_tool_schema_mismatch`）。
 - `--tools`、`--tools-manifest`、`--facts-store` 每次运行两两互斥；`--tool` / `--tool-tag` 必须与 `--tools` 同用。
-- 扩展 `edge demo facts import-url`，新增 `--extractor host-model` 和 `--extractor-model <local-model>`。host model 在本地提出 fact rows；确定性校验会强制满足 `edge.demo.facts.v1` 后才写入。
-- 新增 `edge demo facts crawl-url <url>`，用于小规模、显式、同源文档导入。命令要求 `--max-depth`、`--max-urls`、`--max-bytes`、`--max-bytes-total` 和 `--timeout`，并记录 URL 哈希、redirect-chain 哈希、失败状态、总字节数和 crawl policy decision。
 
 ### v0.0.1rc20
 
