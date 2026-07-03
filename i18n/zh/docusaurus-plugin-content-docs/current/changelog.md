@@ -76,8 +76,6 @@ PyPI 保留说明：Edge Studio 的 `0.0.1rc19` 之前预览 wheel 已从 PyPI �
 - 后台自动化调度器尚未发布。当前有界自动化 API 仍是显式调用、默认 dry-run，并且失败即关闭。
 - 通用 capsule apply-status UI 参考已在 Edge Scaffold 与 dogfood validation App 中发布；产品级位置、布局或文案不属于本次预览基线。
 - model push 和产品默认 Neural Imprint 重新生成执行在没有单独显式策略/设计前仍不支持；已发布的 `edge demo learn run` 路径是显式本地合成演示。
-- `edge demo reuse` 是产物复用冒烟检查，不是跨设备同步。
-- 后台调度器尚未发布。
 - EdgeMesh capsule auto-restore SDK 编排已经通过 Edge Kit `1.0.0-rc94` 中的 `HaloCapsuleAutoRestoreCoordinator` 发布；它不是当前限制。
 
 ---

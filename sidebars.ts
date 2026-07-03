@@ -28,7 +28,6 @@ const sidebars: SidebarsConfig = {
       items: [
         'build/model-evolution',
         'guides/neural-imprint-vs-lora',
-        'guides/custom-python-tools',
         'guides/architecture',
       ],
     },

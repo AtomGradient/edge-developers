@@ -76,8 +76,6 @@ The B2/B4/B5/B6/B7 CLI commands listed below are shipped in current preview; the
 - Background automation scheduler is not shipped. The bounded automation API remains explicit, dry-run by default, and fail-closed.
 - Generic capsule apply-status UI reference is shipped in Edge Scaffold and the dogfood validation app. Product-specific placement, layout, or copy remains outside the preview baseline.
 - Model push and product-default Neural Imprint regen execution remain unsupported without separate explicit policy/design. The shipped `edge demo learn run` path is an explicit local synthetic demo.
-- `edge demo reuse` is an artifact reuse smoke check, not cross-device sync.
-- Background scheduler is not yet shipped.
 - EdgeMesh capsule auto-restore SDK orchestration is already shipped through `HaloCapsuleAutoRestoreCoordinator` in Edge Kit `1.0.0-rc94`; it is not a current limitation.
 
 ---
