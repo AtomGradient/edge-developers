@@ -26,8 +26,20 @@ App 仍然重要：它负责 UI、权限、本地产品策略、设置、用户�
 Edge 把这种本地学习产物叫做 **Neural Imprint**。它只在兼容性检查通过后恢复，是可删除的本地数据，也不需要把私有 profile 文本塞进每一次 prompt。
 
 :::info 开发者预览
-当前预览版可运行。Edge Studio、Edge Kit、Edge Engine、Edge Scaffold 和 Edge Halo binary package 都是公开发布面。Edge Halo 源码保持私有。API 可能在 release candidate 之间变化，因此请固定版本，并在每次升级后用真机验证。
+当前预览版可运行。Edge Studio、Edge Kit、Edge Engine、Edge Scaffold 和 Edge Halo binary package 都是公开发布面。Edge Halo 源码保持私有。API 可能在 release candidate 之间变化，因此请固定版本，并在每次升级后用真机验证。当前版本固定集中在一页：[当前版本](/docs/versions)。
 :::
+
+## 选择你的路径
+
+这份文档服务三条开发者路径。选一条最贴近你当前目标的开始——每条路径自成一体，之后可以随时切换。
+
+| 你想做的事 | 从这里开始 | 你需要 |
+| --- | --- | --- |
+| **在 Mac 上跑通设备 Agent 学习环**——装一个 CLI，看基础模型在本地学会一个偏好，检查回执 | [快速开始 / 设备 Agent](/docs/quickstart/install) | Apple Silicon Mac，Python 3.11 |
+| **用 Edge Kit 构建 iOS App**——Swift 里的 LLM/VLM/语音、模型管理、EdgeMesh | [Edge Kit (Swift)](/docs/edge-kit/installation) | Xcode，一台真实 iPhone 或 iPad 用于验证 |
+| **优化、基准测试并导出模型**——本地工作台 UI 与导出管线 | [Edge Studio 工作台](/docs/studio/studio-overview) | Apple Silicon Mac |
+
+本地知识与开发者工具（facts 库、URL 导入、自定义 Python 工具、工具学习）是独立一条线：[本地知识与工具](/docs/knowledge-tools/custom-python-tools)。
 
 ## Edge 解决什么问题
 
@@ -39,15 +51,17 @@ Edge 把这种本地学习产物叫做 **Neural Imprint**。它只在兼容性�
 | 恢复必须安全 | 激活前检查模型 identity、tokenizer/template、runtime version、工具 schema 和 artifact metadata。 |
 | 产品策略属于 App | 用户数据、工具、权限、删除 UX 和评估规则留在载体层。 |
 
-## 第一条路径
+## 第一条路径：Mac 上的设备 Agent
 
-| 目标 | 指南 | 预期结果 |
+默认路径，按顺序走。每一步都以一个可检查的结果收尾：
+
+| 步骤 | 指南 | 预期结果 |
 | --- | --- | --- |
-| 安装 Edge Studio | [安装 Edge Studio](/docs/quickstart/install) | 从公开的 `edge-studio` Python 软件包安装 `edge` CLI。 |
-| 构建第一个设备 Agent | [设备 Agent 演示](/docs/quickstart/first-agent) | 合成理财信号生成本地 Neural Imprint；同一个基础模型在恢复后给出不同回答。 |
-| 导出载体 | [构建 Agent 载体](/docs/quickstart/build-agent-carrier) | Edge Studio 导出 Edge Scaffold 项目，并在真实 iPhone 或 iPad 上验证。 |
-| 启动本地工作台 | [启动 Web UI](/docs/quickstart/install#启动-web-ui) | `edge studio` 在 `http://127.0.0.1:18842` 运行 Edge Studio。 |
-| 只构建 iOS 应用壳 | [最小 iOS app](/docs/edge-kit/minimal-ios-app) | Edge Scaffold 使用公开 Swift package 依赖和本地签名编译通过。 |
+| 1. 安装 Edge Studio | [安装 Edge Studio](/docs/quickstart/install) | 从公开的 `edge-studio` Python 软件包安装 `edge` CLI。 |
+| 2. 构建第一个设备 Agent | [第一个设备 Agent](/docs/quickstart/first-agent) | 合成理财信号生成本地 Neural Imprint；同一个基础模型在恢复后给出不同回答。 |
+| 3. 导出载体 | [构建 Agent 载体](/docs/quickstart/build-agent-carrier) | Edge Studio 导出 Edge Scaffold 项目，并在真实 iPhone 或 iPad 上验证。 |
+
+两个有用的侧门，不算步骤：用 [`edge studio`](/docs/quickstart/install#启动-web-ui) 启动本地工作台（`http://127.0.0.1:18842`），或经 [最小 iOS app](/docs/edge-kit/minimal-ios-app) 只构建 iOS 应用壳。
 
 ## 第一组命令
 

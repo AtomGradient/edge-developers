@@ -13,7 +13,7 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 
 ## 版本策略
 
-开发者预览阶段，Swift 包使用 `1.0.0-rcN` 标签发布。Edge Studio 的 Python 包当前使用 PyPI 版本 `0.0.1rc22` 和 GitHub tag `v0.0.1rc22`。破坏性变更会在这里记录迁移步骤。正式可用后会遵循语义化版本。
+开发者预览阶段，Swift 包使用 `1.0.0-rcN` 标签发布，Edge Studio Python 包以 `0.0.1rcN` 发布到 PyPI。每个发布面的当前固定版本集中在[当前版本](/docs/versions)。破坏性变更会在这里记录迁移步骤。正式可用后会遵循语义化版本。
 
 PyPI 保留说明：Edge Studio 的 `0.0.1rc19` 之前预览 wheel 已从 PyPI 删除。`v0.0.1rc19` 之前的 changelog 条目仅保留为发布历史，不再表示这些包版本当前仍可安装。
 
@@ -29,24 +29,9 @@ PyPI 保留说明：Edge Studio 的 `0.0.1rc19` 之前预览 wheel 已从 PyPI �
 
 开发者预览是受限预览通道。更新日志会明确哪些能力已经发布、哪些仓库已经公开、哪些能力当前刻意不启用。
 
-### 访问矩阵
+### 当前版本
 
-| 产品表面 | 当前访问方式 | 说明 |
-|---|---|---|
-| Edge Studio | Python 软件包 `edge-studio==0.0.1rc22`，GitHub tag `v0.0.1rc22` | 安装后只暴露一个 `edge` 命令。用 `edge studio` 启动本地 Studio UI。 |
-| Swift SDK 文档 | Edge Kit `1.0.0-rc103` | 文档使用精确固定版本。升级前必须重新验证。 |
-| Edge Engine 依赖 | Edge Engine `1.0.0-rc143` | 公开 GitHub 仓库位于 `AtomGradient/edge-engine`；包解析不应再需要 SSH 访问权限。 |
-| Edge Halo binary 依赖 | Edge Halo binary `1.0.0-rc25` | 公开二进制 SwiftPM 包位于 `AtomGradient/edge-halo-binary`；源码仍保持私有。 |
-| Edge Scaffold | 固定依赖 Edge Kit `1.0.0-rc103` 与 Edge Halo binary `1.0.0-rc25` | 生成的应用仍需要签名、设备 provisioning 和真机验证。 |
-
-### 兼容矩阵
-
-| 组件 | 兼容预览版本 |
-|---|---|
-| Edge Studio | `v0.0.1rc22` |
-| Edge Kit | `1.0.0-rc103`，依赖 Edge Engine `1.0.0-rc143` |
-| Edge Halo binary | `1.0.0-rc25` |
-| Edge Scaffold | 当前预览版固定依赖 Edge Kit `1.0.0-rc103` 与 Edge Halo binary `1.0.0-rc25` |
+当前版本固定与兼容矩阵集中在一页：[当前版本](/docs/versions)。本更新日志记录发布历史与逐版本说明，不作为"今天该装什么"的权威来源。
 
 通用构建和模拟器检查不足以支撑运行时结论。任何预览 tag 变化后，都需要重新完成真机验证。
 

@@ -39,8 +39,25 @@ require putting private profile text into every prompt.
 Runnable in current preview. Edge Studio, Edge Kit, Edge Engine, Edge Scaffold,
 and the Edge Halo binary package are public release surfaces. Edge Halo source
 remains private. APIs may change between release candidates, so pin versions
-and validate on real devices after each upgrade.
+and validate on real devices after each upgrade. Current pins live on one page:
+[Current Versions](/docs/versions).
 :::
+
+## Choose Your Path
+
+Three developer journeys share this documentation. Pick the one that matches
+what you want to do first — each is self-contained, and you can cross over
+later.
+
+| You want to… | Start at | You will need |
+| --- | --- | --- |
+| **Run the device-Agent learning loop on a Mac** — install one CLI, watch a base model learn a preference locally, inspect receipts | [Quickstart / Device Agent](/docs/quickstart/install) | A Mac with Apple Silicon, Python 3.11 |
+| **Build an iOS app with on-device inference** — LLM/VLM/speech in Swift, model management, EdgeMesh | [Edge Kit (Swift)](/docs/edge-kit/installation) | Xcode, a real iPhone or iPad for validation |
+| **Optimize, benchmark, and export models** — the local workbench UI and export pipeline | [Edge Studio (Workbench)](/docs/studio/studio-overview) | A Mac with Apple Silicon |
+
+Working with local knowledge and developer tools (facts stores, URL import,
+custom Python tools, tool learning) is its own track:
+[Local Knowledge & Tools](/docs/knowledge-tools/custom-python-tools).
 
 ## What Edge Gives You
 
@@ -52,15 +69,20 @@ and validate on real devices after each upgrade.
 | Restore must be safe | Check model identity, tokenizer/template, runtime version, tool schema, and artifact metadata before activation. |
 | Product policy belongs to the app | Keep user data, tools, permissions, deletion UX, and evaluation rules in the carrier layer. |
 
-## First Path
+## First Path: Device Agent on a Mac
 
-| Goal | Guide | Expected result |
+The default journey, in order. Each step ends with a checkable result:
+
+| Step | Guide | Expected result |
 | --- | --- | --- |
-| Install Edge Studio | [Install Edge Studio](/docs/quickstart/install) | The `edge` CLI is installed from the public `edge-studio` Python package. |
-| Build the first device Agent | [Device Agent demo](/docs/quickstart/first-agent) | A synthetic finance signal becomes a local Neural Imprint; the same base model answers differently after restore. |
-| Export the carrier | [Build the Agent carrier](/docs/quickstart/build-agent-carrier) | Edge Studio exports an Edge Scaffold project that you validate on a real iPhone or iPad. |
-| Launch the local workbench | [Launch the Web UI](/docs/quickstart/install#launch-the-web-ui) | `edge studio` runs Edge Studio at `http://127.0.0.1:18842`. |
-| Build only the iOS shell | [Minimal iOS app](/docs/edge-kit/minimal-ios-app) | Edge Scaffold compiles with public Swift package dependencies and local signing. |
+| 1. Install Edge Studio | [Install Edge Studio](/docs/quickstart/install) | The `edge` CLI is installed from the public `edge-studio` Python package. |
+| 2. Build the first device Agent | [First Device Agent](/docs/quickstart/first-agent) | A synthetic finance signal becomes a local Neural Imprint; the same base model answers differently after restore. |
+| 3. Export the carrier | [Build the Agent carrier](/docs/quickstart/build-agent-carrier) | Edge Studio exports an Edge Scaffold project that you validate on a real iPhone or iPad. |
+
+Two useful side doors, not steps: launch the local workbench with
+[`edge studio`](/docs/quickstart/install#launch-the-web-ui)
+(`http://127.0.0.1:18842`), or build only the iOS shell via
+[Minimal iOS app](/docs/edge-kit/minimal-ios-app).
 
 ## First Commands
 

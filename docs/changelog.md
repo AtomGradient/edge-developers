@@ -13,7 +13,7 @@ Edge products are in **Developer Preview**. Expect breaking changes between rele
 
 ## Versioning policy
 
-During Developer Preview, Swift package releases follow `1.0.0-rcN` tags. Edge Studio's Python package currently uses PyPI version `0.0.1rc22` and GitHub tag `v0.0.1rc22`. Breaking changes are documented here with migration steps. After general availability, we will follow semantic versioning.
+During Developer Preview, Swift package releases follow `1.0.0-rcN` tags and the Edge Studio Python package releases as `0.0.1rcN` on PyPI. The current pins for every surface live on [Current Versions](/docs/versions). Breaking changes are documented here with migration steps. After general availability, we will follow semantic versioning.
 
 PyPI retention note: Edge Studio preview wheels before `0.0.1rc19` have been removed from PyPI. Changelog entries before `v0.0.1rc19` remain as release history, not as currently installable package pins.
 
@@ -29,24 +29,11 @@ PyPI retention note: Edge Studio preview wheels before `0.0.1rc19` have been rem
 
 Developer Preview is a limited preview channel. The changelog documents what is shipped, what is public, and what is deliberately not enabled yet.
 
-### Access matrix
+### Current versions
 
-| Surface | Current access | Notes |
-|---|---|---|
-| Edge Studio | Python package `edge-studio==0.0.1rc22`, GitHub tag `v0.0.1rc22` | Installs the single `edge` command. Launch the local Studio UI with `edge studio`. |
-| Swift SDK docs | Edge Kit `1.0.0-rc103` | Docs use an exact version pin. Upgrade only after validation. |
-| Edge Engine dependency | Edge Engine `1.0.0-rc143` | Public GitHub repository at `AtomGradient/edge-engine`; package resolution should not require SSH access. |
-| Edge Halo binary dependency | Edge Halo binary `1.0.0-rc25` | Public binary SwiftPM package at `AtomGradient/edge-halo-binary`; source remains private. |
-| Edge Scaffold | Pins Edge Kit `1.0.0-rc103` and Edge Halo binary `1.0.0-rc25` | Generated apps still require signing, device provisioning, and real-device validation. |
-
-### Compatibility matrix
-
-| Component | Compatible preview |
-|---|---|
-| Edge Studio | `v0.0.1rc22` |
-| Edge Kit | `1.0.0-rc103`, depends on Edge Engine `1.0.0-rc143` |
-| Edge Halo binary | `1.0.0-rc25` |
-| Edge Scaffold | Current preview pins Edge Kit `1.0.0-rc103` and Edge Halo binary `1.0.0-rc25` |
+Current version pins and the compatibility matrix live on one page:
+[Current Versions](/docs/versions). This changelog records release history and
+per-version notes; it is not the source of truth for what to install today.
 
 Generic builds and simulator checks are not enough for runtime claims. Re-run real-device validation after changing any preview tag.
 
