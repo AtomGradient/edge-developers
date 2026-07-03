@@ -143,12 +143,66 @@ Use explicit leaf-page imports or local fact files for the detailed material you
 want the Agent to rely on. `import-url` is a single-URL import command, not a
 crawler.
 
+### Optional: Extract Facts With A Larger Local Model
+
+Requires edge-studio `0.0.1rc22` or later.
+
+For long prose pages where table-row splitting is not enough, use an explicit
+host-model extractor. The extractor runs on the local Mac model you name; Edge
+then validates the model output against `edge.demo.facts.v1` before writing to
+the store.
+
+```bash
+edge demo facts import-url "https://example.org/protocol-note" \
+  --store ethereum_research_v1 \
+  --topic "protocol note" \
+  --tags ethereum,protocol,notes \
+  --extractor host-model \
+  --extractor-model qwen3.5-27b-4bit \
+  --json
+```
+
+Use this when a stronger local model is useful for extraction quality. The
+receipt records the extractor model, prompt/schema hashes, input/output hashes,
+validation status, whether the model input was truncated by `--max-chars`, and
+`non_deterministic_extraction: true`. It is still an explicit local import path,
+not background crawling or cloud RAG.
+
+### Optional: Crawl A Small Same-Origin Documentation Set
+
+Requires edge-studio `0.0.1rc22` or later.
+
+When a documentation set spans a few linked pages, use `crawl-url` instead of
+hiding crawling inside `import-url`.
+
+```bash
+edge demo facts crawl-url "https://example.org/docs" \
+  --store ethereum_research_v1 \
+  --topic "protocol docs" \
+  --tags ethereum,protocol,docs \
+  --max-depth 1 \
+  --max-urls 10 \
+  --max-bytes 1000000 \
+  --max-bytes-total 5000000 \
+  --timeout 15 \
+  --json
+```
+
+This is a bounded static HTTP(S) crawl: same origin only, no browser, no
+JavaScript execution, explicit URL/byte/depth limits, and hash-first receipts.
+Same-origin enforcement is always on — there is no cross-origin mode. The
+command stores fetched URL hashes, redirect-chain hashes, failed URL statuses,
+total bytes, and the policy decision. `crawl-url` does not consult
+`robots.txt`; the receipt discloses this as an explicit policy decision, so
+point it only at documentation sets you are entitled to fetch. It is a generic
+material import surface; Ethereum is only the example domain on this page.
+
 ## Register A Developer-Named Read-Only Tool
 
 The `--facts-store` shortcut is useful for quick checks. For app integration,
-prefer a stable tool name owned by the carrier. In rc20, this manifest names and
-binds the built-in read-only local facts lookup executor. It does not register
-developer-implemented tool code. Create `tools.json`:
+prefer a stable tool name owned by the carrier. This manifest path, introduced
+in rc20, names and binds the built-in read-only local facts lookup executor. It
+does not register developer-implemented tool code. Create `tools.json`:
 
 ```json
 {
@@ -173,8 +227,41 @@ edge demo tools validate ./tools.json --json
 The only executable kind in this preview is `local_facts_lookup`. Edge owns that
 executor and the dispatcher that calls it. The manifest does not authorize
 network access, process execution, signing, broadcasting, file writes, or
-developer-implemented tool code. Developer-implemented tool providers are a
-separate follow-up slice.
+developer-implemented tool code. For developer-authored function logic, use the
+Python tools path below.
+
+## Implement Your Own Tool Logic
+
+When the logic itself is yours, write a Python tool instead of a manifest. The
+minimal tool is just a function:
+
+```python
+# tools.py
+from edgestudio.tools import edge_tool
+
+@edge_tool
+def hello_world() -> str:
+    return "hello world"
+```
+
+Validate and run it:
+
+```bash
+edge tools validate ./tools.py --json
+
+edge demo chat \
+  --model qwen3.5-9b-4bit \
+  --tools ./tools.py \
+  --prompt "Call hello_world and report the result." \
+  --json
+```
+
+Edge discovers the decorated functions, generates schemas from type hints,
+freezes the active set, and executes calls in an Edge-owned runner subprocess.
+The model only emits JSON tool calls; Edge validates and dispatches them. See
+[Custom Python Tools](/docs/guides/custom-python-tools) for multiple tools,
+selection with `--tool` / `--tool-tag`, receipts, and `edge demo learn run
+--tools`.
 
 ## Use Local Facts In Chat
 

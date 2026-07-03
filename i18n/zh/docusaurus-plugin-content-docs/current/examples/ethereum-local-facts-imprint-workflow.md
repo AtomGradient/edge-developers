@@ -174,10 +174,59 @@ edge demo facts import-url "https://eips.ethereum.org/all" \
 详细材料仍建议用显式叶子页导入或本地 facts 文件维护。`import-url` 是单 URL 导入命令，
 不是爬虫。
 
+### 可选：用更大的本地模型抽取 facts
+
+需要 edge-studio `0.0.1rc22` 或更高版本。
+
+如果页面是长篇正文，表格行拆分不够用，可以显式启用 host-model extractor。
+extractor 会运行你指定的 Mac 本地模型；Edge 随后把模型输出重新按
+`edge.demo.facts.v1` 校验，通过后才写入 store。
+
+```bash
+edge demo facts import-url "https://example.org/protocol-note" \
+  --store ethereum_research_v1 \
+  --topic "protocol note" \
+  --tags ethereum,protocol,notes \
+  --extractor host-model \
+  --extractor-model qwen3.5-27b-4bit \
+  --json
+```
+
+当你希望 27B 这类更强本地模型提升事实抽取质量时，用这条路径。receipt 会记录
+extractor model、prompt/schema hash、input/output hash、校验状态、模型输入是否被
+`--max-chars` 裁剪，以及 `non_deterministic_extraction: true`。它仍然是显式本地
+导入路径，不是后台爬虫，也不是云端 RAG。
+
+### 可选：抓取小规模同源文档集
+
+需要 edge-studio `0.0.1rc22` 或更高版本。
+
+如果材料分布在少量链接页面里，用 `crawl-url`，不要把爬虫行为隐藏进 `import-url`。
+
+```bash
+edge demo facts crawl-url "https://example.org/docs" \
+  --store ethereum_research_v1 \
+  --topic "protocol docs" \
+  --tags ethereum,protocol,docs \
+  --max-depth 1 \
+  --max-urls 10 \
+  --max-bytes 1000000 \
+  --max-bytes-total 5000000 \
+  --timeout 15 \
+  --json
+```
+
+这是有界静态 HTTP(S) crawl：只允许同源、不启动浏览器、不执行 JavaScript、必须
+显式给出 URL/字节/depth 上限，并写 hash-first receipt。同源限制始终生效——不存在
+跨域模式。命令会记录 fetched URL hashes、redirect-chain hashes、failed URL
+statuses、total bytes 和 policy decision。`crawl-url` 不查询 `robots.txt`；
+receipt 会把这一点作为显式 policy decision 如实记录，所以只把它指向你有权抓取的
+文档集。这是通用材料导入能力；本页只是用以太坊作为示例领域。
+
 ## 3. 注册开发者命名的只读工具
 
 `--facts-store` 快捷路径适合快速验证。接入 App 时，更推荐使用载体自己拥有的稳定 tool 名。
-在 rc20 中，这个 manifest 做的是命名并绑定内置只读本地 facts lookup executor，
+这个 rc20 起可用的 manifest 路径做的是命名并绑定内置只读本地 facts lookup executor，
 不是注册开发者自己实现的 tool 代码。创建 `tools.json`：
 
 ```json
@@ -202,9 +251,39 @@ edge demo tools validate ./tools.json --json
 
 当前预览版唯一可执行的 kind 是 `local_facts_lookup`。这个 executor 以及调用它的
 dispatcher 都由 Edge 负责。manifest 不授权联网、执行进程、签名、广播、写文件或
-开发者自实现 tool 代码。开发者自实现 tool provider 是后续独立切片。
+开发者自实现 tool 代码。开发者自己写函数逻辑时，请使用下面的 Python tools 路径。
 
-## 4. 让 chat 使用本地 facts
+## 4. 实现你自己的工具逻辑
+
+如果逻辑本身属于你，就写 Python tool，而不是 manifest。最小工具就是一个函数：
+
+```python
+# tools.py
+from edgestudio.tools import edge_tool
+
+@edge_tool
+def hello_world() -> str:
+    return "hello world"
+```
+
+校验并运行：
+
+```bash
+edge tools validate ./tools.py --json
+
+edge demo chat \
+  --model qwen3.5-9b-4bit \
+  --tools ./tools.py \
+  --prompt "Call hello_world and report the result." \
+  --json
+```
+
+Edge 会发现被装饰的函数，从类型注解生成 schema，冻结活跃工具集，并在 Edge 自有
+runner 子进程中执行调用。模型只输出 JSON tool call；具体校验与分发由 Edge 负责。
+多工具、`--tool` / `--tool-tag` 选择、receipt 和 `edge demo learn run --tools`
+见[自定义 Python 工具](/docs/guides/custom-python-tools)。
+
+## 5. 让 chat 使用本地 facts
 
 使用 `--tools-manifest` 显式启用这个 manifest：
 
@@ -252,7 +331,7 @@ edge demo chat \
 
 如果没有 `--tools-manifest` 或 `--facts-store`，chat 不注册本地 facts tool，行为保持普通 base chat。
 
-## 5. Edge Learn：把业务边界学成可恢复行为状态
+## 6. Edge Learn：把业务边界学成可恢复行为状态
 
 facts 解决“知道什么”。行为 sample 解决“怎么做”。
 
@@ -570,7 +649,7 @@ Edge Learn 是：
 - 让 App 可以更新 facts，而不重新学习行为
 - 让 receipt 记录 model、artifact、tool call、hash 和本地执行证据
 
-## 6. 组合运行：facts + Neural Imprint
+## 7. 组合运行：facts + Neural Imprint
 
 组合命令：
 
@@ -621,7 +700,7 @@ edge demo chat \
 4. `tool_calls[].rows > 0`
 5. `network_used == false`
 
-## 7. 验证“知识更新不需要重新学习”
+## 8. 验证“知识更新不需要重新学习”
 
 这是给以太坊开发者看的最重要能力。
 
@@ -713,7 +792,7 @@ edge demo chat \
 
 这证明：**知识更新通过 facts re-import 完成，不需要重新 learn/imprint。**
 
-## 8. 常见问题
+## 9. 常见问题
 
 ### Q1. 以太坊知识应该写进 `records` 还是 `facts`？
 
@@ -771,7 +850,7 @@ Unlimited ERC-20 approvals must be highlighted as a risk.
 
 生产 App 应按自己的隐私策略决定是否展示原文。
 
-## 9. 给开发者的最小任务清单
+## 10. 给开发者的最小任务清单
 
 让开发者现场完成这 6 件事：
 
