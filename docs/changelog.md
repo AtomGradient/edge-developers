@@ -15,7 +15,7 @@ Edge products are in **Developer Preview**. Expect breaking changes between rele
 
 During Developer Preview, Swift package releases follow `1.0.0-rcN` tags. Edge Studio's Python package currently uses PyPI version `0.0.1rc19` and GitHub tag `v0.0.1rc19`. Breaking changes are documented here with migration steps. After general availability, we will follow semantic versioning.
 
-PyPI retention note: Edge Studio preview wheels before `0.0.1rc18` have been removed from PyPI. Changelog entries before `v0.0.1rc18` remain as release history, not as currently installable package pins.
+PyPI retention note: Edge Studio preview wheels before `0.0.1rc19` have been removed from PyPI. Changelog entries before `v0.0.1rc19` remain as release history, not as currently installable package pins.
 
 ## How to upgrade
 
@@ -82,13 +82,19 @@ The B2/B4/B5/B6/B7 CLI commands listed below are shipped in current preview; the
 ### v0.0.1rc19
 
 - PyPI release candidate version: `0.0.1rc19`. Deterministic install: `python -m pip install edge-studio==0.0.1rc19`.
+- Adds local facts workflows through `edge demo facts import`, `list`, and `inspect`. The store is local-only and defaults to hash-only inspection output.
+- Adds `edge demo chat --facts-store <store>` for read-only `local_facts_lookup` tool use. The tool loop is fail-closed and records `network_used=false`.
+- Supports combining `--with-imprint` and `--facts-store`, so Neural Imprint behavior and local fact lookup can run together in one chat path.
+- Extends chat receipts with `tool_calls[]`, `tool_instruction_mode`, and `tool_instruction_sha256` for auditable local tool behavior.
+- Updates the Neural Imprint prefix renderer to the v2 JSON tool-call contract, keeping baked and runtime tool instructions aligned.
+- Lets developers refresh local knowledge by re-importing facts into a store without re-running the learning flow.
 - Renames the installed Python package namespace from `backend` to `edgestudio`. The public CLI remains `edge`; package-internal source references now use paths such as `edgestudio/cli/demo_samples.py`.
 - Keeps `--sample-file` as the customization path for local `edge.demo.learn.sample.v1` JSON learning samples.
 - Aligns release metadata with the AtomGradient Proprietary License. The public `AtomGradient/edge-studio` repository is an issue and support shell, not an open-source source distribution.
 
 ### v0.0.1rc18
 
-- PyPI release candidate version: `0.0.1rc18`. Deterministic install: `python -m pip install edge-studio==0.0.1rc18`.
+- Historical PyPI release candidate version: `0.0.1rc18` (removed from PyPI; kept here as release history).
 - Adds `edge demo learn run --sample-file` for local `edge.demo.learn.sample.v1` JSON samples. The file path overrides built-in `--sample` fixtures and is validated before dry-run or execution.
 
 ### v0.0.1rc9

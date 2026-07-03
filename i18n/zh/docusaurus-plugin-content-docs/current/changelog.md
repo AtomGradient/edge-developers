@@ -15,7 +15,7 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 
 开发者预览阶段，Swift 包使用 `1.0.0-rcN` 标签发布。Edge Studio 的 Python 包当前使用 PyPI 版本 `0.0.1rc19` 和 GitHub tag `v0.0.1rc19`。破坏性变更会在这里记录迁移步骤。正式可用后会遵循语义化版本。
 
-PyPI 保留说明：Edge Studio 的 `0.0.1rc18` 之前预览 wheel 已从 PyPI 删除。`v0.0.1rc18` 之前的 changelog 条目仅保留为发布历史，不再表示这些包版本当前仍可安装。
+PyPI 保留说明：Edge Studio 的 `0.0.1rc19` 之前预览 wheel 已从 PyPI 删除。`v0.0.1rc19` 之前的 changelog 条目仅保留为发布历史，不再表示这些包版本当前仍可安装。
 
 ## 如何升级
 
@@ -82,13 +82,19 @@ PyPI 保留说明：Edge Studio 的 `0.0.1rc18` 之前预览 wheel 已从 PyPI �
 ### v0.0.1rc19
 
 - PyPI release candidate 版本：`0.0.1rc19`。确定性安装：`python -m pip install edge-studio==0.0.1rc19`。
+- 新增本地事实工作流：`edge demo facts import`、`list`、`inspect`。事实库只在本地使用，检查输出默认只暴露哈希。
+- 新增 `edge demo chat --facts-store <store>`，通过只读 `local_facts_lookup` 工具查询本地事实。tool loop 失败即关闭，并记录 `network_used=false`。
+- 支持 `--with-imprint` 与 `--facts-store` 组合，让 Neural Imprint 行为偏好和本地事实查询进入同一条 chat 路径。
+- chat receipt 新增 `tool_calls[]`、`tool_instruction_mode`、`tool_instruction_sha256`，用于审计本地工具行为。
+- Neural Imprint prefix renderer 升级到 v2 JSON tool-call 契约，保证烘焙和运行时工具指令同源。
+- 开发者可以通过重新导入 facts 刷新本地知识，不需要重新运行 learn 流程。
 - 已安装 Python 包命名空间从 `backend` 改为 `edgestudio`。公开 CLI 仍然是 `edge`；包内源码引用现在使用 `edgestudio/cli/demo_samples.py` 这类路径。
 - 本地 `edge.demo.learn.sample.v1` JSON 学习样本的自定义入口仍然是 `--sample-file`。
 - 发布元数据已对齐 AtomGradient Proprietary License。公开 `AtomGradient/edge-studio` 仓库是 issue/support 壳，不是开源源码分发。
 
 ### v0.0.1rc18
 
-- PyPI release candidate 版本：`0.0.1rc18`。确定性安装：`python -m pip install edge-studio==0.0.1rc18`。
+- 历史 PyPI release candidate 版本：`0.0.1rc18`（已从 PyPI 删除，仅保留为发布历史）。
 - 为 `edge demo learn run` 新增 `--sample-file`，支持本地 `edge.demo.learn.sample.v1` JSON 样本。文件路径会覆盖内置 `--sample` fixture，并在 dry-run 或执行前完成校验。
 
 ### v0.0.1rc9
