@@ -49,7 +49,7 @@ Edge Kit's DSR Attention keeps memory bounded. If you see unbounded growth, chec
 ### SPM "missing module" or "cannot find type"
 
 - Clean DerivedData: `rm -rf ~/Library/Developer/Xcode/DerivedData`
-- Ensure your `Package.swift` pins the tested Developer Preview tag exactly: `.package(url: "...", exact: "1.0.0-rc98")`
+- Ensure your `Package.swift` pins the tested Developer Preview tag exactly: `.package(url: "...", exact: "1.0.0-rc103")`
 - Verify Xcode version is 15 or later.
 
 ### "Metal library not found" or kernel crash

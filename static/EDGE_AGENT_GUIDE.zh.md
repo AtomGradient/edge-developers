@@ -474,9 +474,9 @@ music 和 work。领域专用覆盖缺失但模型家族匹配时，会回退到
 | 包 | 已验证版本 | 安装 |
 |----|---------|------|
 | edge-studio | 0.0.1rc22 | `pip install --pre edge-studio` |
-| edge-kit | 1.0.0-rc100 | SPM: `github.com/AtomGradient/edge-kit` |
-| edge-engine | 1.0.0-rc141 | SPM: `github.com/AtomGradient/edge-engine` |
-| edge-halo-binary | 1.0.0-rc24 | SPM: `github.com/AtomGradient/edge-halo-binary` |
+| edge-kit | 1.0.0-rc103 | SPM: `github.com/AtomGradient/edge-kit` |
+| edge-engine | 1.0.0-rc143 | SPM: `github.com/AtomGradient/edge-engine` |
+| edge-halo-binary | 1.0.0-rc25 | SPM: `github.com/AtomGradient/edge-halo-binary` |
 
 > 这是本次 guide 修订所验证的版本。`--pre`（pip）和 SPM 解析可能拉到更新的兼容 preview —— 取最新版并在升级后在真机上重新验证。
 

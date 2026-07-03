@@ -34,19 +34,19 @@ PyPI 保留说明：Edge Studio 的 `0.0.1rc19` 之前预览 wheel 已从 PyPI �
 | 产品表面 | 当前访问方式 | 说明 |
 |---|---|---|
 | Edge Studio | Python 软件包 `edge-studio==0.0.1rc22`，GitHub tag `v0.0.1rc22` | 安装后只暴露一个 `edge` 命令。用 `edge studio` 启动本地 Studio UI。 |
-| Swift SDK 文档 | Edge Kit `1.0.0-rc98` | 文档使用精确固定版本。升级前必须重新验证。 |
-| Edge Engine 依赖 | Edge Engine `1.0.0-rc138` | 公开 GitHub 仓库位于 `AtomGradient/edge-engine`；包解析不应再需要 SSH 访问权限。 |
-| Edge Halo binary 依赖 | Edge Halo binary `1.0.0-rc24` | 公开二进制 SwiftPM 包位于 `AtomGradient/edge-halo-binary`；源码仍保持私有。 |
-| Edge Scaffold | 固定依赖 Edge Kit `1.0.0-rc98` 与 Edge Halo binary `1.0.0-rc24` | 生成的应用仍需要签名、设备 provisioning 和真机验证。 |
+| Swift SDK 文档 | Edge Kit `1.0.0-rc103` | 文档使用精确固定版本。升级前必须重新验证。 |
+| Edge Engine 依赖 | Edge Engine `1.0.0-rc143` | 公开 GitHub 仓库位于 `AtomGradient/edge-engine`；包解析不应再需要 SSH 访问权限。 |
+| Edge Halo binary 依赖 | Edge Halo binary `1.0.0-rc25` | 公开二进制 SwiftPM 包位于 `AtomGradient/edge-halo-binary`；源码仍保持私有。 |
+| Edge Scaffold | 固定依赖 Edge Kit `1.0.0-rc103` 与 Edge Halo binary `1.0.0-rc25` | 生成的应用仍需要签名、设备 provisioning 和真机验证。 |
 
 ### 兼容矩阵
 
 | 组件 | 兼容预览版本 |
 |---|---|
 | Edge Studio | `v0.0.1rc22` |
-| Edge Kit | `1.0.0-rc98`，依赖 Edge Engine `1.0.0-rc138` |
-| Edge Halo binary | `1.0.0-rc24` |
-| Edge Scaffold | 当前预览版固定依赖 Edge Kit `1.0.0-rc98` 与 Edge Halo binary `1.0.0-rc24` |
+| Edge Kit | `1.0.0-rc103`，依赖 Edge Engine `1.0.0-rc143` |
+| Edge Halo binary | `1.0.0-rc25` |
+| Edge Scaffold | 当前预览版固定依赖 Edge Kit `1.0.0-rc103` 与 Edge Halo binary `1.0.0-rc25` |
 
 通用构建和模拟器检查不足以支撑运行时结论。任何预览 tag 变化后，都需要重新完成真机验证。
 
@@ -182,11 +182,17 @@ PyPI 保留说明：Edge Studio 的 `0.0.1rc19` 之前预览 wheel 已从 PyPI �
 - 自动 KV cache 内存策略。
 - Neural Imprint 运行时恢复 primitives 与 EdgeMesh capsule auto-restore coordinator APIs。
 - 生产应用构建可以嵌入通用 `EdgeBuildCommit` 元数据，用于 snapshot traceability。
-- 依赖 Edge Engine `1.0.0-rc138`。
+- 依赖 Edge Engine `1.0.0-rc143`。
+
+### 1.0.0-rc103
+
+- 当前 SDK release gate。
+- 将 `EdgeKitRuntime.version`、`edge-kit/.dependency_versions`、`Package.swift` 和公开 SPM 元数据对齐到 Edge Engine `1.0.0-rc143`。
+- 公开 package graph 继续使用 `edge-engine`、`swift-transformers` 与 `GRDB`；历史 `mlx-swift` / `mlx-swift-lm` 包仍不进入默认依赖图。
 
 ### 1.0.0-rc98
 
-- 当前 SDK release gate。
+- 历史 SDK release gate。
 - package、测试和公开元数据对齐 Edge Engine `1.0.0-rc138`。
 - RPP 编排和 activation steering 实现不进入公开 SDK 源码；这些内部能力由 Edge Halo 承载。
 
@@ -206,17 +212,17 @@ PyPI 保留说明：Edge Studio 的 `0.0.1rc19` 之前预览 wheel 已从 PyPI �
 - `EdgeHaloRuntime` public actor。
 - RPP A-library provenance 验证与 profile 产物生命周期 helpers。
 - 依赖版本元数据已对齐当前预览 tag。
-- 公开 app 通过二进制 package `edge-halo-binary` `1.0.0-rc24` 接入；源码仓库保持私有。
+- 公开 app 通过二进制 package `edge-halo-binary` `1.0.0-rc25` 接入；源码仓库保持私有。
 
 ## edge-engine
 
 ### Edge Engine 当前依赖 tag
 
-- Edge Kit 与 Edge Halo 当前依赖的 Edge Engine tag。
+- 当前 Edge Kit preview 依赖的 Edge Engine tag。
 - 原生 Metal 推理运行时。
 - DSR Attention 实现。
 - `main` 上未发布的 commit 不属于当前 开发者预览 tag；发布新的 `1.0.0-rcN` 后再进入文档口径。
-- 当前依赖 tag：`1.0.0-rc138`。
+- 当前依赖 tag：`1.0.0-rc143`。
 
 ## edge-scaffold
 
@@ -226,4 +232,4 @@ PyPI 保留说明：Edge Studio 的 `0.0.1rc19` 之前预览 wheel 已从 PyPI �
 - 从 Edge Studio 导出生成 iOS 应用模板。
 - 基于 ScaffoldConfig 的自定义。
 - 四层模型分发（Cache → Bundle → ODR → HuggingFace）。
-- 固定依赖 Edge Kit `1.0.0-rc98` 与 Edge Halo binary `1.0.0-rc24`。
+- 固定依赖 Edge Kit `1.0.0-rc103` 与 Edge Halo binary `1.0.0-rc25`。

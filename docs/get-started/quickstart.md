@@ -32,7 +32,7 @@ Add Edge Kit to your package:
 ```swift
 // Package.swift
 dependencies: [
-    .package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc98")
+    .package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc103")
 ]
 ```
 

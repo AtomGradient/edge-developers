@@ -480,9 +480,9 @@ Development tools:
 | Package | Validated version | Install |
 |---------|----------------|---------|
 | edge-studio | 0.0.1rc22 | `pip install --pre edge-studio` |
-| edge-kit | 1.0.0-rc100 | SPM: `github.com/AtomGradient/edge-kit` |
-| edge-engine | 1.0.0-rc141 | SPM: `github.com/AtomGradient/edge-engine` |
-| edge-halo-binary | 1.0.0-rc24 | SPM: `github.com/AtomGradient/edge-halo-binary` |
+| edge-kit | 1.0.0-rc103 | SPM: `github.com/AtomGradient/edge-kit` |
+| edge-engine | 1.0.0-rc143 | SPM: `github.com/AtomGradient/edge-engine` |
+| edge-halo-binary | 1.0.0-rc25 | SPM: `github.com/AtomGradient/edge-halo-binary` |
 
 > These are the versions validated for this guide revision. `--pre` (pip) and SPM resolution may pull a newer compatible preview — take the latest and re-validate on a real device after upgrading.
 

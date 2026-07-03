@@ -48,11 +48,11 @@ Neural Imprint 是本地产物和恢复流程。兼容的基础模型可以恢�
 
 | 组件 | 版本 |
 |---|---|
-| edge-studio | `v0.0.1rc19` |
-| edge-kit | `1.0.0-rc98` |
-| edge-halo-binary | `1.0.0-rc24` |
-| edge-engine | `1.0.0-rc138` |
-| edge-scaffold | 固定依赖 edge-kit `1.0.0-rc98` 和 edge-halo-binary `1.0.0-rc24` |
+| edge-studio | `v0.0.1rc22` |
+| edge-kit | `1.0.0-rc103` |
+| edge-halo-binary | `1.0.0-rc25` |
+| edge-engine | `1.0.0-rc143` |
+| edge-scaffold | 固定依赖 edge-kit `1.0.0-rc103` 和 edge-halo-binary `1.0.0-rc25` |
 
 ## 文档
 
@@ -69,7 +69,7 @@ Neural Imprint 是本地产物和恢复流程。兼容的基础模型可以恢�
 安装 Swift SDK：
 
 ```swift
-.package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc98")
+.package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc103")
 ```
 
 Edge Kit、Edge Engine、Edge Scaffold 和 Edge Halo 二进制包都是公开 GitHub 仓库。Edge Halo 源码保持私有；App 通过公开的 `edge-halo-binary` 包接入。

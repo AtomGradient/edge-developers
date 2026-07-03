@@ -8,7 +8,7 @@ title: EdgeVoice
 `EdgeVoice` 包含音频录制 API 和 Whisper 预览桥接。
 
 :::info 当前预览版 边界
-在 `edge-kit@1.0.0-rc98` 中，`WhisperEngine` 是为未来 whisper.cpp xcframework integration 保留的 skeleton。它不执行真实转写。当前预览版 的可运行原生 ASR 示例请使用 `EdgeInference` 中的 `STTEngine`。
+在 `edge-kit@1.0.0-rc103` 中，`WhisperEngine` 是为未来 whisper.cpp xcframework integration 保留的 skeleton。它不执行真实转写。当前预览版 的可运行原生 ASR 示例请使用 `EdgeInference` 中的 `STTEngine`。
 :::
 
 ## AudioRecorder

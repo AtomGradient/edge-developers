@@ -15,7 +15,7 @@ Edge Halo is distributed to apps through the public `edge-halo-binary` Swift pac
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/AtomGradient/edge-halo-binary", exact: "1.0.0-rc24")
+    .package(url: "https://github.com/AtomGradient/edge-halo-binary", exact: "1.0.0-rc25")
 ]
 ```
 

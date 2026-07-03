@@ -21,8 +21,8 @@ title: Swift CLI 验证
 ```swift
 // Package.swift
 dependencies: [
-    .package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc98"),
-    .package(url: "https://github.com/AtomGradient/edge-halo-binary", exact: "1.0.0-rc24")
+    .package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc103"),
+    .package(url: "https://github.com/AtomGradient/edge-halo-binary", exact: "1.0.0-rc25")
 ]
 ```
 
@@ -39,7 +39,7 @@ dependencies: [
 )
 ```
 
-当前预览版中，Edge Kit `1.0.0-rc98` 使用 Edge Engine `1.0.0-rc138`。Edge Halo 通过公开二进制包 `edge-halo-binary` `1.0.0-rc24` 分发。Edge Kit、Edge Engine、Edge Scaffold 和 Edge Halo 二进制包都从公开 GitHub 仓库解析。
+当前预览版中，Edge Kit `1.0.0-rc103` 使用 Edge Engine `1.0.0-rc143`。Edge Halo 通过公开二进制包 `edge-halo-binary` `1.0.0-rc25` 分发。Edge Kit、Edge Engine、Edge Scaffold 和 Edge Halo 二进制包都从公开 GitHub 仓库解析。
 
 ## 运行 EdgeStudio 验证 CLI
 
@@ -50,7 +50,7 @@ git clone https://github.com/AtomGradient/EdgeStudio.git
 cd EdgeStudio
 
 git clone https://github.com/AtomGradient/edge-kit.git edge-kit
-git -C edge-kit checkout 1.0.0-rc98
+git -C edge-kit checkout 1.0.0-rc103
 ```
 
 从冒烟检查 package 目录运行：
@@ -135,7 +135,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: AtomGradient/edge-kit
-          ref: 1.0.0-rc98
+          ref: 1.0.0-rc103
           path: EdgeStudio/edge-kit
 
       - name: Run zero-model Swift CLI checks

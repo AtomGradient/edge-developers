@@ -34,19 +34,19 @@ Developer Preview is a limited preview channel. The changelog documents what is 
 | Surface | Current access | Notes |
 |---|---|---|
 | Edge Studio | Python package `edge-studio==0.0.1rc22`, GitHub tag `v0.0.1rc22` | Installs the single `edge` command. Launch the local Studio UI with `edge studio`. |
-| Swift SDK docs | Edge Kit `1.0.0-rc98` | Docs use an exact version pin. Upgrade only after validation. |
-| Edge Engine dependency | Edge Engine `1.0.0-rc138` | Public GitHub repository at `AtomGradient/edge-engine`; package resolution should not require SSH access. |
-| Edge Halo binary dependency | Edge Halo binary `1.0.0-rc24` | Public binary SwiftPM package at `AtomGradient/edge-halo-binary`; source remains private. |
-| Edge Scaffold | Pins Edge Kit `1.0.0-rc98` and Edge Halo binary `1.0.0-rc24` | Generated apps still require signing, device provisioning, and real-device validation. |
+| Swift SDK docs | Edge Kit `1.0.0-rc103` | Docs use an exact version pin. Upgrade only after validation. |
+| Edge Engine dependency | Edge Engine `1.0.0-rc143` | Public GitHub repository at `AtomGradient/edge-engine`; package resolution should not require SSH access. |
+| Edge Halo binary dependency | Edge Halo binary `1.0.0-rc25` | Public binary SwiftPM package at `AtomGradient/edge-halo-binary`; source remains private. |
+| Edge Scaffold | Pins Edge Kit `1.0.0-rc103` and Edge Halo binary `1.0.0-rc25` | Generated apps still require signing, device provisioning, and real-device validation. |
 
 ### Compatibility matrix
 
 | Component | Compatible preview |
 |---|---|
 | Edge Studio | `v0.0.1rc22` |
-| Edge Kit | `1.0.0-rc98`, depends on Edge Engine `1.0.0-rc138` |
-| Edge Halo binary | `1.0.0-rc24` |
-| Edge Scaffold | Current preview pins Edge Kit `1.0.0-rc98` and Edge Halo binary `1.0.0-rc24` |
+| Edge Kit | `1.0.0-rc103`, depends on Edge Engine `1.0.0-rc143` |
+| Edge Halo binary | `1.0.0-rc25` |
+| Edge Scaffold | Current preview pins Edge Kit `1.0.0-rc103` and Edge Halo binary `1.0.0-rc25` |
 
 Generic builds and simulator checks are not enough for runtime claims. Re-run real-device validation after changing any preview tag.
 
@@ -182,11 +182,17 @@ The B2/B4/B5/B6/B7 CLI commands listed below are shipped in current preview; the
 - Automatic KV cache memory policy.
 - Neural Imprint runtime restore primitives and EdgeMesh capsule auto-restore coordinator APIs.
 - Production app builds can embed generic `EdgeBuildCommit` metadata for snapshot traceability.
-- Depends on Edge Engine `1.0.0-rc138`.
+- Depends on Edge Engine `1.0.0-rc143`.
+
+### 1.0.0-rc103
+
+- Current SDK release gate.
+- Aligns `EdgeKitRuntime.version`, `edge-kit/.dependency_versions`, `Package.swift`, and public SPM metadata to Edge Engine `1.0.0-rc143`.
+- Keeps the public package graph on `edge-engine`, `swift-transformers`, and `GRDB`; historical `mlx-swift` / `mlx-swift-lm` packages remain out of the default dependency graph.
 
 ### 1.0.0-rc98
 
-- Current SDK release gate.
+- Historical SDK release gate.
 - Aligns package, tests, and public metadata to Edge Engine `1.0.0-rc138`.
 - Keeps RPP orchestration and activation steering implementation out of the public SDK source; those internals live behind Edge Halo.
 
@@ -206,17 +212,17 @@ The B2/B4/B5/B6/B7 CLI commands listed below are shipped in current preview; the
 - `EdgeHaloRuntime` public actor.
 - RPP A-library provenance validation and profile artifact lifecycle helpers.
 - Dependency version metadata aligned with the current preview tag.
-- Public apps consume the binary package `edge-halo-binary` `1.0.0-rc24`; the source repository remains private.
+- Public apps consume the binary package `edge-halo-binary` `1.0.0-rc25`; the source repository remains private.
 
 ## edge-engine
 
 ### Edge Engine current dependency tag
 
-- Edge Engine current dependency tag used by Edge Kit and Edge Halo.
+- Edge Engine current dependency tag used by the current Edge Kit preview.
 - Native Metal inference runtime.
 - DSR Attention implementation.
 - Unreleased commits on `main` are not part of this Developer Preview tag until a new `1.0.0-rcN` release is published.
-- Current dependency tag: `1.0.0-rc138`.
+- Current dependency tag: `1.0.0-rc143`.
 
 ## edge-scaffold
 
@@ -226,4 +232,4 @@ The B2/B4/B5/B6/B7 CLI commands listed below are shipped in current preview; the
 - iOS app template generation from Edge Studio export.
 - ScaffoldConfig-based customization.
 - Four-tier model delivery (Cache → Bundle → ODR → HuggingFace).
-- Pins Edge Kit `1.0.0-rc98` and Edge Halo binary `1.0.0-rc24`.
+- Pins Edge Kit `1.0.0-rc103` and Edge Halo binary `1.0.0-rc25`.

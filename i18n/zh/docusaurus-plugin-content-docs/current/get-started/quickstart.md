@@ -33,7 +33,7 @@ Edge Kit 面向 Apple 平台发布。Android、Linux、HarmonyOS 和 Windows 支
 ```swift
 // Package.swift
 dependencies: [
-    .package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc98")
+    .package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc103")
 ]
 ```
 

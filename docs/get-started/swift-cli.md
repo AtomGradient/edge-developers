@@ -21,8 +21,8 @@ Pin Developer Preview packages exactly:
 ```swift
 // Package.swift
 dependencies: [
-    .package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc98"),
-    .package(url: "https://github.com/AtomGradient/edge-halo-binary", exact: "1.0.0-rc24")
+    .package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc103"),
+    .package(url: "https://github.com/AtomGradient/edge-halo-binary", exact: "1.0.0-rc25")
 ]
 ```
 
@@ -39,7 +39,7 @@ Then add the products you need:
 )
 ```
 
-Edge Kit `1.0.0-rc98` uses Edge Engine `1.0.0-rc138` in this preview. Edge Halo is distributed as the public binary package `edge-halo-binary` `1.0.0-rc24`. Edge Kit, Edge Engine, Edge Scaffold, and the Edge Halo binary package resolve from public GitHub repositories.
+Edge Kit `1.0.0-rc103` uses Edge Engine `1.0.0-rc143` in this preview. Edge Halo is distributed as the public binary package `edge-halo-binary` `1.0.0-rc25`. Edge Kit, Edge Engine, Edge Scaffold, and the Edge Halo binary package resolve from public GitHub repositories.
 
 ## Run the EdgeStudio validation CLI
 
@@ -50,7 +50,7 @@ git clone https://github.com/AtomGradient/EdgeStudio.git
 cd EdgeStudio
 
 git clone https://github.com/AtomGradient/edge-kit.git edge-kit
-git -C edge-kit checkout 1.0.0-rc98
+git -C edge-kit checkout 1.0.0-rc103
 ```
 
 Run commands from the smoke package directory:
@@ -135,7 +135,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: AtomGradient/edge-kit
-          ref: 1.0.0-rc98
+          ref: 1.0.0-rc103
           path: EdgeStudio/edge-kit
 
       - name: Run zero-model Swift CLI checks
