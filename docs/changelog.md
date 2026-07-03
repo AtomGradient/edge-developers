@@ -170,7 +170,7 @@ auto-restore coordinator APIs; production app builds can embed generic
 
 ### 1.0.0-rc103
 
-- Current SDK release gate.
+- SDK release gate for this release.
 - Aligns `EdgeKitRuntime.version`, `edge-kit/.dependency_versions`, `Package.swift`, and public SPM metadata to Edge Engine `1.0.0-rc143`.
 - Keeps the public package graph on `edge-engine`, `swift-transformers`, and `GRDB`; historical `mlx-swift` / `mlx-swift-lm` packages remain out of the default dependency graph.
 

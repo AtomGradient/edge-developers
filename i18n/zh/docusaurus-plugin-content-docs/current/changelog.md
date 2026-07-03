@@ -167,7 +167,7 @@ EdgeMesh capsule auto-restore coordinator APIs；生产应用构建可以嵌入�
 
 ### 1.0.0-rc103
 
-- 当前 SDK release gate。
+- 该版本的 SDK release gate。
 - 将 `EdgeKitRuntime.version`、`edge-kit/.dependency_versions`、`Package.swift` 和公开 SPM 元数据对齐到 Edge Engine `1.0.0-rc143`。
 - 公开 package graph 继续使用 `edge-engine`、`swift-transformers` 与 `GRDB`；历史 `mlx-swift` / `mlx-swift-lm` 包仍不进入默认依赖图。
 

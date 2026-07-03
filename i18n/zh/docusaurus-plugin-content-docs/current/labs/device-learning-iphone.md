@@ -13,6 +13,12 @@ slug: /labs/device-learning-iphone
 完成[构建你的第一个设备 Agent](/docs/quickstart/first-agent) 中的 CLI 学习 demo。你需要已安装 Edge Studio 和本地模型。
 :::
 
+:::caution 预览实验室
+本教程处于预览实验室状态：多处截图仍是占位符，完整流程尚未针对当前导出的
+scaffold 重新做端到端验证。CLI 快速开始仍是确定性、可照抄的证明；在设备端
+证据补齐之前，请把本页当作预览。
+:::
+
 ## 为什么需要这一步
 
 CLI demo 证明的是**机制**——RPP 自学习能生成 NI 产物，restore 后行为改变。但那是在 Mac 上跑的。
@@ -60,7 +66,7 @@ cd FinanceAgent          # 工程根目录 — project.yml + FinanceAgent.xcodep
 open FinanceAgent.xcodeproj
 ```
 
-`.xcodeproj` 已由导出生成；App 源码在嵌套的 `FinanceAgent/` 子目录。（通常你无需跑 `xcodegen generate`；在 **rc15+** 上跑也是安全的 —— 模型的按需资源 (ODR) 接线在 `project.yml` 里，重新生成会保留。）在 Xcode 中：
+`.xcodeproj` 已由导出生成；App 源码在嵌套的 `FinanceAgent/` 子目录。（通常你无需跑 `xcodegen generate`；在当前预览版本上跑也是安全的 —— 模型的按需资源 (ODR) 接线在 `project.yml` 里，重新生成会保留。）在 Xcode 中：
 
 1. 选择你的 Development Team（Signing & Capabilities）
 2. **选择真机**（iPhone 或 iPad）— 不要选 Simulator
