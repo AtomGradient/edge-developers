@@ -405,19 +405,26 @@ edge demo learn run \
 ```
 
 成功后，保存输出里的 `receipt_path`。后续 chat 用它作为 `--with-imprint` 输入。
+stdout report 会把 sample 元数据放在 `sample` 下，把生成路径放在 `generation`
+下；完整恢复产物详情也会记录在 `receipt_path` 指向的 `learn_receipt.json` 文件里。
 
 输出里重点看这些字段：
 
 ```json
 {
   "status": "completed",
-  "sample_id": "ethereum_risk_boundary_v1",
-  "question_count": 2,
-  "artifact_id": "...",
-  "artifact_path": ".../neural_imprint_full_cache.safetensors",
-  "metadata_path": ".../neural_imprint_metadata.json",
   "receipt_path": ".../learn_receipt.json",
-  "network_used_during_demo": false
+  "network_used_during_demo": false,
+  "question_count": 2,
+  "sample": {
+    "sample_id": "ethereum_risk_boundary_v1",
+    "record_count": 3,
+    "correction_count": 1
+  },
+  "generation": {
+    "artifact_path": ".../neural_imprint.safetensors",
+    "metadata_path": ".../neural_imprint_metadata.json"
+  }
 }
 ```
 
@@ -425,8 +432,9 @@ edge demo learn run \
 
 | 字段 | 说明 |
 |---|---|
-| `artifact_path` | 生成的 Neural Imprint artifact |
-| `metadata_path` | artifact sidecar metadata |
+| `sample.sample_id` | 当前学习样本 ID |
+| `generation.artifact_path` | 生成的 Neural Imprint artifact |
+| `generation.metadata_path` | artifact sidecar metadata |
 | `receipt_path` | 后续 `edge demo chat --with-imprint` 的输入 |
 | `network_used_during_demo` | 应为 `false` |
 | `questions[]` | 每个问题都有 before/after hash 和差异记录 |

@@ -342,18 +342,27 @@ edge demo learn run \
 ```
 
 Save the returned `receipt_path`. Later chat calls pass it to `--with-imprint`.
+The stdout report nests sample metadata under `sample` and generation paths
+under `generation`; full restored artifact details are also recorded in the
+`learn_receipt.json` file pointed to by `receipt_path`.
 
 Key fields:
 
 ```json
 {
   "status": "completed",
-  "sample_id": "ethereum_risk_boundary_v1",
-  "artifact_id": "...",
-  "artifact_path": ".../neural_imprint_full_cache.safetensors",
-  "metadata_path": ".../neural_imprint_metadata.json",
   "receipt_path": ".../learn_receipt.json",
-  "network_used_during_demo": false
+  "network_used_during_demo": false,
+  "question_count": 2,
+  "sample": {
+    "sample_id": "ethereum_risk_boundary_v1",
+    "record_count": 2,
+    "correction_count": 1
+  },
+  "generation": {
+    "artifact_path": ".../neural_imprint.safetensors",
+    "metadata_path": ".../neural_imprint_metadata.json"
+  }
 }
 ```
 
