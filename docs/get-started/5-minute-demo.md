@@ -164,6 +164,17 @@ The Mac CLI learning path does not consume the `Resources/RPP/` A-library. Any
 domain-shaped local sample can use `--sample-file`; the A-library is required
 later by the on-device Edge Halo profile analysis path.
 
+Start from a validated template:
+
+```bash
+edge demo learn sample init --output ./my-budget-sample.json
+edge demo learn sample validate ./my-budget-sample.json
+```
+
+`validate` reuses the same loader as `--sample-file`. By default it prints only
+hashes and counts; add `--json` for a machine-readable report. The template
+looks like this:
+
 ```json
 {
   "schema_version": "edge.demo.learn.sample.v1",
@@ -178,6 +189,18 @@ later by the on-device Edge Halo profile analysis path.
       "kind": "explicit_preference",
       "text": "The user wants fixed expenses and emergency cash protected before discretionary spending.",
       "tags": ["budget", "cashflow"]
+    },
+    {
+      "record_id": "budget-002",
+      "kind": "cashflow_context",
+      "text": "The user has $800 left after rent, utilities, and subscriptions this month.",
+      "tags": ["budget", "cashflow"]
+    },
+    {
+      "record_id": "budget-003",
+      "kind": "trust_boundary",
+      "text": "The user does not want unsupported return claims or speculative investment recommendations.",
+      "tags": ["budget", "trust_boundary"]
     }
   ],
   "corrections": [
@@ -223,6 +246,34 @@ later by the on-device Edge Halo profile analysis path.
   }
 }
 ```
+
+#### Translate App data into canonical records
+
+Do not put app-specific tables such as `transactions`, `merchants`, or
+`categories` at the sample-file top level. Edge Studio accepts the canonical
+sample fields above and fails closed on unknown top-level fields. Your app owns
+the translation from business data into canonical `records` and `corrections`.
+
+Use `records[].kind` as a stable, semantic `snake_case` vocabulary. It is a free
+string, but it is not cosmetic: the profile body sorts records by
+`(kind, record_id)` and renders one `[kind]` block per group.
+
+Keep each record to one independently restatable fact, preference, or boundary.
+The built-in finance sample uses `explicit_preference`, `cashflow_context`, and
+`trust_boundary` for that reason.
+
+Choose `correction_type` by what changed:
+
+| Type | Use when | Required shape |
+|---|---|---|
+| `eval_feedback` | The user rated a specific answer | `correction.rating` is `positive`, `negative`, or `neutral` |
+| `fact_correction` | A concrete fact is wrong | `target.fact_id` plus corrected structured fields |
+| `profile_correction` | Behavior style or boundary should change | `target.profile_field` or `target.direction_id` plus structured correction fields |
+
+Fact corrections need at least two independent supporting corrections before
+they enter the compiled overlay. A single fact correction is treated as
+unstable and skipped, so use `profile_correction` for one-shot style or
+guardrail changes.
 
 Then inspect or run it:
 

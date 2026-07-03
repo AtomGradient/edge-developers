@@ -152,6 +152,16 @@ Mac CLI 学习链路不消费 `Resources/RPP/` A-library。任意领域形态的
 通过 `--sample-file` 运行；A-library 是后续设备端 Edge Halo profile analysis
 路径才需要的输入。
 
+先从已校验的模板开始：
+
+```bash
+edge demo learn sample init --output ./my-budget-sample.json
+edge demo learn sample validate ./my-budget-sample.json
+```
+
+`validate` 复用 `--sample-file` 同一个 loader。默认输出只包含哈希和计数；
+加 `--json` 可以得到机器可读报告。模板形态如下：
+
 ```json
 {
   "schema_version": "edge.demo.learn.sample.v1",
@@ -166,6 +176,18 @@ Mac CLI 学习链路不消费 `Resources/RPP/` A-library。任意领域形态的
       "kind": "explicit_preference",
       "text": "The user wants fixed expenses and emergency cash protected before discretionary spending.",
       "tags": ["budget", "cashflow"]
+    },
+    {
+      "record_id": "budget-002",
+      "kind": "cashflow_context",
+      "text": "The user has $800 left after rent, utilities, and subscriptions this month.",
+      "tags": ["budget", "cashflow"]
+    },
+    {
+      "record_id": "budget-003",
+      "kind": "trust_boundary",
+      "text": "The user does not want unsupported return claims or speculative investment recommendations.",
+      "tags": ["budget", "trust_boundary"]
     }
   ],
   "corrections": [
@@ -211,6 +233,30 @@ Mac CLI 学习链路不消费 `Resources/RPP/` A-library。任意领域形态的
   }
 }
 ```
+
+#### 把 App 业务数据翻译成 canonical records
+
+不要把 `transactions`、`merchants`、`categories` 这类 App 专有表放在 sample 文件顶层。
+Edge Studio 接受上面的 canonical sample 字段；遇到未知顶层字段会 fail closed。
+业务数据到 canonical `records` / `corrections` 的翻译由你的 App 负责。
+
+把 `records[].kind` 当作稳定、有语义的 `snake_case` 词汇表使用。它是自由字符串，
+但不只是展示文案：profile body 会按 `(kind, record_id)` 排序，并按 kind 渲染成
+一个个 `[kind]` 分组。
+
+每条 record 保持为一条可以独立复述的事实、偏好或边界。内置 finance 样本使用
+`explicit_preference`、`cashflow_context` 和 `trust_boundary`，就是为了表达这个粒度。
+
+按变化类型选择 `correction_type`：
+
+| 类型 | 适用场景 | 必需结构 |
+|---|---|---|
+| `eval_feedback` | 用户评价某次回答 | `correction.rating` 为 `positive`、`negative` 或 `neutral` |
+| `fact_correction` | 具体事实需要修正 | `target.fact_id` 加修正后的结构化字段 |
+| `profile_correction` | 行为风格或边界需要变化 | `target.profile_field` 或 `target.direction_id` 加结构化修正字段 |
+
+fact 类纠正需要至少两次独立支持才会进入编译后的 overlay。单次 fact 纠正会被视为不稳定并跳过；
+一次性的风格或边界变化应使用 `profile_correction`。
 
 然后检查或运行这个样本：
 

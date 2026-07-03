@@ -171,9 +171,33 @@ Each `corrections[].peer_id` must match the top-level `peer_id`. Then replace
 --sample-file ./my-learn-sample.json
 ```
 
+Generate and validate a starter file:
+
+```bash
+edge demo learn sample init --output ./my-learn-sample.json
+edge demo learn sample validate ./my-learn-sample.json
+```
+
 This Mac CLI learning path does not consume the bundled `Resources/RPP/`
 A-library. Use `--sample-file` for any local domain sample; A-library assets are
 used by the on-device Edge Halo profile-analysis path.
+
+Translate app data before handing it to Edge Studio:
+
+- Keep `records[].kind` stable and semantic, using `snake_case`; it becomes the
+  profile body group title (`[kind]`) after records are sorted by
+  `(kind, record_id)`.
+- Make each record one independently restatable fact, preference, or boundary.
+  The built-in finance sample uses `explicit_preference`, `cashflow_context`,
+  and `trust_boundary`.
+- Use `eval_feedback` for answer ratings (`correction.rating` required),
+  `fact_correction` for concrete fact fixes (`target.fact_id` required), and
+  `profile_correction` for style or boundary changes (`target.profile_field` or
+  `target.direction_id` required).
+- Fact corrections need at least two independent supports before entering the
+  compiled overlay; a single fact correction is skipped as unstable.
+- Do not add app-specific top-level fields such as `transactions` or
+  `merchants`; unknown top-level fields fail closed.
 
 ### Expected output
 

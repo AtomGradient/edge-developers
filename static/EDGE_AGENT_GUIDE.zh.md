@@ -174,8 +174,27 @@ edge demo learn run \
 --sample-file ./my-learn-sample.json
 ```
 
+生成并校验起始文件：
+
+```bash
+edge demo learn sample init --output ./my-learn-sample.json
+edge demo learn sample validate ./my-learn-sample.json
+```
+
 这条 Mac CLI 学习链路不消费打包的 `Resources/RPP/` A-library。任意本地领域样本都可以
 通过 `--sample-file` 使用；A-library 由设备端 Edge Halo profile analysis 路径使用。
+
+先把 App 业务数据翻译成 canonical 形态：
+
+- 保持 `records[].kind` 稳定、有语义，并使用 `snake_case`；它会在 records 按
+  `(kind, record_id)` 排序后成为 profile body 分组标题（`[kind]`）。
+- 每条 record 表达一条可以独立复述的事实、偏好或边界。内置 finance 样本使用
+  `explicit_preference`、`cashflow_context` 和 `trust_boundary`。
+- `eval_feedback` 用于回答评价（需要 `correction.rating`），`fact_correction` 用于具体事实修正
+  （需要 `target.fact_id`），`profile_correction` 用于风格或边界变化
+  （需要 `target.profile_field` 或 `target.direction_id`）。
+- fact 类纠正需要至少两次独立支持才会进入编译后的 overlay；单次 fact 纠正会因不稳定被跳过。
+- 不要添加 `transactions` 或 `merchants` 这类 App 专有顶层字段；未知顶层字段会 fail closed。
 
 ### 期望输出
 
