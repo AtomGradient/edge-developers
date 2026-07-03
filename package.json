@@ -12,7 +12,12 @@
     "serve": "docusaurus serve",
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "check:versions": "python scripts/check_versions.py",
+    "check:i18n": "python scripts/check_i18n_structure.py",
+    "check:examples": "python scripts/check_docs_examples.py",
+    "check:agent-guide": "python scripts/check_agent_guide.py",
+    "docs:check": "npm run check:versions && npm run check:i18n && npm run check:examples && npm run check:agent-guide"
   },
   "dependencies": {
     "@docusaurus/core": "3.10.1",
