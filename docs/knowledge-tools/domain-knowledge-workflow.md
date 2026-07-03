@@ -4,18 +4,20 @@ sidebar_label: Domain Knowledge Workflow
 slug: /knowledge-tools/domain-knowledge-workflow
 ---
 
-# Ethereum Workflow: Local Facts + Neural Imprint
+# Domain Knowledge Workflow: Local Facts + Neural Imprint
 
-This example is for Ethereum application developers evaluating Edge Developer
-Preview. It shows how to combine two local personalization paths:
+This page walks one domain end to end: split your material into refreshable
+knowledge and learned behavior, wire both into chat, and prove that knowledge
+updates do not require re-learning.
 
-- local facts for protocol, contract, audit, and app-policy knowledge that
-  changes over time
-- Neural Imprint for behavior: risk posture, refusal boundaries, answer style,
-  confirmation flow, and tool-use habits
+The sample domain on this page is a transaction-assistant app for Ethereum
+developers. Ethereum is only the example dataset: every Edge command, schema,
+and tool mechanism here is generic, and nothing in the Edge runtime is
+domain-specific. Swap the sample facts and boundaries for your own domain and
+the workflow is unchanged.
 
-The core rule is simple: **do not train every piece of business knowledge into
-the model.**
+The core rule: **do not train every piece of business knowledge into the
+model.**
 
 ## Split Knowledge From Behavior
 
@@ -23,21 +25,13 @@ Start by sorting your material into two buckets.
 
 | Material | Put it in | Why |
 |---|---|---|
-| EIP summaries, protocol rules, audit conclusions, contract ABI notes, safety checklists | `edge demo facts` local facts store | This knowledge changes. Re-import the file when it changes; no learning run is required. |
+| Protocol summaries, spec rules, audit conclusions, interface notes, safety checklists | `edge demo facts` local facts store | This knowledge changes. Re-import the file when it changes; no learning run is required. |
 | Risk posture, answer ordering, confirmation boundaries, missing-field policy | `edge demo learn` or `edge demo imprint` | These are behavior preferences that should become recoverable Neural Imprint state. |
 
-Ethereum is only the example domain. The Edge commands and schema names are
-generic:
-
-- facts store: any store name, such as `ethereum_research_v1`
-- built-in tool shortcut: `edge demo chat --facts-store <store>` registers `local_facts_lookup`
-- developer-named tool path: `edge demo tools validate ./tools.json`, then `edge demo chat --tools-manifest ./tools.json`
-- behavior learning: `edge demo learn run --sample-file ...`
-
-Tool names must stay aligned. If a learn sample teaches
-`tool_schema_export.tools[].name = "ethereum_facts_lookup"`, runtime chat should
-register that same name through `--tools-manifest`. If you use the
-`--facts-store` shortcut instead, the sample should still use the built-in
+Tool names must stay aligned across the two. If a learn sample teaches
+`tool_schema_export.tools[].name = "ethereum_facts_lookup"`, runtime chat
+should register that same name through `--tools-manifest`. If you use the
+`--facts-store` shortcut instead, the sample should use the built-in
 `local_facts_lookup` name.
 
 ## Prerequisites
@@ -62,9 +56,11 @@ edge models fetch qwen3.5-9b-4bit --source auto
 
 All following commands assume the same Python environment.
 
-## Create An Ethereum Facts File
+## Create A Domain Facts File
 
-Create `eth-facts-v1.json`:
+Create `eth-facts-v1.json` — the shape is the generic
+[`edge.demo.facts.v1`](/docs/knowledge-tools/local-facts); only the contents
+are domain sample data:
 
 ```json
 {
@@ -96,39 +92,22 @@ Create `eth-facts-v1.json`:
 }
 ```
 
-Import it:
+Import and check it:
 
 ```bash
-edge demo facts import ./eth-facts-v1.json \
-  --store ethereum_research_v1 \
-  --json
+edge demo facts import ./eth-facts-v1.json --store ethereum_research_v1 --json
+edge demo facts list --store ethereum_research_v1 --json
+edge demo facts inspect erc20-approve-risk --store ethereum_research_v1 --include-text --json
 ```
 
-List imported facts:
+By default, output and receipts are hash-only; `--include-text` shows fact
+text. Field reference and store mechanics:
+[Local Facts Stores](/docs/knowledge-tools/local-facts).
 
-```bash
-edge demo facts list \
-  --store ethereum_research_v1 \
-  --json
-```
+### Import Material From URLs
 
-Inspect one fact during development:
-
-```bash
-edge demo facts inspect erc20-approve-risk \
-  --store ethereum_research_v1 \
-  --include-text \
-  --json
-```
-
-By default, command output and receipts are hash-only. Fact text is shown only
-when you pass `--include-text`.
-
-### Optional: Import An Index Page From A URL
-
-For public documentation indexes, you can import one bounded HTTP(S) URL
-directly. This example imports table rows as facts and stores row links as data;
-Edge does not follow those links.
+If the material lives on documentation pages, import it directly. For an
+index page with an HTML table:
 
 ```bash
 edge demo facts import-url "https://eips.ethereum.org/all" \
@@ -140,70 +119,22 @@ edge demo facts import-url "https://eips.ethereum.org/all" \
   --json
 ```
 
-Use explicit leaf-page imports or local fact files for the detailed material you
-want the Agent to rely on. `import-url` is a single-URL import command, not a
-crawler.
+`import-url` is a single-URL import, not a crawler. Three related paths, each
+with its own page:
 
-### Optional: Extract Facts With A Larger Local Model
+| Material | Command | Details |
+|---|---|---|
+| One page or index table | `import-url` | [Import From URL](/docs/knowledge-tools/import-from-url) |
+| Long prose pages (rc22+) | `import-url --extractor host-model` | [Host-Model Extraction](/docs/knowledge-tools/host-model-extraction) |
+| A few linked same-origin pages (rc22+) | `crawl-url` with explicit bounds | [Import From URL](/docs/knowledge-tools/import-from-url#crawl-a-small-same-origin-documentation-set) |
 
-Requires edge-studio `0.0.1rc22` or later.
-
-For long prose pages where table-row splitting is not enough, use an explicit
-host-model extractor. The extractor runs on the local Mac model you name; Edge
-then validates the model output against `edge.demo.facts.v1` before writing to
-the store.
-
-```bash
-edge demo facts import-url "https://example.org/protocol-note" \
-  --store ethereum_research_v1 \
-  --topic "protocol note" \
-  --tags ethereum,protocol,notes \
-  --extractor host-model \
-  --extractor-model qwen3.5-27b-4bit \
-  --json
-```
-
-Use this when a stronger local model is useful for extraction quality. The
-receipt records the extractor model, prompt/schema hashes, input/output hashes,
-validation status, whether the model input was truncated by `--max-chars`, and
-`non_deterministic_extraction: true`. It is still an explicit local import path,
-not background crawling or cloud RAG.
-
-### Optional: Crawl A Small Same-Origin Documentation Set
-
-Requires edge-studio `0.0.1rc22` or later.
-
-When a documentation set spans a few linked pages, use `crawl-url` instead of
-hiding crawling inside `import-url`.
-
-```bash
-edge demo facts crawl-url "https://example.org/docs" \
-  --store ethereum_research_v1 \
-  --topic "protocol docs" \
-  --tags ethereum,protocol,docs \
-  --max-depth 1 \
-  --max-urls 10 \
-  --max-bytes 1000000 \
-  --max-bytes-total 5000000 \
-  --timeout 15 \
-  --json
-```
-
-This is a bounded static HTTP(S) crawl: same origin only, no browser, no
-JavaScript execution, explicit URL/byte/depth limits, and hash-first receipts.
-Same-origin enforcement is always on — there is no cross-origin mode. The
-command stores fetched URL hashes, redirect-chain hashes, failed URL statuses,
-total bytes, and the policy decision. `crawl-url` does not consult
-`robots.txt`; the receipt discloses this as an explicit policy decision, so
-point it only at documentation sets you are entitled to fetch. It is a generic
-material import surface; Ethereum is only the example domain on this page.
+All of them are explicit local import paths with hash-first receipts — not
+background crawling, not cloud RAG.
 
 ## Register A Developer-Named Read-Only Tool
 
-The `--facts-store` shortcut is useful for quick checks. For app integration,
-prefer a stable tool name owned by the carrier. This manifest path, introduced
-in rc20, names and binds the built-in read-only local facts lookup executor. It
-does not register developer-implemented tool code. Create `tools.json`:
+For app integration, give the lookup tool a stable name owned by the carrier.
+Create `tools.json`:
 
 ```json
 {
@@ -225,48 +156,16 @@ Validate it:
 edge demo tools validate ./tools.json --json
 ```
 
-The only executable kind in this preview is `local_facts_lookup`. Edge owns that
-executor and the dispatcher that calls it. The manifest does not authorize
-network access, process execution, signing, broadcasting, file writes, or
-developer-implemented tool code. For developer-authored function logic, use the
-Python tools path below.
-
-## Implement Your Own Tool Logic
-
-When the logic itself is yours, write a Python tool instead of a manifest. The
-minimal tool is just a function:
-
-```python
-# tools.py
-from edgestudio.tools import edge_tool
-
-@edge_tool
-def hello_world() -> str:
-    return "hello world"
-```
-
-Validate and run it:
-
-```bash
-edge tools validate ./tools.py --json
-
-edge demo chat \
-  --model qwen3.5-9b-4bit \
-  --tools ./tools.py \
-  --prompt "Call hello_world and report the result." \
-  --json
-```
-
-Edge discovers the decorated functions, generates schemas from type hints,
-freezes the active set, and executes calls in an Edge-owned runner subprocess.
-The model only emits JSON tool calls; Edge validates and dispatches them. See
-[Custom Python Tools](/docs/knowledge-tools/custom-python-tools) for multiple tools,
-selection with `--tool` / `--tool-tag`, receipts, and `edge demo learn run
---tools`.
+The manifest names and binds the built-in read-only facts lookup executor; it
+does not authorize network access, process execution, signing, broadcasting,
+file writes, or developer-implemented code. Manifest mechanics:
+[Local Facts Stores](/docs/knowledge-tools/local-facts). To implement your own
+tool logic as plain Python functions, use
+[Custom Python Tools](/docs/knowledge-tools/custom-python-tools).
 
 ## Use Local Facts In Chat
 
-Enable the manifest explicitly with `--tools-manifest`:
+Enable the manifest explicitly:
 
 ```bash
 edge demo chat \
@@ -277,30 +176,7 @@ edge demo chat \
   --json
 ```
 
-In the JSON receipt, check these fields:
-
-```json
-{
-  "facts_store": "ethereum_research_v1",
-  "tools_manifest_sha256": "sha256:...",
-  "tool_loop_status": "completed",
-  "tool_instruction_mode": "system",
-  "tool_instruction_sha256": "sha256:...",
-  "tool_calls": [
-    {
-      "name": "ethereum_facts_lookup",
-      "status": "matched",
-      "rows": 1,
-      "args_sha256": "sha256:...",
-      "result_sha256": "sha256:...",
-      "network_used": false
-    }
-  ],
-  "network_used": false
-}
-```
-
-Acceptance checks:
+Check these fields in the JSON receipt:
 
 | Field | Expected result |
 |---|---|
@@ -313,16 +189,17 @@ Acceptance checks:
 Without `--tools-manifest` or `--facts-store`, chat does not register a local
 facts tool and remains ordinary base-model chat.
 
-## Learn Ethereum Behavior Boundaries
+## Learn Domain Behavior Boundaries
 
 Facts answer "what should the model look up?" Learn samples answer "how should
 the agent act?"
 
-For Ethereum apps, useful behavior boundaries include:
+For a transaction-assistant domain like this sample, useful behavior
+boundaries include:
 
 - explain risk before transaction structure
-- ask follow-up questions when chain ID, contract address, ABI, spender, amount,
-  recipient, or value is missing
+- ask follow-up questions when chain ID, contract address, ABI, spender,
+  amount, recipient, or value is missing
 - never sign transactions
 - never broadcast transactions
 - do not claim that a token, contract, or transaction is safe unless that
@@ -341,10 +218,8 @@ Imprint artifact. Later chat commands restore it with `--with-imprint`.
 | `edge demo imprint` | You have behavior records and preferences, but no correction | records + questions | imprint receipt + Neural Imprint artifact |
 | `edge demo facts` | You have factual knowledge that may change often | fact rows | local SQLite facts store |
 
-Most Ethereum applications use both:
-
-1. EIP, contract, audit, and app-policy knowledge goes into facts.
-2. Transaction safety posture and answer style go into learn.
+Most applications use both lines: domain knowledge goes into facts;
+safety posture and answer style go into learn.
 
 ### Create A Learn Sample
 
@@ -354,7 +229,8 @@ Start from the guided template:
 edge demo learn sample init --interactive --output ./eth-risk-sample.json
 ```
 
-If you write it manually, keep this shape:
+If you write it manually, keep this shape (sample authoring reference:
+[Author Learning Samples](/docs/knowledge-tools/learning-samples)):
 
 ```json
 {
@@ -443,15 +319,9 @@ instead of a manifest, use the built-in `local_facts_lookup` name in the sample.
 
 ### Validate And Dry Run
 
-Validate the sample:
-
 ```bash
 edge demo learn sample validate ./eth-risk-sample.json --json
-```
 
-Then validate the manifest against the sample:
-
-```bash
 edge demo tools validate ./tools.json \
   --learn-sample ./eth-risk-sample.json \
   --json
@@ -460,23 +330,6 @@ edge demo tools validate ./tools.json \
 The report should have `warning_count: 0`. A
 `tool_schema_export_name_mismatch` warning means the Neural Imprint prefix and
 runtime registry are teaching different tool names.
-
-Expected shape:
-
-```json
-{
-  "ok": true,
-  "status": "valid",
-  "sample_id": "ethereum_risk_boundary_v1",
-  "sample": {
-    "record_count": 2,
-    "correction_count": 1,
-    "question_count": 2,
-    "sample_sha256": "sha256:...",
-    "tool_schema_sha256": "sha256:..."
-  }
-}
-```
 
 Then audit the learning plan without loading the model or writing demo state:
 
@@ -489,9 +342,6 @@ edge demo learn run \
   --json
 ```
 
-Use the dry run to confirm records, corrections, tool schema, expected policy,
-and question coverage before model execution.
-
 ### Run Edge Learn
 
 ```bash
@@ -503,10 +353,6 @@ edge demo learn run \
 ```
 
 Save the returned `receipt_path`. Later chat calls pass it to `--with-imprint`.
-The stdout report nests sample metadata under `sample` and generation paths
-under `generation`; full restored artifact details are also recorded in the
-`learn_receipt.json` file pointed to by `receipt_path`.
-
 Key fields:
 
 ```json
@@ -573,8 +419,8 @@ Acceptance checks:
 
 ## Update Knowledge Without Re-Learning
 
-This is the key product behavior for Ethereum developers: facts can change
-without re-running learn.
+This is the workflow's key product behavior: facts can change without
+re-running learn.
 
 Import a v1 policy:
 
@@ -630,23 +476,23 @@ learning run.
 
 | Pitfall | Fix |
 |---|---|
-| Large EIP text was placed in `records` | Put protocol knowledge in facts; keep records focused on behavior. |
+| Large protocol text was placed in `records` | Put domain knowledge in facts; keep records focused on behavior. |
 | Model emits `unknown_tool` | Ensure `tool_schema_export.tools[].name` matches the runtime tool name. Use `ethereum_facts_lookup` with this manifest, or `local_facts_lookup` with `--facts-store`. |
-| The assistant claims a contract is safe | Teach the boundary in learn and require facts for safety claims. |
+| The assistant makes unsupported safety claims | Teach the boundary in learn and require facts for safety claims. |
 | Facts text appears in stdout unexpectedly | Remove `--include-text`; default receipts are hash-only. |
 | Knowledge changed but behavior should not | Re-import facts; do not re-run learn unless behavior changed. |
 
-## Minimum Developer Checklist
+## Minimum Checklist
 
-Ask the Ethereum developer to complete these six tasks:
+Complete these six tasks to close the loop in your own domain:
 
-1. Create `eth-facts-v1.json`.
+1. Create your domain facts file (here: `eth-facts-v1.json`).
 2. Run `edge demo facts import ./eth-facts-v1.json --store ethereum_research_v1 --json`.
 3. Create `tools.json`, run `edge demo tools validate ./tools.json --json`, then run `edge demo chat --tools-manifest ./tools.json ... --json` and confirm `tool_calls[].rows > 0`.
-4. Create `eth-risk-sample.json` with `ethereum_facts_lookup` as the tool name, and run `edge demo tools validate ./tools.json --learn-sample ./eth-risk-sample.json --json`.
+4. Create your behavior sample (here: `eth-risk-sample.json`) with the manifest tool name, and run `edge demo tools validate ./tools.json --learn-sample ./eth-risk-sample.json --json`.
 5. Run `edge demo learn run --sample-file ./eth-risk-sample.json ... --json`.
 6. Run chat with the same `learn_receipt.json` plus `--tools-manifest`, then re-import v2 facts and confirm the answer follows the updated local facts.
 
-If all six pass, the developer has completed the current Developer Preview
-business integration loop: local facts for changing knowledge, Neural Imprint
-for recoverable behavior, and receipts for audit.
+If all six pass, you have completed the current Developer Preview integration
+loop: local facts for changing knowledge, Neural Imprint for learned behavior,
+and receipts proving both stayed local.

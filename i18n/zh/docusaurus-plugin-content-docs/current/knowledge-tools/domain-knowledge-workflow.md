@@ -4,34 +4,34 @@ sidebar_label: 领域知识工作流
 slug: /knowledge-tools/domain-knowledge-workflow
 ---
 
-# 以太坊开发者工作流：本地事实库 + Neural Imprint
+# 领域知识工作流：本地事实库 + Neural Imprint
 
-这份说明给正在接入 Edge Developer Preview 的以太坊应用开发者使用。
+本页把一个领域从头到尾走一遍：把你的材料拆成可刷新的知识和学习到的行为，
+把两者接进聊天，并证明知识更新不需要重新学习。
 
-核心原则只有一句：**不要把所有业务知识训练进模型。**
+本页的示例领域是一个面向以太坊开发者的交易助手 App。以太坊只是示例数据集：
+这里的每个 Edge 命令、schema 和工具机制都是通用的，Edge runtime 里没有任何
+领域专用路径。把示例事实和边界换成你自己的领域，工作流完全不变。
 
-把数据拆成两条路径：
+核心原则：**不要把所有业务知识训练进模型。**
 
-| 你手里的内容 | 应该放哪里 | 为什么 |
+## 拆分知识与行为
+
+先把你的材料分成两类。
+
+| 材料 | 放到哪里 | 为什么 |
 |---|---|---|
-| EIP 摘要、协议规则、审计结论、合约接口说明、安全清单 | `edge demo facts` 本地事实库 | 这些是可更新知识，更新文件后重新 import 即可，不需要重新学习 |
-| 风险姿态、交互边界、回答风格、确认流程 | `edge demo learn` 或 `edge demo imprint` | 这些是 Agent 的行为偏好，适合进入 Neural Imprint |
+| 协议摘要、规范规则、审计结论、接口说明、安全清单 | `edge demo facts` 本地事实库 | 这些知识会变。变化时重新导入文件即可，不需要学习运行。 |
+| 风险姿态、回答顺序、确认边界、缺字段策略 | `edge demo learn` 或 `edge demo imprint` | 这些是行为偏好，应该成为可恢复的 Neural Imprint 状态。 |
 
-以太坊只是示例。Edge 里的命令、schema、tool 名都是通用的：
+两条线的工具名必须对齐。如果 learn 样本教的是
+`tool_schema_export.tools[].name = "ethereum_facts_lookup"`，运行时 chat 就
+应该通过 `--tools-manifest` 注册同名工具。如果用 `--facts-store` 快捷路径，
+样本就应该用内置的 `local_facts_lookup` 名。
 
-- facts store：任意 store 名，例如 `ethereum_research_v1`
-- 内置快捷路径：`edge demo chat --facts-store <store>` 会注册 `local_facts_lookup`
-- 开发者命名工具路径：先 `edge demo tools validate ./tools.json`，再 `edge demo chat --tools-manifest ./tools.json`
-- 行为学习：`edge demo learn run --sample-file ...`
+## 前置条件
 
-工具名必须对齐。如果 learn sample 里写的是
-`tool_schema_export.tools[].name = "ethereum_facts_lookup"`，运行时 chat 就应该通过
-`--tools-manifest` 注册同名工具。如果选择 `--facts-store` 快捷路径，sample 里的工具名
-仍然应该是内置的 `local_facts_lookup`。
-
-## 0. 前置条件
-
-安装 Edge Studio Developer Preview，并准备本地模型：
+安装 Edge Studio Developer Preview 并准备本地模型：
 
 ```bash
 python3.11 -m venv .venv
@@ -51,42 +51,11 @@ edge models fetch qwen3.5-9b-4bit --source auto
 
 后续所有命令都默认在同一个 Python 环境中运行。
 
-## 1. 先拆业务：知识 vs 行为
+## 创建领域事实文件
 
-让开发者先把业务材料分成两类。
-
-### 放进 facts 的内容
-
-适合放入 facts 的内容是“可查的事实”：
-
-- EIP 的关键规则
-- 合约函数、参数、事件说明
-- 安全审计报告中的明确结论
-- 风险规则清单
-- 交易构造前需要检查的字段
-- 链 ID、合约地址、协议版本、限制条件
-- 项目自己的业务规则，例如“某类操作必须二次确认”
-
-这些内容可以随时更新。更新后只需要重新 import facts，不需要重新生成 Neural Imprint。
-
-### 放进 learn/imprint 的内容
-
-适合放入 learn/imprint 的内容是“Agent 应该如何表现”：
-
-- 不自动签名
-- 不自动广播交易
-- 先展示风险，再展示交易结构
-- 缺少链 ID、合约地址、ABI、金额、spender 时必须追问
-- 不声称“安全”
-- 不承诺收益
-- 不把本地事实之外的内容说成确定事实
-- 用户确认前只输出草案，不输出可直接执行的交易
-
-这些是行为边界。它们应该通过 `edge demo learn` 或 `edge demo imprint` 进入 Neural Imprint。
-
-## 2. 创建以太坊 facts 文件
-
-先创建一个本地事实文件，例如 `eth-facts-v1.json`：
+创建 `eth-facts-v1.json`——形状是通用的
+[`edge.demo.facts.v1`](/docs/knowledge-tools/local-facts)，只有内容是领域
+示例数据：
 
 ```json
 {
@@ -118,49 +87,20 @@ edge models fetch qwen3.5-9b-4bit --source auto
 }
 ```
 
-字段说明：
-
-| 字段 | 说明 |
-|---|---|
-| `schema_version` | 固定为 `edge.demo.facts.v1` |
-| `store` | 本地事实库名。建议用业务版本，例如 `ethereum_research_v1` |
-| `fact_id` | 稳定 ID。后续 re-import 同一个 `fact_id` 会覆盖旧内容 |
-| `topic` | 查询主题。模型常会根据 topic 发起 lookup |
-| `text` | 事实原文 |
-| `tags` | 关键词数组 |
-| `source_label` | 来源标签，例如 `eip-notes`、`audit-report`、`app-policy` |
-
-导入：
+导入并检查：
 
 ```bash
-edge demo facts import ./eth-facts-v1.json \
-  --store ethereum_research_v1 \
-  --json
+edge demo facts import ./eth-facts-v1.json --store ethereum_research_v1 --json
+edge demo facts list --store ethereum_research_v1 --json
+edge demo facts inspect erc20-approve-risk --store ethereum_research_v1 --include-text --json
 ```
 
-查看 facts：
+默认输出和回执只含哈希；`--include-text` 显示事实原文。字段参考与库机制见
+[本地事实库](/docs/knowledge-tools/local-facts)。
 
-```bash
-edge demo facts list \
-  --store ethereum_research_v1 \
-  --json
-```
+### 从 URL 导入材料
 
-查看单条 fact：
-
-```bash
-edge demo facts inspect erc20-approve-risk \
-  --store ethereum_research_v1 \
-  --include-text \
-  --json
-```
-
-默认情况下，输出和 receipt 是 hash-only，不回显 fact 原文。只有显式加 `--include-text` 才显示原文。
-
-### 可选：从 URL 导入索引页
-
-对于公开文档索引，可以直接导入一个有界 HTTP(S) URL。下面的例子会把 HTML 表格行拆成
-facts，并把每行里的链接作为数据保存；Edge 不会跟随这些链接。
+如果材料在文档页面上，直接导入。对带 HTML 表格的索引页：
 
 ```bash
 edge demo facts import-url "https://eips.ethereum.org/all" \
@@ -172,63 +112,19 @@ edge demo facts import-url "https://eips.ethereum.org/all" \
   --json
 ```
 
-详细材料仍建议用显式叶子页导入或本地 facts 文件维护。`import-url` 是单 URL 导入命令，
-不是爬虫。
+`import-url` 是单 URL 导入，不是爬虫。三条相关路径各有专页：
 
-### 可选：用更大的本地模型抽取 facts
+| 材料 | 命令 | 详情 |
+|---|---|---|
+| 单页或索引表格 | `import-url` | [从 URL 导入](/docs/knowledge-tools/import-from-url) |
+| 长篇正文页面（rc22+） | `import-url --extractor host-model` | [Host-Model 提取](/docs/knowledge-tools/host-model-extraction) |
+| 少量同源链接页面（rc22+） | 带显式边界的 `crawl-url` | [从 URL 导入](/docs/knowledge-tools/import-from-url#抓取小规模同源文档集) |
 
-需要 edge-studio `0.0.1rc22` 或更高版本。
+它们都是显式本地导入路径、hash-first 回执——不是后台爬虫，也不是云端 RAG。
 
-如果页面是长篇正文，表格行拆分不够用，可以显式启用 host-model extractor。
-extractor 会运行你指定的 Mac 本地模型；Edge 随后把模型输出重新按
-`edge.demo.facts.v1` 校验，通过后才写入 store。
+## 注册开发者命名的只读工具
 
-```bash
-edge demo facts import-url "https://example.org/protocol-note" \
-  --store ethereum_research_v1 \
-  --topic "protocol note" \
-  --tags ethereum,protocol,notes \
-  --extractor host-model \
-  --extractor-model qwen3.5-27b-4bit \
-  --json
-```
-
-当你希望 27B 这类更强本地模型提升事实抽取质量时，用这条路径。receipt 会记录
-extractor model、prompt/schema hash、input/output hash、校验状态、模型输入是否被
-`--max-chars` 裁剪，以及 `non_deterministic_extraction: true`。它仍然是显式本地
-导入路径，不是后台爬虫，也不是云端 RAG。
-
-### 可选：抓取小规模同源文档集
-
-需要 edge-studio `0.0.1rc22` 或更高版本。
-
-如果材料分布在少量链接页面里，用 `crawl-url`，不要把爬虫行为隐藏进 `import-url`。
-
-```bash
-edge demo facts crawl-url "https://example.org/docs" \
-  --store ethereum_research_v1 \
-  --topic "protocol docs" \
-  --tags ethereum,protocol,docs \
-  --max-depth 1 \
-  --max-urls 10 \
-  --max-bytes 1000000 \
-  --max-bytes-total 5000000 \
-  --timeout 15 \
-  --json
-```
-
-这是有界静态 HTTP(S) crawl：只允许同源、不启动浏览器、不执行 JavaScript、必须
-显式给出 URL/字节/depth 上限，并写 hash-first receipt。同源限制始终生效——不存在
-跨域模式。命令会记录 fetched URL hashes、redirect-chain hashes、failed URL
-statuses、total bytes 和 policy decision。`crawl-url` 不查询 `robots.txt`；
-receipt 会把这一点作为显式 policy decision 如实记录，所以只把它指向你有权抓取的
-文档集。这是通用材料导入能力；本页只是用以太坊作为示例领域。
-
-## 3. 注册开发者命名的只读工具
-
-`--facts-store` 快捷路径适合快速验证。接入 App 时，更推荐使用载体自己拥有的稳定 tool 名。
-这个 rc20 起可用的 manifest 路径做的是命名并绑定内置只读本地 facts lookup executor，
-不是注册开发者自己实现的 tool 代码。创建 `tools.json`：
+接入 App 时，给查询工具一个载体拥有的稳定名字。创建 `tools.json`：
 
 ```json
 {
@@ -250,43 +146,14 @@ receipt 会把这一点作为显式 policy decision 如实记录，所以只把�
 edge demo tools validate ./tools.json --json
 ```
 
-当前预览版唯一可执行的 kind 是 `local_facts_lookup`。这个 executor 以及调用它的
-dispatcher 都由 Edge 负责。manifest 不授权联网、执行进程、签名、广播、写文件或
-开发者自实现 tool 代码。开发者自己写函数逻辑时，请使用下面的 Python tools 路径。
+manifest 做的是命名并绑定内置只读事实查询 executor；它不授权联网、执行
+进程、签名、广播、写文件或开发者自实现代码。manifest 机制见
+[本地事实库](/docs/knowledge-tools/local-facts)。要用普通 Python 函数实现你
+自己的工具逻辑，用[自定义 Python 工具](/docs/knowledge-tools/custom-python-tools)。
 
-## 4. 实现你自己的工具逻辑
+## 让 chat 使用本地 facts
 
-如果逻辑本身属于你，就写 Python tool，而不是 manifest。最小工具就是一个函数：
-
-```python
-# tools.py
-from edgestudio.tools import edge_tool
-
-@edge_tool
-def hello_world() -> str:
-    return "hello world"
-```
-
-校验并运行：
-
-```bash
-edge tools validate ./tools.py --json
-
-edge demo chat \
-  --model qwen3.5-9b-4bit \
-  --tools ./tools.py \
-  --prompt "Call hello_world and report the result." \
-  --json
-```
-
-Edge 会发现被装饰的函数，从类型注解生成 schema，冻结活跃工具集，并在 Edge 自有
-runner 子进程中执行调用。模型只输出 JSON tool call；具体校验与分发由 Edge 负责。
-多工具、`--tool` / `--tool-tag` 选择、receipt 和 `edge demo learn run --tools`
-见[自定义 Python 工具](/docs/knowledge-tools/custom-python-tools)。
-
-## 5. 让 chat 使用本地 facts
-
-使用 `--tools-manifest` 显式启用这个 manifest：
+显式启用 manifest：
 
 ```bash
 edge demo chat \
@@ -297,95 +164,56 @@ edge demo chat \
   --json
 ```
 
-你要让开发者重点看 JSON 里的这些字段：
+在 JSON 回执里检查这些字段：
 
-```json
-{
-  "facts_store": "ethereum_research_v1",
-  "tools_manifest_sha256": "sha256:...",
-  "tool_loop_status": "completed",
-  "tool_instruction_mode": "system",
-  "tool_instruction_sha256": "sha256:...",
-  "tool_calls": [
-    {
-      "name": "ethereum_facts_lookup",
-      "status": "matched",
-      "rows": 1,
-      "args_sha256": "sha256:...",
-      "result_sha256": "sha256:...",
-      "network_used": false
-    }
-  ],
-  "network_used": false
-}
-```
-
-验收点：
-
-| 字段 | 应该看到什么 |
+| 字段 | 预期结果 |
 |---|---|
 | `tool_calls[].name` | `ethereum_facts_lookup` |
-| `tool_calls[].rows` | 大于 0 表示查到了本地事实 |
-| `tool_calls[].result_sha256` | 事实查询结果的哈希 |
+| `tool_calls[].rows` | 查到本地事实时大于 `0` |
+| `tool_calls[].result_sha256` | 本地查询结果的哈希 |
 | `network_used` | `false` |
-| `tool_instruction_sha256` | 模型可见 tool 指令的哈希，不泄露指令原文 |
+| `tool_instruction_sha256` | 模型可见工具指令的哈希 |
 
-如果没有 `--tools-manifest` 或 `--facts-store`，chat 不注册本地 facts tool，行为保持普通 base chat。
+没有 `--tools-manifest` 或 `--facts-store` 时，chat 不注册本地事实工具，
+保持普通基础模型聊天。
 
-## 6. Edge Learn：把业务边界学成可恢复行为状态
+## 学习领域行为边界
 
-facts 解决“知道什么”。行为 sample 解决“怎么做”。
+facts 回答"模型该查什么"。learn 样本回答"Agent 该怎么行动"。
 
-这一节是 Edge 的核心能力。
+对本页示例这类交易助手领域，有价值的行为边界包括：
 
-`edge demo facts` 解决的是“模型该查什么知识”。`edge demo learn` 解决的是“Agent 应该怎样行动”。对以太坊应用来说，真正有价值的不是让模型背更多 EIP，而是让它稳定遵守你的业务边界：
+- 先讲风险，再讲交易结构
+- 缺链 ID、合约地址、ABI、spender、金额、接收方或 value 时必须追问
+- 永不签名交易
+- 永不广播交易
+- 除非结论存在于本地事实中，否则不声称某个 token、合约或交易是安全的
+- 协议与风险结论必须用本地事实支撑
 
-- 总是先讲风险，再讲交易结构
-- 缺字段必须追问
-- 不自动签名
-- 不自动广播
-- 不编造安全结论
-- 不承诺收益
-- 必须用本地 facts 支撑协议和风险判断
+Edge Learn 不改基础模型权重，也不把一大段 prompt 塞进每次请求。它生成一个
+可恢复、可移除、可审计的 Neural Imprint 产物。之后的 chat 命令用
+`--with-imprint` 恢复它。
 
-Edge Learn 的结果不是改 base model 权重，也不是把一大段 prompt 每次塞进去。它会生成一个可恢复、可移除、可审计的 Neural Imprint artifact。后续 chat 通过 `--with-imprint` 恢复这个学习状态。
+### Learn、Imprint 与 Facts
 
-### 5.1 Learn / Imprint / Facts 的分工
-
-| 路径 | 什么时候用 | 输入 | 输出 |
+| 路径 | 使用场景 | 输入 | 输出 |
 |---|---|---|---|
-| `edge demo learn` | 有明确 correction，希望表达“原来这样答不对，应该这样改” | records + corrections + tool policy | learn receipt + Neural Imprint artifact |
-| `edge demo imprint` | 只有行为记录和偏好，没有 correction | records + questions | imprint receipt + Neural Imprint artifact |
-| `edge demo facts` | 只是事实知识，可能频繁更新 | fact rows | SQLite local facts store |
+| `edge demo learn` | 有明确纠正，想表达"原来那样不对，应该这样" | records + corrections + tool policy | learn 回执 + Neural Imprint 产物 |
+| `edge demo imprint` | 只有行为记录和偏好，没有纠正 | records + questions | imprint 回执 + Neural Imprint 产物 |
+| `edge demo facts` | 是可能频繁变化的事实知识 | fact rows | 本地 SQLite 事实库 |
 
-以太坊开发者通常会同时用两条线：
+大多数应用同时用两条线：领域知识进 facts，安全姿态和回答风格进 learn。
 
-1. EIP/合约/审计知识走 facts。
-2. 交易安全边界和回答姿态走 learn。
+### 创建 Learn 样本
 
-### 5.2 Learn sample 由哪些部分组成
-
-一个 learn sample 有 5 个关键部分：
-
-| 字段 | 作用 | 以太坊例子 |
-|---|---|---|
-| `records` | 用户或业务偏好、边界、上下文 | “永不自动签名”，“先风险后结构” |
-| `corrections` | 明确纠正模型应该怎样调整 | “如果缺 spender/amount，必须追问” |
-| `tool_schema_export` | 告诉模型可用工具和工具参数 | `ethereum_facts_lookup` |
-| `expected_tool_policy` | 期望它什么时候用工具、什么时候不用 | “协议规则和风险判断先查本地 facts” |
-| `questions` | 验收问题集 | “Assess this approval transaction.” |
-
-这里的“学习”不是把 facts 塞进 profile。学习的是**使用事实的策略、风险边界、回答顺序和拒绝越权的习惯**。
-
-### 5.3 创建 learn sample
-
-先生成一个模板：
+从引导模板开始：
 
 ```bash
 edge demo learn sample init --interactive --output ./eth-risk-sample.json
 ```
 
-如果是手写，可以使用下面的形状：
+手写时保持这个形状（样本编写参考：
+[编写学习样本](/docs/knowledge-tools/learning-samples)）：
 
 ```json
 {
@@ -411,12 +239,6 @@ edge demo learn sample init --interactive --output ./eth-risk-sample.json
       "kind": "answer_style",
       "text": "The assistant should explain risks before transaction structure and should call out missing chain ID, contract address, ABI, spender, recipient, amount, and value.",
       "tags": ["ethereum", "risk", "style"]
-    },
-    {
-      "record_id": "eth-claim-001",
-      "kind": "trust_boundary",
-      "text": "The assistant must not claim a contract, token, or transaction is safe unless that conclusion is present in local facts.",
-      "tags": ["ethereum", "safety", "boundary"]
     }
   ],
   "corrections": [
@@ -473,54 +295,24 @@ edge demo learn sample init --interactive --output ./eth-risk-sample.json
 }
 ```
 
-关键点：`tool_schema_export.tools[0].name` 必须与运行时实际注册的工具名一致。
+工具名必须与运行时注册一致。这个例子用 `ethereum_facts_lookup`，chat 就必须
+带注册 `ethereum_facts_lookup` 的 `tools.json` manifest 运行。如果选
+`--facts-store` 快捷路径，样本里就用内置的 `local_facts_lookup` 名。
 
-本示例用 `tools.json` 注册 `ethereum_facts_lookup`，所以 sample 也写
-`ethereum_facts_lookup`。如果你不用 manifest、而是使用 `--facts-store` 快捷路径，
-sample 里的工具名才应该写成内置 `local_facts_lookup`。
-
-### 5.4 验证 sample
-
-先验证 sample 结构：
+### 校验与 Dry Run
 
 ```bash
 edge demo learn sample validate ./eth-risk-sample.json --json
-```
 
-再校验 manifest 和 sample 的工具名是否对齐：
-
-```bash
 edge demo tools validate ./tools.json \
   --learn-sample ./eth-risk-sample.json \
   --json
 ```
 
-报告里的 `warning_count` 应为 `0`。如果出现
-`tool_schema_export_name_mismatch`，说明 Neural Imprint prefix 和运行时工具注册名可能分裂。
+报告应该是 `warning_count: 0`。出现 `tool_schema_export_name_mismatch` 警告
+意味着 Neural Imprint prefix 和运行时注册在教不同的工具名。
 
-看这些字段：
-
-```json
-{
-  "ok": true,
-  "status": "valid",
-  "sample_id": "ethereum_risk_boundary_v1",
-  "sample": {
-    "sample_id": "ethereum_risk_boundary_v1",
-    "record_count": 3,
-    "correction_count": 1,
-    "question_count": 2,
-    "sample_sha256": "sha256:...",
-    "tool_schema_sha256": "sha256:..."
-  }
-}
-```
-
-如果 `peer_id` 不一致、字段缺失、tool schema 不是 object，都会 fail closed，不会进入模型加载。
-
-### 5.5 先 dry-run：审计学习输入
-
-正式运行前先 dry-run：
+然后在不加载模型、不写演示状态的前提下审计学习计划：
 
 ```bash
 edge demo learn run \
@@ -531,17 +323,7 @@ edge demo learn run \
   --json
 ```
 
-dry-run 的目的：
-
-- 确认 records/corrections 是你想让 Agent 学的行为边界
-- 确认 tool schema 名和运行时 manifest 名一致
-- 确认 `expected_tool_policy` 没有授权联网、签名或广播
-- 确认问题集覆盖主要业务场景
-- 不加载模型，不写学习状态，不生成 artifact
-
-### 5.6 正式运行 Edge Learn
-
-确认 dry-run 没问题后，运行 learn：
+### 运行 Edge Learn
 
 ```bash
 edge demo learn run \
@@ -551,11 +333,8 @@ edge demo learn run \
   --json
 ```
 
-成功后，保存输出里的 `receipt_path`。后续 chat 用它作为 `--with-imprint` 输入。
-stdout report 会把 sample 元数据放在 `sample` 下，把生成路径放在 `generation`
-下；完整恢复产物详情也会记录在 `receipt_path` 指向的 `learn_receipt.json` 文件里。
-
-输出里重点看这些字段：
+保存返回的 `receipt_path`。之后的 chat 调用把它传给 `--with-imprint`。
+关键字段：
 
 ```json
 {
@@ -565,7 +344,7 @@ stdout report 会把 sample 元数据放在 `sample` 下，把生成路径放在
   "question_count": 2,
   "sample": {
     "sample_id": "ethereum_risk_boundary_v1",
-    "record_count": 3,
+    "record_count": 2,
     "correction_count": 1
   },
   "generation": {
@@ -575,84 +354,9 @@ stdout report 会把 sample 元数据放在 `sample` 下，把生成路径放在
 }
 ```
 
-验收点：
+## 组合运行：facts + Neural Imprint
 
-| 字段 | 说明 |
-|---|---|
-| `sample.sample_id` | 当前学习样本 ID |
-| `generation.artifact_path` | 生成的 Neural Imprint artifact |
-| `generation.metadata_path` | artifact sidecar metadata |
-| `receipt_path` | 后续 `edge demo chat --with-imprint` 的输入 |
-| `network_used_during_demo` | 应为 `false` |
-| `questions[]` | 每个问题都有 before/after hash 和差异记录 |
-
-### 5.7 用 learn receipt 恢复学习状态
-
-把 learn 的输出 receipt 交给 chat：
-
-```bash
-edge demo chat \
-  --model qwen3.5-9b-4bit \
-  --with-imprint ./learn_receipt.json \
-  --prompt "Help me assess this token approval transaction." \
-  --include-text \
-  --json
-```
-
-这一步只验证学习状态是否能恢复，不一定查 facts。你应该看到：
-
-```json
-{
-  "neural_imprint": {
-    "active": true,
-    "artifact_id": "...",
-    "artifact_path": "...",
-    "metadata_path": "..."
-  }
-}
-```
-
-如果恢复失败，chat 应该 fail closed 或返回明确错误，而不是假装学习生效。
-
-### 5.8 Learn 成功后应该改变什么
-
-以太坊场景里，learn 后的回答应该更稳定地体现这些行为：
-
-| 用户问题 | 期望变化 |
-|---|---|
-| “Can you approve this spender?” | 先讲 approval 风险，不直接生成执行动作 |
-| “Can you sign this?” | 明确拒绝签名/广播，只能解释步骤 |
-| “Is this token safe?” | 不声称安全，除非 local facts 有明确结论 |
-| “Build a transaction plan.” | 先检查 chain ID、contract、ABI、spender、amount、recipient、value 是否齐全 |
-| “What does this EIP imply?” | 先查 facts，再回答 |
-
-如果这些行为没有出现，优先检查 learn sample：
-
-- records 是否写成了事实长文，而不是行为边界
-- corrections 是否具体
-- `expected_tool_policy` 是否明确要求查本地 facts 工具
-- `tool_schema_export.tools[].name` 是否就是运行时 manifest 注册的工具名
-
-### 5.9 不要把 Edge Learn 当成什么
-
-Edge Learn 不是：
-
-- 不是联网 RAG
-- 不是把 EIP 全文训练进权重
-- 不是自动签名工具
-- 不是让模型“保证安全”
-- 不是每次 prompt stuffing
-
-Edge Learn 是：
-
-- 把本地行为信号变成可恢复的 Neural Imprint
-- 让模型学会边界、偏好和工具使用策略
-- 让 App 可以更新 facts，而不重新学习行为
-- 让 receipt 记录 model、artifact、tool call、hash 和本地执行证据
-
-## 7. 组合运行：facts + Neural Imprint
-
-组合命令：
+同时带本地事实和学习到的行为状态运行 chat：
 
 ```bash
 edge demo chat \
@@ -664,7 +368,7 @@ edge demo chat \
   --json
 ```
 
-组合模式下，receipt 里应该看到：
+组合模式下应看到：
 
 ```json
 {
@@ -686,14 +390,7 @@ edge demo chat \
 }
 ```
 
-`tool_instruction_mode` 的含义：
-
-| mode | 什么时候出现 | 说明 |
-|---|---|---|
-| `system` | 只启用 facts tool，不启用 imprint | tool 指令作为 system message 注入 |
-| `hidden_turns` | 同时启用 `--with-imprint` 和 facts tool | tool 指令作为隐藏 user/assistant 前置回合注入，避免 imprint continuation 过滤 system |
-
-开发者可以这样判断组合是否成功：
+验收点：
 
 1. `neural_imprint.active == true`
 2. `tool_instruction_mode == "hidden_turns"`
@@ -701,11 +398,11 @@ edge demo chat \
 4. `tool_calls[].rows > 0`
 5. `network_used == false`
 
-## 8. 验证“知识更新不需要重新学习”
+## 更新知识而不重新学习
 
-这是给以太坊开发者看的最重要能力。
+这是本工作流的关键产品行为：facts 可以变化而不重跑 learn。
 
-先准备 v1 facts：
+导入 v1 策略：
 
 ```json
 {
@@ -723,27 +420,8 @@ edge demo chat \
 }
 ```
 
-导入 v1：
-
-```bash
-edge demo facts import ./eth-facts-v1.json \
-  --store ethereum_research_v1 \
-  --json
-```
-
-用同一个 imprint 问一次：
-
-```bash
-edge demo chat \
-  --model qwen3.5-9b-4bit \
-  --with-imprint ./learn_receipt.json \
-  --tools-manifest ./tools.json \
-  --prompt "What should I check before unlimited ERC-20 approval? Check local facts." \
-  --include-text \
-  --json > run-v1.json
-```
-
-然后更新 facts v2。保持同一个 `fact_id`，改 `text`：
+带同一份 `learn_receipt.json` 跑 chat，然后用同一个 `fact_id`、改动 `text`
+重新导入 v2：
 
 ```json
 {
@@ -761,105 +439,38 @@ edge demo chat \
 }
 ```
 
-重新 import：
+对比重导入前后的回执：
 
-```bash
-edge demo facts import ./eth-facts-v2.json \
-  --store ethereum_research_v1 \
-  --json
-```
-
-用同一个 imprint、同一个问题再问一次：
-
-```bash
-edge demo chat \
-  --model qwen3.5-9b-4bit \
-  --with-imprint ./learn_receipt.json \
-  --tools-manifest ./tools.json \
-  --prompt "What should I check before unlimited ERC-20 approval? Check local facts." \
-  --include-text \
-  --json > run-v2.json
-```
-
-比较两个 JSON：
-
-| 字段 | 预期 |
+| 字段 | 预期结果 |
 |---|---|
 | `model.sha256` | 不变 |
 | `neural_imprint.artifact_id` | 不变 |
-| `tool_calls[0].result_sha256` | 改变 |
-| `answer_sha256` | 通常改变 |
-| `tool_calls[0].name` | 在本 manifest 路径下始终是 `ethereum_facts_lookup` |
+| `tool_calls[0].result_sha256` | 变化 |
+| `answer_sha256` | 通常变化 |
+| `tool_calls[0].name` | 该 manifest 路径下恒为 `ethereum_facts_lookup` |
 
-这证明：**知识更新通过 facts re-import 完成，不需要重新 learn/imprint。**
+这证明：知识刷新通过 facts 重导入完成，不需要另一次学习运行。
 
-## 9. 常见问题
+## 常见坑
 
-### Q1. 以太坊知识应该写进 `records` 还是 `facts`？
+| 坑 | 修法 |
+|---|---|
+| 大段协议文本被放进 `records` | 领域知识进 facts；records 只留行为。 |
+| 模型输出 `unknown_tool` | 确认 `tool_schema_export.tools[].name` 与运行时工具名一致。配这个 manifest 用 `ethereum_facts_lookup`，配 `--facts-store` 用 `local_facts_lookup`。 |
+| 助手给出没有依据的安全结论 | 在 learn 里教这条边界，并要求安全结论必须有 facts 支撑。 |
+| stdout 意外出现 facts 原文 | 去掉 `--include-text`；默认回执只含哈希。 |
+| 知识变了但行为不该变 | 重新导入 facts；除非行为要变，不要重跑 learn。 |
 
-大段 EIP、合约规则、安全结论应该写进 `facts`。
+## 最小清单
 
-`records` 只写行为和偏好，例如“回答时先讲风险”“不能自动签名”“缺字段必须追问”。
+在你自己的领域完成这 6 件事，闭合整条链路：
 
-### Q2. 为什么 facts 里也能写安全规则？
+1. 创建你的领域事实文件（本页示例：`eth-facts-v1.json`）。
+2. 运行 `edge demo facts import ./eth-facts-v1.json --store ethereum_research_v1 --json`。
+3. 创建 `tools.json`，运行 `edge demo tools validate ./tools.json --json`，然后运行 `edge demo chat --tools-manifest ./tools.json ... --json` 并确认 `tool_calls[].rows > 0`。
+4. 用 manifest 里的工具名创建你的行为样本（本页示例：`eth-risk-sample.json`），运行 `edge demo tools validate ./tools.json --learn-sample ./eth-risk-sample.json --json`。
+5. 运行 `edge demo learn run --sample-file ./eth-risk-sample.json ... --json`。
+6. 带同一份 `learn_receipt.json` 加 `--tools-manifest` 跑 chat，然后重新导入 v2 facts，确认回答跟随更新后的本地事实。
 
-如果它是“可查的业务规则”，可以写 facts。例如：
-
-```text
-Unlimited ERC-20 approvals must be highlighted as a risk.
-```
-
-但“回答时必须先展示风险，再展示交易结构”是行为姿态，应该写进 learn/imprint。
-
-### Q3. 能不能让模型自动联网查最新 EIP？
-
-这个 demo 不做联网同步。当前语义是：开发者或 App 把可信资料更新到本地 facts 文件，然后 re-import。
-
-这样 receipt 能明确证明：
-
-- 数据来自本地
-- tool 是 read-only
-- `network_used=false`
-
-### Q4. 能不能让模型直接构造和签名交易？
-
-不要在当前 demo 里做自动签名或广播。推荐边界：
-
-- 可以解释交易结构
-- 可以列出缺失参数
-- 可以提示风险
-- 可以生成“待用户确认的草案”
-- 不签名
-- 不广播
-- 不绕过用户确认
-
-### Q5. `unknown_tool` 是什么？
-
-模型输出了未注册的 tool 名。最常见原因是 sample 的 `tool_schema_export` 工具名和运行时注册名不一致。
-
-修法：如果用本页的 `tools.json`，sample 的 `tool_schema_export.tools[].name` 应该是
-`ethereum_facts_lookup`；如果改用 `--facts-store` 快捷路径，sample 才应该写
-`local_facts_lookup`。
-
-### Q6. 默认为什么不显示 facts 原文？
-
-默认是 hash-only，避免把本地事实原文写进 stdout 或 receipt。开发调试时可以显式加：
-
-```bash
---include-text
-```
-
-生产 App 应按自己的隐私策略决定是否展示原文。
-
-## 10. 给开发者的最小任务清单
-
-让开发者现场完成这 6 件事：
-
-1. 写 `eth-facts-v1.json`
-2. `edge demo facts import ./eth-facts-v1.json --store ethereum_research_v1 --json`
-3. 写 `tools.json`，运行 `edge demo tools validate ./tools.json --json`，再用 `edge demo chat --tools-manifest ./tools.json ... --json` 确认 `tool_calls[].rows > 0`
-4. 写 `eth-risk-sample.json`，其中 tool 名为 `ethereum_facts_lookup`，并运行 `edge demo tools validate ./tools.json --learn-sample ./eth-risk-sample.json --json`
-5. `edge demo learn run --sample-file ./eth-risk-sample.json ... --json`
-6. 用同一个 `learn_receipt.json` + `--tools-manifest` 跑 chat，再 re-import v2 facts，确认答案随 facts 更新
-
-如果这 6 步都能跑通，他就已经完成了当前 Developer Preview 里最关键的业务接入闭环。
+6 项全过，你就完成了当前 Developer Preview 的完整接入闭环：变化的知识走
+本地事实库，学习到的行为走 Neural Imprint，两者留在本地由回执作证。
