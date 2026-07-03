@@ -27,6 +27,7 @@ const sidebars: SidebarsConfig = {
       items: [
         'build/model-evolution',
         'guides/neural-imprint-vs-lora',
+        'guides/ethereum-local-facts-imprint-workflow.zh',
         'guides/architecture',
       ],
     },
