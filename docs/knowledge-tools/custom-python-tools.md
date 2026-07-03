@@ -36,7 +36,7 @@ writes hash-first receipts.
 Custom Python tools require `edge-studio` **0.0.1rc21 or newer**. On rc20 and
 earlier, chat supports the built-in `local_facts_lookup` executor only — see
 [Local Facts Stores](/docs/knowledge-tools/local-facts#give-the-tool-a-developer-owned-name)
-for the manifest-based path that still works on every version.
+for the manifest-based path available since rc20.
 :::
 
 ## How A Tool Call Actually Runs

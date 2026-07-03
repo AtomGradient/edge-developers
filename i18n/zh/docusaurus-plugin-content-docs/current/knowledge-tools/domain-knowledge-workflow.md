@@ -376,7 +376,6 @@ edge demo chat \
     "active": true,
     "artifact_id": "..."
   },
-  "facts_store": "ethereum_research_v1",
   "tools_manifest_sha256": "sha256:...",
   "tool_instruction_mode": "hidden_turns",
   "tool_instruction_sha256": "sha256:...",
