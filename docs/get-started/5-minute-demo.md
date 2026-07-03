@@ -160,6 +160,10 @@ own local data, save the same shape as JSON and pass it with `--sample-file`.
 Each `corrections[].peer_id` must match the top-level `peer_id`; mismatches fail
 closed before the model is loaded.
 
+The Mac CLI learning path does not consume the `Resources/RPP/` A-library. Any
+domain-shaped local sample can use `--sample-file`; the A-library is required
+later by the on-device Edge Halo profile analysis path.
+
 ```json
 {
   "schema_version": "edge.demo.learn.sample.v1",

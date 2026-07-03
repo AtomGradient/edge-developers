@@ -171,6 +171,10 @@ Each `corrections[].peer_id` must match the top-level `peer_id`. Then replace
 --sample-file ./my-learn-sample.json
 ```
 
+This Mac CLI learning path does not consume the bundled `Resources/RPP/`
+A-library. Use `--sample-file` for any local domain sample; A-library assets are
+used by the on-device Edge Halo profile-analysis path.
+
 ### Expected output
 
 ```
@@ -388,6 +392,19 @@ Key files in the exported project:
 | `Resources/SampleData/` | Synthetic data | Replace with your business data schema |
 | `Resources/RPP/` | RPP A-library | Model/layer/domain matched basis |
 | `project.yml` | XcodeGen config | Dependencies, build settings |
+
+The scaffold bundles 18 A-library artifacts: 9 direction sets for two Qwen3.5
+model families. The generic `directions_a` set has 50 directions per model
+family; each bundled domain-specific set currently has 10 directions per model
+family. Domain-specific sets cover finance, health, reading, journal, travel,
+cooking, music, and work. Missing domain-specific coverage falls back to the
+generic `directions_a` set when the model family matches; missing model-family
+coverage fails closed.
+
+For a custom device domain, use Edge Studio **Training → A-library generation**
+to refine the domain description, suggest editable directions, validate YAML,
+generate `.safetensors` artifacts plus a health report, then export with
+`edge export scaffold --direction-set-id <id>`.
 
 ### Common customizations
 

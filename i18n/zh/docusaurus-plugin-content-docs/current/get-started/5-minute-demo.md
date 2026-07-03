@@ -148,6 +148,10 @@ JSON，然后通过 `--sample-file` 传入。
 每条 `corrections[].peer_id` 必须等于顶层 `peer_id`；不一致会在模型加载前
 fail closed。
 
+Mac CLI 学习链路不消费 `Resources/RPP/` A-library。任意领域形态的本地样本都可以
+通过 `--sample-file` 运行；A-library 是后续设备端 Edge Halo profile analysis
+路径才需要的输入。
+
 ```json
 {
   "schema_version": "edge.demo.learn.sample.v1",

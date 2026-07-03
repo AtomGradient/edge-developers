@@ -236,6 +236,62 @@ You just experienced the full on-device learning loop with the finance domain. N
 
 Each domain has its own synthetic dataset, with the same learning loop: load data → trigger learning → NI generated → restore → behavior change.
 
+## Custom domains and A-library coverage
+
+On-device RPP profile analysis needs a model-matched A-library basis from
+`Resources/RPP/`. This is separate from the Mac CLI `--sample-file` demo: the
+CLI learning path can run any local sample file without an A-library, while the
+device path uses A-library assets when Edge Halo analyzes local profile signals.
+
+The scaffold bundles 18 A-library artifacts: 9 direction sets for two Qwen3.5
+model families. The generic `directions_a` set has 50 directions per model
+family; each bundled domain-specific set currently has 10 directions per model
+family.
+
+Bundled direction sets:
+
+| Direction set | Role |
+|---|---|
+| `directions_a` | Generic fallback basis |
+| `finance_consumer` | Personal finance |
+| `cooking_kitchen` | Kitchen and cooking |
+| `music_media` | Music and media |
+| `health_fitness` | Health and fitness |
+| `reading_learning` | Reading and learning |
+| `journal_reflection` | Journal and reflection |
+| `travel_explorer` | Travel and exploration |
+| `work_productivity` | Work and productivity |
+
+For the bundled scaffold domains, the app maps each domain to its matching
+direction set. If a domain-specific A-library is missing but the same model
+family has `directions_a`, the app falls back to the generic basis and labels
+the run as using a fallback A-library. That means the run uses a generic basis
+rather than a domain-specific one; this page makes no quality claim about that
+fallback. If the model family has no matching A-library at all, Edge Halo fails
+closed with `aLibraryUnavailable`.
+
+For a custom domain, create a custom direction set in Edge Studio:
+
+1. Open **Training → A-library generation**.
+2. Use `refine_domain_description` to turn a rough domain idea into a clearer
+   description.
+3. Use `suggest_directions` to draft editable direction candidates with the
+   loaded host model.
+4. Run `validate_yaml`. The validator requires at least 10 directions, at least
+   5 positive and 5 negative examples per direction, and pair length balance
+   greater than 0.7.
+5. Generate the A-library. Edge Studio sweeps target layers, writes
+   `.safetensors` artifacts, and stores a health report.
+6. Bind the export to that direction set:
+
+```bash
+edge export scaffold \
+  --model qwen3.5-9b-4bit \
+  --app-name MyCustomAgent \
+  --direction-set-id my_custom_domain \
+  --output MyCustomAgent.zip
+```
+
 ## The complete Edge story
 
 You've now walked both paths:

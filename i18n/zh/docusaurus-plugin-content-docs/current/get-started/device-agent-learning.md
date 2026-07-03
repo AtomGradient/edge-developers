@@ -242,6 +242,54 @@ Neural Imprint 状态变为 Active
 
 每个 domain 有独立的合成数据集，学习循环相同。
 
+## 自定义 Domain 与 A-library 覆盖
+
+设备端 RPP profile analysis 需要 `Resources/RPP/` 中与模型匹配的 A-library 基准资源。
+这和 Mac CLI 的 `--sample-file` demo 是两条路径：CLI 学习链路可以直接运行任意本地样本文件，
+不需要 A-library；设备端路径会在 Edge Halo 分析本地 profile 信号时使用 A-library 资源。
+
+scaffold 打包 18 个 A-library 产物：9 个 direction set × 两个 Qwen3.5 模型家族。
+通用 `directions_a` 每个模型家族 50 个 directions；每个打包的领域专用 set 目前每个模型家族
+10 个 directions。
+
+内置 direction set：
+
+| Direction set | 作用 |
+|---|---|
+| `directions_a` | 通用 fallback 基准 |
+| `finance_consumer` | 个人理财 |
+| `cooking_kitchen` | 厨房烹饪 |
+| `music_media` | 音乐媒体 |
+| `health_fitness` | 健身健康 |
+| `reading_learning` | 阅读学习 |
+| `journal_reflection` | 日记反思 |
+| `travel_explorer` | 旅行探索 |
+| `work_productivity` | 工作效率 |
+
+对于 scaffold 内置 domain，App 会把每个 domain 映射到对应的 direction set。如果领域专用
+A-library 缺失，但同一个模型家族有 `directions_a`，App 会回退到通用基准，并把运行标记为
+使用 fallback A-library。这表示运行使用的是通用基准，而不是领域专用基准；本文不对这个
+fallback 的效果做质量声明。如果模型家族完全没有匹配的 A-library，Edge Halo 会以
+`aLibraryUnavailable` fail closed。
+
+自定义 domain 时，在 Edge Studio 里创建自定义 direction set：
+
+1. 打开 **Training → A-library generation**。
+2. 用 `refine_domain_description` 把粗略领域想法润色为更清晰的描述。
+3. 用 `suggest_directions` 让已加载的主机模型起草可编辑的 direction 候选。
+4. 运行 `validate_yaml`。校验器要求至少 10 个 directions，每个 direction 至少 5 条 positive
+   和 5 条 negative examples，并且配对文本长度平衡大于 0.7。
+5. 生成 A-library。Edge Studio 会 sweep 目标层，写出 `.safetensors` 产物，并保存 health report。
+6. 导出时绑定这个 direction set：
+
+```bash
+edge export scaffold \
+  --model qwen3.5-9b-4bit \
+  --app-name MyCustomAgent \
+  --direction-set-id my_custom_domain \
+  --output MyCustomAgent.zip
+```
+
 ## 完整的 Edge 故事
 
 | 路径 | 你证明了什么 |

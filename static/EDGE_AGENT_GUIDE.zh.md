@@ -174,6 +174,9 @@ edge demo learn run \
 --sample-file ./my-learn-sample.json
 ```
 
+这条 Mac CLI 学习链路不消费打包的 `Resources/RPP/` A-library。任意本地领域样本都可以
+通过 `--sample-file` 使用；A-library 由设备端 Edge Halo profile analysis 路径使用。
+
 ### 期望输出
 
 ```
@@ -391,6 +394,16 @@ App 启动后：
 | `Resources/SampleData/` | 合成数据 | 替换为你的业务数据 schema |
 | `Resources/RPP/` | RPP A-library | 模型/层/领域匹配基准 |
 | `project.yml` | XcodeGen 配置 | 依赖、build 设置 |
+
+scaffold 打包 18 个 A-library 产物：9 个 direction set × 两个 Qwen3.5 模型家族。
+通用 `directions_a` 每个模型家族 50 个 directions；每个打包的领域 set 目前每个模型家族
+10 个 directions。领域 set 覆盖 finance、health、reading、journal、travel、cooking、
+music 和 work。领域专用覆盖缺失但模型家族匹配时，会回退到通用 `directions_a`；模型家族
+覆盖缺失时 fail closed。
+
+自定义设备端 domain 时，用 Edge Studio **Training → A-library generation** 润色领域描述、
+起草可编辑 directions、校验 YAML、生成 `.safetensors` 产物和 health report，然后导出时
+使用 `edge export scaffold --direction-set-id <id>` 绑定。
 
 ### 常见定制
 
