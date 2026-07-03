@@ -13,7 +13,7 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 
 ## 版本策略
 
-开发者预览阶段，Swift 包使用 `1.0.0-rcN` 标签发布。Edge Studio 的 Python 包当前使用 PyPI 版本 `0.0.1rc19` 和 GitHub tag `v0.0.1rc19`。破坏性变更会在这里记录迁移步骤。正式可用后会遵循语义化版本。
+开发者预览阶段，Swift 包使用 `1.0.0-rcN` 标签发布。Edge Studio 的 Python 包当前使用 PyPI 版本 `0.0.1rc20` 和 GitHub tag `v0.0.1rc20`。破坏性变更会在这里记录迁移步骤。正式可用后会遵循语义化版本。
 
 PyPI 保留说明：Edge Studio 的 `0.0.1rc19` 之前预览 wheel 已从 PyPI 删除。`v0.0.1rc19` 之前的 changelog 条目仅保留为发布历史，不再表示这些包版本当前仍可安装。
 
@@ -33,7 +33,7 @@ PyPI 保留说明：Edge Studio 的 `0.0.1rc19` 之前预览 wheel 已从 PyPI �
 
 | 产品表面 | 当前访问方式 | 说明 |
 |---|---|---|
-| Edge Studio | Python 软件包 `edge-studio==0.0.1rc19`，GitHub tag `v0.0.1rc19` | 安装后只暴露一个 `edge` 命令。用 `edge studio` 启动本地 Studio UI。 |
+| Edge Studio | Python 软件包 `edge-studio==0.0.1rc20`，GitHub tag `v0.0.1rc20` | 安装后只暴露一个 `edge` 命令。用 `edge studio` 启动本地 Studio UI。 |
 | Swift SDK 文档 | Edge Kit `1.0.0-rc98` | 文档使用精确固定版本。升级前必须重新验证。 |
 | Edge Engine 依赖 | Edge Engine `1.0.0-rc138` | 公开 GitHub 仓库位于 `AtomGradient/edge-engine`；包解析不应再需要 SSH 访问权限。 |
 | Edge Halo binary 依赖 | Edge Halo binary `1.0.0-rc24` | 公开二进制 SwiftPM 包位于 `AtomGradient/edge-halo-binary`；源码仍保持私有。 |
@@ -43,7 +43,7 @@ PyPI 保留说明：Edge Studio 的 `0.0.1rc19` 之前预览 wheel 已从 PyPI �
 
 | 组件 | 兼容预览版本 |
 |---|---|
-| Edge Studio | `v0.0.1rc19` |
+| Edge Studio | `v0.0.1rc20` |
 | Edge Kit | `1.0.0-rc98`，依赖 Edge Engine `1.0.0-rc138` |
 | Edge Halo binary | `1.0.0-rc24` |
 | Edge Scaffold | 当前预览版固定依赖 Edge Kit `1.0.0-rc98` 与 Edge Halo binary `1.0.0-rc24` |
@@ -66,6 +66,9 @@ PyPI 保留说明：Edge Studio 的 `0.0.1rc19` 之前预览 wheel 已从 PyPI �
 - `edge demo learn run --dry-run` 是纠错学习预检计划命令。输出只含仅哈希合成纠错元数据和隔离状态路径的 `edge.demo.learn.plan.v1`；不写纠错 ledger、不触发重新生成、不加载模型，也不写学习回执。
 - 不带 `--dry-run` 的 `edge demo learn run` 是纠错学习演示。在演示运行状态下写合成 Persona/RPP 输入与纠错 ledger，触发纠错重新生成，恢复重新生成的本地 Neural Imprint 产物，对比恢复前后的回答哈希，并写入 `edge.demo.learn.receipt.v1`。
 - `edge demo learn run --prepare-model` 在一条命令中同时完成模型准备和学习演示。可能先显式准备兼容本地模型，然后把模型准备阶段的网络使用以 `network_used_during_model_prepare` 与本地学习演示分开记录。
+- `edge demo facts import-url` 是有界单 URL 材料导入路径。它只接受 HTTP(S) 文本内容，记录 `network_used=true`，默认写仅哈希回执，不会爬取链接页面。
+- `edge demo tools validate` 当前预览版只接受本地只读 facts lookup manifest。不执行进程、不联网、不写 demo state。
+- `edge demo chat --tools-manifest <tools.json>` 会启用开发者命名的只读工具，工具背后绑定本地 facts store。它与 `--facts-store` 快捷入口互斥。
 - `edge demo reuse` 是产物复用冒烟检查。读取已完成的回执，并为每个合成应用写 `edge.demo.reuse.receipt.v1` manifest；不复制产物、不同步设备、不恢复产物、不加载模型，也不触网。
 - 产品默认的配对设备路径没有被这份预览文档或更新日志启用。宽泛实时路由仍需要单独的显式策略、显式选择和真机证据。
 - 后台自动化调度器尚未发布。当前有界自动化 API 仍是显式调用、默认 dry-run，并且失败即关闭。
@@ -78,6 +81,17 @@ PyPI 保留说明：Edge Studio 的 `0.0.1rc19` 之前预览 wheel 已从 PyPI �
 ---
 
 ## edge-studio
+
+### v0.0.1rc20
+
+- PyPI release candidate 版本：`0.0.1rc20`。确定性安装：`python -m pip install edge-studio==0.0.1rc20`。
+- 新增 `edge demo facts import-url <url>`，支持把有界 HTTP(S) 材料导入本地 facts store。导入器支持 `--split page` 与 `--split html-table-rows`，记录 source/final URL 哈希、content type、status、raw/extracted 哈希、截断状态和 `network_used=true`。
+- `html-table-rows` 会把每行里的链接作为数据捕获，并按 final URL 绝对化相对 `href`。这些链接写入 fact 文本，但不会被跟随或爬取。
+- 新增 `edge demo tools validate <tools.json>`，支持 `edge.demo.tools.manifest.v1`。rc20 运行时只支持开发者命名的只读工具，工具 `kind` 必须是 `"local_facts_lookup"`。
+- 新增 `edge demo chat --tools-manifest <tools.json>`。chat 现在可以使用开发者命名的只读本地 facts 工具；回执会记录 `tools_manifest_sha256`、工具摘要、tool calls 和 `network_used=false`。
+- 新增 `edge demo tools validate --learn-sample <sample.json>` mismatch warning：当 learn sample 的 `tool_schema_export.tools[].name` 与运行时 tools manifest 的工具名不一致时给出非阻塞警告，方便开发者在运行前审计 sample/runtime 漂移。
+- 保留 `edge demo chat --facts-store <store>` 作为内置 `local_facts_lookup` 工具的快捷入口。如果载体需要稳定的开发者自定义 tool 名，请使用 `--tools-manifest`。
+- 更新本地 Mac 工作站的模型 catalog 就绪状态，使 `qwen3.5-27b-4bit` 可作为 LLM 能力路径用于 learn/chat 工作流。Edge 会尊重开发者选择的本地模型；27B 不是硬依赖。
 
 ### v0.0.1rc19
 

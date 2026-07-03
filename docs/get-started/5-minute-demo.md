@@ -106,6 +106,20 @@ edge models fetch qwen3.5-9b-4bit --source auto
 The demo does not silently download models. If the model is already present,
 Edge reuses the local match and reports the cached path.
 
+On Mac-class development machines with enough memory, you can use a larger
+local model in the same flow:
+
+```bash
+edge models where qwen3.5-27b-4bit
+edge demo learn run --dry-run \
+  --sample finance_conservative_cashflow_v1 \
+  --model qwen3.5-27b-4bit \
+  --json
+```
+
+The model is still explicit. Edge does not switch to 27B silently; use the
+largest local model that fits your machine and validation budget.
+
 ## 5. Inspect The Local Learning Signal
 
 Before any model load, inspect exactly what the Agent will learn:
@@ -170,7 +184,7 @@ Choose the sample path by what the data should do:
 |---|---|---|
 | Behavior style, boundaries, or preferences, with explicit corrections | Learn | `edge.demo.learn.sample.v1` |
 | Behavior style, boundaries, or preferences, without corrections | Imprint | `edge.demo.imprint.sample.v1` |
-| Facts the assistant should look up or refresh over time | Local facts | `edge.demo.facts.v1` import skeleton |
+| Facts the assistant should look up or refresh over time | Local facts | `edge.demo.facts.v1` import skeleton, or URL import |
 
 Start from a validated template:
 
@@ -195,11 +209,11 @@ Use the generated artifact with the matching command:
 |---|---|
 | `edge.demo.learn.sample.v1` | `edge demo learn sample validate ./sample.json`, then `edge demo learn run --sample-file ./sample.json ...` |
 | `edge.demo.imprint.sample.v1` | `edge demo imprint run --dry-run --sample-file ./sample.json --model qwen3.5-9b-4bit --json` |
-| `edge.demo.facts.v1` | `edge demo facts import ./facts.json --store <name>` (Phase 2) |
+| `edge.demo.facts.v1` | `edge demo facts import ./facts.json --store <name>` or `edge demo facts import-url <url> ...` |
 
 `sample validate` currently validates learn samples only. For imprint samples,
-use `imprint run --dry-run` as the validation step. Facts import is the Phase 2
-path.
+use `imprint run --dry-run` as the validation step. Facts import and URL import
+are the refreshable local knowledge path.
 
 `validate` reuses the same learn-sample loader as `--sample-file`. By default it
 prints only hashes and counts; add `--json` for a machine-readable report. The
@@ -316,6 +330,90 @@ does not feed `profile_body`.
 This split is intentional: changing the local facts file should not require
 rebuilding the model or regenerating a Neural Imprint artifact. Change the
 profile only when the assistant's behavior or boundary changes.
+
+#### Import material from a URL
+
+If the source material already lives on a documentation page, import one
+bounded HTTP(S) URL into a local facts store:
+
+```bash
+edge demo facts import-url "https://example.org/materials" \
+  --store protocol_docs_v1 \
+  --topic "Protocol documentation" \
+  --tags protocol,docs \
+  --json
+```
+
+For index-style pages with HTML tables, split rows into separate facts:
+
+```bash
+edge demo facts import-url "https://example.org/all" \
+  --store protocol_docs_v1 \
+  --topic "Protocol index" \
+  --tags protocol,index \
+  --split html-table-rows \
+  --fact-id-prefix protocol-index \
+  --json
+```
+
+`import-url` is not a crawler. It fetches one URL, enforces size and content
+limits, records `network_used=true`, and writes hash-only receipts by default.
+In `html-table-rows` mode, row links are stored as fact text after URL
+absolutization; Edge does not follow those links.
+
+#### Register developer-named read-only tools
+
+`--facts-store` is the shortcut path: it registers the built-in
+`local_facts_lookup` tool for one store. If your carrier app wants stable
+developer-owned tool names, create a tools manifest:
+
+```json
+{
+  "schema_version": "edge.demo.tools.manifest.v1",
+  "tools": [
+    {
+      "name": "protocol_docs_lookup",
+      "kind": "local_facts_lookup",
+      "store": "protocol_docs_v1",
+      "description": "Read-only lookup for imported protocol documentation."
+    }
+  ]
+}
+```
+
+Validate it:
+
+```bash
+edge demo tools validate ./tools.json --json
+```
+
+Then activate it in chat:
+
+```bash
+edge demo chat \
+  --model qwen3.5-9b-4bit \
+  --tools-manifest ./tools.json \
+  --prompt "Check local protocol docs before answering." \
+  --json
+```
+
+For learned tool behavior, keep names aligned. If your learn sample's
+`tool_schema_export.tools[].name` is `protocol_docs_lookup`, run chat with the
+manifest that registers `protocol_docs_lookup`. If you use the `--facts-store`
+shortcut instead, the sample should use `local_facts_lookup`.
+
+Audit that alignment before a run:
+
+```bash
+edge demo tools validate ./tools.json \
+  --learn-sample ./sample-that-declares-protocol_docs_lookup.json \
+  --json
+```
+
+The validator warns on name mismatches but does not block the run; treat the
+warning as a signal that the Neural Imprint prefix and runtime tool registry may
+teach different names. Fix it by changing either the sample
+`tool_schema_export` name or the manifest tool name so they match.
 
 Then inspect or run it:
 

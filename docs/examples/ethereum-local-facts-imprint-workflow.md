@@ -29,9 +29,15 @@ Ethereum is only the example domain. The Edge commands and schema names are
 generic:
 
 - facts store: any store name, such as `ethereum_research_v1`
-- local tool name: `local_facts_lookup`
-- chat activation: `edge demo chat --facts-store <store>`
+- built-in tool shortcut: `edge demo chat --facts-store <store>` registers `local_facts_lookup`
+- developer-named tool path: `edge demo tools validate ./tools.json`, then `edge demo chat --tools-manifest ./tools.json`
 - behavior learning: `edge demo learn run --sample-file ...`
+
+Tool names must stay aligned. If a learn sample teaches
+`tool_schema_export.tools[].name = "ethereum_facts_lookup"`, runtime chat should
+register that same name through `--tools-manifest`. If you use the
+`--facts-store` shortcut instead, the sample should still use the built-in
+`local_facts_lookup` name.
 
 ## Prerequisites
 
@@ -117,15 +123,64 @@ edge demo facts inspect erc20-approve-risk \
 By default, command output and receipts are hash-only. Fact text is shown only
 when you pass `--include-text`.
 
+### Optional: Import An Index Page From A URL
+
+For public documentation indexes, you can import one bounded HTTP(S) URL
+directly. This example imports table rows as facts and stores row links as data;
+Edge does not follow those links.
+
+```bash
+edge demo facts import-url "https://eips.ethereum.org/all" \
+  --store ethereum_research_v1 \
+  --topic "EIP index" \
+  --tags ethereum,eip,index \
+  --split html-table-rows \
+  --fact-id-prefix eip-index \
+  --json
+```
+
+Use explicit leaf-page imports or local fact files for the detailed material you
+want the Agent to rely on. `import-url` is a single-URL import command, not a
+crawler.
+
+## Register A Developer-Named Read-Only Tool
+
+The `--facts-store` shortcut is useful for quick checks. For app integration,
+prefer a stable tool name owned by the carrier. Create `tools.json`:
+
+```json
+{
+  "schema_version": "edge.demo.tools.manifest.v1",
+  "tools": [
+    {
+      "name": "ethereum_facts_lookup",
+      "kind": "local_facts_lookup",
+      "store": "ethereum_research_v1",
+      "description": "Read-only lookup for imported Ethereum facts and app policies."
+    }
+  ]
+}
+```
+
+Validate it:
+
+```bash
+edge demo tools validate ./tools.json --json
+```
+
+The only executable kind in this preview is `local_facts_lookup`. The manifest
+does not authorize network access, process execution, signing, broadcasting, or
+file writes.
+
 ## Use Local Facts In Chat
 
-Enable local fact lookup explicitly with `--facts-store`:
+Enable the manifest explicitly with `--tools-manifest`:
 
 ```bash
 edge demo chat \
   --model qwen3.5-9b-4bit \
   --prompt "What risk should I check before an ERC-20 approve call? Check local facts." \
-  --facts-store ethereum_research_v1 \
+  --tools-manifest ./tools.json \
   --include-text \
   --json
 ```
@@ -135,12 +190,13 @@ In the JSON receipt, check these fields:
 ```json
 {
   "facts_store": "ethereum_research_v1",
+  "tools_manifest_sha256": "sha256:...",
   "tool_loop_status": "completed",
   "tool_instruction_mode": "system",
   "tool_instruction_sha256": "sha256:...",
   "tool_calls": [
     {
-      "name": "local_facts_lookup",
+      "name": "ethereum_facts_lookup",
       "status": "matched",
       "rows": 1,
       "args_sha256": "sha256:...",
@@ -156,14 +212,14 @@ Acceptance checks:
 
 | Field | Expected result |
 |---|---|
-| `tool_calls[].name` | `local_facts_lookup` |
+| `tool_calls[].name` | `ethereum_facts_lookup` |
 | `tool_calls[].rows` | Greater than `0` when local facts matched |
 | `tool_calls[].result_sha256` | Hash of the local lookup result |
 | `network_used` | `false` |
 | `tool_instruction_sha256` | Hash of the model-visible tool instruction |
 
-Without `--facts-store`, chat does not register the local facts tool and remains
-ordinary base-model chat.
+Without `--tools-manifest` or `--facts-store`, chat does not register a local
+facts tool and remains ordinary base-model chat.
 
 ## Learn Ethereum Behavior Boundaries
 
@@ -254,8 +310,8 @@ If you write it manually, keep this shape:
     "schema_version": "edgestudio.tool_schema_export.v1",
     "tools": [
       {
-        "name": "local_facts_lookup",
-        "description": "Read-only lookup for imported local facts.",
+        "name": "ethereum_facts_lookup",
+        "description": "Read-only lookup for imported Ethereum facts and app policies.",
         "permissions": ["read_facts"],
         "intentTags": ["exact_fact"],
         "parameters": {
@@ -273,7 +329,7 @@ If you write it manually, keep this shape:
     "description": "Use local facts for protocol rules, risk checks, and app policies before giving transaction guidance.",
     "tools_available": [
       {
-        "name": "local_facts_lookup",
+        "name": "ethereum_facts_lookup",
         "when": "The user asks about protocol rules, EIP behavior, transaction risk, token approval, or app policy.",
         "args_constraint": "Use a short query or topic; do not include private keys or secrets."
       }
@@ -288,9 +344,10 @@ If you write it manually, keep this shape:
 }
 ```
 
-The tool name must be `local_facts_lookup`. Chat registers that built-in tool at
-runtime; if the sample teaches a different name, the model may emit
-`unknown_tool`.
+The tool name must match the runtime registry. This example uses
+`ethereum_facts_lookup`, so chat must run with the `tools.json` manifest that
+registers `ethereum_facts_lookup`. If you choose the `--facts-store` shortcut
+instead of a manifest, use the built-in `local_facts_lookup` name in the sample.
 
 ### Validate And Dry Run
 
@@ -299,6 +356,18 @@ Validate the sample:
 ```bash
 edge demo learn sample validate ./eth-risk-sample.json --json
 ```
+
+Then validate the manifest against the sample:
+
+```bash
+edge demo tools validate ./tools.json \
+  --learn-sample ./eth-risk-sample.json \
+  --json
+```
+
+The report should have `warning_count: 0`. A
+`tool_schema_export_name_mismatch` warning means the Neural Imprint prefix and
+runtime registry are teaching different tool names.
 
 Expected shape:
 
@@ -374,7 +443,7 @@ Run chat with both local facts and the learned behavior state:
 edge demo chat \
   --model qwen3.5-9b-4bit \
   --with-imprint ./learn_receipt.json \
-  --facts-store ethereum_research_v1 \
+  --tools-manifest ./tools.json \
   --prompt "Assess this ERC-20 approval plan. Check local facts first. Spender is 0xabc..., amount is unlimited." \
   --include-text \
   --json
@@ -389,11 +458,12 @@ In combined mode, expect:
     "artifact_id": "..."
   },
   "facts_store": "ethereum_research_v1",
+  "tools_manifest_sha256": "sha256:...",
   "tool_instruction_mode": "hidden_turns",
   "tool_instruction_sha256": "sha256:...",
   "tool_calls": [
     {
-      "name": "local_facts_lookup",
+      "name": "ethereum_facts_lookup",
       "status": "matched",
       "rows": 1
     }
@@ -405,7 +475,7 @@ Acceptance checks:
 
 1. `neural_imprint.active == true`
 2. `tool_instruction_mode == "hidden_turns"`
-3. `tool_calls[].name == "local_facts_lookup"`
+3. `tool_calls[].name == "ethereum_facts_lookup"`
 4. `tool_calls[].rows > 0`
 5. `network_used == false`
 
@@ -459,7 +529,7 @@ Compare receipts before and after re-import:
 | `neural_imprint.artifact_id` | unchanged |
 | `tool_calls[0].result_sha256` | changed |
 | `answer_sha256` | usually changed |
-| `tool_calls[0].name` | always `local_facts_lookup` |
+| `tool_calls[0].name` | always `ethereum_facts_lookup` in this manifest path |
 
 That proves knowledge refresh happened through facts re-import, not another
 learning run.
@@ -469,7 +539,7 @@ learning run.
 | Pitfall | Fix |
 |---|---|
 | Large EIP text was placed in `records` | Put protocol knowledge in facts; keep records focused on behavior. |
-| Model emits `unknown_tool` | Ensure `tool_schema_export.tools[].name` is `local_facts_lookup`. |
+| Model emits `unknown_tool` | Ensure `tool_schema_export.tools[].name` matches the runtime tool name. Use `ethereum_facts_lookup` with this manifest, or `local_facts_lookup` with `--facts-store`. |
 | The assistant claims a contract is safe | Teach the boundary in learn and require facts for safety claims. |
 | Facts text appears in stdout unexpectedly | Remove `--include-text`; default receipts are hash-only. |
 | Knowledge changed but behavior should not | Re-import facts; do not re-run learn unless behavior changed. |
@@ -480,10 +550,10 @@ Ask the Ethereum developer to complete these six tasks:
 
 1. Create `eth-facts-v1.json`.
 2. Run `edge demo facts import ./eth-facts-v1.json --store ethereum_research_v1 --json`.
-3. Run `edge demo chat --facts-store ethereum_research_v1 ... --json` and confirm `tool_calls[].rows > 0`.
-4. Create `eth-risk-sample.json` with `local_facts_lookup` as the tool name.
+3. Create `tools.json`, run `edge demo tools validate ./tools.json --json`, then run `edge demo chat --tools-manifest ./tools.json ... --json` and confirm `tool_calls[].rows > 0`.
+4. Create `eth-risk-sample.json` with `ethereum_facts_lookup` as the tool name, and run `edge demo tools validate ./tools.json --learn-sample ./eth-risk-sample.json --json`.
 5. Run `edge demo learn run --sample-file ./eth-risk-sample.json ... --json`.
-6. Run chat with the same `learn_receipt.json` plus `--facts-store`, then re-import v2 facts and confirm the answer follows the updated local facts.
+6. Run chat with the same `learn_receipt.json` plus `--tools-manifest`, then re-import v2 facts and confirm the answer follows the updated local facts.
 
 If all six pass, the developer has completed the current Developer Preview
 business integration loop: local facts for changing knowledge, Neural Imprint

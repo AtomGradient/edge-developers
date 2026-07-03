@@ -13,7 +13,7 @@ Edge products are in **Developer Preview**. Expect breaking changes between rele
 
 ## Versioning policy
 
-During Developer Preview, Swift package releases follow `1.0.0-rcN` tags. Edge Studio's Python package currently uses PyPI version `0.0.1rc19` and GitHub tag `v0.0.1rc19`. Breaking changes are documented here with migration steps. After general availability, we will follow semantic versioning.
+During Developer Preview, Swift package releases follow `1.0.0-rcN` tags. Edge Studio's Python package currently uses PyPI version `0.0.1rc20` and GitHub tag `v0.0.1rc20`. Breaking changes are documented here with migration steps. After general availability, we will follow semantic versioning.
 
 PyPI retention note: Edge Studio preview wheels before `0.0.1rc19` have been removed from PyPI. Changelog entries before `v0.0.1rc19` remain as release history, not as currently installable package pins.
 
@@ -33,7 +33,7 @@ Developer Preview is a limited preview channel. The changelog documents what is 
 
 | Surface | Current access | Notes |
 |---|---|---|
-| Edge Studio | Python package `edge-studio==0.0.1rc19`, GitHub tag `v0.0.1rc19` | Installs the single `edge` command. Launch the local Studio UI with `edge studio`. |
+| Edge Studio | Python package `edge-studio==0.0.1rc20`, GitHub tag `v0.0.1rc20` | Installs the single `edge` command. Launch the local Studio UI with `edge studio`. |
 | Swift SDK docs | Edge Kit `1.0.0-rc98` | Docs use an exact version pin. Upgrade only after validation. |
 | Edge Engine dependency | Edge Engine `1.0.0-rc138` | Public GitHub repository at `AtomGradient/edge-engine`; package resolution should not require SSH access. |
 | Edge Halo binary dependency | Edge Halo binary `1.0.0-rc24` | Public binary SwiftPM package at `AtomGradient/edge-halo-binary`; source remains private. |
@@ -43,7 +43,7 @@ Developer Preview is a limited preview channel. The changelog documents what is 
 
 | Component | Compatible preview |
 |---|---|
-| Edge Studio | `v0.0.1rc19` |
+| Edge Studio | `v0.0.1rc20` |
 | Edge Kit | `1.0.0-rc98`, depends on Edge Engine `1.0.0-rc138` |
 | Edge Halo binary | `1.0.0-rc24` |
 | Edge Scaffold | Current preview pins Edge Kit `1.0.0-rc98` and Edge Halo binary `1.0.0-rc24` |
@@ -66,6 +66,9 @@ The B2/B4/B5/B6/B7 CLI commands listed below are shipped in current preview; the
 - `edge demo learn run --dry-run` is a correction-learning pre-flight planner. It emits `edge.demo.learn.plan.v1` with hash-only synthetic correction metadata and isolated-state paths; it does not write correction ledgers, call regen, load models, or write a learn receipt.
 - `edge demo learn run` without `--dry-run` is the correction-learning demo. It writes synthetic Persona/RPP input and correction ledger entries under the demo run state, triggers correction regen, restores the regenerated local Neural Imprint artifact, compares before/after answer hashes, and writes `edge.demo.learn.receipt.v1`.
 - `edge demo learn run --prepare-model` combines model preparation and the learning demo in one command. It may explicitly prepare a compatible local model first, then records model-preparation network use separately as `network_used_during_model_prepare` from the local learning demo.
+- `edge demo facts import-url` is a bounded single-URL material import path. It accepts HTTP(S) text content, records `network_used=true`, writes hash-only receipts by default, and does not crawl linked pages.
+- `edge demo tools validate` accepts only local read-only facts lookup manifests in this preview. It does not execute processes, perform network access, or write demo state.
+- `edge demo chat --tools-manifest <tools.json>` enables developer-named read-only tools backed by local facts stores. It is mutually exclusive with the `--facts-store` shortcut.
 - `edge demo reuse` is an artifact reuse smoke check. It reads a completed receipt and writes per-app `edge.demo.reuse.receipt.v1` manifests without copying artifacts, syncing devices, restoring artifacts, loading models, or using the network.
 - Product-default paired-device route is not enabled by this preview documentation or changelog. Broad live routing still requires separate explicit policy, opt-in, and real-device evidence.
 - Background automation scheduler is not shipped. The bounded automation API remains explicit, dry-run by default, and fail-closed.
@@ -78,6 +81,17 @@ The B2/B4/B5/B6/B7 CLI commands listed below are shipped in current preview; the
 ---
 
 ## edge-studio
+
+### v0.0.1rc20
+
+- PyPI release candidate version: `0.0.1rc20`. Deterministic install: `python -m pip install edge-studio==0.0.1rc20`.
+- Adds `edge demo facts import-url <url>` for bounded HTTP(S) material import into the local facts store. The importer supports `--split page` and `--split html-table-rows`, records source/final URL hashes, content type, status, raw/extracted hashes, truncation state, and `network_used=true`.
+- `html-table-rows` captures links inside each row as data and absolutizes relative `href` values against the final URL. It stores those links in fact text and does not follow them.
+- Adds `edge demo tools validate <tools.json>` for `edge.demo.tools.manifest.v1`. The rc20 runtime supports developer-named read-only tools with `kind: "local_facts_lookup"` only.
+- Adds `edge demo chat --tools-manifest <tools.json>`. Chat can now use developer-named read-only local fact tools; receipts record `tools_manifest_sha256`, tool summaries, tool calls, and `network_used=false`.
+- Adds `edge demo tools validate --learn-sample <sample.json>` mismatch warnings when a learn sample's `tool_schema_export.tools[].name` does not match the runtime tools manifest. The warning is non-blocking so developers can audit sample/runtime drift before a run.
+- Keeps `edge demo chat --facts-store <store>` as the shortcut for the built-in `local_facts_lookup` tool. Use `--tools-manifest` when the carrier wants stable developer-owned tool names.
+- Updates model catalog readiness for local Mac-class workstations so `qwen3.5-27b-4bit` resolves as an LLM-capable local model for learn/chat workflows. The strongest available local model remains a developer choice, not a hard dependency.
 
 ### v0.0.1rc19
 

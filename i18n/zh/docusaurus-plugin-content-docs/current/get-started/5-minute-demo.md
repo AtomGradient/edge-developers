@@ -95,6 +95,18 @@ edge models fetch qwen3.5-9b-4bit --source auto
 
 demo 不会静默下载模型。如果模型已经存在，Edge 会复用本地匹配项并报告缓存路径。
 
+在内存足够的 Mac 开发机上，也可以在同一条流程里显式使用更大的本地模型：
+
+```bash
+edge models where qwen3.5-27b-4bit
+edge demo learn run --dry-run \
+  --sample finance_conservative_cashflow_v1 \
+  --model qwen3.5-27b-4bit \
+  --json
+```
+
+模型选择仍然是显式的。Edge 不会静默切到 27B；请按机器能力和验证预算选择能稳定运行的最大本地模型。
+
 ## 5. 检查本地学习信号
 
 在任何模型加载之前，先检查 Agent 到底会学习什么：
@@ -158,7 +170,7 @@ Mac CLI 学习链路不消费 `Resources/RPP/` A-library。任意领域形态的
 |---|---|---|
 | 行为风格、边界或偏好，并且有明确 corrections | Learn | `edge.demo.learn.sample.v1` |
 | 行为风格、边界或偏好，但没有 corrections | Imprint | `edge.demo.imprint.sample.v1` |
-| 需要查询或后续刷新的一组事实 | Local facts | `edge.demo.facts.v1` 导入骨架 |
+| 需要查询或后续刷新的一组事实 | Local facts | `edge.demo.facts.v1` 导入骨架，或 URL 导入 |
 
 先从已校验的模板开始：
 
@@ -183,10 +195,10 @@ profile 样本。
 |---|---|
 | `edge.demo.learn.sample.v1` | `edge demo learn sample validate ./sample.json`，然后 `edge demo learn run --sample-file ./sample.json ...` |
 | `edge.demo.imprint.sample.v1` | `edge demo imprint run --dry-run --sample-file ./sample.json --model qwen3.5-9b-4bit --json` |
-| `edge.demo.facts.v1` | `edge demo facts import ./facts.json --store <name>`（Phase 2） |
+| `edge.demo.facts.v1` | `edge demo facts import ./facts.json --store <name>` 或 `edge demo facts import-url <url> ...` |
 
 `sample validate` 目前只校验 learn 样本。imprint 样本请用
-`imprint run --dry-run` 作为校验步骤；facts import 是 Phase 2 路径。
+`imprint run --dry-run` 作为校验步骤；facts import 和 URL import 是可刷新的本地知识路径。
 
 `validate` 复用 learn sample 的 `--sample-file` loader。默认输出只包含哈希和计数；
 加 `--json` 可以得到机器可读报告。非交互 learn 模板形态如下：
@@ -296,6 +308,86 @@ profile 的紧凑上下文。不要把 profile records 当作大型或频繁更�
 
 这个拆分是刻意设计：更新本地 facts 文件不应该要求重建模型或重新生成 Neural
 Imprint artifact。只有当助手的行为风格或边界发生变化时，才应该修改 profile。
+
+#### 从 URL 导入材料
+
+如果资料已经在文档页面上，可以把一个有界 HTTP(S) URL 导入本地 facts store：
+
+```bash
+edge demo facts import-url "https://example.org/materials" \
+  --store protocol_docs_v1 \
+  --topic "Protocol documentation" \
+  --tags protocol,docs \
+  --json
+```
+
+对于带 HTML 表格的索引页，可以把表格行拆成多条 facts：
+
+```bash
+edge demo facts import-url "https://example.org/all" \
+  --store protocol_docs_v1 \
+  --topic "Protocol index" \
+  --tags protocol,index \
+  --split html-table-rows \
+  --fact-id-prefix protocol-index \
+  --json
+```
+
+`import-url` 不是爬虫。它只抓取一个 URL，执行大小和内容类型限制，记录
+`network_used=true`，并默认写仅哈希回执。`html-table-rows` 模式会把每行里的
+链接绝对化后作为 fact 文本保存；Edge 不会跟随这些链接。
+
+#### 注册开发者命名的只读工具
+
+`--facts-store` 是快捷路径：它为一个 store 注册内置 `local_facts_lookup` 工具。
+如果你的载体 App 需要稳定的开发者自定义 tool 名，可以创建 tools manifest：
+
+```json
+{
+  "schema_version": "edge.demo.tools.manifest.v1",
+  "tools": [
+    {
+      "name": "protocol_docs_lookup",
+      "kind": "local_facts_lookup",
+      "store": "protocol_docs_v1",
+      "description": "Read-only lookup for imported protocol documentation."
+    }
+  ]
+}
+```
+
+先校验：
+
+```bash
+edge demo tools validate ./tools.json --json
+```
+
+再在 chat 中启用：
+
+```bash
+edge demo chat \
+  --model qwen3.5-9b-4bit \
+  --tools-manifest ./tools.json \
+  --prompt "Check local protocol docs before answering." \
+  --json
+```
+
+如果要让 learn 学会工具使用习惯，工具名必须对齐。如果 learn sample 的
+`tool_schema_export.tools[].name` 是 `protocol_docs_lookup`，运行时就应该用
+注册了 `protocol_docs_lookup` 的 manifest。若使用 `--facts-store` 快捷路径，
+sample 里的工具名仍应是 `local_facts_lookup`。
+
+运行前可以审计这个对齐关系：
+
+```bash
+edge demo tools validate ./tools.json \
+  --learn-sample ./sample-that-declares-protocol_docs_lookup.json \
+  --json
+```
+
+如果工具名不一致，validator 会给出非阻塞 warning；请把它视为 Neural Imprint
+prefix 和运行时工具注册名可能分裂的信号。修法是修改 sample 的
+`tool_schema_export` 工具名或 manifest 工具名，让两边一致。
 
 然后检查或运行这个样本：
 
