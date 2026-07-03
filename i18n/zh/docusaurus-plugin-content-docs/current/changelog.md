@@ -95,7 +95,7 @@ PyPI 保留说明：Edge Studio 的 `0.0.1rc19` 之前预览 wheel 已从 PyPI �
 ### v0.0.1rc21
 
 - PyPI release candidate 版本：`0.0.1rc21`。确定性安装：`python -m pip install edge-studio==0.0.1rc21`。
-- 新增自定义 Python 工具。用 `@edge_tool` 标记普通函数（`from edgestudio.tools import edge_tool`），然后运行 `edge tools validate <tools.py>`、`edge tools inspect <tools.py>` 与 `edge demo chat --tools <tools.py>`。每次运行最多 8 个活跃工具；用可重复的 `--tool <name>` 或 `--tool-tag <tag>` 选择。详见[自定义 Python 工具指南](/docs/guides/custom-python-tools)。
+- 新增自定义 Python 工具。用 `@edge_tool` 标记普通函数（`from edgestudio.tools import edge_tool`），然后运行 `edge tools validate <tools.py>`、`edge tools inspect <tools.py>` 与 `edge demo chat --tools <tools.py>`。每次运行最多 8 个活跃工具；用可重复的 `--tool <name>` 或 `--tool-tag <tag>` 选择。详见[自定义 Python 工具指南](/docs/knowledge-tools/custom-python-tools)。
 - 开发者工具代码永不在 Edge CLI 或模型进程中运行。发现与每次调用都在 Edge 自有的固定 runner 子进程中执行；runner 在导入前验证工具文件与冻结活跃集字节一致（不一致以 `tools_file_changed` fail-closed 拒绝）。单次调用超时会终止 runner；结果上限为 64 KB 规范化 JSON。
 - 工具 schema 由类型注解确定性生成（`edge.tools.schema_gen.v1`）。支持 `str`、`int`、`float`、`bool`、`Literal`、`Optional`、`list[T]`；不支持的注解直接校验失败，不会静默降级为 `Any`。
 - Python 工具运行的回执为 hash 优先且带 runner 信息：`tools_file_sha256`、`active_set_sha256`、`schema_generator_version`，以及每次调用的 `args_sha256`、`result_sha256`、`tool_schema_sha256`、`runner_secret_verified`、`tools_file_sha256_verified` 与 `network_used_by_edge: false`。

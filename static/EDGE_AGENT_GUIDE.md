@@ -494,13 +494,13 @@ When you need to go deeper:
 
 | Topic | Link |
 |-------|------|
-| CLI learning demo | https://atomgradient.github.io/edge-developers/docs/get-started/minute-demo |
-| Device Agent learning | https://atomgradient.github.io/edge-developers/docs/get-started/device-agent-learning |
-| Neural Imprint vs LoRA/SFT | https://atomgradient.github.io/edge-developers/docs/guides/neural-imprint-vs-lora |
-| Architecture | https://atomgradient.github.io/edge-developers/docs/guides/architecture |
+| CLI learning demo | https://atomgradient.github.io/edge-developers/docs/quickstart/first-agent |
+| Device Agent learning | https://atomgradient.github.io/edge-developers/docs/labs/device-learning-iphone |
+| Neural Imprint vs LoRA/SFT | https://atomgradient.github.io/edge-developers/docs/concepts/neural-imprint-vs-lora |
+| Architecture | https://atomgradient.github.io/edge-developers/docs/concepts/architecture |
 | Edge Kit API | https://atomgradient.github.io/edge-developers/docs/api-reference/edge-inference |
-| Memory management | https://atomgradient.github.io/edge-developers/docs/guides/memory-management |
-| Supported models | https://atomgradient.github.io/edge-developers/docs/guides/supported-models |
+| Memory management | https://atomgradient.github.io/edge-developers/docs/reference/memory-management |
+| Supported models | https://atomgradient.github.io/edge-developers/docs/reference/supported-models |
 
 ## Important constraints
 

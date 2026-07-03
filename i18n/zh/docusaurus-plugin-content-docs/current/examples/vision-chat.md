@@ -245,4 +245,4 @@ final class VisionChatViewModel: ObservableObject {
 ## 下一步
 
 - 通过 [语音助手](/docs/examples/voice-assistant) 添加语音输入。
-- 查看 [视觉能力指南](/docs/build/vision)。
+- 查看 [视觉能力指南](/docs/edge-kit/vision)。

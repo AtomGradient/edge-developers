@@ -48,8 +48,8 @@ Use it to verify that the receipt shape, per-app manifests, and local-only safet
 
 For Swift-side validation of the lower-level package and restore coordinator receipts, use the Swift CLI validation guide:
 
-- [`edge-swift imprint validate --fixture --json`](/docs/get-started/swift-cli)
-- [`edge-swift imprint restore --fixture --json`](/docs/get-started/swift-cli)
+- [`edge-swift imprint validate --fixture --json`](/docs/edge-kit/validation-cli)
+- [`edge-swift imprint restore --fixture --json`](/docs/edge-kit/validation-cli)
 
 Those commands run in EdgeStudio's `tests/smoke_test` package. The restore fixture is receipt-only smoke for the coordinator path, not production restore.
 
@@ -80,5 +80,5 @@ Edge Kit and Edge Halo provide reusable SDK infrastructure. They should not own 
 ## Related guides
 
 - [Neural Imprint lifecycle](personalized-model.md)
-- [Swift CLI validation](/docs/get-started/swift-cli)
-- [Architecture and product boundaries](/docs/guides/architecture)
+- [Swift CLI validation](/docs/edge-kit/validation-cli)
+- [Architecture and product boundaries](/docs/concepts/architecture)

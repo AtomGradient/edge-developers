@@ -238,4 +238,4 @@ final class VoiceAssistantViewModel: ObservableObject {
 ## 下一步
 
 - 通过 [视觉聊天](/docs/examples/vision-chat) 添加文本和图像上下文。
-- 查看 [语音转文字](/docs/build/speech-to-text) 和 [文字转语音](/docs/build/text-to-speech) 指南。
+- 查看 [语音转文字](/docs/edge-kit/speech-to-text) 和 [文字转语音](/docs/edge-kit/text-to-speech) 指南。

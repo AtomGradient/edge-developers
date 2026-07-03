@@ -66,7 +66,7 @@ export default function Home(): React.JSX.Element {
             <a href={isZh ? GUIDE_ZH : GUIDE_EN} download className={styles.primaryButton}>
               {isZh ? '下载 EDGE_AGENT_GUIDE.md' : 'Download EDGE_AGENT_GUIDE.md'}
             </a>
-            <Link to="/docs/get-started/minute-demo" className={styles.secondaryButton}>
+            <Link to="/docs/quickstart/first-agent" className={styles.secondaryButton}>
               {isZh ? '我更想自己读文档' : 'I prefer reading docs myself'}
             </Link>
           </div>
@@ -127,17 +127,17 @@ export default function Home(): React.JSX.Element {
               : 'The Agent Guide covers the main path. Dive into these when you want details.'}</p>
           </div>
           <div className={styles.pathGrid} style={{marginTop: '1.5rem'}}>
-            <Link to="/docs/get-started/minute-demo" className={styles.pathCard}>
+            <Link to="/docs/quickstart/first-agent" className={styles.pathCard}>
               <div className={styles.cardEyebrow}>CLI</div>
               <h3>{isZh ? 'CLI 学习 Demo' : 'CLI Learning Demo'}</h3>
               <p>{isZh ? '在 Mac 终端里体验完整的学习机制' : 'Experience the full learning mechanism in your terminal'}</p>
             </Link>
-            <Link to="/docs/get-started/device-agent-learning" className={styles.pathCard}>
+            <Link to="/docs/labs/device-learning-iphone" className={styles.pathCard}>
               <div className={styles.cardEyebrow}>iPhone</div>
               <h3>{isZh ? '设备端 Agent 学习' : 'Device Agent Learning'}</h3>
               <p>{isZh ? '在 iPhone 上体验 Agent 持续学习' : 'Experience Agent learning on a real iPhone'}</p>
             </Link>
-            <Link to="/docs/guides/neural-imprint-vs-lora" className={styles.pathCard}>
+            <Link to="/docs/concepts/neural-imprint-vs-lora" className={styles.pathCard}>
               <div className={styles.cardEyebrow}>{isZh ? '核心概念' : 'Core Concept'}</div>
               <h3>{isZh ? 'Neural Imprint vs LoRA' : 'Neural Imprint vs LoRA'}</h3>
               <p>{isZh ? '为什么 Edge 不用微调、不用 prompt stuffing' : 'Why Edge doesn\'t use fine-tuning or prompt stuffing'}</p>

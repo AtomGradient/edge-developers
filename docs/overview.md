@@ -56,11 +56,11 @@ and validate on real devices after each upgrade.
 
 | Goal | Guide | Expected result |
 | --- | --- | --- |
-| Install Edge Studio | [Install Edge Studio](/docs/get-started/source-build) | The `edge` CLI is installed from the public `edge-studio` Python package. |
-| Build the first device Agent | [Device Agent demo](/docs/get-started/minute-demo) | A synthetic finance signal becomes a local Neural Imprint; the same base model answers differently after restore. |
-| Export the carrier | [Build the Agent carrier](/docs/examples/build-and-ship) | Edge Studio exports an Edge Scaffold project that you validate on a real iPhone or iPad. |
-| Launch the local workbench | [Launch the Web UI](/docs/get-started/source-build#launch-the-web-ui) | `edge studio` runs Edge Studio at `http://127.0.0.1:18842`. |
-| Build only the iOS shell | [Minimal iOS app](/docs/get-started/minimal-ios-app) | Edge Scaffold compiles with public Swift package dependencies and local signing. |
+| Install Edge Studio | [Install Edge Studio](/docs/quickstart/install) | The `edge` CLI is installed from the public `edge-studio` Python package. |
+| Build the first device Agent | [Device Agent demo](/docs/quickstart/first-agent) | A synthetic finance signal becomes a local Neural Imprint; the same base model answers differently after restore. |
+| Export the carrier | [Build the Agent carrier](/docs/quickstart/build-agent-carrier) | Edge Studio exports an Edge Scaffold project that you validate on a real iPhone or iPad. |
+| Launch the local workbench | [Launch the Web UI](/docs/quickstart/install#launch-the-web-ui) | `edge studio` runs Edge Studio at `http://127.0.0.1:18842`. |
+| Build only the iOS shell | [Minimal iOS app](/docs/edge-kit/minimal-ios-app) | Edge Scaffold compiles with public Swift package dependencies and local signing. |
 
 ## First Commands
 

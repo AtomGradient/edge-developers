@@ -43,11 +43,11 @@ Edge 把这种本地学习产物叫做 **Neural Imprint**。它只在兼容性�
 
 | 目标 | 指南 | 预期结果 |
 | --- | --- | --- |
-| 安装 Edge Studio | [安装 Edge Studio](/docs/get-started/source-build) | 从公开的 `edge-studio` Python 软件包安装 `edge` CLI。 |
-| 构建第一个设备 Agent | [设备 Agent 演示](/docs/get-started/minute-demo) | 合成理财信号生成本地 Neural Imprint；同一个基础模型在恢复后给出不同回答。 |
-| 导出载体 | [构建 Agent 载体](/docs/examples/build-and-ship) | Edge Studio 导出 Edge Scaffold 项目，并在真实 iPhone 或 iPad 上验证。 |
-| 启动本地工作台 | [启动 Web UI](/docs/get-started/source-build#启动-web-ui) | `edge studio` 在 `http://127.0.0.1:18842` 运行 Edge Studio。 |
-| 只构建 iOS 应用壳 | [最小 iOS app](/docs/get-started/minimal-ios-app) | Edge Scaffold 使用公开 Swift package 依赖和本地签名编译通过。 |
+| 安装 Edge Studio | [安装 Edge Studio](/docs/quickstart/install) | 从公开的 `edge-studio` Python 软件包安装 `edge` CLI。 |
+| 构建第一个设备 Agent | [设备 Agent 演示](/docs/quickstart/first-agent) | 合成理财信号生成本地 Neural Imprint；同一个基础模型在恢复后给出不同回答。 |
+| 导出载体 | [构建 Agent 载体](/docs/quickstart/build-agent-carrier) | Edge Studio 导出 Edge Scaffold 项目，并在真实 iPhone 或 iPad 上验证。 |
+| 启动本地工作台 | [启动 Web UI](/docs/quickstart/install#启动-web-ui) | `edge studio` 在 `http://127.0.0.1:18842` 运行 Edge Studio。 |
+| 只构建 iOS 应用壳 | [最小 iOS app](/docs/edge-kit/minimal-ios-app) | Edge Scaffold 使用公开 Swift package 依赖和本地签名编译通过。 |
 
 ## 第一组命令
 

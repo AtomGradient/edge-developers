@@ -48,8 +48,8 @@ edge demo reuse --run edge-run-example --apps notes,finance --json
 
 Swift 侧的底层 package 与 restore coordinator 回执验证，请使用 Swift CLI 验证指南：
 
-- [`edge-swift imprint validate --fixture --json`](/docs/get-started/swift-cli)
-- [`edge-swift imprint restore --fixture --json`](/docs/get-started/swift-cli)
+- [`edge-swift imprint validate --fixture --json`](/docs/edge-kit/validation-cli)
+- [`edge-swift imprint restore --fixture --json`](/docs/edge-kit/validation-cli)
 
 这些命令运行在 EdgeStudio 的 `tests/smoke_test` package 中。restore fixture 是 coordinator path 的仅回执冒烟检查，不是生产恢复。
 
@@ -80,5 +80,5 @@ Edge Kit 与 Edge Halo 提供可复用 SDK 基础设施。它们不应拥有 App
 ## 相关指南
 
 - [Neural Imprint 生命周期](personalized-model.md)
-- [Swift CLI 验证](/docs/get-started/swift-cli)
-- [架构与产品边界](/docs/guides/architecture)
+- [Swift CLI 验证](/docs/edge-kit/validation-cli)
+- [架构与产品边界](/docs/concepts/architecture)

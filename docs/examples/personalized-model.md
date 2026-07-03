@@ -220,7 +220,7 @@ Keep storage and reset policy in your app layer. Edge Kit and Edge Halo provide 
 
 ## Next steps
 
-- See the [Model evolution capability guide](/docs/build/model-evolution).
+- See the [Model evolution capability guide](/docs/concepts/model-evolution).
 - For cross-app compatibility checks around Neural Imprint artifacts, see [Artifact Reuse](artifact-reuse.md).
-- Use [Device mesh](/docs/build/device-mesh) when artifacts should move between trusted user-owned devices.
-- Use [Edge Scaffold](/docs/optimize-and-ship/scaffold) for the reference iOS implementation.
+- Use [Device mesh](/docs/edge-kit/device-mesh) when artifacts should move between trusted user-owned devices.
+- Use [Edge Scaffold](/docs/studio/scaffold) for the reference iOS implementation.

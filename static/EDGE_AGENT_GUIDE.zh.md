@@ -488,13 +488,13 @@ music 和 work。领域专用覆盖缺失但模型家族匹配时，会回退到
 
 | 主题 | 链接 |
 |------|------|
-| CLI 学习 demo 完整教程 | https://atomgradient.github.io/edge-developers/docs/get-started/minute-demo |
-| 设备端学习体验 | https://atomgradient.github.io/edge-developers/docs/get-started/device-agent-learning |
-| Neural Imprint vs LoRA/SFT | https://atomgradient.github.io/edge-developers/docs/guides/neural-imprint-vs-lora |
-| 架构与产品边界 | https://atomgradient.github.io/edge-developers/docs/guides/architecture |
+| CLI 学习 demo 完整教程 | https://atomgradient.github.io/edge-developers/docs/quickstart/first-agent |
+| 设备端学习体验 | https://atomgradient.github.io/edge-developers/docs/labs/device-learning-iphone |
+| Neural Imprint vs LoRA/SFT | https://atomgradient.github.io/edge-developers/docs/concepts/neural-imprint-vs-lora |
+| 架构与产品边界 | https://atomgradient.github.io/edge-developers/docs/concepts/architecture |
 | Edge Kit API | https://atomgradient.github.io/edge-developers/docs/api-reference/edge-inference |
-| 内存管理 | https://atomgradient.github.io/edge-developers/docs/guides/memory-management |
-| 支持的模型列表 | https://atomgradient.github.io/edge-developers/docs/guides/supported-models |
+| 内存管理 | https://atomgradient.github.io/edge-developers/docs/reference/memory-management |
+| 支持的模型列表 | https://atomgradient.github.io/edge-developers/docs/reference/supported-models |
 
 ## 重要约束
 

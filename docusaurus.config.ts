@@ -7,6 +7,41 @@ import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
+const redirectPairs = [
+  ['/docs/get-started/source-build', '/docs/quickstart/install'],
+  ['/docs/get-started/minute-demo', '/docs/quickstart/first-agent'],
+  ['/docs/get-started/5-minute-demo', '/docs/quickstart/first-agent'],
+  ['/docs/examples/build-and-ship', '/docs/quickstart/build-agent-carrier'],
+  ['/docs/get-started/device-agent-learning', '/docs/labs/device-learning-iphone'],
+  ['/docs/guides/custom-python-tools', '/docs/knowledge-tools/custom-python-tools'],
+  ['/docs/examples/ethereum-local-facts-imprint-workflow', '/docs/knowledge-tools/domain-knowledge-workflow'],
+  ['/docs/guides/architecture', '/docs/concepts/architecture'],
+  ['/docs/build/model-evolution', '/docs/concepts/model-evolution'],
+  ['/docs/guides/neural-imprint-vs-lora', '/docs/concepts/neural-imprint-vs-lora'],
+  ['/docs/get-started/installation', '/docs/edge-kit/installation'],
+  ['/docs/get-started/quickstart', '/docs/edge-kit/first-llm'],
+  ['/docs/get-started/minimal-ios-app', '/docs/edge-kit/minimal-ios-app'],
+  ['/docs/build/text-generation', '/docs/edge-kit/text-generation'],
+  ['/docs/build/vision', '/docs/edge-kit/vision'],
+  ['/docs/build/speech-to-text', '/docs/edge-kit/speech-to-text'],
+  ['/docs/build/text-to-speech', '/docs/edge-kit/text-to-speech'],
+  ['/docs/build/device-mesh', '/docs/edge-kit/device-mesh'],
+  ['/docs/get-started/swift-cli', '/docs/edge-kit/validation-cli'],
+  ['/docs/optimize-and-ship/studio-overview', '/docs/studio/studio-overview'],
+  ['/docs/optimize-and-ship/optimize-and-benchmark', '/docs/studio/optimize-and-benchmark'],
+  ['/docs/optimize-and-ship/export', '/docs/studio/export'],
+  ['/docs/optimize-and-ship/scaffold', '/docs/studio/scaffold'],
+  ['/docs/optimize-and-ship/studio-ui-reference', '/docs/studio/studio-ui-reference'],
+  ['/docs/guides/supported-models', '/docs/reference/supported-models'],
+  ['/docs/guides/model-management', '/docs/reference/model-management'],
+  ['/docs/guides/memory-management', '/docs/reference/memory-management'],
+  ['/docs/guides/performance-tuning', '/docs/reference/performance-tuning'],
+  ['/docs/guides/platform-requirements', '/docs/reference/platform-requirements'],
+  ['/docs/guides/troubleshooting', '/docs/reference/troubleshooting'],
+] as const;
+
+const redirects = redirectPairs.map(([from, to]) => ({from, to}));
+
 const config: Config = {
   title: 'AtomGradient Edge',
   tagline: 'Make AI grow on every device',
@@ -55,6 +90,15 @@ const config: Config = {
           customCss: './src/css/custom.css',
         },
       } satisfies Preset.Options,
+    ],
+  ],
+
+  plugins: [
+    [
+      '@docusaurus/plugin-client-redirects',
+      {
+        redirects,
+      },
     ],
   ],
 
@@ -107,17 +151,17 @@ const config: Config = {
         {
           title: 'Build',
           items: [
-            { label: 'Text Generation', to: '/docs/build/text-generation' },
-            { label: 'Vision', to: '/docs/build/vision' },
-            { label: 'Speech & Voice', to: '/docs/build/speech-to-text' },
-            { label: 'Model Evolution', to: '/docs/build/model-evolution' },
-            { label: 'Device Mesh', to: '/docs/build/device-mesh' },
+            { label: 'Text Generation', to: '/docs/edge-kit/text-generation' },
+            { label: 'Vision', to: '/docs/edge-kit/vision' },
+            { label: 'Speech & Voice', to: '/docs/edge-kit/speech-to-text' },
+            { label: 'Model Evolution', to: '/docs/concepts/model-evolution' },
+            { label: 'Device Mesh', to: '/docs/edge-kit/device-mesh' },
           ],
         },
         {
           title: 'Resources',
           items: [
-            { label: 'CLI Quickstart', to: '/docs/get-started/minute-demo' },
+            { label: 'CLI Quickstart', to: '/docs/quickstart/first-agent' },
             { label: 'Examples', to: '/docs/examples/basic-chat' },
             { label: 'API Reference', to: '/docs/api-reference/edge-inference' },
             { label: 'GitHub', href: 'https://github.com/AtomGradient' },
