@@ -27,7 +27,6 @@ const sidebars: SidebarsConfig = {
       items: [
         'build/model-evolution',
         'guides/neural-imprint-vs-lora',
-        'guides/ethereum-local-facts-imprint-workflow.zh',
         'guides/architecture',
       ],
     },
@@ -59,6 +58,7 @@ const sidebars: SidebarsConfig = {
         'examples/voice-assistant',
         'examples/personalized-model',
         'examples/artifact-reuse',
+        'examples/ethereum-local-facts-imprint-workflow',
         'examples/build-and-ship',
       ],
     },
