@@ -6,10 +6,11 @@ slug: /versions
 
 # Current Versions
 
-This page is the **single source of truth** for the current Developer Preview
-versions across all Edge release surfaces. Other docs pages link here instead of
-repeating version numbers. If a page elsewhere disagrees with this table, this
-page wins — and please report the mismatch.
+This page is the **authoritative source** for the current Developer Preview
+versions across all Edge release surfaces. Install and setup pages may still
+show concrete version pins so their snippets stay copy-pasteable — those
+snippets mirror this page. If any page disagrees with this table, this page
+wins — and please report the mismatch.
 
 ## Current preview versions
 
@@ -45,7 +46,9 @@ These pairs are validated together. Mixing other combinations is untested.
 
 ## Where these numbers come from
 
-The Swift pins mirror the tested version contract in the Edge Kit repository
-(`.dependency_versions`), and the Edge Studio version mirrors the latest PyPI
-release. Release history and per-version notes live in the
+The Edge Kit and Edge Engine pins mirror the tested version contract in the
+Edge Kit repository (`.dependency_versions`); the Edge Scaffold and Edge Halo
+binary pins mirror the scaffold template's `project.yml` and the
+`edge-halo-binary` package manifest; the Edge Studio version mirrors the latest
+PyPI release. Release history and per-version notes live in the
 [Changelog](/docs/changelog).

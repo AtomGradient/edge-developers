@@ -158,16 +158,12 @@ PyPI 保留说明：Edge Studio 的 `0.0.1rc19` 之前预览 wheel 已从 PyPI �
 
 ## edge-kit
 
-### Edge Kit 当前预览
-
-- Edge Kit 当前开发者预览版。
-- 模块：EdgeInference、EdgeModelKit、EdgeVoice、EdgeMesh、EdgeData、EdgeDataMeshBridge、EdgeUI、EdgeSession。
-- 支持 LLM、VLM、TTS、STT engine。
-- 面向长上下文多轮会话的 DSR Attention。
-- 自动 KV cache 内存策略。
-- Neural Imprint 运行时恢复 primitives 与 EdgeMesh capsule auto-restore coordinator APIs。
-- 生产应用构建可以嵌入通用 `EdgeBuildCommit` 元数据，用于 snapshot traceability。
-- 依赖 Edge Engine `1.0.0-rc143`。
+Edge Kit 的当前固定版本见[当前版本](/docs/versions)。预览能力概要：模块
+EdgeInference、EdgeModelKit、EdgeVoice、EdgeMesh、EdgeData、EdgeDataMeshBridge、
+EdgeUI、EdgeSession；支持 LLM、VLM、TTS、STT engine；面向长上下文多轮会话的
+DSR Attention；自动 KV cache 内存策略；Neural Imprint 运行时恢复 primitives 与
+EdgeMesh capsule auto-restore coordinator APIs；生产应用构建可以嵌入通用
+`EdgeBuildCommit` 元数据，用于 snapshot traceability。
 
 ### 1.0.0-rc103
 
@@ -188,33 +184,22 @@ PyPI 保留说明：Edge Studio 的 `0.0.1rc19` 之前预览 wheel 已从 PyPI �
 
 ## edge-halo
 
-### Edge Halo 当前预览
-
-- Edge Halo 当前开发者预览版。
-- Edge Halo lifecycle：本地 profile jobs 与 Neural Imprint capsule compatibility。
-- 面向模型、tokenizer、运行时和工具 schema identity 的失败即关闭验证。
-- `HaloTextGenerator` 和 `HaloEngineSession` 协议。
-- `EdgeHaloRuntime` public actor。
-- RPP A-library provenance 验证与 profile 产物生命周期 helpers。
-- 依赖版本元数据已对齐当前预览 tag。
-- 公开 app 通过二进制 package `edge-halo-binary` `1.0.0-rc25` 接入；源码仓库保持私有。
+Edge Halo binary 的当前固定版本见[当前版本](/docs/versions)。预览能力概要：
+lifecycle 覆盖本地 profile jobs 与 Neural Imprint capsule compatibility；面向
+模型、tokenizer、运行时和工具 schema identity 的失败即关闭验证；
+`HaloTextGenerator` 和 `HaloEngineSession` 协议；`EdgeHaloRuntime` public
+actor；RPP A-library provenance 验证与 profile 产物生命周期 helpers。公开 app
+通过二进制 package `edge-halo-binary` 接入；源码仓库保持私有。
 
 ## edge-engine
 
-### Edge Engine 当前依赖 tag
-
-- 当前 Edge Kit preview 依赖的 Edge Engine tag。
-- 原生 Metal 推理运行时。
-- DSR Attention 实现。
-- `main` 上未发布的 commit 不属于当前 开发者预览 tag；发布新的 `1.0.0-rcN` 后再进入文档口径。
-- 当前依赖 tag：`1.0.0-rc143`。
+Edge Engine 的当前依赖 tag 见[当前版本](/docs/versions)；它由 Edge Kit 解析，
+App 不直接 import。预览能力概要：原生 Metal 推理运行时；DSR Attention 实现。
+`main` 上未发布的 commit 不属于当前开发者预览；发布新的 `1.0.0-rcN` 后再进入
+文档口径。
 
 ## edge-scaffold
 
-### 当前预览依赖
-
-- Edge Scaffold 初始开发者预览版。
-- 从 Edge Studio 导出生成 iOS 应用模板。
-- 基于 ScaffoldConfig 的自定义。
-- 四层模型分发（Cache → Bundle → ODR → HuggingFace）。
-- 固定依赖 Edge Kit `1.0.0-rc103` 与 Edge Halo binary `1.0.0-rc25`。
+Edge Scaffold 的当前固定版本见[当前版本](/docs/versions)。预览能力概要：从
+Edge Studio 导出生成 iOS 应用模板；基于 ScaffoldConfig 的自定义；四层模型分发
+（Cache → Bundle → ODR → HuggingFace）。

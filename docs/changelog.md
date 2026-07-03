@@ -160,16 +160,13 @@ The B2/B4/B5/B6/B7 CLI commands listed below are shipped in current preview; the
 
 ## edge-kit
 
-### Edge Kit current preview
-
-- Edge Kit current Developer Preview.
-- Modules: EdgeInference, EdgeModelKit, EdgeVoice, EdgeMesh, EdgeData, EdgeDataMeshBridge, EdgeUI, EdgeSession.
-- LLM, VLM, TTS, STT engine support.
-- DSR Attention for long-context multi-turn sessions.
-- Automatic KV cache memory policy.
-- Neural Imprint runtime restore primitives and EdgeMesh capsule auto-restore coordinator APIs.
-- Production app builds can embed generic `EdgeBuildCommit` metadata for snapshot traceability.
-- Depends on Edge Engine `1.0.0-rc143`.
+The current Edge Kit pin lives on [Current Versions](/docs/versions). Preview
+capability summary: modules EdgeInference, EdgeModelKit, EdgeVoice, EdgeMesh,
+EdgeData, EdgeDataMeshBridge, EdgeUI, EdgeSession; LLM, VLM, TTS, STT engine
+support; DSR Attention for long-context multi-turn sessions; automatic KV cache
+memory policy; Neural Imprint runtime restore primitives and EdgeMesh capsule
+auto-restore coordinator APIs; production app builds can embed generic
+`EdgeBuildCommit` metadata for snapshot traceability.
 
 ### 1.0.0-rc103
 
@@ -190,33 +187,25 @@ The B2/B4/B5/B6/B7 CLI commands listed below are shipped in current preview; the
 
 ## edge-halo
 
-### Edge Halo current preview
-
-- Edge Halo current Developer Preview.
-- Edge Halo lifecycle for local profile jobs and Neural Imprint capsule compatibility.
-- Fail-closed validation for model, tokenizer, runtime, and tool-schema identity.
-- `HaloTextGenerator` and `HaloEngineSession` protocols.
-- `EdgeHaloRuntime` public actor.
-- RPP A-library provenance validation and profile artifact lifecycle helpers.
-- Dependency version metadata aligned with the current preview tag.
-- Public apps consume the binary package `edge-halo-binary` `1.0.0-rc25`; the source repository remains private.
+The current Edge Halo binary pin lives on [Current Versions](/docs/versions).
+Preview capability summary: lifecycle for local profile jobs and Neural Imprint
+capsule compatibility; fail-closed validation for model, tokenizer, runtime,
+and tool-schema identity; `HaloTextGenerator` and `HaloEngineSession`
+protocols; `EdgeHaloRuntime` public actor; RPP A-library provenance validation
+and profile artifact lifecycle helpers. Public apps consume the binary package
+`edge-halo-binary`; the source repository remains private.
 
 ## edge-engine
 
-### Edge Engine current dependency tag
-
-- Edge Engine current dependency tag used by the current Edge Kit preview.
-- Native Metal inference runtime.
-- DSR Attention implementation.
-- Unreleased commits on `main` are not part of this Developer Preview tag until a new `1.0.0-rcN` release is published.
-- Current dependency tag: `1.0.0-rc143`.
+The current Edge Engine dependency tag lives on
+[Current Versions](/docs/versions); it is resolved by Edge Kit rather than
+imported directly. Preview capability summary: native Metal inference runtime;
+DSR Attention implementation. Unreleased commits on `main` are not part of this
+Developer Preview until a new `1.0.0-rcN` release is published.
 
 ## edge-scaffold
 
-### Current preview dependencies
-
-- Edge Scaffold initial Developer Preview.
-- iOS app template generation from Edge Studio export.
-- ScaffoldConfig-based customization.
-- Four-tier model delivery (Cache → Bundle → ODR → HuggingFace).
-- Pins Edge Kit `1.0.0-rc103` and Edge Halo binary `1.0.0-rc25`.
+The current Edge Scaffold pins live on [Current Versions](/docs/versions).
+Preview capability summary: iOS app template generation from Edge Studio
+export; ScaffoldConfig-based customization; four-tier model delivery
+(Cache → Bundle → ODR → HuggingFace).

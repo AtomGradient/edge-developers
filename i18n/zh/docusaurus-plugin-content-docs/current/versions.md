@@ -6,9 +6,9 @@ slug: /versions
 
 # 当前版本
 
-本页是全部 Edge 发布面的 Developer Preview **当前版本唯一权威来源**。其他文档页
-链接到这里，不重复版本号。如果别处的版本号与本页不一致，以本页为准——同时请
-报告这个不一致。
+本页是全部 Edge 发布面的 Developer Preview **当前版本权威来源**。安装与配置类
+页面仍会展示具体版本号，保证片段可直接复制——那些片段以本页为镜像。如果任何
+页面与本页不一致，以本页为准——同时请报告这个不一致。
 
 ## 当前预览版本
 
@@ -43,6 +43,7 @@ slug: /versions
 
 ## 这些数字从哪来
 
-Swift 固定版本对应 Edge Kit 仓库中经过测试的版本契约（`.dependency_versions`），
-Edge Studio 版本对应 PyPI 最新发布。发布历史与逐版本说明见
-[Changelog](/docs/changelog)。
+Edge Kit 与 Edge Engine 固定版本对应 Edge Kit 仓库中经过测试的版本契约
+（`.dependency_versions`）；Edge Scaffold 与 Edge Halo binary 固定版本对应
+scaffold 模板的 `project.yml` 与 `edge-halo-binary` 包 manifest；Edge Studio
+版本对应 PyPI 最新发布。发布历史与逐版本说明见 [Changelog](/docs/changelog)。
