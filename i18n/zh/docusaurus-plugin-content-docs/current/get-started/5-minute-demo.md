@@ -340,6 +340,9 @@ edge demo facts import-url "https://example.org/all" \
 #### 注册开发者命名的只读工具
 
 `--facts-store` 是快捷路径：它为一个 store 注册内置 `local_facts_lookup` 工具。
+在 rc20 中，tools manifest 做的是给这个内置只读 executor 一个稳定的开发者自有名称，
+并把它绑定到 facts store；它还不是注册开发者自己实现的代码。
+
 如果你的载体 App 需要稳定的开发者自定义 tool 名，可以创建 tools manifest：
 
 ```json
@@ -361,6 +364,10 @@ edge demo facts import-url "https://example.org/all" \
 ```bash
 edge demo tools validate ./tools.json --json
 ```
+
+rc20 唯一可执行的 kind 是 `local_facts_lookup`。executor、parser、dispatcher
+和 receipt 都由 Edge 负责。开发者自己实现的 tool provider 是后续独立切片，
+不属于当前这个 release candidate。
 
 再在 chat 中启用：
 
@@ -526,7 +533,9 @@ Pay Down High-Interest Debt
 
 **Aha #2：** Agent 不只是学习“用户是谁”。它也在学习载体暴露了哪些本地工具、什么时候适合用、哪些工具或说法越界。
 
-这是确定性预览，不是实时 tool-call trace。这些工具是合成只读工具，不是真实金融服务。当 live tool runner 进入这条路径时，会使用独立的 trace 字段。
+这是确定性预览，不是实时 tool-call trace。这些工具是合成只读工具，不是真实金融服务。
+当前 live chat tool runner 只能执行内置本地 facts lookup executor。未来的开发者自实现
+provider 会使用单独的 provider contract 和单独的 receipt 字段。
 
 ## 10. 检查 receipt 和 local-only 契约
 

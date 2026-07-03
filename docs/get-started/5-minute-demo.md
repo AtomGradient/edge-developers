@@ -364,8 +364,12 @@ absolutization; Edge does not follow those links.
 #### Register developer-named read-only tools
 
 `--facts-store` is the shortcut path: it registers the built-in
-`local_facts_lookup` tool for one store. If your carrier app wants stable
-developer-owned tool names, create a tools manifest:
+`local_facts_lookup` tool for one store. In rc20, a tools manifest gives that
+built-in read-only executor a stable developer-owned name and binds it to a
+facts store. It does not register developer-implemented code.
+
+If your carrier app wants stable developer-owned tool names, create a tools
+manifest:
 
 ```json
 {
@@ -386,6 +390,10 @@ Validate it:
 ```bash
 edge demo tools validate ./tools.json --json
 ```
+
+The only executable kind in rc20 is `local_facts_lookup`. Edge owns the
+executor, parser, dispatcher, and receipt. Developer-implemented tool providers
+are a separate follow-up slice; they are not part of this release candidate.
 
 Then activate it in chat:
 
@@ -567,8 +575,10 @@ which local tools the carrier exposes, when they are appropriate, and which
 tools or claims are out of bounds.
 
 This is a deterministic preview, not a live tool-call trace. The tools are
-synthetic read-only tools, not financial services. When the live tool runner is
-exposed in this path, the trace field will be named separately.
+synthetic read-only tools, not financial services. The current live chat tool
+runner can execute only the built-in local facts lookup executor. Future
+developer-implemented providers will use a separate provider contract and
+separate receipt fields.
 
 ## 10. Inspect The Receipt And Local-Only Contract
 

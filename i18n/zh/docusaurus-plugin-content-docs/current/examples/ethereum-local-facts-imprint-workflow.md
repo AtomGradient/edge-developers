@@ -177,7 +177,8 @@ edge demo facts import-url "https://eips.ethereum.org/all" \
 ## 3. 注册开发者命名的只读工具
 
 `--facts-store` 快捷路径适合快速验证。接入 App 时，更推荐使用载体自己拥有的稳定 tool 名。
-创建 `tools.json`：
+在 rc20 中，这个 manifest 做的是命名并绑定内置只读本地 facts lookup executor，
+不是注册开发者自己实现的 tool 代码。创建 `tools.json`：
 
 ```json
 {
@@ -199,8 +200,9 @@ edge demo facts import-url "https://eips.ethereum.org/all" \
 edge demo tools validate ./tools.json --json
 ```
 
-当前预览版唯一可执行的 kind 是 `local_facts_lookup`。manifest 不授权联网、执行进程、签名、
-广播或写文件。
+当前预览版唯一可执行的 kind 是 `local_facts_lookup`。这个 executor 以及调用它的
+dispatcher 都由 Edge 负责。manifest 不授权联网、执行进程、签名、广播、写文件或
+开发者自实现 tool 代码。开发者自实现 tool provider 是后续独立切片。
 
 ## 4. 让 chat 使用本地 facts
 

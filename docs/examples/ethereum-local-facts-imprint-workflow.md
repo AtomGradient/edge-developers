@@ -146,7 +146,9 @@ crawler.
 ## Register A Developer-Named Read-Only Tool
 
 The `--facts-store` shortcut is useful for quick checks. For app integration,
-prefer a stable tool name owned by the carrier. Create `tools.json`:
+prefer a stable tool name owned by the carrier. In rc20, this manifest names and
+binds the built-in read-only local facts lookup executor. It does not register
+developer-implemented tool code. Create `tools.json`:
 
 ```json
 {
@@ -168,9 +170,11 @@ Validate it:
 edge demo tools validate ./tools.json --json
 ```
 
-The only executable kind in this preview is `local_facts_lookup`. The manifest
-does not authorize network access, process execution, signing, broadcasting, or
-file writes.
+The only executable kind in this preview is `local_facts_lookup`. Edge owns that
+executor and the dispatcher that calls it. The manifest does not authorize
+network access, process execution, signing, broadcasting, file writes, or
+developer-implemented tool code. Developer-implemented tool providers are a
+separate follow-up slice.
 
 ## Use Local Facts In Chat
 
