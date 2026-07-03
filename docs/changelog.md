@@ -13,7 +13,7 @@ Edge products are in **Developer Preview**. Expect breaking changes between rele
 
 ## Versioning policy
 
-During Developer Preview, Swift package releases follow `1.0.0-rcN` tags. Edge Studio's Python package currently uses PyPI version `0.0.1rc20` and GitHub tag `v0.0.1rc20`. Breaking changes are documented here with migration steps. After general availability, we will follow semantic versioning.
+During Developer Preview, Swift package releases follow `1.0.0-rcN` tags. Edge Studio's Python package currently uses PyPI version `0.0.1rc21` and GitHub tag `v0.0.1rc21`. Breaking changes are documented here with migration steps. After general availability, we will follow semantic versioning.
 
 PyPI retention note: Edge Studio preview wheels before `0.0.1rc19` have been removed from PyPI. Changelog entries before `v0.0.1rc19` remain as release history, not as currently installable package pins.
 
@@ -33,7 +33,7 @@ Developer Preview is a limited preview channel. The changelog documents what is 
 
 | Surface | Current access | Notes |
 |---|---|---|
-| Edge Studio | Python package `edge-studio==0.0.1rc20`, GitHub tag `v0.0.1rc20` | Installs the single `edge` command. Launch the local Studio UI with `edge studio`. |
+| Edge Studio | Python package `edge-studio==0.0.1rc21`, GitHub tag `v0.0.1rc21` | Installs the single `edge` command. Launch the local Studio UI with `edge studio`. |
 | Swift SDK docs | Edge Kit `1.0.0-rc98` | Docs use an exact version pin. Upgrade only after validation. |
 | Edge Engine dependency | Edge Engine `1.0.0-rc138` | Public GitHub repository at `AtomGradient/edge-engine`; package resolution should not require SSH access. |
 | Edge Halo binary dependency | Edge Halo binary `1.0.0-rc24` | Public binary SwiftPM package at `AtomGradient/edge-halo-binary`; source remains private. |
@@ -43,7 +43,7 @@ Developer Preview is a limited preview channel. The changelog documents what is 
 
 | Component | Compatible preview |
 |---|---|
-| Edge Studio | `v0.0.1rc20` |
+| Edge Studio | `v0.0.1rc21` |
 | Edge Kit | `1.0.0-rc98`, depends on Edge Engine `1.0.0-rc138` |
 | Edge Halo binary | `1.0.0-rc24` |
 | Edge Scaffold | Current preview pins Edge Kit `1.0.0-rc98` and Edge Halo binary `1.0.0-rc24` |
@@ -67,7 +67,11 @@ The B2/B4/B5/B6/B7 CLI commands listed below are shipped in current preview; the
 - `edge demo learn run` without `--dry-run` is the correction-learning demo. It writes synthetic Persona/RPP input and correction ledger entries under the demo run state, triggers correction regen, restores the regenerated local Neural Imprint artifact, compares before/after answer hashes, and writes `edge.demo.learn.receipt.v1`.
 - `edge demo learn run --prepare-model` combines model preparation and the learning demo in one command. It may explicitly prepare a compatible local model first, then records model-preparation network use separately as `network_used_during_model_prepare` from the local learning demo.
 - `edge demo facts import-url` is a bounded single-URL material import path. It accepts HTTP(S) text content, records `network_used=true`, writes hash-only receipts by default, and does not crawl linked pages.
+- `edge demo facts import-url --extractor host-model` is explicit local model extraction. Edge validates the model output against `edge.demo.facts.v1` before writing and records non-deterministic extractor hashes in the receipt.
+- `edge demo facts crawl-url` is an explicitly bounded static HTTP(S) crawler. It is same-origin only, requires URL/depth/byte limits, does not execute JavaScript, and writes hash-first crawl receipts.
 - `edge demo tools validate` accepts only local read-only facts lookup manifests in this preview. It does not execute processes, perform network access, or write demo state.
+- `edge tools validate` / `edge tools inspect <tools.py>` (rc21+) import the tool file inside an isolated Edge-owned runner subprocess — top-level code executes. They never run developer code in the Edge CLI process, and they are not static safety scans for untrusted files.
+- `edge demo chat --tools <tools.py>` (rc21+) enables Edge-managed custom Python tools; it is mutually exclusive with `--tools-manifest` and `--facts-store`. Tool code executes only in the runner subprocess; the model can only emit JSON calls.
 - `edge demo chat --tools-manifest <tools.json>` enables developer-named read-only tools backed by local facts stores. It is mutually exclusive with the `--facts-store` shortcut.
 - `edge demo reuse` is an artifact reuse smoke check. It reads a completed receipt and writes per-app `edge.demo.reuse.receipt.v1` manifests without copying artifacts, syncing devices, restoring artifacts, loading models, or using the network.
 - Product-default paired-device route is not enabled by this preview documentation or changelog. Broad live routing still requires separate explicit policy, opt-in, and real-device evidence.
@@ -81,6 +85,18 @@ The B2/B4/B5/B6/B7 CLI commands listed below are shipped in current preview; the
 ---
 
 ## edge-studio
+
+### v0.0.1rc21
+
+- PyPI release candidate version: `0.0.1rc21`. Deterministic install: `python -m pip install edge-studio==0.0.1rc21`.
+- Adds custom Python tools. Mark plain functions with `@edge_tool` (`from edgestudio.tools import edge_tool`), then run `edge tools validate <tools.py>`, `edge tools inspect <tools.py>`, and `edge demo chat --tools <tools.py>`. Up to 8 tools are active per run; select with repeatable `--tool <name>` or `--tool-tag <tag>`. See the [Custom Python Tools guide](/docs/guides/custom-python-tools).
+- Developer tool code never runs in the Edge CLI or model process. Discovery and every call execute in a fixed Edge-owned runner subprocess that verifies the tools file is byte-identical to the frozen active set before importing it (`tools_file_changed` fails closed). Per-call timeout kills the runner; results are capped at 64 KB of canonical JSON.
+- Tool schemas are generated deterministically from type hints (`edge.tools.schema_gen.v1`). Supported hints: `str`, `int`, `float`, `bool`, `Literal`, `Optional`, `list[T]`. Unsupported hints fail validation instead of degrading to `Any`.
+- Receipts for Python tool runs are hash-first and runner-aware: `tools_file_sha256`, `active_set_sha256`, `schema_generator_version`, and per-call `args_sha256`, `result_sha256`, `tool_schema_sha256`, `runner_secret_verified`, `tools_file_sha256_verified`, `network_used_by_edge: false`.
+- Adds `edge demo learn run --tools <tools.py>`: bakes the Python tool contract into the Neural Imprint so a restored Agent already carries the tool schemas. `edge demo chat --with-imprint --tools` gates restore at the schema level: implementation-only edits keep the artifact valid, while schema or active-set changes fail closed and require relearning (`imprint_requires_tools`, `imprint_tool_active_set_mismatch`, `imprint_tool_schema_mismatch`).
+- `--tools`, `--tools-manifest`, and `--facts-store` are pairwise mutually exclusive per run; `--tool` / `--tool-tag` require `--tools`.
+- Extends `edge demo facts import-url` with `--extractor host-model` and `--extractor-model <local-model>`. The host model proposes fact rows locally; deterministic validation enforces `edge.demo.facts.v1` before anything is written.
+- Adds `edge demo facts crawl-url <url>` for small, explicit, same-origin documentation imports. The command requires `--max-depth`, `--max-urls`, `--max-bytes`, `--max-bytes-total`, and `--timeout`, and records URL hashes, redirect-chain hashes, failure statuses, total bytes, and crawl policy decisions.
 
 ### v0.0.1rc20
 

@@ -13,7 +13,7 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 
 ## 版本策略
 
-开发者预览阶段，Swift 包使用 `1.0.0-rcN` 标签发布。Edge Studio 的 Python 包当前使用 PyPI 版本 `0.0.1rc20` 和 GitHub tag `v0.0.1rc20`。破坏性变更会在这里记录迁移步骤。正式可用后会遵循语义化版本。
+开发者预览阶段，Swift 包使用 `1.0.0-rcN` 标签发布。Edge Studio 的 Python 包当前使用 PyPI 版本 `0.0.1rc21` 和 GitHub tag `v0.0.1rc21`。破坏性变更会在这里记录迁移步骤。正式可用后会遵循语义化版本。
 
 PyPI 保留说明：Edge Studio 的 `0.0.1rc19` 之前预览 wheel 已从 PyPI 删除。`v0.0.1rc19` 之前的 changelog 条目仅保留为发布历史，不再表示这些包版本当前仍可安装。
 
@@ -33,7 +33,7 @@ PyPI 保留说明：Edge Studio 的 `0.0.1rc19` 之前预览 wheel 已从 PyPI �
 
 | 产品表面 | 当前访问方式 | 说明 |
 |---|---|---|
-| Edge Studio | Python 软件包 `edge-studio==0.0.1rc20`，GitHub tag `v0.0.1rc20` | 安装后只暴露一个 `edge` 命令。用 `edge studio` 启动本地 Studio UI。 |
+| Edge Studio | Python 软件包 `edge-studio==0.0.1rc21`，GitHub tag `v0.0.1rc21` | 安装后只暴露一个 `edge` 命令。用 `edge studio` 启动本地 Studio UI。 |
 | Swift SDK 文档 | Edge Kit `1.0.0-rc98` | 文档使用精确固定版本。升级前必须重新验证。 |
 | Edge Engine 依赖 | Edge Engine `1.0.0-rc138` | 公开 GitHub 仓库位于 `AtomGradient/edge-engine`；包解析不应再需要 SSH 访问权限。 |
 | Edge Halo binary 依赖 | Edge Halo binary `1.0.0-rc24` | 公开二进制 SwiftPM 包位于 `AtomGradient/edge-halo-binary`；源码仍保持私有。 |
@@ -43,7 +43,7 @@ PyPI 保留说明：Edge Studio 的 `0.0.1rc19` 之前预览 wheel 已从 PyPI �
 
 | 组件 | 兼容预览版本 |
 |---|---|
-| Edge Studio | `v0.0.1rc20` |
+| Edge Studio | `v0.0.1rc21` |
 | Edge Kit | `1.0.0-rc98`，依赖 Edge Engine `1.0.0-rc138` |
 | Edge Halo binary | `1.0.0-rc24` |
 | Edge Scaffold | 当前预览版固定依赖 Edge Kit `1.0.0-rc98` 与 Edge Halo binary `1.0.0-rc24` |
@@ -67,7 +67,11 @@ PyPI 保留说明：Edge Studio 的 `0.0.1rc19` 之前预览 wheel 已从 PyPI �
 - 不带 `--dry-run` 的 `edge demo learn run` 是纠错学习演示。在演示运行状态下写合成 Persona/RPP 输入与纠错 ledger，触发纠错重新生成，恢复重新生成的本地 Neural Imprint 产物，对比恢复前后的回答哈希，并写入 `edge.demo.learn.receipt.v1`。
 - `edge demo learn run --prepare-model` 在一条命令中同时完成模型准备和学习演示。可能先显式准备兼容本地模型，然后把模型准备阶段的网络使用以 `network_used_during_model_prepare` 与本地学习演示分开记录。
 - `edge demo facts import-url` 是有界单 URL 材料导入路径。它只接受 HTTP(S) 文本内容，记录 `network_used=true`，默认写仅哈希回执，不会爬取链接页面。
+- `edge demo facts import-url --extractor host-model` 是显式本地模型抽取路径。Edge 会先按 `edge.demo.facts.v1` 校验模型输出，通过后才写入，并在回执里记录非确定性 extractor 哈希。
+- `edge demo facts crawl-url` 是显式有界的静态 HTTP(S) 爬取命令。它只允许同源，要求 URL/depth/byte 上限，不执行 JavaScript，并写入 hash-first crawl 回执。
 - `edge demo tools validate` 当前预览版只接受本地只读 facts lookup manifest。不执行进程、不联网、不写 demo state。
+- `edge tools validate` / `edge tools inspect <tools.py>`（rc21 起）会在隔离的 Edge 自有 runner 子进程内导入工具文件——顶层代码会执行。它不在 Edge CLI 进程内运行，也不是针对不可信文件的静态安全扫描。
+- `edge demo chat --tools <tools.py>`（rc21 起）启用 Edge 托管的自定义 Python 工具；与 `--tools-manifest`、`--facts-store` 两两互斥。工具代码只在 runner 子进程执行，模型只能发出 JSON 调用。
 - `edge demo chat --tools-manifest <tools.json>` 会启用开发者命名的只读工具，工具背后绑定本地 facts store。它与 `--facts-store` 快捷入口互斥。
 - `edge demo reuse` 是产物复用冒烟检查。读取已完成的回执，并为每个合成应用写 `edge.demo.reuse.receipt.v1` manifest；不复制产物、不同步设备、不恢复产物、不加载模型，也不触网。
 - 产品默认的配对设备路径没有被这份预览文档或更新日志启用。宽泛实时路由仍需要单独的显式策略、显式选择和真机证据。
@@ -81,6 +85,18 @@ PyPI 保留说明：Edge Studio 的 `0.0.1rc19` 之前预览 wheel 已从 PyPI �
 ---
 
 ## edge-studio
+
+### v0.0.1rc21
+
+- PyPI release candidate 版本：`0.0.1rc21`。确定性安装：`python -m pip install edge-studio==0.0.1rc21`。
+- 新增自定义 Python 工具。用 `@edge_tool` 标记普通函数（`from edgestudio.tools import edge_tool`），然后运行 `edge tools validate <tools.py>`、`edge tools inspect <tools.py>` 与 `edge demo chat --tools <tools.py>`。每次运行最多 8 个活跃工具；用可重复的 `--tool <name>` 或 `--tool-tag <tag>` 选择。详见[自定义 Python 工具指南](/docs/guides/custom-python-tools)。
+- 开发者工具代码永不在 Edge CLI 或模型进程中运行。发现与每次调用都在 Edge 自有的固定 runner 子进程中执行；runner 在导入前验证工具文件与冻结活跃集字节一致（不一致以 `tools_file_changed` fail-closed 拒绝）。单次调用超时会终止 runner；结果上限为 64 KB 规范化 JSON。
+- 工具 schema 由类型注解确定性生成（`edge.tools.schema_gen.v1`）。支持 `str`、`int`、`float`、`bool`、`Literal`、`Optional`、`list[T]`；不支持的注解直接校验失败，不会静默降级为 `Any`。
+- Python 工具运行的回执为 hash 优先且带 runner 信息：`tools_file_sha256`、`active_set_sha256`、`schema_generator_version`，以及每次调用的 `args_sha256`、`result_sha256`、`tool_schema_sha256`、`runner_secret_verified`、`tools_file_sha256_verified` 与 `network_used_by_edge: false`。
+- 新增 `edge demo learn run --tools <tools.py>`：把 Python 工具契约烘焙进 Neural Imprint，恢复后的 Agent 天然携带工具 schema。`edge demo chat --with-imprint --tools` 的恢复门控是 schema 级：只改实现不影响 artifact 有效性；schema 或活跃集变更 fail-closed 并要求重学（`imprint_requires_tools`、`imprint_tool_active_set_mismatch`、`imprint_tool_schema_mismatch`）。
+- `--tools`、`--tools-manifest`、`--facts-store` 每次运行两两互斥；`--tool` / `--tool-tag` 必须与 `--tools` 同用。
+- 扩展 `edge demo facts import-url`，新增 `--extractor host-model` 和 `--extractor-model <local-model>`。host model 在本地提出 fact rows；确定性校验会强制满足 `edge.demo.facts.v1` 后才写入。
+- 新增 `edge demo facts crawl-url <url>`，用于小规模、显式、同源文档导入。命令要求 `--max-depth`、`--max-urls`、`--max-bytes`、`--max-bytes-total` 和 `--timeout`，并记录 URL 哈希、redirect-chain 哈希、失败状态、总字节数和 crawl policy decision。
 
 ### v0.0.1rc20
 

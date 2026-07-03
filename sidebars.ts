@@ -18,6 +18,7 @@ const sidebars: SidebarsConfig = {
         'get-started/source-build',
         'get-started/minute-demo',
         'get-started/device-agent-learning',
+        'guides/custom-python-tools',
       ],
     },
     {
@@ -27,6 +28,7 @@ const sidebars: SidebarsConfig = {
       items: [
         'build/model-evolution',
         'guides/neural-imprint-vs-lora',
+        'guides/custom-python-tools',
         'guides/architecture',
       ],
     },

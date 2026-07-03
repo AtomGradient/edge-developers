@@ -366,8 +366,9 @@ edge demo tools validate ./tools.json --json
 ```
 
 rc20 唯一可执行的 kind 是 `local_facts_lookup`。executor、parser、dispatcher
-和 receipt 都由 Edge 负责。开发者自己实现的 tool provider 是后续独立切片，
-不属于当前这个 release candidate。
+和 receipt 都由 Edge 负责。从 `0.0.1rc21` 起，你也可以把工具实现为普通 Python
+函数，通过 `edge demo chat --tools ./tools.py` 运行——见
+[自定义 Python 工具](/docs/guides/custom-python-tools)。
 
 再在 chat 中启用：
 
@@ -534,8 +535,10 @@ Pay Down High-Interest Debt
 **Aha #2：** Agent 不只是学习“用户是谁”。它也在学习载体暴露了哪些本地工具、什么时候适合用、哪些工具或说法越界。
 
 这是确定性预览，不是实时 tool-call trace。这些工具是合成只读工具，不是真实金融服务。
-当前 live chat tool runner 只能执行内置本地 facts lookup executor。未来的开发者自实现
-provider 会使用单独的 provider contract 和单独的 receipt 字段。
+从 `0.0.1rc21` 起，live chat tool runner 也能通过 Edge 托管的 runner 执行开发者自己
+实现的 Python 工具——包括把工具 schema 烘焙进 Neural Imprint（见
+[自定义 Python 工具](/docs/guides/custom-python-tools)）。外部 provider 进程仍是后续
+独立契约。
 
 ## 10. 检查 receipt 和 local-only 契约
 

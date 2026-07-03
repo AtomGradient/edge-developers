@@ -392,8 +392,10 @@ edge demo tools validate ./tools.json --json
 ```
 
 The only executable kind in rc20 is `local_facts_lookup`. Edge owns the
-executor, parser, dispatcher, and receipt. Developer-implemented tool providers
-are a separate follow-up slice; they are not part of this release candidate.
+executor, parser, dispatcher, and receipt. From `0.0.1rc21`, you can also
+implement your own tools as plain Python functions and run them through
+`edge demo chat --tools ./tools.py` — see
+[Custom Python Tools](/docs/guides/custom-python-tools).
 
 Then activate it in chat:
 
@@ -575,10 +577,11 @@ which local tools the carrier exposes, when they are appropriate, and which
 tools or claims are out of bounds.
 
 This is a deterministic preview, not a live tool-call trace. The tools are
-synthetic read-only tools, not financial services. The current live chat tool
-runner can execute only the built-in local facts lookup executor. Future
-developer-implemented providers will use a separate provider contract and
-separate receipt fields.
+synthetic read-only tools, not financial services. From `0.0.1rc21`, the live
+chat tool runner can also execute developer-implemented Python tools through
+the Edge-managed runner — including baking their schemas into the Neural
+Imprint (see [Custom Python Tools](/docs/guides/custom-python-tools)). External
+provider processes remain a separate follow-up contract.
 
 ## 10. Inspect The Receipt And Local-Only Contract
 
