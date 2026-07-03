@@ -13,7 +13,9 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 
 ## 版本策略
 
-开发者预览阶段，Swift 包使用 `1.0.0-rcN` 标签发布。Edge Studio 的 Python 包当前使用 PyPI 版本 `0.0.1rc18` 和 GitHub tag `v0.0.1rc18`。破坏性变更会在这里记录迁移步骤。正式可用后会遵循语义化版本。
+开发者预览阶段，Swift 包使用 `1.0.0-rcN` 标签发布。Edge Studio 的 Python 包当前使用 PyPI 版本 `0.0.1rc19` 和 GitHub tag `v0.0.1rc19`。破坏性变更会在这里记录迁移步骤。正式可用后会遵循语义化版本。
+
+PyPI 保留说明：Edge Studio 的 `0.0.1rc18` 之前预览 wheel 已从 PyPI 删除。`v0.0.1rc18` 之前的 changelog 条目仅保留为发布历史，不再表示这些包版本当前仍可安装。
 
 ## 如何升级
 
@@ -31,7 +33,7 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 
 | 产品表面 | 当前访问方式 | 说明 |
 |---|---|---|
-| Edge Studio | Python 软件包 `edge-studio==0.0.1rc18`，GitHub tag `v0.0.1rc18` | 安装后只暴露一个 `edge` 命令。用 `edge studio` 启动本地 Studio UI。 |
+| Edge Studio | Python 软件包 `edge-studio==0.0.1rc19`，GitHub tag `v0.0.1rc19` | 安装后只暴露一个 `edge` 命令。用 `edge studio` 启动本地 Studio UI。 |
 | Swift SDK 文档 | Edge Kit `1.0.0-rc98` | 文档使用精确固定版本。升级前必须重新验证。 |
 | Edge Engine 依赖 | Edge Engine `1.0.0-rc138` | 公开 GitHub 仓库位于 `AtomGradient/edge-engine`；包解析不应再需要 SSH 访问权限。 |
 | Edge Halo binary 依赖 | Edge Halo binary `1.0.0-rc24` | 公开二进制 SwiftPM 包位于 `AtomGradient/edge-halo-binary`；源码仍保持私有。 |
@@ -41,7 +43,7 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 
 | 组件 | 兼容预览版本 |
 |---|---|
-| Edge Studio | `v0.0.1rc18` |
+| Edge Studio | `v0.0.1rc19` |
 | Edge Kit | `1.0.0-rc98`，依赖 Edge Engine `1.0.0-rc138` |
 | Edge Halo binary | `1.0.0-rc24` |
 | Edge Scaffold | 当前预览版固定依赖 Edge Kit `1.0.0-rc98` 与 Edge Halo binary `1.0.0-rc24` |
@@ -77,6 +79,13 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 
 ## edge-studio
 
+### v0.0.1rc19
+
+- PyPI release candidate 版本：`0.0.1rc19`。确定性安装：`python -m pip install edge-studio==0.0.1rc19`。
+- 已安装 Python 包命名空间从 `backend` 改为 `edgestudio`。公开 CLI 仍然是 `edge`；包内源码引用现在使用 `edgestudio/cli/demo_samples.py` 这类路径。
+- 本地 `edge.demo.learn.sample.v1` JSON 学习样本的自定义入口仍然是 `--sample-file`。
+- 发布元数据已对齐 AtomGradient Proprietary License。公开 `AtomGradient/edge-studio` 仓库是 issue/support 壳，不是开源源码分发。
+
 ### v0.0.1rc18
 
 - PyPI release candidate 版本：`0.0.1rc18`。确定性安装：`python -m pip install edge-studio==0.0.1rc18`。
@@ -84,31 +93,31 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 
 ### v0.0.1rc9
 
-- PyPI release candidate 版本：`0.0.1rc9`。确定性安装：`python -m pip install edge-studio==0.0.1rc9`。
+- 历史 PyPI release candidate 版本：`0.0.1rc9`（已从 PyPI 删除，仅保留为发布历史）。
 - 在理财学习 demo 的 dry-run、receipt 和 text preview 中加入 `expected_tool_policy`。这个字段是确定性预览，不是实时 tool-call trace。
 - 将开发者首跑路径更新为一页式设备 Agent 流程：偏好学习、工具策略检查，以及 Edge Studio 载体导出。
 
 ### v0.0.1rc8
 
-- PyPI release candidate 版本：`0.0.1rc8`。确定性安装：`python -m pip install edge-studio==0.0.1rc8`。
+- 历史 PyPI release candidate 版本：`0.0.1rc8`（已从 PyPI 删除，仅保留为发布历史）。
 - 修复包内版本一致性，Python package metadata 与 `edgestudio_core.__version__` 现在都会报告 `0.0.1rc8`。
 
 ### v0.0.1rc7
 
-- PyPI release candidate 版本：`0.0.1rc7`。确定性安装：`python -m pip install edge-studio==0.0.1rc7`。
+- 历史 PyPI release candidate 版本：`0.0.1rc7`（已从 PyPI 删除，仅保留为发布历史）。
 - 新增 `finance_conservative_cashflow_v1` 作为默认学习 demo 样本。样本是合成的、可检查的、理财场景化的，用于设备 Agent 快速开始。
 - 公开首跑路径已围绕原始本地信号检查、基础模型对话、RPP 自学习、Neural Imprint 生成、base model + Neural Imprint 对话，以及 Edge Studio 载体导出重写。
 
 ### v0.0.1rc6
 
-- PyPI release candidate 版本：`0.0.1rc6`。确定性安装：`python -m pip install edge-studio==0.0.1rc6`。
+- 历史 PyPI release candidate 版本：`0.0.1rc6`（已从 PyPI 删除，仅保留为发布历史）。
 - 改进 Edge Scaffold 导出文档。生成的 app 现在会得到面向该 app 实例的 README，包含 app 名称、模型名称、模型路径、ODR tag、关键文件、模型加载说明和排查建议。
 - 保持导出 app 结构扁平：`MyApp/MyApp/App/ScaffoldConfig.swift`，不再出现三层嵌套 app 路径。
 
 ### v0.0.1rc5
 
 - 当前公开 Python 软件包 distribution name：`edge-studio`。
-- PyPI release candidate 版本：`0.0.1rc5`。确定性安装：`python -m pip install edge-studio==0.0.1rc5`。
+- 历史 PyPI release candidate 版本：`0.0.1rc5`（已从 PyPI 删除，仅保留为发布历史）。
 - `edge demo chat` 在 interactive 模式下流式输出 token，并支持通过 `--with-imprint <learn_receipt.json>` 恢复 Neural Imprint。
 - `edge demo learn run --include-text` 会打印完成的学习回执，并输出可直接执行的 `next:` 命令用于学习后的对话。
 - `edge studio` 遇到已经运行的 EdgeMesh 服务时，会给出可行动的 warning，同时保持 Studio UI 可用。
@@ -116,7 +125,7 @@ Edge 产品处于**开发者预览**阶段。版本之间可能出现破坏性�
 ### v0.0.1rc1
 
 - 公开 Python 软件包 distribution name：`edge-studio`。
-- PyPI release candidate 版本：`0.0.1rc1`。确定性安装：`python -m pip install edge-studio==0.0.1rc1`。
+- 历史 PyPI release candidate 版本：`0.0.1rc1`（已从 PyPI 删除，仅保留为发布历史）。
 - 安装后的命令面刻意统一为单一 `edge` 入口。
 - `edge studio` 默认在 `http://127.0.0.1:18842` 启动本地 Studio UI/API server。
 - `edge demo chat`、`edge demo learn`、模型就绪检查、显式模型下载、回执检查和源码安装文档已对齐公开软件包路径。

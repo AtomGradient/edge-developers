@@ -13,7 +13,9 @@ Edge products are in **Developer Preview**. Expect breaking changes between rele
 
 ## Versioning policy
 
-During Developer Preview, Swift package releases follow `1.0.0-rcN` tags. Edge Studio's Python package currently uses PyPI version `0.0.1rc18` and GitHub tag `v0.0.1rc18`. Breaking changes are documented here with migration steps. After general availability, we will follow semantic versioning.
+During Developer Preview, Swift package releases follow `1.0.0-rcN` tags. Edge Studio's Python package currently uses PyPI version `0.0.1rc19` and GitHub tag `v0.0.1rc19`. Breaking changes are documented here with migration steps. After general availability, we will follow semantic versioning.
+
+PyPI retention note: Edge Studio preview wheels before `0.0.1rc18` have been removed from PyPI. Changelog entries before `v0.0.1rc18` remain as release history, not as currently installable package pins.
 
 ## How to upgrade
 
@@ -31,7 +33,7 @@ Developer Preview is a limited preview channel. The changelog documents what is 
 
 | Surface | Current access | Notes |
 |---|---|---|
-| Edge Studio | Python package `edge-studio==0.0.1rc18`, GitHub tag `v0.0.1rc18` | Installs the single `edge` command. Launch the local Studio UI with `edge studio`. |
+| Edge Studio | Python package `edge-studio==0.0.1rc19`, GitHub tag `v0.0.1rc19` | Installs the single `edge` command. Launch the local Studio UI with `edge studio`. |
 | Swift SDK docs | Edge Kit `1.0.0-rc98` | Docs use an exact version pin. Upgrade only after validation. |
 | Edge Engine dependency | Edge Engine `1.0.0-rc138` | Public GitHub repository at `AtomGradient/edge-engine`; package resolution should not require SSH access. |
 | Edge Halo binary dependency | Edge Halo binary `1.0.0-rc24` | Public binary SwiftPM package at `AtomGradient/edge-halo-binary`; source remains private. |
@@ -41,7 +43,7 @@ Developer Preview is a limited preview channel. The changelog documents what is 
 
 | Component | Compatible preview |
 |---|---|
-| Edge Studio | `v0.0.1rc18` |
+| Edge Studio | `v0.0.1rc19` |
 | Edge Kit | `1.0.0-rc98`, depends on Edge Engine `1.0.0-rc138` |
 | Edge Halo binary | `1.0.0-rc24` |
 | Edge Scaffold | Current preview pins Edge Kit `1.0.0-rc98` and Edge Halo binary `1.0.0-rc24` |
@@ -77,6 +79,13 @@ The B2/B4/B5/B6/B7 CLI commands listed below are shipped in current preview; the
 
 ## edge-studio
 
+### v0.0.1rc19
+
+- PyPI release candidate version: `0.0.1rc19`. Deterministic install: `python -m pip install edge-studio==0.0.1rc19`.
+- Renames the installed Python package namespace from `backend` to `edgestudio`. The public CLI remains `edge`; package-internal source references now use paths such as `edgestudio/cli/demo_samples.py`.
+- Keeps `--sample-file` as the customization path for local `edge.demo.learn.sample.v1` JSON learning samples.
+- Aligns release metadata with the AtomGradient Proprietary License. The public `AtomGradient/edge-studio` repository is an issue and support shell, not an open-source source distribution.
+
 ### v0.0.1rc18
 
 - PyPI release candidate version: `0.0.1rc18`. Deterministic install: `python -m pip install edge-studio==0.0.1rc18`.
@@ -84,31 +93,31 @@ The B2/B4/B5/B6/B7 CLI commands listed below are shipped in current preview; the
 
 ### v0.0.1rc9
 
-- PyPI release candidate version: `0.0.1rc9`. Deterministic install: `python -m pip install edge-studio==0.0.1rc9`.
+- Historical PyPI release candidate version: `0.0.1rc9` (removed from PyPI; kept here as release history).
 - Adds `expected_tool_policy` to the finance learning demo dry-run, receipt, and text preview. The field is a deterministic preview, not a live tool-call trace.
 - Updates the first-run developer path into a one-page device Agent flow: preference learning, tool policy inspection, and Edge Studio carrier export.
 
 ### v0.0.1rc8
 
-- PyPI release candidate version: `0.0.1rc8`. Deterministic install: `python -m pip install edge-studio==0.0.1rc8`.
+- Historical PyPI release candidate version: `0.0.1rc8` (removed from PyPI; kept here as release history).
 - Fixes package version consistency so Python package metadata and `edgestudio_core.__version__` both report `0.0.1rc8`.
 
 ### v0.0.1rc7
 
-- PyPI release candidate version: `0.0.1rc7`. Deterministic install: `python -m pip install edge-studio==0.0.1rc7`.
+- Historical PyPI release candidate version: `0.0.1rc7` (removed from PyPI; kept here as release history).
 - Adds `finance_conservative_cashflow_v1` as the default learning demo sample. The sample is synthetic, inspectable, finance-shaped, and designed for the device Agent quickstart.
 - Updates the public first-run path around raw local signal inspection, base model chat, RPP self-learning, Neural Imprint generation, base model + Neural Imprint chat, and Edge Studio carrier export.
 
 ### v0.0.1rc6
 
-- PyPI release candidate version: `0.0.1rc6`. Deterministic install: `python -m pip install edge-studio==0.0.1rc6`.
+- Historical PyPI release candidate version: `0.0.1rc6` (removed from PyPI; kept here as release history).
 - Improves Edge Scaffold export documentation. Generated apps now receive an instance-specific README that includes the app name, model name, model path, ODR tag, key files, model loading notes, and troubleshooting.
 - Keeps the exported app structure flat: `MyApp/MyApp/App/ScaffoldConfig.swift`, not a triple-nested app path.
 
 ### v0.0.1rc5
 
 - Current public Python package distribution name: `edge-studio`.
-- PyPI release candidate version: `0.0.1rc5`. Deterministic install: `python -m pip install edge-studio==0.0.1rc5`.
+- Historical PyPI release candidate version: `0.0.1rc5` (removed from PyPI; kept here as release history).
 - `edge demo chat` streams tokens in interactive mode and supports Neural Imprint restore through `--with-imprint <learn_receipt.json>`.
 - `edge demo learn run --include-text` prints the completed learning receipt and a ready-to-run `next:` command for after-learning chat.
 - `edge studio` now reports an already-running EdgeMesh service as an actionable warning while keeping the Studio UI available.
@@ -116,7 +125,7 @@ The B2/B4/B5/B6/B7 CLI commands listed below are shipped in current preview; the
 ### v0.0.1rc1
 
 - Public Python package distribution name: `edge-studio`.
-- PyPI release candidate version: `0.0.1rc1`. Deterministic install: `python -m pip install edge-studio==0.0.1rc1`.
+- Historical PyPI release candidate version: `0.0.1rc1` (removed from PyPI; kept here as release history).
 - Installed command surface is intentionally a single `edge` entry point.
 - `edge studio` launches the local Studio UI/API server at `http://127.0.0.1:18842` by default.
 - `edge demo chat`, `edge demo learn`, model readiness, explicit model fetch, receipt inspection, and install docs are aligned with the public package path.

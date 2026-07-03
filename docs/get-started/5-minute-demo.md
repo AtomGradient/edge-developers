@@ -155,7 +155,7 @@ use the network. It lets you audit the local learning signal first.
 ### Customize The Learning Sample
 
 `finance_conservative_cashflow_v1` is the built-in sample shipped with the CLI.
-It maps to the packaged fixture in `backend/cli/demo_samples.py`. To use your
+It maps to the packaged fixture in `edgestudio/cli/demo_samples.py`. To use your
 own local data, save the same shape as JSON and pass it with `--sample-file`.
 Each `corrections[].peer_id` must match the top-level `peer_id`; mismatches fail
 closed before the model is loaded.

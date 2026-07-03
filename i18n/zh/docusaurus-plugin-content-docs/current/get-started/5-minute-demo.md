@@ -143,7 +143,7 @@ edge demo learn run --dry-run \
 ### 自定义学习样本
 
 `finance_conservative_cashflow_v1` 是 CLI 内置样本，映射到包内
-`backend/cli/demo_samples.py` 里的 fixture。如果要使用你自己的本地数据，把同样结构保存成
+`edgestudio/cli/demo_samples.py` 里的 fixture。如果要使用你自己的本地数据，把同样结构保存成
 JSON，然后通过 `--sample-file` 传入。
 每条 `corrections[].peer_id` 必须等于顶层 `peer_id`；不一致会在模型加载前
 fail closed。
