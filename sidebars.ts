@@ -24,7 +24,13 @@ const sidebars: SidebarsConfig = {
       label: 'Local Knowledge & Tools',
       collapsed: true,
       items: [
+        'knowledge-tools/learning-samples',
+        'knowledge-tools/local-facts',
+        'knowledge-tools/import-from-url',
+        'knowledge-tools/host-model-extraction',
         'knowledge-tools/custom-python-tools',
+        'knowledge-tools/tool-learning',
+        'knowledge-tools/receipts-and-local-contract',
         'knowledge-tools/domain-knowledge-workflow',
       ],
     },
@@ -33,6 +39,7 @@ const sidebars: SidebarsConfig = {
       label: 'Concepts',
       collapsed: true,
       items: [
+        'concepts/why-device-agent',
         'concepts/architecture',
         'concepts/model-evolution',
         'concepts/neural-imprint-vs-lora',
