@@ -161,6 +161,16 @@ edge demo learn run \
   --include-text
 ```
 
+To use a custom local learning sample, save an `edge.demo.learn.sample.v1` JSON
+file with `sample_id`, `peer_id`, `app_id`, `base_model_id`, `question`,
+`records`, `corrections`, `tool_schema_export`, and `expected_tool_policy`.
+Each `corrections[].peer_id` must match the top-level `peer_id`. Then replace
+`--sample ...` with:
+
+```bash
+--sample-file ./my-learn-sample.json
+```
+
 ### Expected output
 
 ```

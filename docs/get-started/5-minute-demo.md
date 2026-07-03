@@ -152,6 +152,86 @@ Look for the records and correction:
 The dry run does not load the model, write demo state, restore an artifact, or
 use the network. It lets you audit the local learning signal first.
 
+### Customize The Learning Sample
+
+`finance_conservative_cashflow_v1` is the built-in sample shipped with the CLI.
+It maps to the packaged fixture in `backend/cli/demo_samples.py`. To use your
+own local data, save the same shape as JSON and pass it with `--sample-file`.
+Each `corrections[].peer_id` must match the top-level `peer_id`; mismatches fail
+closed before the model is loaded.
+
+```json
+{
+  "schema_version": "edge.demo.learn.sample.v1",
+  "sample_id": "my_budget_sample_v1",
+  "peer_id": "my-demo-peer",
+  "app_id": "com.example.myapp",
+  "base_model_id": "qwen3.5-9b-4bit",
+  "question": "How should I plan my remaining budget this month?",
+  "records": [
+    {
+      "record_id": "budget-001",
+      "kind": "explicit_preference",
+      "text": "The user wants fixed expenses and emergency cash protected before discretionary spending.",
+      "tags": ["budget", "cashflow"]
+    }
+  ],
+  "corrections": [
+    {
+      "peer_id": "my-demo-peer",
+      "app_id": "com.example.myapp",
+      "correction_type": "profile_correction",
+      "target": {"profile_field": "budget_guidance_style"},
+      "correction": {
+        "profile_overlay": {
+          "priority": "fixed expenses and emergency cash first",
+          "boundary": "no unsupported return claims"
+        }
+      },
+      "status": "recorded"
+    }
+  ],
+  "tool_schema_export": {
+    "schema_version": "edgestudio.tool_schema_export.v1",
+    "tools": [
+      {
+        "name": "my_budget_facts_lookup",
+        "description": "Read-only lookup for local budget facts.",
+        "permissions": ["read_facts"],
+        "intentTags": ["exact_fact", "budget"],
+        "parameters": {
+          "type": "object",
+          "properties": {"topic": {"type": "string"}}
+        }
+      }
+    ]
+  },
+  "expected_tool_policy": {
+    "description": "Deterministic tool-use policy learned from this sample",
+    "tools_available": [
+      {
+        "name": "my_budget_facts_lookup",
+        "when": "User asks about budget priorities",
+        "args_constraint": "topic must reference this budget sample"
+      }
+    ],
+    "negative_policy": ["Do not call network tools", "Do not invent return claims"]
+  }
+}
+```
+
+Then inspect or run it:
+
+```bash
+edge demo learn run --dry-run \
+  --sample-file ./my-budget-sample.json \
+  --model qwen3.5-9b-4bit \
+  --json
+```
+
+Without `--include-text`, the JSON report keeps the raw sample text out of the
+terminal output and returns hashed identifiers instead.
+
 ## 6. Ask The Base Model
 
 Start a base-model chat:

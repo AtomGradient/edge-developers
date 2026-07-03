@@ -164,6 +164,16 @@ edge demo learn run \
   --include-text
 ```
 
+要使用自定义本地学习样本，保存一个 `edge.demo.learn.sample.v1` JSON 文件，
+包含 `sample_id`、`peer_id`、`app_id`、`base_model_id`、`question`、`records`、
+`corrections`、`tool_schema_export` 和 `expected_tool_policy`。
+每条 `corrections[].peer_id` 必须等于顶层 `peer_id`。然后把 `--sample ...`
+替换为：
+
+```bash
+--sample-file ./my-learn-sample.json
+```
+
 ### 期望输出
 
 ```

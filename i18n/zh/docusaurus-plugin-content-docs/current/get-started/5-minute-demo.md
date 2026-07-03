@@ -140,6 +140,85 @@ edge demo learn run --dry-run \
 
 这个 dry run 不加载模型、不写 demo state、不恢复产物，也不联网。它先让你审查本地学习信号。
 
+### 自定义学习样本
+
+`finance_conservative_cashflow_v1` 是 CLI 内置样本，映射到包内
+`backend/cli/demo_samples.py` 里的 fixture。如果要使用你自己的本地数据，把同样结构保存成
+JSON，然后通过 `--sample-file` 传入。
+每条 `corrections[].peer_id` 必须等于顶层 `peer_id`；不一致会在模型加载前
+fail closed。
+
+```json
+{
+  "schema_version": "edge.demo.learn.sample.v1",
+  "sample_id": "my_budget_sample_v1",
+  "peer_id": "my-demo-peer",
+  "app_id": "com.example.myapp",
+  "base_model_id": "qwen3.5-9b-4bit",
+  "question": "How should I plan my remaining budget this month?",
+  "records": [
+    {
+      "record_id": "budget-001",
+      "kind": "explicit_preference",
+      "text": "The user wants fixed expenses and emergency cash protected before discretionary spending.",
+      "tags": ["budget", "cashflow"]
+    }
+  ],
+  "corrections": [
+    {
+      "peer_id": "my-demo-peer",
+      "app_id": "com.example.myapp",
+      "correction_type": "profile_correction",
+      "target": {"profile_field": "budget_guidance_style"},
+      "correction": {
+        "profile_overlay": {
+          "priority": "fixed expenses and emergency cash first",
+          "boundary": "no unsupported return claims"
+        }
+      },
+      "status": "recorded"
+    }
+  ],
+  "tool_schema_export": {
+    "schema_version": "edgestudio.tool_schema_export.v1",
+    "tools": [
+      {
+        "name": "my_budget_facts_lookup",
+        "description": "Read-only lookup for local budget facts.",
+        "permissions": ["read_facts"],
+        "intentTags": ["exact_fact", "budget"],
+        "parameters": {
+          "type": "object",
+          "properties": {"topic": {"type": "string"}}
+        }
+      }
+    ]
+  },
+  "expected_tool_policy": {
+    "description": "Deterministic tool-use policy learned from this sample",
+    "tools_available": [
+      {
+        "name": "my_budget_facts_lookup",
+        "when": "User asks about budget priorities",
+        "args_constraint": "topic must reference this budget sample"
+      }
+    ],
+    "negative_policy": ["Do not call network tools", "Do not invent return claims"]
+  }
+}
+```
+
+然后检查或运行这个样本：
+
+```bash
+edge demo learn run --dry-run \
+  --sample-file ./my-budget-sample.json \
+  --model qwen3.5-9b-4bit \
+  --json
+```
+
+不传 `--include-text` 时，JSON 报告不会把原始样本文本打印到终端，只返回哈希标识符。
+
 ## 6. 先问基础模型
 
 启动基础模型聊天：
