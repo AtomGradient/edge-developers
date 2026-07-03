@@ -35,8 +35,8 @@ writes hash-first receipts.
 :::info Version
 Custom Python tools require `edge-studio` **0.0.1rc21 or newer**. On rc20 and
 earlier, chat supports the built-in `local_facts_lookup` executor only — see
-[the 5-minute demo](/docs/quickstart/first-agent) for the manifest-based path that
-still works on every version.
+[Local Facts Stores](/docs/knowledge-tools/local-facts#give-the-tool-a-developer-owned-name)
+for the manifest-based path that still works on every version.
 :::
 
 ## How A Tool Call Actually Runs
@@ -244,7 +244,8 @@ What Edge does not claim:
 
 ## When To Use The Manifest Path Instead
 
-`--tools-manifest` (see the [5-minute demo](/docs/quickstart/first-agent)) remains
-the right surface when you only need stable developer-owned **names** over the
-built-in local facts lookup, or when you are on rc20. Custom Python tools are
+`--tools-manifest` (see
+[Local Facts Stores](/docs/knowledge-tools/local-facts#give-the-tool-a-developer-owned-name))
+remains the right surface when you only need stable developer-owned **names**
+over the built-in local facts lookup, or when you are on rc20. Custom Python tools are
 the path when the logic itself is yours.

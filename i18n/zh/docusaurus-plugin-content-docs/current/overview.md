@@ -39,7 +39,7 @@ Edge 把这种本地学习产物叫做 **Neural Imprint**。它只在兼容性�
 | **用 Edge Kit 构建 iOS App**——Swift 里的 LLM/VLM/语音、模型管理、EdgeMesh | [Edge Kit (Swift)](/docs/edge-kit/installation) | Xcode，一台真实 iPhone 或 iPad 用于验证 |
 | **优化、基准测试并导出模型**——本地工作台 UI 与导出管线 | [Edge Studio 工作台](/docs/studio/studio-overview) | Apple Silicon Mac |
 
-本地知识与开发者工具（facts 库、URL 导入、自定义 Python 工具、工具学习）是独立一条线：[本地知识与工具](/docs/knowledge-tools/custom-python-tools)。
+本地知识与开发者工具（facts 库、URL 导入、自定义 Python 工具、工具学习）是独立一条线：[本地知识与工具](/docs/knowledge-tools/learning-samples)。
 
 ## Edge 解决什么问题
 

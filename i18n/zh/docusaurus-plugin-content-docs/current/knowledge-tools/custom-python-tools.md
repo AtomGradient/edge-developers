@@ -34,7 +34,7 @@ edge demo chat --model qwen3.5-9b-4bit \
 :::info 版本要求
 自定义 Python 工具需要 `edge-studio` **0.0.1rc21 或更新版本**。rc20 及更早版本
 的 chat 只支持内置 `local_facts_lookup` 执行器——manifest 路径见
-[五分钟演示](/docs/quickstart/first-agent)，它在所有版本上可用。
+[本地事实库](/docs/knowledge-tools/local-facts#给工具一个开发者拥有的名字)，它在所有版本上可用。
 :::
 
 ## 一次工具调用的真实流程
@@ -227,6 +227,6 @@ Edge 不声称的：
 
 ## 何时改用 Manifest 路径
 
-`--tools-manifest`（见[五分钟演示](/docs/quickstart/first-agent)）在两种情况下仍是
-正确选择：只需要给内置 local facts lookup 一个稳定的开发者自有**名字**，或者
-你还在 rc20。当逻辑本身是你的，就用自定义 Python 工具。
+`--tools-manifest`（见[本地事实库](/docs/knowledge-tools/local-facts#给工具一个开发者拥有的名字)）
+在两种情况下仍是正确选择：只需要给内置 local facts lookup 一个稳定的开发者
+自有**名字**，或者你还在 rc20。当逻辑本身是你的，就用自定义 Python 工具。

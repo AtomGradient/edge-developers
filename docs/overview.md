@@ -57,7 +57,7 @@ later.
 
 Working with local knowledge and developer tools (facts stores, URL import,
 custom Python tools, tool learning) is its own track:
-[Local Knowledge & Tools](/docs/knowledge-tools/custom-python-tools).
+[Local Knowledge & Tools](/docs/knowledge-tools/learning-samples).
 
 ## What Edge Gives You
 
