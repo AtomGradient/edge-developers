@@ -1,6 +1,7 @@
 ---
 sidebar_position: 5
 title: 模型进化
+pagination_prev: null
 ---
 
 # 使用 Edge Halo 做模型进化

@@ -1,6 +1,7 @@
 ---
 sidebar_position: 5
 title: Model Evolution
+pagination_prev: null
 ---
 
 # Model evolution with Edge Halo

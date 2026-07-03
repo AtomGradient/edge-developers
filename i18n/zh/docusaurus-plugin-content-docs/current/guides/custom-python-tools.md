@@ -3,6 +3,7 @@ sidebar_position: 2
 title: 自定义 Python 工具
 sidebar_label: 4. 自定义 Python 工具 (CLI)
 slug: /guides/custom-python-tools
+pagination_next: null
 ---
 
 # 自定义 Python 工具

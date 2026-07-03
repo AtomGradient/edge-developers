@@ -13,7 +13,7 @@ Edge products are in **Developer Preview**. Expect breaking changes between rele
 
 ## Versioning policy
 
-During Developer Preview, Swift package releases follow `1.0.0-rcN` tags. Edge Studio's Python package currently uses PyPI version `0.0.1rc21` and GitHub tag `v0.0.1rc21`. Breaking changes are documented here with migration steps. After general availability, we will follow semantic versioning.
+During Developer Preview, Swift package releases follow `1.0.0-rcN` tags. Edge Studio's Python package currently uses PyPI version `0.0.1rc22` and GitHub tag `v0.0.1rc22`. Breaking changes are documented here with migration steps. After general availability, we will follow semantic versioning.
 
 PyPI retention note: Edge Studio preview wheels before `0.0.1rc19` have been removed from PyPI. Changelog entries before `v0.0.1rc19` remain as release history, not as currently installable package pins.
 
@@ -33,7 +33,7 @@ Developer Preview is a limited preview channel. The changelog documents what is 
 
 | Surface | Current access | Notes |
 |---|---|---|
-| Edge Studio | Python package `edge-studio==0.0.1rc21`, GitHub tag `v0.0.1rc21` | Installs the single `edge` command. Launch the local Studio UI with `edge studio`. |
+| Edge Studio | Python package `edge-studio==0.0.1rc22`, GitHub tag `v0.0.1rc22` | Installs the single `edge` command. Launch the local Studio UI with `edge studio`. |
 | Swift SDK docs | Edge Kit `1.0.0-rc98` | Docs use an exact version pin. Upgrade only after validation. |
 | Edge Engine dependency | Edge Engine `1.0.0-rc138` | Public GitHub repository at `AtomGradient/edge-engine`; package resolution should not require SSH access. |
 | Edge Halo binary dependency | Edge Halo binary `1.0.0-rc24` | Public binary SwiftPM package at `AtomGradient/edge-halo-binary`; source remains private. |
@@ -43,7 +43,7 @@ Developer Preview is a limited preview channel. The changelog documents what is 
 
 | Component | Compatible preview |
 |---|---|
-| Edge Studio | `v0.0.1rc21` |
+| Edge Studio | `v0.0.1rc22` |
 | Edge Kit | `1.0.0-rc98`, depends on Edge Engine `1.0.0-rc138` |
 | Edge Halo binary | `1.0.0-rc24` |
 | Edge Scaffold | Current preview pins Edge Kit `1.0.0-rc98` and Edge Halo binary `1.0.0-rc24` |
@@ -66,7 +66,8 @@ The B2/B4/B5/B6/B7 CLI commands listed below are shipped in current preview; the
 - `edge demo learn run --dry-run` is a correction-learning pre-flight planner. It emits `edge.demo.learn.plan.v1` with hash-only synthetic correction metadata and isolated-state paths; it does not write correction ledgers, call regen, load models, or write a learn receipt.
 - `edge demo learn run` without `--dry-run` is the correction-learning demo. It writes synthetic Persona/RPP input and correction ledger entries under the demo run state, triggers correction regen, restores the regenerated local Neural Imprint artifact, compares before/after answer hashes, and writes `edge.demo.learn.receipt.v1`.
 - `edge demo learn run --prepare-model` combines model preparation and the learning demo in one command. It may explicitly prepare a compatible local model first, then records model-preparation network use separately as `network_used_during_model_prepare` from the local learning demo.
-- `edge demo facts import-url` is a bounded single-URL material import path. It accepts HTTP(S) text content, records `network_used=true`, writes hash-only receipts by default, and does not crawl linked pages.
+- `edge demo facts import-url` is a bounded single-URL material import path. It accepts HTTP(S) text content, records `network_used=true`, writes hash-only receipts by default, and does not crawl linked pages. In rc22 the optional `host-model` extractor can propose candidate facts from one page with a local Mac model; Edge deterministically validates the structured output before writing facts.
+- `edge demo facts crawl-url` is a bounded static HTTP(S) material import path for a small same-origin documentation set. It requires explicit depth, URL, byte, total-byte, and timeout bounds; it does not execute JavaScript, use a browser, consult `robots.txt`, or leave the origin.
 - `edge demo tools validate` accepts only local read-only facts lookup manifests in this preview. It does not execute processes, perform network access, or write demo state.
 - `edge tools validate` / `edge tools inspect <tools.py>` (rc21+) import the tool file inside an isolated Edge-owned runner subprocess — top-level code executes. They never run developer code in the Edge CLI process, and they are not static safety scans for untrusted files.
 - `edge demo chat --tools <tools.py>` (rc21+) enables Edge-managed custom Python tools; it is mutually exclusive with `--tools-manifest` and `--facts-store`. Tool code executes only in the runner subprocess; the model can only emit JSON calls.
@@ -81,6 +82,15 @@ The B2/B4/B5/B6/B7 CLI commands listed below are shipped in current preview; the
 ---
 
 ## edge-studio
+
+### v0.0.1rc22
+
+- PyPI release candidate version: `0.0.1rc22`. Deterministic install: `python -m pip install edge-studio==0.0.1rc22`.
+- Adds `edge demo facts import-url --extractor host-model --extractor-model <model>` for local Mac host-model facts extraction. The model output is treated as candidate facts only; Edge validates the structured payload before writing the local facts store. Receipts include hashes for the model, prompt, schema, model input, raw model output, and validated payload, plus truncation metadata and `non_deterministic_extraction=true`.
+- Adds `edge demo facts crawl-url <url>` for bounded static same-origin material import. Required bounds are `--max-depth`, `--max-urls`, `--max-bytes`, `--max-bytes-total`, and `--timeout`; receipts capture redirect-chain hashes, per-page statuses, total bytes, same-origin policy decisions, and `network_used=true`.
+- Keeps crawling deliberately narrow: no browser, no JavaScript execution, no cross-origin traversal, and no `robots.txt` fetch. Developers remain responsible for using sources they are allowed to access.
+- Updates the Ethereum example as a generic domain-material workflow: URL import, optional local host-model extraction, bounded crawl, custom Python tools, and Neural Imprint learning. Ethereum is an example domain, not a special Edge runtime path.
+- Keeps the rc21 custom Python tool path unchanged: `@edge_tool`, `edge tools validate`, `edge tools inspect`, `edge demo chat --tools`, and `edge demo learn run --tools`.
 
 ### v0.0.1rc21
 

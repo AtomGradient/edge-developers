@@ -3,6 +3,7 @@ sidebar_position: 2
 title: Custom Python Tools
 sidebar_label: 4. Custom Python Tools (CLI)
 slug: /guides/custom-python-tools
+pagination_next: null
 ---
 
 # Custom Python Tools

@@ -13,7 +13,7 @@ const sidebars: SidebarsConfig = {
       // Linear, numbered: install -> CLI proof -> same loop on a real iPhone.
       type: 'category',
       label: 'Quickstart',
-      collapsed: false,
+      collapsed: true,
       items: [
         'get-started/source-build',
         'get-started/minute-demo',
@@ -24,7 +24,7 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: 'Core Concepts',
-      collapsed: false,
+      collapsed: true,
       items: [
         'build/model-evolution',
         'guides/neural-imprint-vs-lora',
