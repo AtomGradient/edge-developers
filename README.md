@@ -30,7 +30,7 @@ edge models fetch qwen3.5-9b-4bit --source auto
 edge demo chat --model qwen3.5-9b-4bit --interactive
 ```
 
-After chatting, run the [CLI learning demo](docs/get-started/5-minute-demo.md) to generate a local Neural Imprint artifact and compare before/after answer hashes. Launch the local Studio UI with `edge studio`.
+After chatting, run the [first device Agent quickstart](docs/quickstart/first-agent.md) to generate a local Neural Imprint artifact and compare before/after answer hashes. Launch the local Studio UI with `edge studio`.
 
 ## Components
 
@@ -59,12 +59,12 @@ Neural Imprint is a local artifact and restore flow. A compatible base model can
 | Topic | Path |
 |---|---|
 | Overview and first steps | `docs/overview.md` |
-| CLI learning demo | `docs/get-started/5-minute-demo.md` |
-| Minimal iOS app | `docs/get-started/minimal-ios-app.md` |
-| Swift SDK quickstart | `docs/get-started/quickstart.md` |
-| Swift CLI validation | `docs/get-started/swift-cli.md` |
-| Model evolution and Neural Imprint lifecycle | `docs/build/model-evolution.md` |
-| Generate an iOS app from Edge Studio | `docs/optimize-and-ship/scaffold.md` |
+| CLI learning demo | `docs/quickstart/first-agent.md` |
+| Minimal iOS app | `docs/edge-kit/minimal-ios-app.md` |
+| Swift SDK quickstart | `docs/edge-kit/first-llm.md` |
+| Swift CLI validation | `docs/edge-kit/validation-cli.md` |
+| Model evolution and Neural Imprint lifecycle | `docs/concepts/model-evolution.md` |
+| Generate an iOS app from Edge Studio | `docs/studio/scaffold.md` |
 
 Install the Swift SDK:
 
@@ -141,7 +141,7 @@ edge demo reuse --run edge-run-example --apps notes,finance --json  # Manifest-o
 
 ## Swift Validation CLI
 
-The `tests/smoke_test` directory contains the `edge-swift` Swift CLI for SDK validation, halo bridge checks, and receipt-only restore coordinator smoke. See `docs/get-started/swift-cli.md`.
+The `tests/smoke_test` directory contains the `edge-swift` Swift CLI for SDK validation, halo bridge checks, and receipt-only restore coordinator smoke. See `docs/edge-kit/validation-cli.md`.
 
 ## Docs Development
 

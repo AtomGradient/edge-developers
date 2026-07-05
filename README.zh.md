@@ -30,7 +30,7 @@ edge models fetch qwen3.5-9b-4bit --source auto
 edge demo chat --model qwen3.5-9b-4bit --interactive
 ```
 
-对话跑通后，继续 [CLI 学习演示](docs/get-started/5-minute-demo.md)：生成本地 Neural Imprint 产物，对比 before/after 回答哈希。用 `edge studio` 启动本地 Studio UI。
+对话跑通后，继续 [第一个设备 Agent 快速开始](docs/quickstart/first-agent.md)：生成本地 Neural Imprint 产物，对比 before/after 回答哈希。用 `edge studio` 启动本地 Studio UI。
 
 ## 组件
 
@@ -59,12 +59,12 @@ Neural Imprint 是本地产物和恢复流程。兼容的基础模型可以恢�
 | 主题 | 路径 |
 |---|---|
 | 概览与入门 | `docs/overview.md` |
-| CLI 学习演示 | `docs/get-started/5-minute-demo.md` |
-| 最小 iOS app | `docs/get-started/minimal-ios-app.md` |
-| Swift SDK 快速开始 | `docs/get-started/quickstart.md` |
-| Swift CLI 验证 | `docs/get-started/swift-cli.md` |
-| 模型进化与 Neural Imprint 生命周期 | `docs/build/model-evolution.md` |
-| 用 Edge Studio 生成 iOS app | `docs/optimize-and-ship/scaffold.md` |
+| CLI 学习演示 | `docs/quickstart/first-agent.md` |
+| 最小 iOS app | `docs/edge-kit/minimal-ios-app.md` |
+| Swift SDK 快速开始 | `docs/edge-kit/first-llm.md` |
+| Swift CLI 验证 | `docs/edge-kit/validation-cli.md` |
+| 模型进化与 Neural Imprint 生命周期 | `docs/concepts/model-evolution.md` |
+| 用 Edge Studio 生成 iOS app | `docs/studio/scaffold.md` |
 
 安装 Swift SDK：
 
@@ -141,7 +141,7 @@ edge demo reuse --run edge-run-example --apps notes,finance --json  # 仅清单�
 
 ## Swift 验证 CLI
 
-`tests/smoke_test` 目录包含 `edge-swift` Swift CLI，用于 SDK 验证、halo bridge 检查和 receipt-only restore coordinator 冒烟测试。详见 `docs/get-started/swift-cli.md`。
+`tests/smoke_test` 目录包含 `edge-swift` Swift CLI，用于 SDK 验证、halo bridge 检查和 receipt-only restore coordinator 冒烟测试。详见 `docs/edge-kit/validation-cli.md`。
 
 ## 文档开发
 
