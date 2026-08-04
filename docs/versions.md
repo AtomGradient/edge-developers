@@ -16,7 +16,7 @@ wins — and please report the mismatch.
 
 | Surface | Current version | Install / resolve |
 |---|---|---|
-| Edge Studio | PyPI `edge-studio==0.0.1rc22`, GitHub tag `v0.0.1rc22` | `python -m pip install edge-studio==0.0.1rc22` |
+| Edge Studio | PyPI `edge-studio==0.0.1rc23`, GitHub tag `v0.0.1rc23` | `python -m pip install edge-studio==0.0.1rc23` |
 | Edge Kit | `1.0.0-rc103` | SPM `github.com/AtomGradient/edge-kit`, `exact: "1.0.0-rc103"` |
 | Edge Engine | `1.0.0-rc143` | Resolved by Edge Kit; most apps do not import it directly |
 | Edge Halo binary | `1.0.0-rc25` | SPM `github.com/AtomGradient/edge-halo-binary`, `exact: "1.0.0-rc25"` |
@@ -26,7 +26,7 @@ wins — and please report the mismatch.
 
 | Component | Compatible preview |
 |---|---|
-| Edge Studio | `v0.0.1rc22` |
+| Edge Studio | `v0.0.1rc23` |
 | Edge Kit | `1.0.0-rc103`, depends on Edge Engine `1.0.0-rc143` |
 | Edge Halo binary | `1.0.0-rc25` |
 | Edge Scaffold | Current preview pins Edge Kit `1.0.0-rc103` and Edge Halo binary `1.0.0-rc25` |

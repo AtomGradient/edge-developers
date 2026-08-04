@@ -68,6 +68,14 @@ PyPI 保留说明：Edge Studio 的 `0.0.1rc19` 之前预览 wheel 已从 PyPI �
 
 ## edge-studio
 
+### v0.0.1rc23
+
+- PyPI release candidate 版本：`0.0.1rc23`。确定性安装：`python -m pip install edge-studio==0.0.1rc23`。
+- 为自定义 Python 工具增加通用的 `read`、`prepare`、`commit` 执行级别。`commit` 调用先生成本地待确认动作，只有 `edge tools confirm` 校验短期有效的确认令牌与冻结工具契约后才执行。
+- 要求所有 `return_direct=True` 工具声明闭合的 `output_schema`。Edge 在直接交付前校验工具真实返回；缺字段、类型错误或未声明字段均以 `tool_result_schema_mismatch` 失败关闭。
+- 确认动作绑定工具文件、活跃工具集、工具 schema、参数和执行级别。并发或重复确认不会再次执行已经认领的动作。
+- 已知边界：过期待确认文件尚不会自动清理；副作用完成后、收据落盘前若进程崩溃，可能留下审计缺口。Edge 保持至多执行一次，不自动重试该动作。
+
 ### v0.0.1rc22
 
 - PyPI release candidate 版本：`0.0.1rc22`。确定性安装：`python -m pip install edge-studio==0.0.1rc22`。

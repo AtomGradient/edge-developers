@@ -34,6 +34,7 @@ KNOWN_EDGE_PREFIXES = tuple(
         "edge export scaffold",
         "edge tools validate",
         "edge tools inspect",
+        "edge tools confirm",
         "edge demo chat",
         "edge demo facts import",
         "edge demo facts import-url",

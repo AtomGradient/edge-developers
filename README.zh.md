@@ -48,7 +48,7 @@ Neural Imprint 是本地产物和恢复流程。兼容的基础模型可以恢�
 
 | 组件 | 版本 |
 |---|---|
-| edge-studio | `v0.0.1rc22` |
+| edge-studio | `v0.0.1rc23` |
 | edge-kit | `1.0.0-rc103` |
 | edge-halo-binary | `1.0.0-rc25` |
 | edge-engine | `1.0.0-rc143` |

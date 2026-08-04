@@ -32,8 +32,10 @@ edge demo chat --model qwen3.5-9b-4bit \
 并写入 hash 优先的 receipt。
 
 :::info 版本要求
-自定义 Python 工具需要 `edge-studio` **0.0.1rc21 或更新版本**。rc20 及更早版本
-的 chat 只支持内置 `local_facts_lookup` 执行器——manifest 路径见
+自定义 Python 工具需要 `edge-studio` **0.0.1rc21 或更新版本**。本页的
+`output_schema`、`execution_level` 与 `commit` 显式确认能力需要
+**0.0.1rc23 或更新版本**。rc20 及更早版本的 chat 只支持内置
+`local_facts_lookup` 执行器——manifest 路径见
 [本地事实库](/docs/knowledge-tools/local-facts#给工具一个开发者拥有的名字)，该路径自 rc20 起可用。
 :::
 
@@ -48,7 +50,7 @@ edge demo chat --model qwen3.5-9b-4bit \
 | 2 | 模型 | 输出纯文本；工具调用是一个严格 JSON 对象：`{"tool_name": "...", "arguments": {...}}` |
 | 3 | Edge | 解析并校验：工具名在冻结集内、参数符合 schema、未超调用上限 |
 | 4 | Runner | Edge 启动自己的固定 runner 子进程，验证工具文件与冻结态字节一致后才导入，并只执行这一个函数 |
-| 5 | Edge | 校验结果（JSON 对象、大小上限），把调用与结果拼回对话，让模型继续 |
+| 5 | Edge | 使用或直接返回前校验结果（JSON 对象、大小上限，以及声明的 `output_schema`）|
 | 6 | 模型 | 基于工具结果作答，或再次调用（每个 prompt 最多 4 次）|
 
 任何异常——未知工具、非法参数、文件被改、超时、结果超限——一律 fail-closed：
@@ -78,6 +80,23 @@ def calculate_fee(
     note: Optional[str] = None,
 ) -> dict:
     return {"fee": amount * (0.003 if tier == "basic" else 0.002)}
+
+@edge_tool(
+    description="Prepare an order for review without submitting it.",
+    execution_level="prepare",
+    return_direct=True,
+    output_schema={
+        "type": "object",
+        "properties": {
+            "order_id": {"type": "string"},
+            "status": {"type": "string", "enum": ["prepared"]},
+        },
+        "required": ["order_id", "status"],
+        "additionalProperties": False,
+    },
+)
+def prepare_order(order_id: str) -> dict:
+    return {"order_id": order_id, "status": "prepared"}
 ```
 
 规则：
@@ -86,8 +105,10 @@ def calculate_fee(
 - 每个参数都必须有受支持的类型注解。缺失或不支持的注解直接校验失败——不会
   静默降级成 `Any`。
 - 装饰器未提供 description 时，取 docstring 首行。
-- v1 工具是只读 JSON 工具：`permissions` 只接受 `read_local`。动作类工具、
-  文件写入、网络声明暂不接受。
+- `execution_level` 默认为 `read`。可逆草稿使用 `prepare`，真实副作用使用
+  `commit`；执行级别属于冻结工具 schema。
+- `permissions` 当前只接受 `read_local`。它不证明开发者 Python 代码在用户进程
+  权限下实际做了什么。
 
 ### 支持的参数类型
 
@@ -107,8 +128,30 @@ def calculate_fee(
 - 标量与列表（`str`、`int`、`float`、`bool`、`list`、`None`）会被包装为
   `{"result": value}`。
 - 结果上限为 64 KB 规范化 JSON，超限 fail-closed。
+- `return_direct=True` 必须声明闭合的 `output_schema`。运行时在直接交付前校验
+  真实结果；错类型、缺字段或多余字段都会以 `tool_result_schema_mismatch`
+  失败关闭。
 - 函数抛异常会 fail-closed 终止工具循环，模型回退到安全回答。"查无结果"这类
   希望模型继续推理的情况，请返回正常载荷，如 `{"matches": []}`。
+
+### 执行级别与确认
+
+| 级别 | 用途 | 运行时行为 |
+| --- | --- | --- |
+| `read` | 查询与计算 | 参数结构通过后执行 |
+| `prepare` | 可逆草稿、未签名载荷 | 立即执行；必须声明 `return_direct=True` 和 `output_schema` |
+| `commit` | 写入、提交、广播或其他真实副作用 | chat 只创建待确认动作；显式本地确认后才执行 |
+
+`commit` 工具同样必须声明 `return_direct=True` 和闭合 `output_schema`。chat 不会
+直接执行它；返回 JSON 会给出私有待确认文件、短期确认令牌和准确命令：
+
+```bash
+edge tools confirm '<pending_action_path>' --token '<confirmation_token>' --json
+```
+
+确认动作绑定冻结工具文件、活跃工具集、工具 schema、参数和执行级别。文件被改、
+参数被换、令牌错误或过期、并发第二次确认都会失败关闭。待确认文件仅保存在本地，
+权限为 `0600`，默认有效期 10 分钟。
 
 ## 校验与检视
 
@@ -185,7 +228,7 @@ Edge 不再重复注入指令。
 | 你改了什么 | 恢复结果 |
 | --- | --- |
 | 函数体、注释、格式——签名不变 | ✅ 正常恢复，无需重学 |
-| 参数、类型注解、工具名、描述、活跃集 | ❌ fail-closed——用当前文件重学 |
+| 参数、类型注解、工具名、描述、`output_schema`、`execution_level`、活跃集 | ❌ fail-closed——用当前文件重学 |
 | Imprint 带工具学习，chat 却没传 `--tools` | ❌ fail-closed，`imprint_requires_tools` |
 
 fail-closed 的含义就是字面意思：Edge 拒绝把过期契约与不同的运行时配对，而不是
@@ -209,6 +252,10 @@ Edge 不声称的：
 
 - 你的工具代码以你的用户权限运行。Edge 证明的是 **Edge** 做了什么——它不证明
   你的代码是否使用了网络、读了文件、起了进程。工具行为是你的代码、你的责任。
+- 过期且从未确认的待确认文件目前不会自动清理；令牌过期后不可用，但文件中可能
+  仍有敏感参数，运维方应删除陈旧文件。
+- 已确认工具完成副作用后、收据写入前如果进程崩溃，可能留下审计空档。Edge 会
+  保持该动作已被认领，不自动重试，从而维持最多执行一次。
 
 ## 排障
 
@@ -221,6 +268,9 @@ Edge 不声称的：
 | `tools_file_changed` | 会话冻结后文件被编辑 | 重开 chat 会话 |
 | `runner_timeout` | 单次调用超过 10 秒 | 让工具保持快速、本地 |
 | `tool_result_oversized` / `unsupported_tool_result` | 结果超 64 KB 或不可 JSON 序列化 | 返回有界的 `dict` |
+| `return_direct_output_schema_required` | 直接返回工具没有声明结果契约 | 增加闭合的 `output_schema` |
+| `tool_result_schema_mismatch` | 真实结果不符合声明契约 | 修正工具结果；运行时不会交付该结果 |
+| `tool_confirmation_required` | `commit` 工具尚未显式确认 | 使用 chat 返回的待确认动作和准确 `edge tools confirm` 命令 |
 | `imprint_requires_tools` | Imprint 带工具学习，chat 未传 `--tools` | 传入匹配的工具文件 |
 | `imprint_tool_active_set_mismatch` / `imprint_tool_schema_mismatch` | 工具 schema 与学习时契约不一致 | 重学，或恢复原签名 |
 | `conflicting_tool_options` | `--tools` 与 `--tools-manifest` 或 `--facts-store` 同用 | 每次运行只选一个工具面 |

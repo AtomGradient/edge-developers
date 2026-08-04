@@ -70,6 +70,14 @@ The B2/B4/B5/B6/B7 CLI commands listed below are shipped in current preview; the
 
 ## edge-studio
 
+### v0.0.1rc23
+
+- PyPI release candidate version: `0.0.1rc23`. Deterministic install: `python -m pip install edge-studio==0.0.1rc23`.
+- Adds generic `read`, `prepare`, and `commit` execution levels for custom Python tools. `commit` calls become local pending actions and run only after an explicit `edge tools confirm` command validates the expiring confirmation token and the frozen tool contract.
+- Requires every `return_direct=True` tool to declare a closed `output_schema`. Edge validates the actual tool result before direct delivery and fails closed with `tool_result_schema_mismatch` for missing fields, wrong types, or undeclared fields.
+- Confirmation is bound to the tools file, active set, tool schema, arguments, and execution level. Concurrent or repeated confirmation does not re-run a claimed action.
+- Known limits: expired pending files are not automatically removed, and a process crash after a side effect but before receipt persistence can leave an audit gap. Edge preserves at-most-once execution and does not retry that action automatically.
+
 ### v0.0.1rc22
 
 - PyPI release candidate version: `0.0.1rc22`. Deterministic install: `python -m pip install edge-studio==0.0.1rc22`.

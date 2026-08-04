@@ -14,7 +14,7 @@ slug: /versions
 
 | 发布面 | 当前版本 | 安装 / 解析 |
 |---|---|---|
-| Edge Studio | PyPI `edge-studio==0.0.1rc22`，GitHub tag `v0.0.1rc22` | `python -m pip install edge-studio==0.0.1rc22` |
+| Edge Studio | PyPI `edge-studio==0.0.1rc23`，GitHub tag `v0.0.1rc23` | `python -m pip install edge-studio==0.0.1rc23` |
 | Edge Kit | `1.0.0-rc103` | SPM `github.com/AtomGradient/edge-kit`，`exact: "1.0.0-rc103"` |
 | Edge Engine | `1.0.0-rc143` | 由 Edge Kit 解析；绝大多数 App 不直接 import |
 | Edge Halo binary | `1.0.0-rc25` | SPM `github.com/AtomGradient/edge-halo-binary`，`exact: "1.0.0-rc25"` |
@@ -24,7 +24,7 @@ slug: /versions
 
 | 组件 | 兼容预览版本 |
 |---|---|
-| Edge Studio | `v0.0.1rc22` |
+| Edge Studio | `v0.0.1rc23` |
 | Edge Kit | `1.0.0-rc103`，依赖 Edge Engine `1.0.0-rc143` |
 | Edge Halo binary | `1.0.0-rc25` |
 | Edge Scaffold | 当前预览固定 Edge Kit `1.0.0-rc103` 与 Edge Halo binary `1.0.0-rc25` |

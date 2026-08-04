@@ -33,9 +33,11 @@ hints, runs your code in an isolated runner process, validates every call, and
 writes hash-first receipts.
 
 :::info Version
-Custom Python tools require `edge-studio` **0.0.1rc21 or newer**. On rc20 and
-earlier, chat supports the built-in `local_facts_lookup` executor only — see
-[Local Facts Stores](/docs/knowledge-tools/local-facts#give-the-tool-a-developer-owned-name)
+Custom Python tools require `edge-studio` **0.0.1rc21 or newer**. The
+`output_schema`, `execution_level`, and explicit `commit` confirmation features
+on this page require **0.0.1rc23 or newer**. On rc20 and earlier, chat supports
+the built-in `local_facts_lookup` executor only — see [Local Facts
+Stores](/docs/knowledge-tools/local-facts#give-the-tool-a-developer-owned-name)
 for the manifest-based path available since rc20.
 :::
 
@@ -50,7 +52,7 @@ model process. The loop between them is deterministic and fail-closed:
 | 2 | Model | Emits plain text; a tool call is a single strict JSON object: `{"tool_name": "...", "arguments": {...}}` |
 | 3 | Edge | Parses and validates: tool name in the frozen active set, arguments match the schema, call limit not exceeded |
 | 4 | Runner | Edge spawns its own fixed runner subprocess, verifies the tools file is byte-identical to the frozen state, imports it, and executes exactly one function |
-| 5 | Edge | Validates the result (JSON object, size cap), appends the call and the result to the conversation, and lets the model continue |
+| 5 | Edge | Validates the result (JSON object, size cap, and the declared `output_schema` when present) before using or returning it |
 | 6 | Model | Answers using the tool result, or issues another call (at most 4 per prompt) |
 
 Anything unexpected — an unknown tool, invalid arguments, a changed file, a
@@ -81,6 +83,23 @@ def calculate_fee(
     note: Optional[str] = None,
 ) -> dict:
     return {"fee": amount * (0.003 if tier == "basic" else 0.002)}
+
+@edge_tool(
+    description="Prepare an order for review without submitting it.",
+    execution_level="prepare",
+    return_direct=True,
+    output_schema={
+        "type": "object",
+        "properties": {
+            "order_id": {"type": "string"},
+            "status": {"type": "string", "enum": ["prepared"]},
+        },
+        "required": ["order_id", "status"],
+        "additionalProperties": False,
+    },
+)
+def prepare_order(order_id: str) -> dict:
+    return {"order_id": order_id, "status": "prepared"}
 ```
 
 Rules:
@@ -90,8 +109,10 @@ Rules:
   fail validation — nothing silently becomes `Any`.
 - The docstring's first line is used as the description when the decorator does
   not set one.
-- v1 tools are read-only JSON tools: `permissions` supports `read_local` only.
-  Action tools, file writes, and network declarations are not accepted yet.
+- `execution_level` is `read` by default. Use `prepare` for reversible drafts and
+  `commit` for real side effects. The level is part of the frozen tool schema.
+- `permissions` currently supports `read_local` only. It does not attest what
+  developer-owned Python code does with the user's process permissions.
 
 ### Supported Parameter Types
 
@@ -111,9 +132,33 @@ is rejected by `edge tools validate` with an explicit error.
 - Scalars and lists (`str`, `int`, `float`, `bool`, `list`, `None`) are wrapped
   as `{"result": value}`.
 - Results are capped at 64 KB of canonical JSON. Oversized results fail closed.
+- `return_direct=True` requires a closed `output_schema`. The runtime validates
+  the actual result before direct delivery; wrong types, missing keys, and
+  undeclared fields fail closed with `tool_result_schema_mismatch`.
 - Exceptions raised by your function end the tool loop fail-closed; the model
   falls back to a safe answer. Return a normal payload such as
   `{"matches": []}` for "not found" cases you want the model to reason about.
+
+### Execution Levels And Confirmation
+
+| Level | Intended use | Runtime behavior |
+| --- | --- | --- |
+| `read` | Lookups and calculations | Executes after normal schema validation |
+| `prepare` | Reversible drafts or unsigned payloads | Executes immediately; requires `return_direct=True` and `output_schema` |
+| `commit` | Writes, submissions, broadcasts, or other real side effects | Chat creates a pending action; execution requires an explicit local confirmation command |
+
+A `commit` tool must also declare `return_direct=True` and a closed
+`output_schema`. Chat does not execute it. The returned JSON includes a private
+pending-action path, an expiring confirmation token, and the exact command:
+
+```bash
+edge tools confirm '<pending_action_path>' --token '<confirmation_token>' --json
+```
+
+Confirmation is bound to the frozen tools file, active tool set, tool schema,
+arguments, and execution level. A changed file, altered arguments, wrong or
+expired token, or a concurrent second confirmation fails closed. The pending
+file is local, mode `0600`, and defaults to a 10-minute validity window.
 
 ## Validate And Inspect
 
@@ -198,7 +243,7 @@ restore gate is therefore schema-level:
 | You changed | Restore |
 | --- | --- |
 | Function bodies, comments, formatting — signatures unchanged | ✅ Restores; no relearn needed |
-| A parameter, a type hint, a tool name, a description, the active set | ❌ Fails closed — relearn with the current file |
+| A parameter, a type hint, a tool name, a description, `output_schema`, `execution_level`, or the active set | ❌ Fails closed — relearn with the current file |
 | Chat without `--tools` while the imprint was learned with tools | ❌ Fails closed with `imprint_requires_tools` |
 
 Fail-closed means exactly that: Edge refuses to pair a stale contract with a
@@ -226,6 +271,12 @@ What Edge does not claim:
 - Your tool code runs with your user permissions. Edge attests what **Edge**
   did — it does not prove whether your code used the network, read files, or
   spawned processes. Tool behavior is your code, your responsibility.
+- Expired, never-confirmed pending files are not automatically deleted yet;
+  their tokens are unusable after expiry, but operators should remove stale
+  files that contain sensitive arguments.
+- A process crash after a confirmed tool completes its side effect but before
+  its receipt is written can leave an audit gap. Edge keeps the action claimed
+  and will not retry it automatically, preserving at-most-once execution.
 
 ## Troubleshooting
 
@@ -238,6 +289,9 @@ What Edge does not claim:
 | `tools_file_changed` | File edited after the session froze it | Start a new chat session |
 | `runner_timeout` | A call exceeded 10 s | Keep tools fast and local |
 | `tool_result_oversized` / `unsupported_tool_result` | Result over 64 KB or not JSON-serializable | Return a bounded `dict` |
+| `return_direct_output_schema_required` | A direct-return tool has no declared result contract | Add a closed `output_schema` |
+| `tool_result_schema_mismatch` | The real result does not match the declared contract | Fix the tool result; it will not be delivered |
+| `tool_confirmation_required` | A `commit` tool was reached without explicit confirmation | Use the pending action and exact `edge tools confirm` command returned by chat |
 | `imprint_requires_tools` | Imprint was learned with tools; chat ran without `--tools` | Pass the matching tools file |
 | `imprint_tool_active_set_mismatch` / `imprint_tool_schema_mismatch` | Tool schemas differ from the learned contract | Relearn, or restore the original signatures |
 | `conflicting_tool_options` | `--tools` combined with `--tools-manifest` or `--facts-store` | Pick one tool surface per run |
