@@ -82,6 +82,9 @@ edge demo chat \
 没有 `--facts-store` 或 `--tools-manifest` 时，chat 不注册本地事实工具，
 保持普通基础模型聊天。
 
+如果这次运行需要自定义校验、结构化证据、参数绑定或后续动作，请不要使用这个
+快捷入口，改用[自定义 Python 工具](/docs/knowledge-tools/custom-python-tools#带工具聊天)。
+
 ## 给工具一个开发者拥有的名字
 
 快捷路径适合快速验证。接入 App 时，更推荐使用载体自己拥有的稳定工具名。

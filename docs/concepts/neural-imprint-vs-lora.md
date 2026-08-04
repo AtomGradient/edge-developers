@@ -29,7 +29,7 @@ runtime state on the device.
 
 ## The short version
 
-| Pattern | Product contract | What developers carry |
+| Pattern | Product contract | What you carry |
 |---|---|---|
 | **Neural Imprint** | Restore a local learning artifact into a compatible base model session | Local artifact lifecycle, compatibility gates, deletion UX |
 | **LoRA / SFT** | Train and ship new model or adapter weights | Training compute, data curation, release packaging, full regression evaluation |
@@ -71,7 +71,7 @@ payload.
 LoRA and SFT are useful when the desired output is a trained model or adapter
 release. They are not the right default for per-user, on-device learning loops.
 
-For a developer shipping personalization, they introduce a heavy contract:
+If you ship personalization, LoRA and SFT introduce a heavy contract:
 
 - Training needs enough compute, curated data, and repeatable infrastructure.
 - The adapted model or adapter becomes a versioned release artifact.

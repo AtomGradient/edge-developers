@@ -84,6 +84,10 @@ edge demo chat \
 Without `--facts-store` or `--tools-manifest`, chat does not register a local
 facts tool and remains ordinary base-model chat.
 
+If the run needs your own validation, structured evidence, argument binding,
+or a follow-up action, use [Custom Python Tools](/docs/knowledge-tools/custom-python-tools#chatting-with-tools)
+instead of this shortcut.
+
 ## Give The Tool A Developer-Owned Name
 
 The shortcut is fine for quick checks. For app integration, prefer a stable

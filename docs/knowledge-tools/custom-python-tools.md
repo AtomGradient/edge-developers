@@ -194,6 +194,16 @@ Selection and limits:
 - `--tools`, `--tools-manifest`, and `--facts-store` are mutually exclusive.
 - `--tool` / `--tool-tag` require `--tools`.
 
+Choose the surface from what the run needs to do:
+
+| Need | Choose |
+| --- | --- |
+| Query local facts with no code, custom validation, or action | `--facts-store <store>` |
+| Add your own validation, structured evidence, argument binding, or follow-up action | `--tools ./tools.py` |
+
+If you only need a stable tool name over the same built-in read-only facts
+lookup, use `--tools-manifest` instead. It does not execute your Python code.
+
 Runtime behavior worth knowing:
 
 - Each tool call runs in a fresh runner process: your file's top level executes
@@ -272,8 +282,8 @@ What Edge does not claim:
   did — it does not prove whether your code used the network, read files, or
   spawned processes. Tool behavior is your code, your responsibility.
 - Expired, never-confirmed pending files are not automatically deleted yet;
-  their tokens are unusable after expiry, but operators should remove stale
-  files that contain sensitive arguments.
+  their tokens are unusable after expiry, but you should remove stale files
+  that contain sensitive arguments.
 - A process crash after a confirmed tool completes its side effect but before
   its receipt is written can leave an audit gap. Edge keeps the action claimed
   and will not retry it automatically, preserving at-most-once execution.

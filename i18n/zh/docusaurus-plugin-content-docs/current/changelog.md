@@ -81,7 +81,7 @@ PyPI 保留说明：Edge Studio 的 `0.0.1rc19` 之前预览 wheel 已从 PyPI �
 - PyPI release candidate 版本：`0.0.1rc22`。确定性安装：`python -m pip install edge-studio==0.0.1rc22`。
 - 新增 `edge demo facts import-url --extractor host-model --extractor-model <model>`，支持用本地 Mac host model 做事实抽取。模型输出只被视为候选 facts；Edge 会在写入本地 facts store 前校验结构化 payload。回执包含 model、prompt、schema、model input、原始模型输出和校验后 payload 的哈希，以及截断元数据和 `non_deterministic_extraction=true`。
 - 新增 `edge demo facts crawl-url <url>`，支持有界的静态同源材料导入。必须显式设置 `--max-depth`、`--max-urls`、`--max-bytes`、`--max-bytes-total` 和 `--timeout`；回执记录 redirect-chain 哈希、逐页 status、总字节数、同源策略决策和 `network_used=true`。
-- 爬取能力刻意保持收窄：不使用浏览器、不执行 JavaScript、不跨源，也不抓取 `robots.txt`。开发者仍需自行确认材料来源可被其使用。
+- 爬取能力刻意保持收窄：不使用浏览器、不执行 JavaScript、不跨源，也不抓取 `robots.txt`。你仍需自行确认有权使用这些材料来源。
 - 更新 Ethereum 示例，使其成为通用领域材料工作流示例：URL 导入、可选本地 host-model 抽取、有界 crawl、自定义 Python 工具和 Neural Imprint 学习。Ethereum 只是示例领域，不是 Edge runtime 的特殊路径。
 - 保持 rc21 自定义 Python 工具路径不变：`@edge_tool`、`edge tools validate`、`edge tools inspect`、`edge demo chat --tools` 和 `edge demo learn run --tools`。
 
@@ -102,7 +102,7 @@ PyPI 保留说明：Edge Studio 的 `0.0.1rc19` 之前预览 wheel 已从 PyPI �
 - `html-table-rows` 会把每行里的链接作为数据捕获，并按 final URL 绝对化相对 `href`。这些链接写入 fact 文本，但不会被跟随或爬取。
 - 新增 `edge demo tools validate <tools.json>`，支持 `edge.demo.tools.manifest.v1`。rc20 运行时只支持开发者命名的只读工具，工具 `kind` 必须是 `"local_facts_lookup"`。
 - 新增 `edge demo chat --tools-manifest <tools.json>`。chat 现在可以使用开发者命名的只读本地 facts 工具；回执会记录 `tools_manifest_sha256`、工具摘要、tool calls 和 `network_used=false`。
-- 新增 `edge demo tools validate --learn-sample <sample.json>` mismatch warning：当 learn sample 的 `tool_schema_export.tools[].name` 与运行时 tools manifest 的工具名不一致时给出非阻塞警告，方便开发者在运行前审计 sample/runtime 漂移。
+- 新增 `edge demo tools validate --learn-sample <sample.json>` mismatch warning：当 learn sample 的 `tool_schema_export.tools[].name` 与运行时 tools manifest 的工具名不一致时给出非阻塞警告，方便你在运行前审计 sample/runtime 漂移。
 - 保留 `edge demo chat --facts-store <store>` 作为内置 `local_facts_lookup` 工具的快捷入口。如果载体需要稳定的开发者自定义 tool 名，请使用 `--tools-manifest`。
 - 更新本地 Mac 工作站的模型 catalog 就绪状态，使 `qwen3.5-27b-4bit` 可作为 LLM 能力路径用于 learn/chat 工作流。Edge 会尊重开发者选择的本地模型；27B 不是硬依赖。
 
@@ -114,7 +114,7 @@ PyPI 保留说明：Edge Studio 的 `0.0.1rc19` 之前预览 wheel 已从 PyPI �
 - 支持 `--with-imprint` 与 `--facts-store` 组合，让 Neural Imprint 行为偏好和本地事实查询进入同一条 chat 路径。
 - chat receipt 新增 `tool_calls[]`、`tool_instruction_mode`、`tool_instruction_sha256`，用于审计本地工具行为。
 - Neural Imprint prefix renderer 升级到 v2 JSON tool-call 契约，保证烘焙和运行时工具指令同源。
-- 开发者可以通过重新导入 facts 刷新本地知识，不需要重新运行 learn 流程。
+- 你可以通过重新导入 facts 刷新本地知识，不需要重新运行 learn 流程。
 - 已安装 Python 包命名空间从 `backend` 改为 `edgestudio`。公开 CLI 仍然是 `edge`；包内源码引用现在使用 `edgestudio/cli/demo_samples.py` 这类路径。
 - 本地 `edge.demo.learn.sample.v1` JSON 学习样本的自定义入口仍然是 `--sample-file`。
 - 发布元数据已对齐 AtomGradient Proprietary License。公开 `AtomGradient/edge-studio` 仓库是 issue/support 壳，不是开源源码分发。

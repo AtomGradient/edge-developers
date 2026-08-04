@@ -10,8 +10,8 @@ This page walks one domain end to end: split your material into refreshable
 knowledge and learned behavior, wire both into chat, and prove that knowledge
 updates do not require re-learning.
 
-The sample domain on this page is a transaction-assistant app for Ethereum
-developers. Ethereum is only the example dataset: every Edge command, schema,
+The sample domain on this page is an Ethereum transaction-assistant app.
+Ethereum is only the example dataset: every Edge command, schema,
 and tool mechanism here is generic, and nothing in the Edge runtime is
 domain-specific. Swap the sample facts and boundaries for your own domain and
 the workflow is unchanged.

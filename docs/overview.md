@@ -45,7 +45,7 @@ and validate on real devices after each upgrade. Current pins live on one page:
 
 ## Choose Your Path
 
-Three developer journeys share this documentation. Pick the one that matches
+Three paths share this documentation. Pick the one that matches
 what you want to do first — each is self-contained, and you can cross over
 later.
 
@@ -61,7 +61,7 @@ custom Python tools, tool learning) is its own track:
 
 ## What Edge Gives You
 
-| Developer problem | Edge approach |
+| Your problem | Edge approach |
 | --- | --- |
 | A user-specific preference should not become a model-release project | Keep the base model package stable and restore local learning artifacts at runtime. |
 | Sensitive local state should not be replayed into every request | Store learned state as app-managed local data, not repeated prompt text. |
@@ -113,7 +113,7 @@ ready-to-copy `edge demo chat --with-imprint ".../learn_receipt.json"` command.
 
 ## Product Stack
 
-| Product | What developers use it for |
+| Product | What you use it for |
 | --- | --- |
 | **Edge Studio** | Local workbench and CLI for model readiness, model fetch receipts, local learning demos, Neural Imprint generation, device management, benchmark, and export. |
 | **Edge Kit** | Swift SDK for LLM, VLM, speech, model management, EdgeData, EdgeMesh, EdgeDataMeshBridge, EdgeSession, and EdgeUI. |

@@ -18,7 +18,7 @@ Edge Halo 是开发者预览包。agent 仍然是组合点：它连接 Edge Kit 
 
 ## 模型进化做什么
 
-从开发者 API 角度，模型进化是在 base model 周围加一个私有生命周期：
+从 API 角度，模型进化是在 base model 周围加一个私有生命周期：
 
 1. 你的 agent 收集符合条件的本地事件和事实。
 2. 你的 agent 从本地数据准备 profile inputs。

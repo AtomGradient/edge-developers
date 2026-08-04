@@ -83,7 +83,7 @@ The B2/B4/B5/B6/B7 CLI commands listed below are shipped in current preview; the
 - PyPI release candidate version: `0.0.1rc22`. Deterministic install: `python -m pip install edge-studio==0.0.1rc22`.
 - Adds `edge demo facts import-url --extractor host-model --extractor-model <model>` for local Mac host-model facts extraction. The model output is treated as candidate facts only; Edge validates the structured payload before writing the local facts store. Receipts include hashes for the model, prompt, schema, model input, raw model output, and validated payload, plus truncation metadata and `non_deterministic_extraction=true`.
 - Adds `edge demo facts crawl-url <url>` for bounded static same-origin material import. Required bounds are `--max-depth`, `--max-urls`, `--max-bytes`, `--max-bytes-total`, and `--timeout`; receipts capture redirect-chain hashes, per-page statuses, total bytes, same-origin policy decisions, and `network_used=true`.
-- Keeps crawling deliberately narrow: no browser, no JavaScript execution, no cross-origin traversal, and no `robots.txt` fetch. Developers remain responsible for using sources they are allowed to access.
+- Keeps crawling deliberately narrow: no browser, no JavaScript execution, no cross-origin traversal, and no `robots.txt` fetch. You remain responsible for using sources you are allowed to access.
 - Updates the Ethereum example as a generic domain-material workflow: URL import, optional local host-model extraction, bounded crawl, custom Python tools, and Neural Imprint learning. Ethereum is an example domain, not a special Edge runtime path.
 - Keeps the rc21 custom Python tool path unchanged: `@edge_tool`, `edge tools validate`, `edge tools inspect`, `edge demo chat --tools`, and `edge demo learn run --tools`.
 
@@ -104,7 +104,7 @@ The B2/B4/B5/B6/B7 CLI commands listed below are shipped in current preview; the
 - `html-table-rows` captures links inside each row as data and absolutizes relative `href` values against the final URL. It stores those links in fact text and does not follow them.
 - Adds `edge demo tools validate <tools.json>` for `edge.demo.tools.manifest.v1`. The rc20 runtime supports developer-named read-only tools with `kind: "local_facts_lookup"` only.
 - Adds `edge demo chat --tools-manifest <tools.json>`. Chat can now use developer-named read-only local fact tools; receipts record `tools_manifest_sha256`, tool summaries, tool calls, and `network_used=false`.
-- Adds `edge demo tools validate --learn-sample <sample.json>` mismatch warnings when a learn sample's `tool_schema_export.tools[].name` does not match the runtime tools manifest. The warning is non-blocking so developers can audit sample/runtime drift before a run.
+- Adds `edge demo tools validate --learn-sample <sample.json>` mismatch warnings when a learn sample's `tool_schema_export.tools[].name` does not match the runtime tools manifest. The warning is non-blocking so you can audit sample/runtime drift before a run.
 - Keeps `edge demo chat --facts-store <store>` as the shortcut for the built-in `local_facts_lookup` tool. Use `--tools-manifest` when the carrier wants stable developer-owned tool names.
 - Updates model catalog readiness for local Mac-class workstations so `qwen3.5-27b-4bit` resolves as an LLM-capable local model for learn/chat workflows. The strongest available local model remains a developer choice, not a hard dependency.
 
@@ -116,7 +116,7 @@ The B2/B4/B5/B6/B7 CLI commands listed below are shipped in current preview; the
 - Supports combining `--with-imprint` and `--facts-store`, so Neural Imprint behavior and local fact lookup can run together in one chat path.
 - Extends chat receipts with `tool_calls[]`, `tool_instruction_mode`, and `tool_instruction_sha256` for auditable local tool behavior.
 - Updates the Neural Imprint prefix renderer to the v2 JSON tool-call contract, keeping baked and runtime tool instructions aligned.
-- Lets developers refresh local knowledge by re-importing facts into a store without re-running the learning flow.
+- Lets you refresh local knowledge by re-importing facts into a store without re-running the learning flow.
 - Renames the installed Python package namespace from `backend` to `edgestudio`. The public CLI remains `edge`; package-internal source references now use paths such as `edgestudio/cli/demo_samples.py`.
 - Keeps `--sample-file` as the customization path for local `edge.demo.learn.sample.v1` JSON learning samples.
 - Aligns release metadata with the AtomGradient Proprietary License. The public `AtomGradient/edge-studio` repository is an issue and support shell, not an open-source source distribution.

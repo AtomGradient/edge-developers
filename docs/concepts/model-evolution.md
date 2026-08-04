@@ -18,7 +18,7 @@ Edge Halo is a developer-preview package. The agent remains the composition poin
 
 ## What model evolution does
 
-At the developer API level, model evolution is a private lifecycle around a base model:
+At the API level, model evolution is a private lifecycle around a base model:
 
 1. Your agent collects eligible local events and facts.
 2. Your agent prepares profile inputs from local data.
