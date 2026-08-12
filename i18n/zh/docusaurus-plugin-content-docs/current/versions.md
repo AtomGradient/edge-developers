@@ -17,8 +17,8 @@ slug: /versions
 | Edge Studio | PyPI `edge-studio==0.0.1rc23`，GitHub tag `v0.0.1rc23` | `python -m pip install edge-studio==0.0.1rc23` |
 | Edge Kit | `1.0.0-rc103` | SPM `github.com/AtomGradient/edge-kit`，`exact: "1.0.0-rc103"` |
 | Edge Engine | `1.0.0-rc143` | 由 Edge Kit 解析；绝大多数 App 不直接 import |
-| Edge Halo binary | `1.0.0-rc25` | SPM `github.com/AtomGradient/edge-halo-binary`，`exact: "1.0.0-rc25"` |
-| Edge Scaffold | 固定 Edge Kit `1.0.0-rc103` 与 Edge Halo binary `1.0.0-rc25` | 由 Edge Studio 导出生成 |
+| Edge Halo binary | `1.0.0-rc26` | SPM `github.com/AtomGradient/edge-halo-binary`，`exact: "1.0.0-rc26"` |
+| Edge Scaffold | 固定 Edge Kit `1.0.0-rc103` 与 Edge Halo binary `1.0.0-rc26` | 由 Edge Studio 导出生成 |
 
 ## 兼容矩阵
 
@@ -26,8 +26,8 @@ slug: /versions
 |---|---|
 | Edge Studio | `v0.0.1rc23` |
 | Edge Kit | `1.0.0-rc103`，依赖 Edge Engine `1.0.0-rc143` |
-| Edge Halo binary | `1.0.0-rc25` |
-| Edge Scaffold | 当前预览固定 Edge Kit `1.0.0-rc103` 与 Edge Halo binary `1.0.0-rc25` |
+| Edge Halo binary | `1.0.0-rc26` |
+| Edge Scaffold | 当前预览固定 Edge Kit `1.0.0-rc103` 与 Edge Halo binary `1.0.0-rc26` |
 
 以上组合是成对验证过的。混用其他组合未经测试。
 

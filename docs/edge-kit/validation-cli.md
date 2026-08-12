@@ -22,7 +22,7 @@ Pin Developer Preview packages exactly:
 // Package.swift
 dependencies: [
     .package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc103"),
-    .package(url: "https://github.com/AtomGradient/edge-halo-binary", exact: "1.0.0-rc25")
+    .package(url: "https://github.com/AtomGradient/edge-halo-binary", exact: "1.0.0-rc26")
 ]
 ```
 
@@ -39,7 +39,7 @@ Then add the products you need:
 )
 ```
 
-Edge Kit `1.0.0-rc103` uses Edge Engine `1.0.0-rc143` in this preview. Edge Halo is distributed as the public binary package `edge-halo-binary` `1.0.0-rc25`. Edge Kit, Edge Engine, Edge Scaffold, and the Edge Halo binary package resolve from public GitHub repositories.
+Edge Kit `1.0.0-rc103` uses Edge Engine `1.0.0-rc143` in this preview. Edge Halo is distributed as the public binary package `edge-halo-binary` `1.0.0-rc26`. Edge Kit, Edge Engine, Edge Scaffold, and the Edge Halo binary package resolve from public GitHub repositories.
 
 ## Run the EdgeStudio validation CLI
 

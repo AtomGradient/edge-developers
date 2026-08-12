@@ -22,7 +22,7 @@ title: Swift CLI 验证
 // Package.swift
 dependencies: [
     .package(url: "https://github.com/AtomGradient/edge-kit.git", exact: "1.0.0-rc103"),
-    .package(url: "https://github.com/AtomGradient/edge-halo-binary", exact: "1.0.0-rc25")
+    .package(url: "https://github.com/AtomGradient/edge-halo-binary", exact: "1.0.0-rc26")
 ]
 ```
 
@@ -39,7 +39,7 @@ dependencies: [
 )
 ```
 
-当前预览版中，Edge Kit `1.0.0-rc103` 使用 Edge Engine `1.0.0-rc143`。Edge Halo 通过公开二进制包 `edge-halo-binary` `1.0.0-rc25` 分发。Edge Kit、Edge Engine、Edge Scaffold 和 Edge Halo 二进制包都从公开 GitHub 仓库解析。
+当前预览版中，Edge Kit `1.0.0-rc103` 使用 Edge Engine `1.0.0-rc143`。Edge Halo 通过公开二进制包 `edge-halo-binary` `1.0.0-rc26` 分发。Edge Kit、Edge Engine、Edge Scaffold 和 Edge Halo 二进制包都从公开 GitHub 仓库解析。
 
 ## 运行 EdgeStudio 验证 CLI
 
